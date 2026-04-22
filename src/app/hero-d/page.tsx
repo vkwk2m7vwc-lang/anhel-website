@@ -1,18 +1,18 @@
 import type { Metadata } from "next";
 import { HeroShell } from "@/components/hero/HeroShell";
-import { HeroBgCarousel } from "@/components/hero/HeroBgCarousel";
+import { HeroBgShowcase } from "@/components/hero/HeroBgShowcase";
 
 export const metadata: Metadata = {
-  title: "Hero D · Карусель (ручная)",
+  title: "Hero D · Витрина",
   description:
-    "Вариант D: карусель из четырёх продуктов. Ручное переключение, без автосмены.",
+    "Вариант D: живая витрина из четырёх продуктов с приоритетом. Клик — выбранный продукт становится главным.",
 };
 
 export default function HeroDPage() {
   return (
     <HeroShell
-      variantLabel="Вариант D · Карусель (ручная)"
-      background={<HeroBgCarousel autoplay={false} />}
+      variantLabel="Вариант D · Витрина"
+      background={<HeroBgShowcase />}
     />
   );
 }

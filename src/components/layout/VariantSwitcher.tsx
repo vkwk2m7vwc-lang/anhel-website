@@ -14,7 +14,7 @@ import { cn } from "@/lib/utils";
 const VARIANTS = [
   { label: "A", href: "/hero-a", tooltip: "Видео" },
   { label: "B", href: "/hero-b", tooltip: "Продукт" },
-  { label: "D", href: "/hero-d", tooltip: "Карусель · ручная" },
+  { label: "D", href: "/hero-d", tooltip: "Витрина" },
   { label: "E", href: "/hero-e", tooltip: "Карусель · авто" },
 ] as const;
 
