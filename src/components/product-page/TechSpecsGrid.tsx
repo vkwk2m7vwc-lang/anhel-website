@@ -1,7 +1,6 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useMagnetic } from "@/hooks/useMagnetic";
 import type { TechSpecTile } from "@/content/products/types";
 
 /**
@@ -10,9 +9,16 @@ import type { TechSpecTile } from "@/content/products/types";
  * Eight tiles laid out 4×2 on desktop, 2×4 on tablet, 1×8 on mobile.
  * Every tile is its own flex block with a label (mono uppercase),
  * dominant value (display type), and optional unit suffix. On hover the
- * tile's hairline border tightens toward the accent colour and the card
- * drifts a few pixels toward the cursor (useMagnetic, strength 0.15 —
- * subtle, not slapstick).
+ * tile picks up a 1px accent ring plus a soft inner glow — nothing else.
+ *
+ * Design note — what we intentionally DON'T do:
+ *   - No magnetic pull on the tiles. Tried 0.15 strength, confirmed the
+ *     grid read as "escaping" itself — the drift of a single cell
+ *     breaks the row's baseline. This is data, not a button set; the
+ *     grid should sit still and let colour do the talking.
+ *   - No `data-cursor="hover"` on the tiles. The custom cursor's hover
+ *     state renders as a larger white circle that would land directly
+ *     on top of the number the user came to read. Plain cursor only.
  *
  * Animation: whileInView stagger. Fires once on scroll entry; no
  * exit animation (nothing below this section would read a replay).
@@ -67,21 +73,14 @@ export function TechSpecsGrid({ specs }: { specs: readonly TechSpecTile[] }) {
  *   background draws a 1px hairline grid between tiles without double
  *   borders on edges. On hover the tile's ring (ring-accent) lights up
  *   1px wide above the hairline.
- * - Magnetic pull: ref'd to useMagnetic with strength 0.15 — the card
- *   drifts a handful of pixels toward the cursor while hovered. Cheap
- *   on perf (one GSAP tween per card, throttled by rAF), and the effect
- *   reads as "responsive surface", not "toy".
- * - Stagger: each card picks up a delay based on `index`, capped at 8
+ * - Stagger: each card picks up a delay based on `index`, capped at 7
  *   so we don't wait forever for the last one on a slow scroll.
  */
 function TechSpecCard({ spec, index }: { spec: TechSpecTile; index: number }) {
-  const ref = useMagnetic<HTMLLIElement>({ strength: 0.15, radius: 140 });
   const staggerDelay = Math.min(index, 7) * 0.05;
 
   return (
     <motion.li
-      ref={ref}
-      data-cursor="hover"
       initial={{ opacity: 0, y: 16 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-80px" }}
