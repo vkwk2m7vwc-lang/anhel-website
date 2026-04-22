@@ -108,9 +108,15 @@ export function HeroBgShowcase() {
       />
 
       {/* Desktop fan — sits inside the right 45% zone so it never touches
-          the headline column on the left. */}
+          the headline column on the left.
+          `pointer-events-auto` so back-product buttons can be clicked.
+          `pointer-events` is inherited, and the HeroShell wrapper sets it to
+          `none` — without this override the back buttons' own
+          `pointer-events-auto` could still behave inconsistently across
+          nested stacking contexts. Matches the pattern used by
+          HeroBgCarousel. */}
       <div
-        className="pointer-events-none absolute inset-y-0 right-0 hidden w-[45%] md:block"
+        className="pointer-events-auto absolute inset-y-0 right-0 hidden w-[45%] md:block"
         style={{ perspective: "1400px" }}
       >
         {/* Subtle hint. Top-right of the zone, tiny mono — easy to miss on
