@@ -6,25 +6,17 @@ import { cn } from "@/lib/utils";
 
 /**
  * Stage-2 helper — floating pill in the bottom-right that lets us jump
- * between the four hero variants without retyping URLs. Removed once we
- * pick a winner on Stage 3.
- *
- * Only renders on `/`, `/hero-a`, `/hero-b`, `/hero-d`, `/hero-e`.
+ * between the hero variants without retyping URLs. The three live variants
+ * (A, B, E) run in parallel until Stage 3 (site strategy) closes and we
+ * pick a winner. This switcher disappears at that point.
  */
 const VARIANTS = [
   { label: "A", href: "/hero-a", tooltip: "Видео" },
   { label: "B", href: "/hero-b", tooltip: "Продукт" },
-  { label: "D", href: "/hero-d", tooltip: "Витрина" },
   { label: "E", href: "/hero-e", tooltip: "Карусель · авто" },
 ] as const;
 
-const VISIBLE_ROUTES = new Set([
-  "/",
-  "/hero-a",
-  "/hero-b",
-  "/hero-d",
-  "/hero-e",
-]);
+const VISIBLE_ROUTES = new Set(["/", "/hero-a", "/hero-b", "/hero-e"]);
 
 export function VariantSwitcher() {
   const pathname = usePathname();
