@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { motion, useMotionValueEvent, useScroll } from "framer-motion";
+import { Phone } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 /**
@@ -80,11 +81,15 @@ export function Header() {
         </nav>
 
         <Link
-          href="/#contact"
+          href="tel:+78124164500"
           data-cursor="hover"
-          className="hidden rounded-full border border-[var(--color-secondary)]/20 px-5 py-2 text-sm text-[var(--color-secondary)] transition-colors hover:border-[var(--color-secondary)]/60 md:inline-block"
+          aria-label="Позвонить: +7 (812) 416-4500"
+          className="hidden items-center gap-2 text-sm text-[var(--color-secondary)]/80 transition-colors hover:text-[var(--color-secondary)] md:inline-flex"
         >
-          Связаться
+          <Phone size={14} strokeWidth={1.75} aria-hidden="true" />
+          <span className="font-mono tracking-[0.02em]">
+            +7 (812) 416-4500
+          </span>
         </Link>
 
         {/* Mobile trigger is a placeholder — Stage 2 will wire the

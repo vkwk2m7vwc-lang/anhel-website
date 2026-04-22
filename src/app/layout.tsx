@@ -7,6 +7,7 @@ import { Footer } from "@/components/layout/Footer";
 import { CustomCursor } from "@/components/layout/CustomCursor";
 import { PageTransition } from "@/components/layout/PageTransition";
 import { LoadingSplash } from "@/components/layout/LoadingSplash";
+import { VariantSwitcher } from "@/components/layout/VariantSwitcher";
 
 /**
  * Root layout.
@@ -55,6 +56,7 @@ export default function RootLayout({
             <main className="min-h-screen">{children}</main>
             <Footer />
           </PageTransition>
+          <VariantSwitcher />
         </LenisProvider>
       </body>
     </html>

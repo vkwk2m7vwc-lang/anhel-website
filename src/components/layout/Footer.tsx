@@ -33,11 +33,11 @@ export function Footer() {
         <div className="space-y-3 text-sm">
           <p className="mono-tag">Контакты</p>
           <Link
-            href="tel:+78121234567"
+            href="tel:+78124164500"
             data-cursor="hover"
             className="block text-[var(--color-secondary)]/80 hover:text-[var(--color-secondary)]"
           >
-            +7 (812) 123-45-67
+            +7 (812) 416-4500
           </Link>
           <Link
             href="mailto:info@anhelspb.com"
@@ -47,9 +47,9 @@ export function Footer() {
             info@anhelspb.com
           </Link>
           <p className="text-[var(--color-secondary)]/60">
-            Санкт-Петербург
+            Политехническая ул., д. 6, стр. 1,
             <br />
-            производственная база
+            пом. 1-Н, Санкт-Петербург
           </p>
         </div>
 

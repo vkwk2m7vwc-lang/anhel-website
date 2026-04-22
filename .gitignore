@@ -37,6 +37,7 @@ next-env.d.ts
 
 # local artefacts from the sandbox bootstrap (safe to remove)
 .tmp_preserve/
+.trash/
 
 # IDE
 .idea
