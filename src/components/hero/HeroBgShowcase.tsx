@@ -37,15 +37,19 @@ type SlotStyle = {
 };
 
 const SLOTS: readonly SlotStyle[] = [
-  // 0 — hero: centered, largest, crisp.
-  { left: "15%", top: "12%", width: "70%", height: "76%", opacity: 1, blur: 0, z: 30 },
-  // 1 — top-back: upper-left of the hero, peeks out behind the top edge.
-  { left: "20%", top: "6%", width: "30%", height: "30%", opacity: 0.32, blur: 5, z: 10 },
-  // 2 — bottom-left: peeks out from behind the lower-left corner.
-  { left: "5%", top: "62%", width: "27%", height: "27%", opacity: 0.28, blur: 5, z: 20 },
-  // 3 — bottom-right: peeks out from the lower-right, slightly larger
-  // than the other two so the triangle reads as intentional (not symmetric).
-  { left: "66%", top: "64%", width: "29%", height: "29%", opacity: 0.3, blur: 5, z: 20 },
+  // 0 — hero: centered, crisp. Slightly tighter than v1 so the back
+  // products have visible real-estate around all four sides.
+  { left: "22%", top: "14%", width: "58%", height: "68%", opacity: 1, blur: 0, z: 30 },
+  // 1 — top-back: upper-left, sits clearly ABOVE and to the LEFT of the
+  // hero (not behind it). Leaves the headline column on the left of the
+  // viewport untouched — this is inside the right 45% zone.
+  { left: "8%", top: "2%", width: "26%", height: "26%", opacity: 0.42, blur: 4, z: 10 },
+  // 2 — bottom-left: peeks out below+left of the hero with meaningful
+  // standalone area (roughly a third of the tile visible outside hero).
+  { left: "0%", top: "56%", width: "26%", height: "26%", opacity: 0.42, blur: 4, z: 20 },
+  // 3 — bottom-right: peeks out below+right of the hero, a touch larger
+  // so the triangle reads as intentional, not a rigid mirror.
+  { left: "72%", top: "60%", width: "27%", height: "27%", opacity: 0.45, blur: 4, z: 20 },
 ];
 
 /**
@@ -143,7 +147,7 @@ export function HeroBgShowcase() {
               className={cn(
                 "absolute rounded-lg",
                 isHero
-                  ? "cursor-default"
+                  ? "pointer-events-none cursor-default"
                   : "pointer-events-auto cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--color-secondary)]/60"
               )}
               style={{
