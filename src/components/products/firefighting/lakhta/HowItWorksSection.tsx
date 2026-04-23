@@ -25,10 +25,12 @@ import { SystemTabs } from "./SystemTabs";
  *
  * The two never collide because:
  *   1. The pin-spacer is computed from the section's outer box. That
- *      box's height is locked — the SystemDetailCard and step-body
- *      card each have a `min-height` sized from their longest variant
- *      + 12px buffer. No ScrollTrigger.refresh() is fired on system
- *      switch.
+ *      box's height is locked via two `min-height` pins: SystemDetailCard
+ *      (140px) and the active `<li>` inside LakhtaSteps (132px — the
+ *      body now renders inline in the active step, not in a separate
+ *      card under the rail). Both are sized from their longest variant
+ *      plus a 16-24px cushion. No ScrollTrigger.refresh() is fired on
+ *      system switch.
  *   2. GSAP only ever writes to `activeStep`. React writes to
  *      `activeSystem`. No crossed writes.
  *
@@ -145,35 +147,41 @@ export function HowItWorksSection() {
         className="absolute inset-0 bg-grid-hairline bg-grid opacity-30"
       />
 
-      <div className="relative mx-auto flex min-h-[100svh] w-full max-w-[1440px] flex-col gap-10 px-6 py-16 md:gap-12 md:px-12 md:py-20">
-        {/* Section header — label + title */}
+      <div className="relative mx-auto flex min-h-[100svh] w-full max-w-[1440px] flex-col gap-8 px-6 py-16 md:gap-10 md:px-12 md:py-20">
+        {/* ONE section header — single source of truth for the mono
+            tag + H2 + subcopy. Previously duplicated (outer tabs band
+            had one, LakhtaSteps had another internal one), which read
+            as two sections with the same number. Consolidated here. */}
         <header className="space-y-3">
           <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-[var(--color-secondary)]/50">
-            03 · Типы АПТ и как они срабатывают
+            03 · Как срабатывает
           </p>
           <h2 className="max-w-[720px] text-2xl font-medium leading-tight text-[var(--color-secondary)] md:text-4xl">
-            Четыре системы пожаротушения — один завод под каждую.
+            Как срабатывает
           </h2>
           <p className="max-w-[620px] text-sm leading-relaxed text-[var(--color-secondary)]/60 md:text-base">
-            Выберите тип установки — на схеме справа перестроится
-            внутренняя логика здания. Вся последовательность —
-            автоматическая, занимает секунды.
+            Выберите тип установки — на схеме перестроится логика
+            работы системы. Шесть шагов от первой искры до локализации.
           </p>
         </header>
 
-        {/* System switcher + detail card */}
-        <div className="flex flex-col gap-6 md:gap-8">
-          <SystemTabs
-            systems={fireSystems}
-            activeId={activeSystem}
-            onSelect={setActiveSystem}
-          />
-          <SystemDetailCard system={system} instant={reducedMotion} />
-        </div>
+        {/* Full-width tab rail — sits between the header and the grid.
+            Part of the same visual block; no standalone framing. */}
+        <SystemTabs
+          systems={fireSystems}
+          activeId={activeSystem}
+          onSelect={setActiveSystem}
+        />
 
-        {/* 40/60 grid — left: step rail, right: Lakhta scene */}
+        {/* 40/60 grid — left column hosts BOTH the system detail card
+            and the step rail (in that order). Right column is the
+            Lakhta scene. Gluing detail card + rail into one column
+            keeps the system context visually adjacent to the step the
+            user is reading, which was the whole point of the
+            composition fix. */}
         <div className="grid grid-cols-1 gap-10 md:grid-cols-[minmax(320px,2fr)_minmax(0,3fr)] md:gap-14">
-          <div className="relative self-start">
+          <div className="flex flex-col gap-8 self-start">
+            <SystemDetailCard system={system} instant={reducedMotion} />
             <LakhtaSteps activeStep={activeStep} steps={system.steps} />
           </div>
 

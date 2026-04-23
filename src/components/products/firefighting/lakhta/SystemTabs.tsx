@@ -69,7 +69,7 @@ export function SystemTabs({ systems, activeId, onSelect }: Props) {
             data-cursor="hover"
             onClick={() => onSelect(system.id)}
             onKeyDown={(e) => handleKey(e, idx)}
-            className="group relative flex shrink-0 snap-start flex-col gap-1 border-t border-[var(--color-hairline)] px-4 py-3 text-left transition-colors data-[active=true]:border-[var(--accent-fire)] md:flex-1 md:px-5"
+            className="group relative flex shrink-0 snap-start flex-col gap-1 border-t border-[var(--color-hairline)] px-4 py-3 text-left transition-[color,transform,border-color] duration-200 ease-out hover:-translate-y-[1px] data-[active=true]:translate-y-0 data-[active=true]:border-[var(--accent-fire)] md:flex-1 md:px-5"
           >
             {/* Accent bar — occupies the top-border slot when active */}
             <span
