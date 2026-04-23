@@ -4,31 +4,18 @@ import { AnimatePresence, motion } from "framer-motion";
 import type { FireSystem } from "@/content/products/firefighting-systems";
 
 /**
- * Compact detail card for the currently-selected fire-suppression
- * system. Renders as the first block of the left column inside the
- * 40/60 grid (above the step rail), NOT as a full-width band above
- * the grid — that was the mistake in the initial composition: it
- * detached the system context from the scene it controlled.
- *
- * Structure (compact):
- *   [mono label: [01] СПРИНКЛЕРНАЯ]
- *   [tagline — 1-2 lines]
- *   [body — 2-3 lines]
- *   [applications mono line: ПРИМЕНЕНИЕ · офисы · склады · …]
- *
- * The previous full-width version had a separate «Где применяется»
- * header with a hairline divider — removed. Applications now collapse
- * into a single mono-caps line that rhymes visually with the
- * `[01] СПРИНКЛЕРНАЯ` label at the top, which keeps the card short
- * enough to fit above the step-rail on a standard 900px viewport.
+ * Detail card rendered immediately below the SystemTabs rail and
+ * above the 40/60 grid. Shows the tagline + body + applications line
+ * for the currently-selected system.
  *
  * Crossfades on system change via AnimatePresence (450ms, ease-out-expo).
- * Height-locked via `min-height` so the swap never causes the pinned
- * section's spacer to recompute — see HowItWorksSection height-lock
- * comment for the global story.
+ * Height-locked via `min-height` so the swap doesn't change the card's
+ * bounding box — keeps the pinned section stable (see
+ * HowItWorksSection's height-lock comment for the why).
  *
- * When 4.2 ships ВПВ + combined, re-measure the tallest variant
- * (tagline + body + applications) and bump CARD_MIN_H if needed.
+ * The min-height is calibrated for the longest tagline+body combo
+ * across all four systems + 12px buffer; when 4.2 ships ВПВ + combined,
+ * re-measure the tallest variant and bump CARD_MIN_H if needed.
  */
 type Props = {
   system: FireSystem;
@@ -36,12 +23,13 @@ type Props = {
   instant: boolean;
 };
 
-// Compact card min-height: longest current tagline (~14 words) + body
-// (~30 words) + mono applications line renders at ~118px on a 1440px
-// viewport. Adding a 16-24px cushion so ВПВ / combined copy in 4.2 can
-// differ slightly without another measurement pass, and so font-rendering
-// variance across devices never causes a jitter on switch.
-const CARD_MIN_H = 140;
+// Longest current combo (drencher tagline ~12 words + body ~40 words +
+// applications line) renders at ~168px on a 1440px viewport. Add a
+// comfortable ~24px cushion so ВПВ/combined can be added in 4.2 without
+// another measurement pass, and so font-rendering variance across
+// devices never causes the card to jitter on switch. If 4.2 copy is
+// even longer, bump this up.
+const CARD_MIN_H = 192;
 
 export function SystemDetailCard({ system, instant }: Props) {
   const duration = instant ? 0 : 0.45;
@@ -67,15 +55,20 @@ export function SystemDetailCard({ system, instant }: Props) {
           <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-[var(--accent-fire)]">
             [{system.number}] {system.title.toUpperCase()}
           </p>
-          <p className="mt-3 max-w-[420px] text-base leading-snug text-[var(--color-secondary)]">
+          <p className="mt-3 max-w-[720px] text-base leading-snug text-[var(--color-secondary)] md:text-lg">
             {system.tagline}
           </p>
-          <p className="mt-2 max-w-[420px] text-sm leading-relaxed text-[var(--color-secondary)]/65">
+          <p className="mt-3 max-w-[720px] text-sm leading-relaxed text-[var(--color-secondary)]/65">
             {system.body}
           </p>
-          <p className="mt-3 max-w-[420px] font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/55">
-            <span className="text-[var(--color-secondary)]/35">Применение</span>
-            <span className="mx-2 text-[var(--color-secondary)]/25">·</span>
+
+          <div className="mt-5 flex max-w-[720px] flex-wrap items-center gap-x-3 gap-y-1">
+            <span className="font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/40">
+              Где применяется
+            </span>
+            <span className="h-px flex-1 bg-[var(--color-hairline)]" />
+          </div>
+          <p className="mt-3 max-w-[720px] font-mono text-[11px] uppercase tracking-[0.1em] text-[var(--color-secondary)]/70">
             {system.applications.join(" · ")}
           </p>
         </motion.div>
