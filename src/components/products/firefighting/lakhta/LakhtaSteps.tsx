@@ -1,6 +1,6 @@
 "use client";
 
-import { howItWorksSteps } from "@/content/products/firefighting-how-it-works";
+import type { FireSystem } from "@/content/products/firefighting-systems";
 
 /**
  * Left-rail step menu for the "Как срабатывает" section.
@@ -16,6 +16,19 @@ import { howItWorksSteps } from "@/content/products/firefighting-how-it-works";
  * "fade down" so they remain readable as context; future steps stay
  * dim to signal "not there yet".
  *
+ * Steps are passed in as a prop rather than imported, because the
+ * rail now swaps its copy when the user switches fire-suppression
+ * system in the header (steps 02/05/06 vary per system; 01/03/04 are
+ * shared). Keeping the component dumb means the parent can animate
+ * the swap without this component knowing about it.
+ *
+ * Height-lock: the active-step body card below the list is given a
+ * `min-h-[STEP_BODY_MIN_H]` sized from the longest known variant +
+ * 12px buffer. When the parent swaps in a shorter body (e.g. drencher
+ * step 05 "Вода одновременно…" is two words shorter than sprinkler
+ * step 05), the card doesn't collapse — no jitter in the pinned
+ * layout, no ScrollTrigger pin-spacer recompute needed.
+ *
  * Click handlers are intentionally omitted in this iteration. The
  * section is scroll-driven by design; adding click-to-jump would make
  * the narrative feel like a slideshow instead of a continuous read.
@@ -24,10 +37,21 @@ import { howItWorksSteps } from "@/content/products/firefighting-how-it-works";
 
 type Props = {
   activeStep: number;
+  steps: FireSystem["steps"];
 };
 
-export function LakhtaSteps({ activeStep }: Props) {
-  const active = howItWorksSteps[activeStep] ?? howItWorksSteps[0];
+// Height budget for the active-step body card. Longest body among
+// sprinkler + drencher step 06 renders at ~3 lines × ~24px leading
+// ≈ 72px; plus the mono label (~18px) and 12px top gap → ~102px. Round
+// up to 128px for a 12-16px buffer so font-rendering differences
+// across devices never cause a jitter on system change.
+// NOTE: when we add ВПВ + combined in 4.2, re-measure here. If any new
+// body pushes past ~110px rendered height, bump this to 144 and update
+// the matching lock on SystemDetailCard too.
+const STEP_BODY_MIN_H = 128;
+
+export function LakhtaSteps({ activeStep, steps }: Props) {
+  const active = steps[activeStep] ?? steps[0];
 
   return (
     <div className="flex h-full flex-col justify-between gap-12 py-4">
@@ -48,7 +72,7 @@ export function LakhtaSteps({ activeStep }: Props) {
 
       {/* Step list */}
       <ol className="space-y-0" role="list">
-        {howItWorksSteps.map((step) => {
+        {steps.map((step) => {
           const isActive = step.index === activeStep;
           const isPast = step.index < activeStep;
           return (
@@ -97,8 +121,14 @@ export function LakhtaSteps({ activeStep }: Props) {
       </ol>
 
       {/* Active step body — one block that updates as activeStep changes,
-          kept below the list so the reader's eye has a stable anchor. */}
-      <div className="max-w-[420px] border-t border-[var(--color-hairline)] pt-6">
+          kept below the list so the reader's eye has a stable anchor.
+          min-height locked (see STEP_BODY_MIN_H comment above) so a
+          system switch that swaps in shorter copy doesn't collapse the
+          card and trigger a pin-spacer recompute. */}
+      <div
+        className="max-w-[420px] border-t border-[var(--color-hairline)] pt-6"
+        style={{ minHeight: STEP_BODY_MIN_H }}
+      >
         <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-[var(--accent-fire)]">
           [{active.mono}] {active.title.toUpperCase()}
         </p>

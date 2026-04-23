@@ -1,5 +1,7 @@
 "use client";
 
+import type { FireSystemId } from "@/content/products/firefighting-systems";
+
 /**
  * Lakhta scene — inline SVG of a tapered skyscraper in section, with a
  * basement pump station, two red firefighting risers, a horizontal
@@ -10,9 +12,16 @@
  * on purpose: GSAP targets elements by ID selector, and splitting the
  * figure into React sub-components would force re-renders on every
  * scroll update (killing 60fps) without buying any real prop-control.
- * The only prop is `activeStep` (0..5); it writes `data-active-step`
- * on the root <svg> and React state changes are used sparingly — one
- * render per step transition, not per scroll frame.
+ *
+ * Props: `activeStep` (0..5, scroll-driven) + `activeSystem`
+ * ("sprinkler" | "drencher" | …, switcher-driven). The step drives the
+ * narrative reveal (pumps, risers, flow); the system rewires the
+ * interior on the fire floor — single spot-sprinkler for `sprinkler`,
+ * ceiling sensor + multi-head curtain for `drencher`. Both overlays are
+ * always mounted and crossfaded via opacity (450ms ease-out-expo) so
+ * the pinned section's bounding-box height never changes on switch —
+ * ScrollTrigger pin-spacer stays stable, `activeStep` survives
+ * untouched.
  *
  * Continuous animations (LED blink, smoke sway, pump glow pulse,
  * impeller rotation, particle flow, droplet fall) are implemented as
@@ -38,6 +47,10 @@ type Props = {
   activeStep: number;
   /** When true, all continuous loops are disabled and final state shown. */
   reducedMotion: boolean;
+  /** Which fire-suppression system the user is viewing. Default
+   *  "sprinkler" so the scene still renders correctly if a caller
+   *  doesn't pass the prop (e.g. legacy tests). */
+  activeSystem?: FireSystemId;
 };
 
 // Keyframe names must match definitions in globals.css under the
@@ -61,7 +74,11 @@ const ANIM = {
 const loop = (when: boolean, animation: string): React.CSSProperties | undefined =>
   when ? { animation } : undefined;
 
-export function LakhtaScene({ activeStep, reducedMotion }: Props) {
+export function LakhtaScene({
+  activeStep,
+  reducedMotion,
+  activeSystem = "sprinkler",
+}: Props) {
   // Gate per-step: elements stay in their final state once unlocked, so
   // scrolling backwards doesn't restart animations (mirrors GSAP scrub
   // idempotency). Reduced-motion short-circuits all loops.
@@ -76,6 +93,12 @@ export function LakhtaScene({ activeStep, reducedMotion }: Props) {
   const risersOn = activeStep >= 3;
   const horizontalOn = activeStep >= 4;
   const sprinklerOn = activeStep >= 5;
+
+  // Per-system overlay flags. Both overlays are always rendered so the
+  // SVG's internal bounding box stays constant; only their opacity
+  // changes. 450ms matches the tab crossfade on the switcher above.
+  const isSprinklerSystem = activeSystem === "sprinkler";
+  const isDrencherSystem = activeSystem === "drencher";
   // Step 6 "Локализация": fire is contained → smoke trails off. Opacity
   // animates down via the <g>'s existing CSS transition.
   const smokeOpacity = !firePresent ? 0 : activeStep >= 5 ? 0.15 : 1;
@@ -89,6 +112,7 @@ export function LakhtaScene({ activeStep, reducedMotion }: Props) {
       xmlns="http://www.w3.org/2000/svg"
       className="h-full w-full"
       data-active-step={activeStep}
+      data-active-system={activeSystem}
       data-reduced-motion={reducedMotion ? "true" : "false"}
       role="img"
       aria-label="Схема срабатывания насосной станции пожаротушения в разрезе небоскрёба"
@@ -563,8 +587,18 @@ export function LakhtaScene({ activeStep, reducedMotion }: Props) {
         ))}
       </g>
 
-      {/* ================== IDLE SPRINKLERS ================== */}
-      <g id="idle-sprinklers" fill="rgba(215,38,56,0.4)">
+      {/* ================== IDLE SPRINKLERS ==================
+          Hidden entirely on drencher (that system uses open heads on
+          the fire floor only — building-wide sprinkler dots would
+          misrepresent the schematic). Crossfade matches the switcher. */}
+      <g
+        id="idle-sprinklers"
+        fill="rgba(215,38,56,0.4)"
+        style={{
+          opacity: isSprinklerSystem ? 1 : 0,
+          transition: "opacity 0.45s cubic-bezier(0.16,1,0.3,1)",
+        }}
+      >
         <circle cx="260" cy="900" r="1.8" />
         <circle cx="300" cy="900" r="1.8" />
         <circle cx="340" cy="900" r="1.8" />
@@ -628,13 +662,16 @@ export function LakhtaScene({ activeStep, reducedMotion }: Props) {
         </g>
       </g>
 
-      {/* ================== ACTIVE SPRINKLER (step 6 only) ==================
-          Hidden until step 5 (index), then fades in with droplets. */}
+      {/* ================== ACTIVE SPRINKLER (sprinkler system, step 6) ==================
+          Hidden until step 5 (index), then fades in with droplets. When
+          the user switches to the drencher system this whole group
+          crossfades out — the drencher overlay below takes over the
+          fire-floor visual. */}
       <g
         id="active-sprinkler"
         style={{
-          opacity: sprinklerOn ? 1 : 0,
-          transition: "opacity 0.6s ease-out",
+          opacity: sprinklerOn && isSprinklerSystem ? 1 : 0,
+          transition: "opacity 0.45s cubic-bezier(0.16,1,0.3,1)",
         }}
       >
         <circle cx="310" cy="447" r="3" fill="rgba(255,255,255,0.95)" />
@@ -678,6 +715,112 @@ export function LakhtaScene({ activeStep, reducedMotion }: Props) {
             }
           />
         ))}
+      </g>
+
+      {/* ================== DRENCHER OVERLAY (drencher system) ==================
+          Drencher systems don't have thermal bulbs — the signal comes
+          from an addressable fire-detection sensor on the ceiling, and
+          when the cabinet opens the group valve the water hits every
+          open head on the zone simultaneously (water curtain).
+          Render order: ceiling sensor → 8 open heads → droplet field.
+          The whole group crossfades with the sprinkler overlay. */}
+      <g
+        id="drencher-overlay"
+        style={{
+          opacity: isDrencherSystem ? 1 : 0,
+          transition: "opacity 0.45s cubic-bezier(0.16,1,0.3,1)",
+        }}
+      >
+        {/* Ceiling sensor — small rounded rect with indicator LED.
+            Positioned slightly above the fire-floor ceiling line
+            (y=440). The LED lights up from step 1 ("Сигнал") onward. */}
+        <g id="drencher-sensor">
+          <rect
+            x="295"
+            y="430"
+            width="10"
+            height="6"
+            rx="1"
+            fill="rgba(255,255,255,0.08)"
+            stroke="rgba(255,255,255,0.55)"
+            strokeWidth={0.6}
+          />
+          <circle
+            cx="300"
+            cy="433"
+            r={ledOn ? 1.4 : 1}
+            fill={ledOn ? "#D72638" : "rgba(215,38,56,0.4)"}
+            style={{
+              transition: "r 0.3s ease-out, fill 0.3s ease-out",
+              animation: ledOn && !reducedMotion ? ANIM.ledBlink : undefined,
+            }}
+          />
+          {/* Sensor cone — faint when idle, brighter when detecting */}
+          <path
+            d="M 300 436 L 292 446 L 308 446 Z"
+            fill={ledOn ? "rgba(215,38,56,0.08)" : "rgba(255,255,255,0.03)"}
+            stroke="rgba(215,38,56,0.35)"
+            strokeWidth={0.4}
+            style={{ transition: "fill 0.3s ease-out" }}
+          />
+        </g>
+
+        {/* Open drencher heads — 8 of them across the fire-floor ceiling.
+            All identical; loop keeps the markup compact and lets us tune
+            spacing in one place. */}
+        <g id="drencher-heads">
+          {[230, 251, 272, 293, 314, 335, 356, 377].map((cx, i) => (
+            <g key={`dh-${cx}`}>
+              <circle
+                cx={cx}
+                cy={441}
+                r={1.6}
+                fill="rgba(255,255,255,0.85)"
+                stroke="rgba(215,38,56,0.7)"
+                strokeWidth={0.5}
+              />
+              {/* Spray lines — three short strokes per head, simulating
+                  the wide fan a drencher head produces (vs. the narrow
+                  cone of a sprinkler). Visible from step 5+. */}
+              <g
+                stroke="rgba(255,255,255,0.55)"
+                strokeWidth={0.7}
+                fill="none"
+                style={{
+                  opacity: sprinklerOn ? 1 : 0,
+                  transition: "opacity 0.45s ease-out",
+                }}
+              >
+                <line x1={cx} y1={444} x2={cx - 4} y2={452} />
+                <line x1={cx} y1={444} x2={cx} y2={453} />
+                <line x1={cx} y1={444} x2={cx + 4} y2={452} />
+              </g>
+              {/* Two droplets per head. Stagger delays by head index so
+                  the curtain reads as continuous instead of syncopated. */}
+              {sprinklerOn &&
+                [
+                  { dy: 0, r: 0.7, delay: -0.1 * i },
+                  { dy: 2, r: 0.5, delay: -0.1 * i - 0.5 },
+                ].map((d, j) => (
+                  <circle
+                    key={`dd-${cx}-${j}`}
+                    cx={cx}
+                    cy={453 + d.dy}
+                    r={d.r}
+                    fill="rgba(255,255,255,0.85)"
+                    style={
+                      reducedMotion
+                        ? undefined
+                        : {
+                            animation: `${ANIM.dropletFall}`,
+                            animationDelay: `${d.delay}s`,
+                          }
+                    }
+                  />
+                ))}
+            </g>
+          ))}
+        </g>
       </g>
 
       {/* ================== SMOKE PLUME ==================
