@@ -65,12 +65,20 @@ export function LakhtaScene({ activeStep, reducedMotion }: Props) {
   // Gate per-step: elements stay in their final state once unlocked, so
   // scrolling backwards doesn't restart animations (mirrors GSAP scrub
   // idempotency). Reduced-motion short-circuits all loops.
+  //
+  // NOTE: `activeStep` starts at -1 from the orchestrator — that's the
+  // "pre-scroll" baseline with nothing active, so that scrolling into
+  // step 0 produces a visible reveal instead of fire already being
+  // present on mount.
   const firePresent = activeStep >= 0;
   const ledOn = activeStep >= 1;
   const pumpsOn = activeStep >= 2;
   const risersOn = activeStep >= 3;
   const horizontalOn = activeStep >= 4;
   const sprinklerOn = activeStep >= 5;
+  // Step 6 "Локализация": fire is contained → smoke trails off. Opacity
+  // animates down via the <g>'s existing CSS transition.
+  const smokeOpacity = !firePresent ? 0 : activeStep >= 5 ? 0.15 : 1;
 
   const ifMotion = (flag: boolean, anim: string) =>
     reducedMotion ? undefined : loop(flag, anim);
@@ -336,36 +344,50 @@ export function LakhtaScene({ activeStep, reducedMotion }: Props) {
 
         {/* Control panel with LED */}
         <g id="control-panel">
+          {/* Outer casing — stroke brightens when signal fires */}
           <rect
             x="360"
             y="920"
             width="35"
             height="30"
-            stroke="rgba(215,38,56,0.9)"
-            strokeWidth={1.3}
+            stroke={ledOn ? "#D72638" : "rgba(215,38,56,0.9)"}
+            strokeWidth={ledOn ? 1.6 : 1.3}
             fill="none"
+            style={{ transition: "stroke 0.3s ease-out, stroke-width 0.3s ease-out" }}
           />
+          {/* Screen — brighter fill when active */}
           <rect
             x="366"
             y="927"
             width="18"
             height="12"
-            stroke="rgba(215,38,56,0.6)"
-            strokeWidth={0.6}
-            fill="rgba(215,38,56,0.3)"
+            stroke={ledOn ? "rgba(215,38,56,1)" : "rgba(215,38,56,0.6)"}
+            strokeWidth={0.8}
+            fill={ledOn ? "rgba(215,38,56,0.55)" : "rgba(215,38,56,0.3)"}
+            style={{ transition: "fill 0.3s ease-out, stroke 0.3s ease-out" }}
           />
-          {/* LED blinks from step 1 */}
+          {/* Soft halo behind the active LED — visible only when ledOn so
+              step 2 has an unmistakable visual change, not just a 1px dot */}
           <circle
             cx="365"
             cy="943"
-            r="1"
+            r="4.5"
+            fill="#D72638"
+            opacity={ledOn ? 0.35 : 0}
+            style={{ transition: "opacity 0.3s ease-out" }}
+          />
+          {/* LED blinks from step 1 (index 1 == UI step 02 Сигнал) */}
+          <circle
+            cx="365"
+            cy="943"
+            r="2.2"
             fill="#D72638"
             id="led-active"
             style={ifMotion(ledOn, ANIM.ledBlink)}
             opacity={ledOn ? 1 : 0.4}
           />
-          <circle cx="370" cy="943" r="1" fill="rgba(215,38,56,0.4)" />
-          <circle cx="375" cy="943" r="1" fill="rgba(215,38,56,0.4)" />
+          <circle cx="372" cy="943" r="1.4" fill="rgba(215,38,56,0.4)" />
+          <circle cx="379" cy="943" r="1.4" fill="rgba(215,38,56,0.4)" />
         </g>
 
         {/* Labels */}
@@ -661,13 +683,15 @@ export function LakhtaScene({ activeStep, reducedMotion }: Props) {
       {/* ================== SMOKE PLUME ==================
           Visible from step 1 (fire detected). Sways gently when motion
           is allowed — transform-origin at the plume's base so it looks
-          like it's being pushed by air, not pivoting around its middle. */}
+          like it's being pushed by air, not pivoting around its middle.
+          Opacity drops to 0.15 at step 6 (Локализация) so the plume
+          visibly dissipates as the fire is contained. */}
       <g
         id="smoke"
         strokeLinecap="round"
         fill="none"
         style={{
-          opacity: firePresent ? 1 : 0,
+          opacity: smokeOpacity,
           transition: "opacity 0.8s ease-out",
           transformOrigin: "328px 440px",
           animation: reducedMotion || !firePresent ? undefined : ANIM.smokeSway,
@@ -713,44 +737,12 @@ export function LakhtaScene({ activeStep, reducedMotion }: Props) {
         <circle cx="100" cy="921" r="3" stroke="#D72638" strokeWidth={1} fill="none" />
       </g>
 
-      {/* ================== HEADER ================== */}
-      <g fontFamily="monospace" letterSpacing="3">
-        <text x="30" y="50" fill="rgba(255,255,255,0.85)" fontSize="14" fontWeight={500}>
-          03 · КАК СРАБАТЫВАЕТ НАСОСНАЯ
-        </text>
-        <text x="30" y="72" fill="rgba(255,255,255,0.4)" fontSize="10">
-          AXONOMETRIC · УСТАНОВКА ПОЖАРОТУШЕНИЯ
-        </text>
-      </g>
-
-      {/* ================== META INFO TOP RIGHT ================== */}
-      <g fontFamily="monospace" letterSpacing="1">
-        <text x="450" y="45" fill="rgba(255,255,255,0.4)" fontSize="8">
-          26 ЭТАЖЕЙ
-        </text>
-        <text x="450" y="60" fill="rgba(255,255,255,0.4)" fontSize="8">
-          462 МЕТРА
-        </text>
-        <text x="450" y="75" fill="rgba(255,255,255,0.4)" fontSize="8">
-          С-ПЕТЕРБУРГ
-        </text>
-      </g>
-
-      {/* ================== LEGEND BOTTOM ================== */}
-      <g
-        fontFamily="monospace"
-        letterSpacing="1"
-        fontSize="7"
-        fill="rgba(255,255,255,0.4)"
-      >
-        <text x="30" y="985">
-          ВОДА
-        </text>
-        <circle cx="65" cy="982" r="1.5" fill="rgba(255,255,255,0.8)" />
-        <text x="90" y="985">
-          КРАСНЫЕ ТРУБЫ · СИСТЕМА ПОЖАРОТУШЕНИЯ (ГОСТ 14202)
-        </text>
-      </g>
+      {/*
+        Dev annotations from the SVG reference (section header top-left,
+        meta block top-right, legend bottom) were removed — the section
+        heading is already rendered by LakhtaSteps on the left rail, and
+        the legend is redundant with the labelled fire/pump callouts.
+      */}
     </svg>
   );
 }

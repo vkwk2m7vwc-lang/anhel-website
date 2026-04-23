@@ -38,7 +38,10 @@ import { LakhtaSteps } from "./LakhtaSteps";
  */
 export function HowItWorksSection() {
   const sectionRef = useRef<HTMLElement | null>(null);
-  const [activeStep, setActiveStep] = useState(0);
+  // -1 is the pre-scroll baseline: nothing active yet. ScrollTrigger
+  // flips it to 0 on first engagement, which makes the fire-zone visibly
+  // appear (step 01 "Очаг") rather than being present on mount.
+  const [activeStep, setActiveStep] = useState(-1);
   const [reducedMotion, setReducedMotion] = useState(false);
 
   // Read prefers-reduced-motion once on mount and listen for changes so
@@ -75,9 +78,11 @@ export function HowItWorksSection() {
       const trigger = ScrollTrigger.create({
         trigger: sectionRef.current,
         start: "top top",
-        // Six beats × 100svh of scroll distance. ScrollTrigger inserts
-        // a spacer when pinned, so the document height is correct.
-        end: "+=600%",
+        // Six beats × ~67svh. Trimmed from 600% → 400% (≈1.5× faster
+        // than the initial landing) so the section feels dynamic
+        // without racing past each beat. Each step gets roughly
+        // two-thirds of a viewport of scroll distance.
+        end: "+=400%",
         pin: true,
         scrub: 0.4,
         anticipatePin: 1,
@@ -89,6 +94,10 @@ export function HowItWorksSection() {
           const idx = Math.min(stepCount - 1, Math.max(0, Math.floor(raw)));
           setActiveStep((prev) => (prev === idx ? prev : idx));
         },
+        // When the user scrolls above the pinned range (e.g. back up
+        // past the section), reset to the pre-scroll baseline so the
+        // next scroll-through replays the reveal from step 01.
+        onLeaveBack: () => setActiveStep(-1),
       });
 
       return () => trigger.kill();
@@ -131,7 +140,7 @@ export function HowItWorksSection() {
         <p
           className={
             "font-mono text-[10px] uppercase tracking-[0.12em] transition-opacity duration-500 " +
-            (activeStep === 0 && !reducedMotion
+            (activeStep <= 0 && !reducedMotion
               ? "text-[var(--color-secondary)]/60"
               : "text-transparent")
           }
