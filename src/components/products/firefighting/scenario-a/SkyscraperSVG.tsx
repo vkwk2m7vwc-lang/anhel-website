@@ -112,6 +112,127 @@ function FloorLines() {
   );
 }
 
+/**
+ * Glass curtain-wall pass — adds silhouette character so the building
+ * reads as a modern high-rise (Lakhta / Moscow-City) rather than a flat
+ * sectional grid. Three moves:
+ *
+ *   1. Mullions — 9 vertical divisions across the front face at even
+ *      spacing. Fade with height on the same ramp as floor lines so the
+ *      upper mass still dissolves into clouds.
+ *   2. Sky-lobby bands — two thicker horizontal strokes at floors 10 and
+ *      18. Breaks the vertical monotony and gives the façade "levels"
+ *      the way real supertalls do (mechanical/observation floors).
+ *   3. Antenna — thin vertical mast above the roof, with a highlight
+ *      dot at the tip. Pulls the eye up and implies scale.
+ *
+ * All additive — does not touch plumbing, basement or fire-source.
+ */
+function GlassFacade() {
+  // 8 mullions → 9 panels. Evenly spaced, first at BX+W/9, etc.
+  const MULLION_COUNT = 8;
+  const BAND_FLOORS = [10, 18];
+  const ANTENNA_X = BX + BW / 2;
+  const ANTENNA_TOP = ROOF_Y - 70;
+  const ANTENNA_BASE = ROOF_Y;
+
+  return (
+    <g className="glass-facade" aria-hidden="true">
+      {/* Mullions — vertical curtain-wall lines. Each one is a single
+          line from base to roof; we render them in a group with the
+          same fade gradient as the floor lines by stacking a clip-path
+          free overlay. Opacity stepping is done per-segment so the
+          line naturally dims toward the top. */}
+      {Array.from({ length: MULLION_COUNT }).map((_, i) => {
+        const x = BX + ((i + 1) * BW) / (MULLION_COUNT + 1);
+        // Render as stacked segments so each segment gets its own opacity.
+        return (
+          <g key={`mullion-${i}`}>
+            {Array.from({ length: FLOORS }).map((__, f) => {
+              const y1 = floorY(f);
+              const y2 = floorY(f + 1);
+              const op = floorOpacity(f + 1) * 0.55;
+              return (
+                <line
+                  key={`m-${i}-${f}`}
+                  x1={x}
+                  y1={y1}
+                  x2={x}
+                  y2={y2}
+                  stroke="#2f2f2f"
+                  strokeWidth={0.35}
+                  opacity={op}
+                />
+              );
+            })}
+          </g>
+        );
+      })}
+
+      {/* Sky-lobby bands — thicker horizontal strokes that read as
+          mechanical / observation floors. A second hairline just below
+          each band adds depth. */}
+      {BAND_FLOORS.map((f) => {
+        const y = floorY(f);
+        const op = floorOpacity(f);
+        return (
+          <g key={`band-${f}`} opacity={op}>
+            <line
+              x1={BX - 2}
+              y1={y}
+              x2={BX + BW + 2}
+              y2={y}
+              stroke="#5a5a5a"
+              strokeWidth={1.2}
+            />
+            <line
+              x1={BX}
+              y1={y + 3}
+              x2={BX + BW}
+              y2={y + 3}
+              stroke="#3a3a3a"
+              strokeWidth={0.4}
+            />
+            {/* Depth echo — stroked onto the oblique back face */}
+            <line
+              x1={BX + BW}
+              y1={y}
+              x2={BX + BW + DEPTH_DX}
+              y2={y + DEPTH_DY}
+              stroke="#3a3a3a"
+              strokeWidth={0.6}
+            />
+          </g>
+        );
+      })}
+
+      {/* Antenna / communications mast — reads as "supertall" silhouette.
+          A subtle guy-wire cross near the top adds recognisability. */}
+      <g opacity={0.32}>
+        <line
+          x1={ANTENNA_X}
+          y1={ANTENNA_TOP}
+          x2={ANTENNA_X}
+          y2={ANTENNA_BASE}
+          stroke="#7a7a7a"
+          strokeWidth={0.9}
+        />
+        {/* Tip highlight */}
+        <circle cx={ANTENNA_X} cy={ANTENNA_TOP} r={1.3} fill="#9a9a9a" />
+        {/* Cross strut halfway up */}
+        <line
+          x1={ANTENNA_X - 6}
+          y1={ANTENNA_TOP + 28}
+          x2={ANTENNA_X + 6}
+          y2={ANTENNA_TOP + 28}
+          stroke="#5a5a5a"
+          strokeWidth={0.5}
+        />
+      </g>
+    </g>
+  );
+}
+
 function BuildingShell() {
   const backX = BX + BW + DEPTH_DX;
   const backBaseY = BASE_Y + DEPTH_DY;
@@ -614,6 +735,14 @@ export function SkyscraperSVG({ activeNodes }: NodeState) {
         fill="url(#sa-cloud-fade)"
         pointerEvents="none"
       />
+
+      {/* Glass curtain-wall silhouette — mullions, sky-lobby bands, and
+          the antenna mast. Rendered *after* the cloud overlay so the
+          antenna sits above the fade and reads as "supertall" tip. The
+          mullions already bake height-based fade into per-segment
+          opacity, so they still dissolve upward even without the cloud
+          overlay covering them. */}
+      <GlassFacade />
 
       {/* Plumbing + fire source */}
       <DetailedLowerFloors activeNodes={activeNodes} />
