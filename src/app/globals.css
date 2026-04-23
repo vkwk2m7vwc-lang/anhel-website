@@ -110,6 +110,33 @@
   }
 }
 
+/* ---------------------------------------------------------------------
+ * Scenario-A pulse (fire sprinkler).
+ *
+ * The pulse is a circle rendered inside the SkyscraperSVG at the fire
+ * point. It only animates when its parent has data-active="true" — the
+ * scroll orchestrator flips this attribute. Live CSS keyframes are
+ * cheap and don't get in the way of React's render cycle.
+ * --------------------------------------------------------------------- */
+@keyframes sa-fire-pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+[data-node="fire-pulse"] {
+  transform-box: fill-box;
+  transform-origin: center;
+  opacity: 0;
+}
+[data-node="fire-pulse"][data-active="true"] {
+  animation: sa-fire-pulse 1.8s ease-out infinite;
+}
+
 /* Global respect for prefers-reduced-motion — we still do JS-level checks
  * in components, but this kills any baseline CSS transitions/animations too. */
 @media (prefers-reduced-motion: reduce) {
