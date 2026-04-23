@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { ProductHero } from "@/components/product-page/ProductHero";
 import { TechSpecsGrid } from "@/components/product-page/TechSpecsGrid";
+import { HowItWorksSection } from "@/components/products/firefighting/lakhta/HowItWorksSection";
 import { firefightingContent } from "@/content/products/firefighting";
 
 /**
@@ -41,8 +42,8 @@ export default function FirefightingProductPage() {
     <>
       <ProductHero content={hero} accent={accent} />
       <TechSpecsGrid specs={techSpecs} />
+      <HowItWorksSection />
       {/*
-        Commit 2.x   — sections 3 (how it works, four scenario variants)
         Commit 3     — sections 4-7 (types, applications, brands, advantages)
         Commit 4     — sections 8, 9, 11 (gallery, cases, documentation)
         Commit 5     — section 10 UI (quiz multi-step form, local only)

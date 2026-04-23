@@ -137,6 +137,169 @@
   animation: sa-fire-pulse 1.8s ease-out infinite;
 }
 
+/* ---------------------------------------------------------------------
+ * Lakhta scenario — section 3 "Как срабатывает" on
+ * /products/pumps/firefighting.
+ *
+ * All continuous loops live here so the component can gate them on/off
+ * via inline `style={{ animation }}`. The browser runs these on the
+ * compositor thread, which keeps the scroll-pinned section at 60fps
+ * even when every element is animating simultaneously.
+ *
+ * Naming: `lakhta-*` — namespaced so they never collide with the
+ * older `sa-*` (scenario-a) keyframes sitting above.
+ *
+ * All SVG elements that animate `transform` must have `transform-box:
+ * fill-box` so the origin resolves to the element's own bounds, not
+ * the viewport. The universal selector below handles that for every
+ * `[style*="animation: lakhta-"]` element — one line, zero per-element
+ * boilerplate in the TSX.
+ * --------------------------------------------------------------------- */
+
+[style*="animation: lakhta-"] {
+  transform-box: fill-box;
+}
+
+/* Fire flame — gentle 1s breath. Scale only, no opacity dip, so the
+   flame reads as "alive" without turning into a strobe. */
+@keyframes lakhta-flame-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.35);
+  }
+}
+
+/* Control-panel LED — fast blink when signal is live. */
+@keyframes lakhta-led-blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.25;
+  }
+}
+
+/* Pump-station background glow — slow opacity pulse while pumps run. */
+@keyframes lakhta-pump-glow {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.55;
+  }
+}
+
+/* Pump housing itself — tiny scale pulse to convey "running". */
+@keyframes lakhta-pump-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.08);
+  }
+}
+
+/* Impeller cross — full revolution every 2s, linear so it stays smooth. */
+@keyframes lakhta-impeller-rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Water particles in the LEFT riser. The particle slides up ~80 units
+   (about one inter-particle gap) and fades at both ends so the loop is
+   seamless and no "snap-back" is visible. */
+@keyframes lakhta-riser-rise {
+  0% {
+    transform: translateY(40px);
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  85% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-40px);
+    opacity: 0;
+  }
+}
+
+/* Same mechanic for the right riser — separate name so future tweaks
+   (e.g. asymmetric pressure) don't require re-splitting a shared rule. */
+@keyframes lakhta-riser-rise-right {
+  0% {
+    transform: translateY(40px);
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  85% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-40px);
+    opacity: 0;
+  }
+}
+
+/* Horizontal pipe to fire floor — particles drift right-to-end, fade.
+   Short cycle (2.4s) to match the urgency of the narrative beat. */
+@keyframes lakhta-horizontal-flow {
+  0% {
+    transform: translateX(-18px);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(18px);
+    opacity: 0;
+  }
+}
+
+/* Smoke plume — a 5s swaying drift of a few degrees, anchored at the
+   fire point (transform-origin is set on the element in the TSX). */
+@keyframes lakhta-smoke-sway {
+  0%,
+  100% {
+    transform: rotate(-1.5deg) translateX(0);
+  }
+  50% {
+    transform: rotate(2deg) translateX(2px);
+  }
+}
+
+/* Droplets falling from the active sprinkler — short arc, gravity-feel. */
+@keyframes lakhta-droplet-fall {
+  0% {
+    transform: translateY(0);
+    opacity: 0.9;
+  }
+  60% {
+    opacity: 0.9;
+  }
+  100% {
+    transform: translateY(16px);
+    opacity: 0;
+  }
+}
+
 /* Global respect for prefers-reduced-motion — we still do JS-level checks
  * in components, but this kills any baseline CSS transitions/animations too. */
 @media (prefers-reduced-motion: reduce) {

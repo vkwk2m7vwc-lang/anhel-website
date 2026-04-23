@@ -1,71 +1,13 @@
-import type { Metadata } from "next";
-import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
-import { ScenarioAScene } from "@/components/products/firefighting/scenario-a/ScenarioAScene";
+import { redirect } from "next/navigation";
 
 /**
- * /products/pumps/firefighting/scenario-a
- *
- * Sandbox route — one of four visual scenarios explored for the
- * "как это работает" beat of the firefighting product page. This
- * variant is the axonometric skyscraper cross-section with scroll-
- * driven narrative and water-particle flow.
- *
- * The route lives under the canonical product page so links stay
- * self-contained during the sandbox phase. Once we pick a winner
- * (and merge that scenario into the main page in commit 2.5), all
- * four sandbox routes get removed in a single sweep — see commit 2.5
- * in the plan.
- *
- * `noindex` on metadata so Google never catalogs the sandbox URLs.
+ * Sandbox scenario routes (scenario-a/b/c/d) were used during the
+ * design review of section 3 "Как срабатывает". The winning variant
+ * (Lakhta) now lives on the main product page. Redirect anyone who
+ * still has a sandbox URL bookmarked so they don't hit a 404 during
+ * the cleanup window between this commit and the final deletion in
+ * session 2.
  */
-export const metadata: Metadata = {
-  title: "Sandbox · Scenario A · ANHEL",
-  description:
-    "Sandbox-вариант секции «Как работает насосная станция»: axonometric разрез небоскрёба со скролл-драматургией и движением воды по стоякам.",
-  robots: { index: false, follow: false },
-};
-
-export default function ScenarioAPage() {
-  return (
-    <>
-      <header className="relative border-b border-[var(--color-hairline)] bg-[var(--color-primary)]">
-        <div className="mx-auto flex w-full max-w-[1440px] items-center justify-between gap-6 px-6 py-5 md:px-12">
-          <Link
-            href="/products/pumps/firefighting"
-            data-cursor="hover"
-            className="group inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.1em] text-[var(--color-secondary)]/50 transition-colors hover:text-[var(--color-secondary)]"
-          >
-            <ArrowLeft
-              size={14}
-              strokeWidth={1.5}
-              className="transition-transform duration-300 ease-out-expo group-hover:-translate-x-0.5"
-            />
-            Пожаротушение
-          </Link>
-          <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/35">
-            Sandbox · A — Skyscraper
-          </p>
-        </div>
-      </header>
-
-      <ScenarioAScene />
-
-      <footer className="border-t border-[var(--color-hairline)] bg-[var(--color-primary)]">
-        <div className="mx-auto flex w-full max-w-[1440px] flex-col gap-4 px-6 py-8 md:flex-row md:items-center md:justify-between md:px-12 md:py-10">
-          <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/40">
-            Это эскиз одной из 4 визуальных концепций. Итоговый вариант
-            интегрируется в основную страницу после выбора.
-          </p>
-          <Link
-            href="/products/pumps/firefighting"
-            data-cursor="hover"
-            className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.1em] text-[var(--color-secondary)]/70 transition-colors hover:text-[var(--color-secondary)]"
-          >
-            Вернуться к странице продукта <span aria-hidden>→</span>
-          </Link>
-        </div>
-      </footer>
-    </>
-  );
+export default function ScenarioARedirect() {
+  redirect("/products/pumps/firefighting");
 }
