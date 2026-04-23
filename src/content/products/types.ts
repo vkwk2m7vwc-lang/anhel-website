@@ -82,46 +82,9 @@ export type ProductHeroContent = {
 };
 
 /**
- * One tab in the «Типы установок» section (section 4).
- *
- * The firefighting page ships four variants (sprinkler / drencher /
- * ВПВ / combined); each one feeds the same `InstallationScene` SVG and
- * rewires which sprinklers are active, whether ВПВ cabinets appear,
- * where the signal originates. The `kind` field is the discriminator
- * the scene switches on — keep it as a string literal so adding a new
- * variant (for a different product line) surfaces a compile error in
- * every `switch` that forgot to handle it.
- */
-export type InstallationTypeKind =
-  | "sprinkler"
-  | "drencher"
-  | "vpv"
-  | "combined";
-
-export type InstallationType = {
-  /** Discriminator read by `InstallationScene` to pick which logic runs. */
-  kind: InstallationTypeKind;
-  /** "01" … "04" — shown next to the title in the tab rail. */
-  mono: string;
-  /** Short tab name — one word if possible. Body carries the detail. */
-  title: string;
-  /** One-sentence tagline shown in the active tab's detail block. */
-  tagline: string;
-  /** 1-2 sentences explaining how the system behaves and where it's used. */
-  body: string;
-  /** 3-4 typical object types — rendered as a comma-separated mono line. */
-  objects: readonly string[];
-};
-
-/**
  * Top-level product-page content. As we build commits 3-6 we extend this
  * with more fields (applications, brands, cases, etc.). Commit 1 only
  * populates `hero` and `techSpecs`.
- *
- * `installationTypes` lands in commit 3 (sections 4.1 + 4.2). Other
- * product pages may or may not have this section — keep it optional so
- * water-supply / heating-unit don't need a stub file before they're
- * designed.
  */
 export type ProductContent = {
   /** URL slug — the last segment of the route. */
@@ -132,6 +95,4 @@ export type ProductContent = {
   metaDescription: string;
   hero: ProductHeroContent;
   techSpecs: TechSpecTile[];
-  /** Section 4 «Типы установок» — omit if the product doesn't have variants. */
-  installationTypes?: readonly InstallationType[];
 };
