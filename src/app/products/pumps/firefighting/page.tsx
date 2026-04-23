@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { ProductHero } from "@/components/product-page/ProductHero";
 import { TechSpecsGrid } from "@/components/product-page/TechSpecsGrid";
 import { HowItWorksSection } from "@/components/products/firefighting/lakhta/HowItWorksSection";
+import { InstallationTypesSection } from "@/components/products/firefighting/installation-types/InstallationTypesSection";
 import { firefightingContent } from "@/content/products/firefighting";
 
 /**
@@ -36,15 +37,20 @@ export const metadata: Metadata = {
 };
 
 export default function FirefightingProductPage() {
-  const { hero, techSpecs, accent } = firefightingContent;
+  const { hero, techSpecs, accent, installationTypes } = firefightingContent;
 
   return (
     <>
       <ProductHero content={hero} accent={accent} />
       <TechSpecsGrid specs={techSpecs} />
       <HowItWorksSection />
+      {installationTypes && installationTypes.length > 0 && (
+        <InstallationTypesSection types={installationTypes} />
+      )}
       {/*
-        Commit 3     — sections 4-7 (types, applications, brands, advantages)
+        Commit 3.1   — ✅ section 4 types (part 1: sprinkler + drencher)
+        Commit 3.2   — section 4 types (part 2: ВПВ + combined) + polish
+        Commit 3.3   — sections 5-7 (applications, components, advantages)
         Commit 4     — sections 8, 9, 11 (gallery, cases, documentation)
         Commit 5     — section 10 UI (quiz multi-step form, local only)
         Commit 6     — section 10 PDF + section 12 (CTA + neighbour nav)

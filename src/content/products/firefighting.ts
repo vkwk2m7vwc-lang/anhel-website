@@ -1,4 +1,5 @@
 import type { ProductContent } from "./types";
+import { firefightingInstallationTypes } from "./firefighting-installation-types";
 
 /**
  * Firefighting pump station — content file.
@@ -67,4 +68,8 @@ export const firefightingContent: ProductContent = {
     { label: "Тип регулирования", value: "релейное / частотное" },
     { label: "Температура окружающей среды", value: "до 40", unit: "°С" },
   ],
+
+  // Section 4 — commit 4.1 ships two types (спринклерная, дренчерная);
+  // commit 4.2 appends ВПВ and совмещённая to the same array.
+  installationTypes: firefightingInstallationTypes,
 };
