@@ -14,14 +14,21 @@ import type { FireSystemId } from "@/content/products/firefighting-systems";
  * scroll update (killing 60fps) without buying any real prop-control.
  *
  * Props: `activeStep` (0..5, scroll-driven) + `activeSystem`
- * ("sprinkler" | "drencher" | …, switcher-driven). The step drives the
- * narrative reveal (pumps, risers, flow); the system rewires the
- * interior on the fire floor — single spot-sprinkler for `sprinkler`,
- * ceiling sensor + multi-head curtain for `drencher`. Both overlays are
- * always mounted and crossfaded via opacity (450ms ease-out-expo) so
- * the pinned section's bounding-box height never changes on switch —
- * ScrollTrigger pin-spacer stays stable, `activeStep` survives
- * untouched.
+ * ("sprinkler" | "drencher" | "vpv" | "combined", switcher-driven).
+ * The step drives the narrative reveal (pumps, risers, flow); the system
+ * rewires the interior on the fire floor:
+ *   • sprinkler  — single spot-sprinkler overhead + idle sprinkler dots
+ *   • drencher   — ceiling sensor + 8-head open curtain
+ *   • vpv        — fire cabinet with hose reel, manual hose run to the
+ *                  fire point (представляет внутренний противопожарный
+ *                  водопровод — в шкафах, не на потолке)
+ *   • combined   — sprinklers + ВПВ cabinet visible together, one
+ *                  station feeding both systems. No extra annotation —
+ *                  the duality itself is the visual story.
+ * All overlays are always mounted and crossfaded via opacity
+ * (450ms ease-out-expo) so the pinned section's bounding-box height
+ * never changes on switch — ScrollTrigger pin-spacer stays stable,
+ * `activeStep` survives untouched.
  *
  * Continuous animations (LED blink, smoke sway, pump glow pulse,
  * impeller rotation, particle flow, droplet fall) are implemented as
@@ -94,11 +101,21 @@ export function LakhtaScene({
   const horizontalOn = activeStep >= 4;
   const sprinklerOn = activeStep >= 5;
 
-  // Per-system overlay flags. Both overlays are always rendered so the
+  // Per-system overlay flags. All overlays are always rendered so the
   // SVG's internal bounding box stays constant; only their opacity
   // changes. 450ms matches the tab crossfade on the switcher above.
+  //
+  // `showSprinklers` / `showVpv` generalise the "which overlay is on?"
+  // question so combined — which needs both ceiling sprinklers and a
+  // fire cabinet visible at once — just unions them. Drencher remains
+  // its own branch: ceiling sensor + 8 open heads don't co-exist with
+  // the closed-head sprinkler array architecturally.
   const isSprinklerSystem = activeSystem === "sprinkler";
   const isDrencherSystem = activeSystem === "drencher";
+  const isVpvSystem = activeSystem === "vpv";
+  const isCombinedSystem = activeSystem === "combined";
+  const showSprinklers = isSprinklerSystem || isCombinedSystem;
+  const showVpv = isVpvSystem || isCombinedSystem;
   // Step 6 "Локализация": fire is contained → smoke trails off. Opacity
   // animates down via the <g>'s existing CSS transition.
   const smokeOpacity = !firePresent ? 0 : activeStep >= 5 ? 0.15 : 1;
@@ -588,14 +605,16 @@ export function LakhtaScene({
       </g>
 
       {/* ================== IDLE SPRINKLERS ==================
-          Hidden entirely on drencher (that system uses open heads on
-          the fire floor only — building-wide sprinkler dots would
-          misrepresent the schematic). Crossfade matches the switcher. */}
+          Visible for sprinkler and combined (combined shows both
+          sprinklers and the ВПВ cabinet — that's the whole point of a
+          combined system). Hidden for drencher (which uses open heads
+          on the fire floor only) and for ВПВ alone (no ceiling heads).
+          Crossfade matches the tab-switcher timing. */}
       <g
         id="idle-sprinklers"
         fill="rgba(215,38,56,0.4)"
         style={{
-          opacity: isSprinklerSystem ? 1 : 0,
+          opacity: showSprinklers ? 1 : 0,
           transition: "opacity 0.45s cubic-bezier(0.16,1,0.3,1)",
         }}
       >
@@ -662,15 +681,15 @@ export function LakhtaScene({
         </g>
       </g>
 
-      {/* ================== ACTIVE SPRINKLER (sprinkler system, step 6) ==================
-          Hidden until step 5 (index), then fades in with droplets. When
-          the user switches to the drencher system this whole group
-          crossfades out — the drencher overlay below takes over the
-          fire-floor visual. */}
+      {/* ================== ACTIVE SPRINKLER (sprinkler / combined, step 6) ==================
+          Hidden until step 5 (index), then fades in with droplets. Driven
+          by `showSprinklers` (true for sprinkler and combined) × step
+          gate. When the user switches to drencher or the lone ВПВ system
+          this whole group crossfades out — their overlays take over. */}
       <g
         id="active-sprinkler"
         style={{
-          opacity: sprinklerOn && isSprinklerSystem ? 1 : 0,
+          opacity: sprinklerOn && showSprinklers ? 1 : 0,
           transition: "opacity 0.45s cubic-bezier(0.16,1,0.3,1)",
         }}
       >
@@ -819,6 +838,180 @@ export function LakhtaScene({
                   />
                 ))}
             </g>
+          ))}
+        </g>
+      </g>
+
+      {/* ================== VPV OVERLAY (vpv + combined) ==================
+          ВПВ — внутренний противопожарный водопровод — отличается от
+          спринклерной архитектурно: краны не на потолке, а в пожарных
+          шкафах на этажах, активация ручная. Чтобы это прочиталось на
+          схеме:
+            • Шкаф (красный прямоугольник с катушкой рукава внутри)
+              установлен на этаже возгорания у левой стены — на месте
+              коридорного шкафа. Катушка — двойной кружок с красным
+              центром, это общепринятая иконография пожарных рукавов.
+            • Индикатор состояния на шкафу светится при step 02 (Сигнал) —
+              человек открыл шкаф, сигнал ушёл через датчик движения
+              воды / кнопку.
+            • Рукав идёт вдоль пола от шкафа к очагу. Пунктиром пока
+              нет подачи, сплошной линией со step 05 (Подача).
+            • Ствол (сопло) и распыление появляются на step 06
+              (Локализация) — каплями и короткими штрихами.
+
+          Для combined — тот же оверлей работает поверх спринклеров: это
+          показывает «одна станция, два фронта». Отдельного «узла
+          переключения» в SVG нет — дублировало бы смысл без выгоды. */}
+      <g
+        id="vpv-overlay"
+        style={{
+          opacity: showVpv ? 1 : 0,
+          transition: "opacity 0.45s cubic-bezier(0.16,1,0.3,1)",
+        }}
+      >
+        {/* Fire cabinet — stands at the left edge of the fire floor,
+            representing the corridor-side wall cabinet. Small inset LED
+            at the top lights up when the operator activates (step 02). */}
+        <g id="vpv-cabinet">
+          <rect
+            x="218"
+            y="434"
+            width="16"
+            height="22"
+            rx="1"
+            fill="rgba(215,38,56,0.12)"
+            stroke="rgba(215,38,56,0.9)"
+            strokeWidth={0.9}
+          />
+          {/* Hose reel — outer ring + inner ring + hub dot, imitates
+              the standard pictogram for a coiled firefighting hose. */}
+          <circle
+            cx="226"
+            cy="446"
+            r="3.2"
+            stroke="rgba(255,255,255,0.7)"
+            strokeWidth={0.5}
+            fill="none"
+          />
+          <circle
+            cx="226"
+            cy="446"
+            r="1.6"
+            stroke="rgba(215,38,56,0.75)"
+            strokeWidth={0.4}
+            fill="none"
+          />
+          <circle cx="226" cy="446" r="0.8" fill="rgba(215,38,56,0.75)" />
+          {/* Status LED — lights up from step 02 onward. Uses the same
+              led-blink loop as the control panel downstairs so the
+              activation reads as "the same electrical event, two
+              places" rather than two unrelated lights. */}
+          <circle
+            cx="231"
+            cy="437.5"
+            r={ledOn ? 1.2 : 0.9}
+            fill={ledOn ? "#D72638" : "rgba(215,38,56,0.35)"}
+            style={{
+              transition: "r 0.3s ease-out, fill 0.3s ease-out",
+              animation: ledOn && !reducedMotion ? ANIM.ledBlink : undefined,
+            }}
+          />
+          {/* Small label — "ВПВ" tag on the cabinet, for schematic clarity. */}
+          <text
+            x="220.5"
+            y="463"
+            fill="rgba(215,38,56,0.75)"
+            fontFamily="monospace"
+            fontSize="5"
+            letterSpacing="0.5"
+          >
+            ВПВ
+          </text>
+        </g>
+
+        {/* Hose run — from the cabinet outlet along the floor to a nozzle
+            point just short of the flame. Dashed while idle, solid once
+            water is flowing (step 05+). Slight Q-curve keeps it from
+            looking like a pipe.
+
+            Using strokeDasharray transition is cheap: React just swaps
+            the attribute value and SVG re-renders the stroke. No layout,
+            no repaints outside this element. */}
+        <path
+          d="M 234 453 Q 270 455 305 453 Q 317 452 322 452"
+          stroke="rgba(215,38,56,0.65)"
+          strokeWidth={1}
+          fill="none"
+          strokeDasharray={horizontalOn ? "0" : "3,3"}
+          style={{ transition: "stroke-dasharray 0.3s ease-out" }}
+        />
+
+        {/* Water particles inside the hose — visible step 05+. Same
+            horizontal-flow loop as the main building pipe so the motion
+            cadence matches. Staggered delays so the train doesn't look
+            like one bar. */}
+        <g id="vpv-water-flow">
+          {[246, 264, 282, 300].map((cx, i) => (
+            <circle
+              key={`vpv-flow-${i}`}
+              cx={cx}
+              cy={453}
+              r={0.9}
+              fill={`rgba(255,255,255,${0.85 - i * 0.1})`}
+              style={
+                reducedMotion || !horizontalOn
+                  ? { opacity: 0 }
+                  : {
+                      animation: ANIM.horizontalFlow,
+                      animationDelay: `${-i * 0.6}s`,
+                      opacity: 1,
+                    }
+              }
+            />
+          ))}
+        </g>
+
+        {/* Spray at the nozzle — step 06. Fan of four short strokes
+            + three falling droplets, same droplet-fall loop as the
+            active-sprinkler group so the "water hitting the fire" motion
+            stays consistent across systems. */}
+        <g
+          id="vpv-spray"
+          style={{
+            opacity: sprinklerOn ? 1 : 0,
+            transition: "opacity 0.45s ease-out",
+          }}
+        >
+          {/* Nozzle dot */}
+          <circle cx="322" cy="452" r="1.5" fill="rgba(255,255,255,0.9)" />
+          {/* Spray fan */}
+          <g stroke="rgba(255,255,255,0.65)" strokeWidth={0.7} fill="none">
+            <line x1="322" y1="452" x2="327" y2="448" />
+            <line x1="322" y1="452" x2="329" y2="450" />
+            <line x1="322" y1="452" x2="329" y2="453" />
+            <line x1="322" y1="452" x2="327" y2="456" />
+          </g>
+          {/* Droplets falling onto the fire area */}
+          {[
+            { cx: 329, cy: 453, r: 0.7, delay: 0 },
+            { cx: 332, cy: 455, r: 0.5, delay: -0.4 },
+            { cx: 327, cy: 455, r: 0.6, delay: -0.8 },
+          ].map((d, i) => (
+            <circle
+              key={`vpv-drop-${i}`}
+              cx={d.cx}
+              cy={d.cy}
+              r={d.r}
+              fill="rgba(255,255,255,0.85)"
+              style={
+                reducedMotion
+                  ? undefined
+                  : {
+                      animation: ANIM.dropletFall,
+                      animationDelay: `${d.delay}s`,
+                    }
+              }
+            />
           ))}
         </g>
       </g>

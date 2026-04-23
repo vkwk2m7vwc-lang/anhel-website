@@ -15,9 +15,15 @@
  * Steps 02 / 05 / 06 diverge per system (detection method, hydraulic
  * behaviour, extinguishing action) — each system supplies its own copy.
  *
- * Commit 4.1 ships two systems active in the switcher (sprinkler, drencher);
- * commit 4.2 appends ВПВ + combined. The rail reads `.length` so new
- * systems light up automatically.
+ * Commit 4.1 shipped two systems (sprinkler, drencher); commit 4.2 appends
+ * ВПВ (displayed as «Пожарные краны» in the tab — see note below) and the
+ * combined system. All four are driven from this array — the rail reads
+ * `.length`, so adding a fifth system anywhere in the future just works.
+ *
+ * Tab name for ВПВ: we display «Пожарные краны» rather than the raw
+ * abbreviation «ВПВ» (only 3 characters — visually out of rhythm next to
+ * the ~12-character neighbours). The acronym itself appears in the body
+ * copy so readers who know the industry term still see it.
  *
  * --- Height-lock philosophy ---
  * Two text blocks swap on system change:
@@ -150,6 +156,70 @@ export const fireSystems: readonly FireSystem[] = [
         mono: "06",
         title: "Локализация",
         body: "Водяная завеса отсекает огонь от соседних зон, охлаждает конструкции. Орошение продолжается до команды «Стоп».",
+      },
+    ],
+  },
+  {
+    id: "vpv",
+    number: "03",
+    // Displayed label — see the top-of-file note on why we surface
+    // «Пожарные краны» instead of the raw abbreviation «ВПВ».
+    title: "Пожарные краны",
+    tagline: "Ручное включение — человек разворачивает рукав и подаёт воду на очаг.",
+    body: "Внутренний противопожарный водопровод (ВПВ). Пожарные краны расположены в шкафах на этажах. Персонал или охрана разворачивают рукав, открывают вентиль — насос запускается по датчику движения воды или по кнопке из шкафа. Используется как первичное средство до прихода расчёта МЧС.",
+    applications: ["Жилые дома", "Бизнес-центры", "Административные здания", "Паркинги"],
+    steps: [
+      STEP_01_IGNITION,
+      {
+        index: 1,
+        mono: "02",
+        title: "Сигнал",
+        body: "Человек открывает пожарный шкаф на этаже, снимает кран и разворачивает рукав.",
+      },
+      STEP_03_CABINET,
+      STEP_04_PRESSURE,
+      {
+        index: 4,
+        mono: "05",
+        title: "Подача",
+        body: "Вода идёт по сухому стояку к открытому крану — из ручного ствола.",
+      },
+      {
+        index: 5,
+        mono: "06",
+        title: "Локализация",
+        body: "Оператор направляет струю на очаг. Станция держит давление, пока кран открыт.",
+      },
+    ],
+  },
+  {
+    id: "combined",
+    number: "04",
+    title: "Совмещённая",
+    tagline: "Одна насосная станция обслуживает и спринклеры, и пожарные краны.",
+    body: "Узел переключения источника в насосной: одна группа насосов через общий коллектор питает спринклерную сеть и внутренний водопровод. Экономит площадь и бюджет там, где по нормам нужны обе системы одновременно — МФК, гостиницы, крупные склады.",
+    applications: ["МФК", "Гостиницы 4-5★", "Крупные склады", "Производственные комплексы"],
+    steps: [
+      STEP_01_IGNITION,
+      {
+        index: 1,
+        mono: "02",
+        title: "Сигнал",
+        body: "Срабатывает спринклер над очагом или открывается пожарный кран в шкафу — падает давление в общем коллекторе.",
+      },
+      STEP_03_CABINET,
+      STEP_04_PRESSURE,
+      {
+        index: 4,
+        mono: "05",
+        title: "Подача",
+        body: "Вода идёт одновременно и по спринклерной ветке, и по стояку ВПВ — через общий узел переключения источника.",
+      },
+      {
+        index: 5,
+        mono: "06",
+        title: "Локализация",
+        body: "Спринклер орошает очаг, рукав добивает недоступные зоны. Один насос — два фронта работы.",
       },
     ],
   },
