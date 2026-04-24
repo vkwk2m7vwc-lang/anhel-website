@@ -49,9 +49,25 @@ export function HeroShell({
         </div>
       ) : null}
 
-      {/* z-20 — content grid */}
-      <div className="relative z-20 mx-auto flex min-h-[100svh] w-full max-w-[1440px] flex-col justify-between px-6 pb-10 pt-28 md:px-12 md:pb-14 md:pt-32">
-        <div className="flex-1">
+      {/* z-20 — content grid.
+
+          `pointer-events-none` on the outer wrapper, `pointer-events-auto`
+          selectively on interactive children.
+
+          Why: carousel variants (hero E) put clickable tab buttons in the
+          right 45% at the bottom of the hero, rendered inside the z-0
+          background layer. The content wrapper stacks above (z-20) and
+          its bounding box covers the full width — even where it's
+          visually empty — so without selective pointer-events it swallows
+          every click in that right-45% area. Making the whole content
+          wrapper click-through by default and re-enabling clicks only
+          on the interactive top block (tag + title + CTAs) fixes it
+          without moving anything around in the stacking order.
+
+          The counters / variant-label row at the bottom is text-only
+          and can stay click-through (no explicit auto on it). */}
+      <div className="pointer-events-none relative z-20 mx-auto flex min-h-[100svh] w-full max-w-[1440px] flex-col justify-between px-6 pb-10 pt-28 md:px-12 md:pb-14 md:pt-32">
+        <div className="pointer-events-auto flex-1">
           <motion.p
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
@@ -68,6 +84,9 @@ export function HeroShell({
           <HeroCTAs />
         </div>
 
+        {/* Bottom row: counters + variant label + scroll hint — all three
+            children are presentational text, so we leave the row
+            click-through (the outer wrapper already is). */}
         <div className="mt-12 flex flex-col gap-10 border-t border-[var(--color-hairline)] pt-10 md:mt-16 md:flex-row md:items-end md:justify-between">
           <HeroCounters />
 
