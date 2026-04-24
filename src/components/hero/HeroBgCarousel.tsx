@@ -10,22 +10,29 @@ import { HERO_PRODUCTS } from "@/lib/hero-products";
 import { cn } from "@/lib/utils";
 
 type HeroBgCarouselProps = {
-  /** D-variant passes `false`, E-variant passes `true`. */
+  /**
+   * If `true`, the carousel auto-advances every 5s and the UI shows
+   * a play/pause toggle + progress bar. If `false`, the user must
+   * click the numbered tabs to switch cards.
+   *
+   * `/` and `/hero-e` both pass `true` today — the only two routes
+   * that mount this component after the A/B/D variants were pruned.
+   */
   autoplay?: boolean;
 };
 
 /**
- * Hero background — carousel of 4 products (variants D & E).
+ * Hero background — carousel of 4 products.
  *
- * Layout mirrors variant B (text on the left 60%, product zone on the right
- * 40%), but the product swaps out over time. Accent colour (radial
- * gradient + drop-shadow) follows the active product, giving each slide its
- * own mood without touching the rest of the page chrome.
- *
- * Differences between D and E are minimal — D hides the progress bar and
- * play/pause toggle. Everything else is shared.
+ * Layout: text on the left 60%, product zone on the right 40%. The
+ * product swaps out over time (manual or auto per `autoplay`). Accent
+ * colour (radial gradient + pedestal-glow) follows the active product,
+ * giving each slide its own mood without touching the rest of the
+ * page chrome.
  */
-export function HeroBgCarousel({ autoplay = false }: HeroBgCarouselProps) {
+export function HeroBgCarousel({
+  autoplay = false,
+}: HeroBgCarouselProps) {
   const prefersReduced = usePrefersReducedMotion();
   const tilt = useTilt<HTMLDivElement>({ maxDeg: 4 });
 
@@ -71,7 +78,20 @@ export function HeroBgCarousel({ autoplay = false }: HeroBgCarouselProps) {
         onMouseLeave={resume}
       >
         {/* The tilt + float wrapper is stable — only the <img> inside swaps,
-            so the spring-smoothed tilt never stutters on slide change. */}
+            so the spring-smoothed tilt never stutters on slide change.
+
+            Previously we used `filter: drop-shadow(...)` here to anchor the
+            product, but the PNG renders have ~27–46% partial-alpha pixels
+            (soft feathering + baked-in floor reflections). drop-shadow
+            traces that alpha, so the shadow read as a blurred rectangle
+            instead of the product silhouette — a visible backdrop box on
+            all four cards.
+
+            Swapped to a dedicated radial-glow div rendered *behind* the
+            image (sibling of AnimatePresence, earlier in DOM so it stacks
+            below). The glow is independent of the PNG's alpha channel —
+            it's just a gradient ellipse we paint, so there is no way for
+            image feathering to leak into it. */}
         <motion.div
           ref={tilt.ref}
           onMouseMove={tilt.onMouseMove}
@@ -80,8 +100,6 @@ export function HeroBgCarousel({ autoplay = false }: HeroBgCarouselProps) {
             rotateX: prefersReduced ? 0 : tilt.rotateX,
             rotateY: prefersReduced ? 0 : tilt.rotateY,
             transformStyle: "preserve-3d",
-            filter: `drop-shadow(0 30px 40px ${accentRgba(0.45)})`,
-            transition: "filter 600ms ease-in-out",
           }}
           animate={
             prefersReduced
@@ -103,6 +121,26 @@ export function HeroBgCarousel({ autoplay = false }: HeroBgCarouselProps) {
           }
           className="relative flex h-[70%] w-[85%] items-center justify-center"
         >
+          {/* Pedestal glow — sits behind the product as a soft elliptical
+              light pool. Size ≈ 80%×40% of the tilt wrapper, horizontally
+              centred, centre positioned under the lower third of the
+              product so the product looks like it's standing on a lit
+              circle rather than inside a box. Accent colour follows the
+              active product; the `transition: background` cross-fades
+              smoothly in sync with the hero-level radial. */}
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute left-1/2 h-[40%] w-[80%] -translate-x-1/2"
+            style={{
+              bottom: "-6%",
+              background: `radial-gradient(ellipse at center, ${accentRgba(
+                0.35
+              )} 0%, ${accentRgba(0.15)} 40%, rgba(10,10,10,0) 70%)`,
+              filter: "blur(20px)",
+              transition: "background 600ms ease-in-out",
+            }}
+          />
+
           <AnimatePresence mode="wait" initial={false}>
             <motion.div
               key={product.slug}
@@ -230,15 +268,26 @@ export function HeroBgCarousel({ autoplay = false }: HeroBgCarouselProps) {
 
       {/* Mobile fallback — scaled-down centred render, switcher below.
           No tilt, no play/pause chrome; we keep the swap animation so the
-          carousel still reads on narrow screens. */}
+          carousel still reads on narrow screens.
+
+          Same pedestal-glow approach as desktop — see the block above for
+          the rationale on why we don't use `filter: drop-shadow` here. */}
       <div className="absolute inset-x-0 bottom-24 flex flex-col items-center gap-4 md:hidden">
-        <motion.div
-          style={{
-            filter: `drop-shadow(0 20px 30px ${accentRgba(0.45)})`,
-            transition: "filter 600ms ease-in-out",
-          }}
-          className="relative h-[200px] w-[200px]"
-        >
+        <motion.div className="relative h-[200px] w-[200px]">
+          {/* Pedestal glow — mobile version. Smaller footprint (75%×35%)
+              to match the scaled-down 200×200 product container. */}
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute left-1/2 h-[35%] w-[75%] -translate-x-1/2"
+            style={{
+              bottom: "-6%",
+              background: `radial-gradient(ellipse at center, ${accentRgba(
+                0.35
+              )} 0%, ${accentRgba(0.15)} 40%, rgba(10,10,10,0) 70%)`,
+              filter: "blur(14px)",
+              transition: "background 600ms ease-in-out",
+            }}
+          />
           <AnimatePresence mode="wait" initial={false}>
             <motion.div
               key={`m-${product.slug}`}
