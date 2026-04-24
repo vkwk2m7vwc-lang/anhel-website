@@ -13,6 +13,15 @@
  * line in a Next `<Link>` and renders a mini "Подробнее" CTA. When
  * undefined, the product is treated as "coming soon" — no link, a muted
  * "Скоро" chip shows in its place.
+ *
+ * ⚠ Важно: эта ветка (`feat/home-page-content-pass`) предполагает,
+ * что все 4 продуктовые страницы существуют на main:
+ *   - /products/pumps/firefighting   (уже в main с Group 1)
+ *   - /products/pumps/water-supply   (feat/water-supply-page)
+ *   - /products/pumps/water-treatment (feat/water-treatment-page)
+ *   - /products/pumps/heating-unit    (feat/heating-unit-page)
+ * Если сливать P5 до P2/P3/P4 — клики на 3 не-firefighting слайда
+ * будут давать 404. Сливать P5 последним.
  */
 export type HeroProduct = {
   /** Stable key — used for AnimatePresence keys and aria-labels. */
@@ -41,7 +50,7 @@ export const HERO_PRODUCTS: readonly HeroProduct[] = [
     image: "/assets/products/hvs-nu.png",
     accent: "#1E6FD9",
     alt: "ANHEL® — насосная станция холодного водоснабжения, модель HVS-NU",
-    // href — not ready yet
+    href: "/products/pumps/water-supply",
   },
   {
     slug: "pump-fire",
@@ -57,7 +66,7 @@ export const HERO_PRODUCTS: readonly HeroProduct[] = [
     image: "/assets/products/vpu.png",
     accent: "#8A94A0",
     alt: "ANHEL® — установка водоподготовки VPU со стальными фильтрами",
-    // href — not ready yet
+    href: "/products/pumps/water-treatment",
   },
   {
     slug: "heating-unit",
@@ -65,6 +74,6 @@ export const HERO_PRODUCTS: readonly HeroProduct[] = [
     image: "/assets/products/bitp.png",
     accent: "#E8873B",
     alt: "ANHEL® — блочный индивидуальный тепловой пункт (БИТП)",
-    // href — not ready yet
+    href: "/products/pumps/heating-unit",
   },
 ] as const;
