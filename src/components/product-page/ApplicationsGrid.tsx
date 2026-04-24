@@ -105,22 +105,26 @@ function ApplicationCard({
         ease: [0.16, 1, 0.3, 1],
         delay: staggerDelay,
       }}
-      className="group relative flex min-h-[220px] flex-col justify-between bg-[var(--color-primary)] p-6 transition-colors duration-300 hover:bg-[#111] md:min-h-[260px] md:p-8"
+      className="group relative flex min-h-[220px] flex-col justify-between bg-[var(--color-primary)] p-6 transition-colors duration-300 [@media(hover:hover)]:hover:bg-[#111] md:min-h-[260px] md:p-8"
     >
       {/* Accent ring — same pattern as TechSpecsGrid: transparent by
           default, lights up on hover. Uses `ring` rather than `border`
           so the 1 px line draws *inside* the cell and doesn't fight the
-          ul's hairline grid. */}
+          ul's hairline grid. Hover scoped to `@media (hover: hover)` so
+          touch devices don't keep the last-tapped card in a highlighted
+          state (iOS/Android Safari leaves :hover active after a tap
+          until another element is tapped — read as one card bugged out
+          while the others looked default). */}
       <span
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 ring-1 ring-transparent transition-[box-shadow,ring-color] duration-300 group-hover:ring-[var(--accent-current)]"
+        className="pointer-events-none absolute inset-0 ring-1 ring-transparent transition-[box-shadow,ring-color] duration-300 [@media(hover:hover)]:group-hover:ring-[var(--accent-current)]"
       />
 
       {/* Mono prefix — the number does most of the visual work. On
           hover it picks up the accent colour in sync with the ring. */}
       <p
         aria-hidden="true"
-        className="font-mono text-[11px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/40 transition-colors duration-300 group-hover:text-[var(--accent-current)]"
+        className="font-mono text-[11px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/40 transition-colors duration-300 [@media(hover:hover)]:group-hover:text-[var(--accent-current)]"
       >
         {item.mono}
       </p>

@@ -94,21 +94,26 @@ function TechSpecCard({ spec, index }: { spec: TechSpecTile; index: number }) {
         ease: [0.16, 1, 0.3, 1],
         delay: staggerDelay,
       }}
-      className="group relative flex min-h-[140px] flex-col justify-between bg-[var(--color-primary)] p-4 transition-colors duration-300 hover:bg-[#111] md:min-h-[180px] md:p-6 lg:min-h-[220px] lg:p-8"
+      className="group relative flex min-h-[140px] flex-col justify-between bg-[var(--color-primary)] p-4 transition-colors duration-300 [@media(hover:hover)]:hover:bg-[#111] md:min-h-[180px] md:p-6 lg:min-h-[220px] lg:p-8"
     >
       {/* Accent ring — appears on hover, sits just inside the cell. Uses
           the page-level accent CSS variable so each product gets its own
-          colour without any prop drilling. */}
+          colour without any prop drilling.
+          Hover scoped to `@media (hover: hover)` so touch devices don't
+          keep the last-tapped tile in a highlighted state — iOS/Android
+          Safari and Chrome leave :hover active after a tap until another
+          element is tapped, and that read as one tile bugged out while
+          the others looked default. */}
       <span
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 ring-1 ring-transparent transition-[box-shadow,ring-color] duration-300 group-hover:ring-[var(--accent-current)]"
+        className="pointer-events-none absolute inset-0 ring-1 ring-transparent transition-[box-shadow,ring-color] duration-300 [@media(hover:hover)]:group-hover:ring-[var(--accent-current)]"
         style={{
           boxShadow: "inset 0 0 0 0 transparent",
         }}
       />
       <span
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+        className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 [@media(hover:hover)]:group-hover:opacity-100"
         style={{
           boxShadow: "inset 0 0 40px 0 var(--accent-current)",
           // Mix accent at ~10% visibility — enough to read as a glow
