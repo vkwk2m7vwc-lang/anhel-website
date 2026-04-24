@@ -11,20 +11,19 @@ import { HERO_PRODUCTS } from "@/lib/hero-products";
 import { cn } from "@/lib/utils";
 
 /**
- * How long the carousel stays paused after the user's pointer leaves the
- * interactive zone (product image + tab row). Gives the viewer a beat to
- * re-enter if they overshot, instead of snapping back to auto-advance
- * the instant they drift a few pixels off.
- */
-const HOVER_RESUME_DELAY_MS = 4000;
-
-/**
  * How long the carousel stays paused after the user *explicitly* picks
- * a slide by clicking a number. Longer than the hover delay — a click is
- * an intentional "I want to look at this one", so we give them ~9s
- * before the auto-advance kicks back in.
+ * a slide by clicking a number. Matches the auto-advance interval so a
+ * click feels like "start this slide's interval fresh" — the user gets
+ * one full 5 s window to look at their pick, then the carousel resumes
+ * from that slide.
+ *
+ * Hover leave has no dedicated delay constant: we simply `resume()`
+ * on pointer leave and the underlying hook picks the progress bar
+ * back up from wherever it was paused. If the user hovered 2 s into
+ * the interval, the remaining ~3 s plays out after they leave —
+ * faster and less laggy-feeling than a forced grace window.
  */
-const CLICK_RESUME_DELAY_MS = 9000;
+const CLICK_RESUME_DELAY_MS = 5000;
 
 type HeroBgCarouselProps = {
   /**
@@ -61,60 +60,77 @@ export function HeroBgCarousel({
     });
 
   /*
-   * Resume-with-delay state machine ------------------------------------
-   * The underlying hook exposes instant `pause` / `resume`. We layer a
-   * small timer on top so that:
+   * Pause / resume state machine --------------------------------------
+   * Two sources can park the carousel, and they must not fight:
    *
-   *   - Pointer leaves the zone → wait 4 s, then resume.
-   *   - Pointer re-enters before 4 s → cancel the pending resume.
-   *   - User clicks a tab → pause, jump to slide, schedule a *9-s*
-   *     resume (longer than hover because the click is an explicit
-   *     "slow down, let me look").
+   *   1. Hover pause — pointer is inside the zone. Pauses on enter,
+   *      resumes on leave. No grace window: the underlying RAF loop
+   *      keeps the progress bar at whatever fraction it was paused at,
+   *      so leaving picks up the remaining time of the 5-s interval.
    *
-   * Only one timer is alive at a time; every new pause clears the
-   * previous pending resume so multiple interactions don't stack.
+   *   2. Click pause — user explicitly clicked a tab. Holds for 5 s
+   *      regardless of where the pointer is, giving them a full
+   *      interval to look at the slide they picked. Can outlive a
+   *      pointer leave: if the user clicks 03 then moves the mouse
+   *      off, the pause must NOT collapse on `pointerleave`.
+   *
+   * `clickPauseRef` tracks whether a click-pause is currently live.
+   * `isHoveringRef` tracks pointer state. Both are refs (not state)
+   * because they're read from inside handlers and don't need to
+   * trigger re-renders.
+   *
+   * Resolution rules:
+   *   - pointer enter → `pause()` (always)
+   *   - pointer leave → `resume()` only if the click-pause isn't live
+   *   - click        → `pause()`, jump, start 5-s timer; when the timer
+   *                    fires, `resume()` only if the pointer has since
+   *                    left the zone (otherwise hover still holds it)
    */
   const resumeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const clickPauseRef = useRef(false);
+  const isHoveringRef = useRef(false);
 
   const clearResumeTimer = useCallback(() => {
     if (resumeTimerRef.current !== null) {
       clearTimeout(resumeTimerRef.current);
       resumeTimerRef.current = null;
     }
+    clickPauseRef.current = false;
   }, []);
 
-  const scheduleResume = useCallback(
-    (delayMs: number) => {
-      clearResumeTimer();
-      resumeTimerRef.current = setTimeout(() => {
-        resume();
-        resumeTimerRef.current = null;
-      }, delayMs);
-    },
-    [resume, clearResumeTimer]
-  );
-
-  // Hover enter: cancel any pending resume and pause immediately.
   const handlePointerEnter = useCallback(() => {
-    clearResumeTimer();
+    isHoveringRef.current = true;
     pause();
-  }, [pause, clearResumeTimer]);
+  }, [pause]);
 
-  // Hover leave: start the 4-s grace timer. If the user re-enters before
-  // it fires, handlePointerEnter clears it.
   const handlePointerLeave = useCallback(() => {
-    scheduleResume(HOVER_RESUME_DELAY_MS);
-  }, [scheduleResume]);
+    isHoveringRef.current = false;
+    // Click-pause outranks hover: if it's live, the pointer leaving
+    // doesn't release the carousel. The click timer will handle the
+    // final resume when it expires.
+    if (!clickPauseRef.current) resume();
+  }, [resume]);
 
-  // Explicit tab click: jump to slide, then park autoplay for 9 s.
   const handleTabClick = useCallback(
     (index: number) => {
-      clearResumeTimer();
+      // Fresh click wins — kill any prior click-pause timer, re-arm.
+      if (resumeTimerRef.current !== null) {
+        clearTimeout(resumeTimerRef.current);
+        resumeTimerRef.current = null;
+      }
+      clickPauseRef.current = true;
       pause();
       goTo(index);
-      scheduleResume(CLICK_RESUME_DELAY_MS);
+      resumeTimerRef.current = setTimeout(() => {
+        clickPauseRef.current = false;
+        resumeTimerRef.current = null;
+        // If the user is still hovering when the click-pause expires,
+        // hover is holding the carousel — skip resume and let the
+        // eventual pointerleave handle it.
+        if (!isHoveringRef.current) resume();
+      }, CLICK_RESUME_DELAY_MS);
     },
-    [pause, goTo, scheduleResume, clearResumeTimer]
+    [pause, goTo, resume]
   );
 
   // Tidy up on unmount so a stray timer doesn't try to flip state on a
