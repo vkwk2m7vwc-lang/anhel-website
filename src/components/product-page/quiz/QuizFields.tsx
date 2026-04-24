@@ -72,7 +72,7 @@ export function FieldInput({
           onChange={(e) => handleChange(e.target.value)}
           onBlur={onBlur}
           className={cn(
-            "w-full border-b bg-transparent py-2 text-sm text-[var(--color-secondary)] placeholder-[var(--color-secondary)]/30 outline-none transition-colors",
+            "w-full border-b bg-transparent py-2 text-sm text-[var(--color-secondary)] placeholder-[var(--color-secondary)]/55 outline-none transition-colors",
             error
               ? "border-[var(--accent-fire)] focus:border-[var(--accent-fire)]"
               : "border-[var(--color-hairline)] focus:border-[var(--accent-current)]",
@@ -80,7 +80,7 @@ export function FieldInput({
           )}
         />
         {unit ? (
-          <span className="pointer-events-none absolute right-0 top-2 font-mono text-[11px] uppercase tracking-[0.08em] text-[var(--color-secondary)]/40">
+          <span className="pointer-events-none absolute right-0 top-2 font-mono text-[11px] uppercase tracking-[0.08em] text-[var(--color-secondary)]/65">
             {unit}
           </span>
         ) : null}
@@ -122,7 +122,7 @@ export function FieldTextarea({
         value={value ?? ""}
         placeholder={placeholder}
         onChange={(e) => onChange(e.target.value)}
-        className="w-full resize-y border border-[var(--color-hairline)] bg-transparent p-3 text-sm text-[var(--color-secondary)] placeholder-[var(--color-secondary)]/30 outline-none transition-colors focus:border-[var(--accent-current)]"
+        className="w-full resize-y border border-[var(--color-hairline)] bg-transparent p-3 text-sm text-[var(--color-secondary)] placeholder-[var(--color-secondary)]/55 outline-none transition-colors focus:border-[var(--accent-current)]"
       />
     </label>
   );
@@ -184,7 +184,7 @@ export function RadioCard<V extends string>({
         {label}
       </span>
       {description ? (
-        <span className="text-xs text-[var(--color-secondary)]/50">
+        <span className="text-xs text-[var(--color-secondary)]/65">
           {description}
         </span>
       ) : null}
@@ -247,7 +247,7 @@ export function CheckboxCard({
           {label}
         </span>
         {description ? (
-          <span className="text-xs text-[var(--color-secondary)]/50">
+          <span className="text-xs text-[var(--color-secondary)]/65">
             {description}
           </span>
         ) : null}
@@ -299,13 +299,71 @@ export function ConsentCheckbox({
   );
 }
 
-/** Section divider inside a step — mono tag + hairline. */
-export function FieldGroupTitle({ children }: { children: React.ReactNode }) {
+/** Section divider inside a step — mono tag + hairline.
+ *  Optional `id` прокидывает id на <p> так что родительский
+ *  `role="radiogroup"` / `role="group"` wrapper может указать на
+ *  него через aria-labelledby — screen reader объявит название
+ *  группы перед зачиткой вариантов. */
+export function FieldGroupTitle({
+  id,
+  children,
+}: {
+  id?: string;
+  children: React.ReactNode;
+}) {
   return (
     <div className="mt-4 border-t border-[var(--color-hairline)] pt-6">
-      <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/35">
+      <p
+        id={id}
+        className="font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/60"
+      >
         {children}
       </p>
+    </div>
+  );
+}
+
+/**
+ * A11y group wrapper для набора `RadioCard`-ов или `CheckboxCard`-ов.
+ *
+ * Оборачивает детей в `<div role="radiogroup|group" aria-labelledby>`
+ * так что screen reader зачитывает название группы («Тип системы»)
+ * перед списком вариантов, а клавиатурная навигация не теряет
+ * контекст.
+ *
+ * Использование:
+ * ```tsx
+ * <FieldRadioGroup label="Тип системы" idPrefix="system-type">
+ *   <RadioCard ... />
+ *   ...
+ * </FieldRadioGroup>
+ * ```
+ */
+export function FieldRadioGroup({
+  label,
+  idPrefix,
+  variant = "radio",
+  className,
+  children,
+}: {
+  label: string;
+  idPrefix: string;
+  /** "radio" для взаимоисключающих, "checkbox" для multi-select. */
+  variant?: "radio" | "checkbox";
+  className?: string;
+  children: React.ReactNode;
+}) {
+  const labelId = `${idPrefix}-label`;
+  return (
+    <div>
+      <FieldGroupTitle id={labelId}>{label}</FieldGroupTitle>
+      <div
+        role={variant === "radio" ? "radiogroup" : "group"}
+        aria-labelledby={labelId}
+        className={className}
+      >
+        {children}
+      </div>
     </div>
   );
 }
