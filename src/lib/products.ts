@@ -53,9 +53,8 @@ export const PRODUCTS: readonly ProductSummary[] = [
     slug: "water-treatment",
     href: "/products/pumps/water-treatment",
     title: "Водоподготовка",
-    tagline: "Установки фильтрации и подготовки воды.",
+    tagline: "Установки фильтрации, умягчения, обезжелезивания и обратного осмоса.",
     accent: "treatment",
-    comingSoon: true,
   },
   {
     slug: "heating-unit",
