@@ -87,7 +87,7 @@ function AdvantageCard({
 
       <p
         aria-hidden="true"
-        className="font-mono text-[11px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/40 transition-colors duration-300 group-hover:text-[var(--accent-current)]"
+        className="font-mono text-[11px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/65 transition-colors duration-300 group-hover:text-[var(--accent-current)]"
       >
         {item.mono}
       </p>

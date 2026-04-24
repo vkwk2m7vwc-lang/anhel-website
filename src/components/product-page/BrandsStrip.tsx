@@ -46,7 +46,7 @@ export function BrandsStrip({ content }: { content: BrandsContent }) {
 
         {/* Row 1 — pump brands */}
         <div className="mt-14 md:mt-20">
-          <p className="mb-6 font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/40">
+          <p className="mb-6 font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/65">
             Насосы
           </p>
           <ul className="flex flex-wrap items-baseline gap-x-12 gap-y-8 md:gap-x-16">
@@ -58,7 +58,7 @@ export function BrandsStrip({ content }: { content: BrandsContent }) {
 
         {/* Row 2 — components */}
         <div className="mt-14 border-t border-[var(--color-hairline)] pt-10 md:mt-20 md:pt-14">
-          <p className="mb-6 font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/40">
+          <p className="mb-6 font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/65">
             Автоматика и комплектующие
           </p>
           <ul className="flex flex-wrap items-baseline gap-x-10 gap-y-6 md:gap-x-12">
@@ -121,7 +121,7 @@ function BrandWordMark({
         ) : null}
       </span>
       {brand.series ? (
-        <span className="font-mono text-[10px] uppercase tracking-[0.08em] text-[var(--color-secondary)]/35 transition-colors duration-300 group-hover:text-[var(--accent-current)]">
+        <span className="font-mono text-[10px] uppercase tracking-[0.08em] text-[var(--color-secondary)]/60 transition-colors duration-300 group-hover:text-[var(--accent-current)]">
           {brand.series}
         </span>
       ) : null}
