@@ -19,7 +19,7 @@ import { cn } from "@/lib/utils";
  */
 
 const NAV = [
-  { label: "Продукты", href: "/#products" },
+  { label: "Продукты", href: "/products/pumps/firefighting" },
   { label: "Объекты", href: "/#projects" },
   { label: "О компании", href: "/#about" },
   { label: "Производство", href: "/#manufacturing" },

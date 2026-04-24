@@ -23,7 +23,7 @@ export function HeroCTAs() {
     <div className="mt-10 flex flex-wrap items-center gap-4 md:mt-12 md:gap-5">
       <Link
         ref={primaryRef}
-        href="/#products"
+        href="/products/pumps/firefighting"
         data-cursor="hover"
         className="group inline-flex items-center gap-3 rounded-md bg-[var(--color-secondary)] px-[22px] py-[14px] text-sm font-medium text-[var(--color-primary)] transition-transform duration-300 ease-out-expo will-change-transform"
       >

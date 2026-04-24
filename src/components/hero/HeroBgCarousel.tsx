@@ -1,8 +1,9 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
-import { Pause, Play } from "lucide-react";
+import { ArrowUpRight, Pause, Play } from "lucide-react";
 import { useTilt } from "@/hooks/useTilt";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 import { useHeroCarousel } from "@/hooks/useHeroCarousel";
@@ -193,14 +194,32 @@ export function HeroBgCarousel({
               transition={{ duration: prefersReduced ? 0 : 0.4, ease: "easeOut" }}
               className="relative h-full w-full"
             >
-              <Image
-                src={product.image}
-                alt={product.alt}
-                fill
-                priority={active === 0}
-                sizes="(min-width: 1440px) 600px, 45vw"
-                className="object-contain"
-              />
+              {product.href ? (
+                <Link
+                  href={product.href}
+                  aria-label={`Открыть страницу: ${product.name}`}
+                  data-cursor="hover"
+                  className="relative block h-full w-full cursor-pointer"
+                >
+                  <Image
+                    src={product.image}
+                    alt={product.alt}
+                    fill
+                    priority={active === 0}
+                    sizes="(min-width: 1440px) 600px, 45vw"
+                    className="object-contain transition-transform duration-300 ease-out-expo group-hover:scale-[1.01]"
+                  />
+                </Link>
+              ) : (
+                <Image
+                  src={product.image}
+                  alt={product.alt}
+                  fill
+                  priority={active === 0}
+                  sizes="(min-width: 1440px) 600px, 45vw"
+                  className="object-contain"
+                />
+              )}
             </motion.div>
           </AnimatePresence>
         </motion.div>
@@ -261,14 +280,18 @@ export function HeroBgCarousel({
             )}
           </div>
 
-          {/* Active product name, fades with the render */}
+          {/* Active product name + inline Подробнее/Скоро affordance.
+              Fades together with the render so the whole block feels like
+              one "card". A link when product.href exists, a muted chip
+              otherwise — that makes the ready state visibly distinct from
+              the "в работе" state without adding a separate UI. */}
           <div
             id="hero-carousel-product"
             aria-live="polite"
             className="relative h-5 overflow-hidden"
           >
             <AnimatePresence mode="wait" initial={false}>
-              <motion.p
+              <motion.div
                 key={product.slug}
                 initial={
                   prefersReduced ? { opacity: 1, y: 0 } : { opacity: 0, y: 6 }
@@ -278,10 +301,34 @@ export function HeroBgCarousel({
                   prefersReduced ? { opacity: 0, y: 0 } : { opacity: 0, y: -6 }
                 }
                 transition={{ duration: prefersReduced ? 0 : 0.3 }}
-                className="text-sm text-[var(--color-secondary)]/70"
+                className="flex items-center gap-3 text-sm"
               >
-                {product.name}
-              </motion.p>
+                {product.href ? (
+                  <Link
+                    href={product.href}
+                    data-cursor="hover"
+                    className="group inline-flex items-center gap-2 text-[var(--color-secondary)]/80 transition-colors hover:text-[var(--color-secondary)]"
+                  >
+                    <span>{product.name}</span>
+                    <ArrowUpRight
+                      size={13}
+                      strokeWidth={1.75}
+                      aria-hidden="true"
+                      className="transition-transform duration-300 ease-out-expo group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+                      style={{ color: product.accent }}
+                    />
+                  </Link>
+                ) : (
+                  <>
+                    <span className="text-[var(--color-secondary)]/70">
+                      {product.name}
+                    </span>
+                    <span className="rounded-pill border border-[var(--color-hairline)] px-2 py-[1px] font-mono text-[10px] uppercase tracking-[0.1em] text-[var(--color-secondary)]/45">
+                      Скоро
+                    </span>
+                  </>
+                )}
+              </motion.div>
             </AnimatePresence>
           </div>
 
@@ -352,14 +399,31 @@ export function HeroBgCarousel({
               transition={{ duration: prefersReduced ? 0 : 0.4 }}
               className="relative h-full w-full"
             >
-              <Image
-                src={product.image}
-                alt=""
-                aria-hidden="true"
-                fill
-                sizes="200px"
-                className="object-contain opacity-90"
-              />
+              {product.href ? (
+                <Link
+                  href={product.href}
+                  aria-label={`Открыть страницу: ${product.name}`}
+                  className="relative block h-full w-full"
+                >
+                  <Image
+                    src={product.image}
+                    alt=""
+                    aria-hidden="true"
+                    fill
+                    sizes="200px"
+                    className="object-contain opacity-90"
+                  />
+                </Link>
+              ) : (
+                <Image
+                  src={product.image}
+                  alt=""
+                  aria-hidden="true"
+                  fill
+                  sizes="200px"
+                  className="object-contain opacity-90"
+                />
+              )}
             </motion.div>
           </AnimatePresence>
         </motion.div>
