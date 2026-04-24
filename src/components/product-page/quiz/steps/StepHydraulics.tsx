@@ -1,6 +1,11 @@
 "use client";
 
-import { FieldInput, RadioCard, FieldGroupTitle } from "../QuizFields";
+import {
+  FieldGroupTitle,
+  FieldInput,
+  FieldRadioGroup,
+  RadioCard,
+} from "../QuizFields";
 import type { QuizData, WaterSource } from "../quiz-schema";
 
 /**
@@ -36,9 +41,12 @@ export function StepHydraulics({
         />
       </div>
 
-      <div>
-        <FieldGroupTitle>Забор воды из водоёма или резервуара</FieldGroupTitle>
-        <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-4">
+      <div className="flex flex-col gap-6">
+        <FieldRadioGroup
+          label="Забор воды из водоёма или резервуара"
+          idPrefix="quiz-water-source"
+          className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-4"
+        >
           <RadioCard<WaterSource>
             value="reservoir"
             selected={data.waterSource}
@@ -67,9 +75,9 @@ export function StepHydraulics({
             label="Наземный резервуар"
             description="На поверхности"
           />
-        </div>
+        </FieldRadioGroup>
 
-        <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2 md:gap-8">
+        <div className="mt-2 grid grid-cols-1 gap-6 md:grid-cols-2 md:gap-8">
           <FieldInput
             label="Hmin"
             unit="м.вод.ст."

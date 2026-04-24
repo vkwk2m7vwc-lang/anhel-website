@@ -117,7 +117,7 @@ function TechSpecCard({ spec, index }: { spec: TechSpecTile; index: number }) {
           on the page. Dropped the glow, added a coordinated colour
           transition here instead — cell now reads as one family with
           the rest of the product page. */}
-      <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/40 transition-colors duration-300 [@media(hover:hover)]:group-hover:text-[var(--accent-current)]">
+      <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/65 transition-colors duration-300 [@media(hover:hover)]:group-hover:text-[var(--accent-current)]">
         {spec.label}
       </p>
 
@@ -129,7 +129,7 @@ function TechSpecCard({ spec, index }: { spec: TechSpecTile; index: number }) {
           {spec.value}
         </span>
         {spec.unit && (
-          <span className="font-mono text-[11px] uppercase tracking-[0.08em] text-[var(--color-secondary)]/50">
+          <span className="font-mono text-[11px] uppercase tracking-[0.08em] text-[var(--color-secondary)]/65">
             {spec.unit}
           </span>
         )}

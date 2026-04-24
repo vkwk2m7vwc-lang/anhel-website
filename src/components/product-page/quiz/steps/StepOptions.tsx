@@ -3,7 +3,7 @@
 import {
   CheckboxCard,
   FieldInput,
-  FieldGroupTitle,
+  FieldRadioGroup,
   RadioCard,
 } from "../QuizFields";
 import type {
@@ -17,12 +17,9 @@ import type {
  * Шаг 05 · Опции и коммутация — PDF «Управление и коммутация»,
  * «Опции», «Передача данных», «Модульное исполнение в ёмкости».
  *
- * The PDF mixes radios and checkboxes across these groups. We keep
- * the distinction:
- *   - валвес electric (да/нет)           — radio
- *   - options                             — multi-select
- *   - data transfer                       — multi-select
- *   - module housing                      — radio (5 combinations)
+ * Каждая группа обёрнута в `FieldRadioGroup` с
+ * `role=radiogroup|group` и `aria-labelledby` на заголовок —
+ * screen reader объявляет название группы перед вариантами.
  */
 export function StepOptions({
   data,
@@ -31,7 +28,6 @@ export function StepOptions({
   data: QuizData;
   onChange: (p: Partial<QuizData>) => void;
 }) {
-  // Multi-select helpers — toggle flag in options / dataTransfer arrays.
   const toggleOption = (flag: OptionFlag) => {
     const current = data.options ?? [];
     const next = current.includes(flag)
@@ -55,10 +51,12 @@ export function StepOptions({
 
   return (
     <div className="flex flex-col gap-8">
-      {/* Задвижки */}
-      <div>
-        <FieldGroupTitle>Задвижки с электроприводом</FieldGroupTitle>
-        <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2">
+      <div className="flex flex-col gap-4">
+        <FieldRadioGroup
+          label="Задвижки с электроприводом"
+          idPrefix="quiz-valves"
+          className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2"
+        >
           <RadioCard<"yes" | "no">
             value="yes"
             selected={data.valvesElectric}
@@ -71,9 +69,9 @@ export function StepOptions({
             onSelect={(v) => onChange({ valvesElectric: v })}
             label="Нет"
           />
-        </div>
+        </FieldRadioGroup>
         {data.valvesElectric === "yes" ? (
-          <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2 md:gap-8">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 md:gap-8">
             <FieldInput
               label="Число задвижек"
               type="number"
@@ -91,10 +89,13 @@ export function StepOptions({
         ) : null}
       </div>
 
-      {/* Опции */}
-      <div>
-        <FieldGroupTitle>Опции</FieldGroupTitle>
-        <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2">
+      <div className="flex flex-col gap-4">
+        <FieldRadioGroup
+          label="Опции"
+          idPrefix="quiz-options"
+          variant="checkbox"
+          className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2"
+        >
           <CheckboxCard
             label="Ввод питания на каждый насос без АВР"
             checked={optsSet.includes("power-per-pump-no-avr")}
@@ -115,23 +116,24 @@ export function StepOptions({
             checked={optsSet.includes("collector-diff")}
             onToggle={() => toggleOption("collector-diff")}
           />
-        </div>
+        </FieldRadioGroup>
         {optsSet.includes("collector-diff") ? (
-          <div className="mt-4">
-            <FieldInput
-              label="Диаметры (Ду вход / Ду выход)"
-              value={data.collectorDiff}
-              onChange={(v) => onChange({ collectorDiff: v })}
-              placeholder="Ду 150 / Ду 100"
-            />
-          </div>
+          <FieldInput
+            label="Диаметры (Ду вход / Ду выход)"
+            value={data.collectorDiff}
+            onChange={(v) => onChange({ collectorDiff: v })}
+            placeholder="Ду 150 / Ду 100"
+          />
         ) : null}
       </div>
 
-      {/* Передача данных */}
-      <div>
-        <FieldGroupTitle>Передача данных</FieldGroupTitle>
-        <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-4">
+      <div className="flex flex-col gap-4">
+        <FieldRadioGroup
+          label="Передача данных"
+          idPrefix="quiz-data-transfer"
+          variant="checkbox"
+          className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-4"
+        >
           <CheckboxCard
             label="Profibus"
             checked={protoSet.includes("profibus")}
@@ -157,55 +159,53 @@ export function StepOptions({
             checked={protoSet.includes("other")}
             onToggle={() => toggleProtocol("other")}
           />
-        </div>
+        </FieldRadioGroup>
         {protoSet.includes("other") ? (
-          <div className="mt-4">
-            <FieldInput
-              label="Укажите протокол"
-              value={data.dataTransferOther}
-              onChange={(v) => onChange({ dataTransferOther: v })}
-              placeholder="CAN, OPC-UA, …"
-            />
-          </div>
+          <FieldInput
+            label="Укажите протокол"
+            value={data.dataTransferOther}
+            onChange={(v) => onChange({ dataTransferOther: v })}
+            placeholder="CAN, OPC-UA, …"
+          />
         ) : null}
       </div>
 
-      {/* Модульное исполнение */}
-      <div>
-        <FieldGroupTitle>Модульное исполнение в ёмкости</FieldGroupTitle>
-        <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
-          <RadioCard<ModuleHousing>
-            value="container"
-            selected={data.moduleHousing}
-            onSelect={setHousing}
-            label="Контейнер"
-          />
-          <RadioCard<ModuleHousing>
-            value="barrel-fiberglass-vertical"
-            selected={data.moduleHousing}
-            onSelect={setHousing}
-            label="Бочка · стеклопластик · вертикальная"
-          />
-          <RadioCard<ModuleHousing>
-            value="barrel-fiberglass-horizontal"
-            selected={data.moduleHousing}
-            onSelect={setHousing}
-            label="Бочка · стеклопластик · горизонтальная"
-          />
-          <RadioCard<ModuleHousing>
-            value="barrel-metal-vertical"
-            selected={data.moduleHousing}
-            onSelect={setHousing}
-            label="Бочка · металл · вертикальная"
-          />
-          <RadioCard<ModuleHousing>
-            value="barrel-metal-horizontal"
-            selected={data.moduleHousing}
-            onSelect={setHousing}
-            label="Бочка · металл · горизонтальная"
-          />
-        </div>
-      </div>
+      <FieldRadioGroup
+        label="Модульное исполнение в ёмкости"
+        idPrefix="quiz-module-housing"
+        className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3"
+      >
+        <RadioCard<ModuleHousing>
+          value="container"
+          selected={data.moduleHousing}
+          onSelect={setHousing}
+          label="Контейнер"
+        />
+        <RadioCard<ModuleHousing>
+          value="barrel-fiberglass-vertical"
+          selected={data.moduleHousing}
+          onSelect={setHousing}
+          label="Бочка · стеклопластик · вертикальная"
+        />
+        <RadioCard<ModuleHousing>
+          value="barrel-fiberglass-horizontal"
+          selected={data.moduleHousing}
+          onSelect={setHousing}
+          label="Бочка · стеклопластик · горизонтальная"
+        />
+        <RadioCard<ModuleHousing>
+          value="barrel-metal-vertical"
+          selected={data.moduleHousing}
+          onSelect={setHousing}
+          label="Бочка · металл · вертикальная"
+        />
+        <RadioCard<ModuleHousing>
+          value="barrel-metal-horizontal"
+          selected={data.moduleHousing}
+          onSelect={setHousing}
+          label="Бочка · металл · горизонтальная"
+        />
+      </FieldRadioGroup>
     </div>
   );
 }

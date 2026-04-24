@@ -7,6 +7,7 @@ import { Footer } from "@/components/layout/Footer";
 import { CustomCursor } from "@/components/layout/CustomCursor";
 import { PageTransition } from "@/components/layout/PageTransition";
 import { LoadingSplash } from "@/components/layout/LoadingSplash";
+import { ldScriptProps, organizationLd } from "@/lib/schema-org";
 
 /**
  * Root layout.
@@ -46,13 +47,32 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ru" className={fontVariables}>
+      <head>
+        {/* Site-wide Organization JSON-LD. Rendered once in <head> so
+            Google's structured-data graph has a single canonical
+            organization @id to link Product/Article/Breadcrumb
+            records to. */}
+        <script {...ldScriptProps(organizationLd())} />
+      </head>
       <body className="antialiased">
+        {/* Skip-link — first focusable element. Visually hidden by
+            default; on Tab from a fresh page load it becomes a white
+            pill in the top-left and Enter jumps focus past the fixed
+            header into <main id="main-content">. WCAG 2.4.1. */}
+        <a
+          href="#main-content"
+          className="sr-only rounded-md bg-[var(--color-secondary)] px-4 py-2 text-sm font-medium text-[var(--color-primary)] focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[300]"
+        >
+          Перейти к содержимому
+        </a>
         <LenisProvider>
           <LoadingSplash />
           <CustomCursor />
           <Header />
           <PageTransition>
-            <main className="min-h-screen">{children}</main>
+            <main id="main-content" className="min-h-screen">
+              {children}
+            </main>
             <Footer />
           </PageTransition>
         </LenisProvider>

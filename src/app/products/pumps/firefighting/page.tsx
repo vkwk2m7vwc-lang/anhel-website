@@ -12,6 +12,11 @@ import { DocumentsGrid } from "@/components/product-page/DocumentsGrid";
 import { ProductCtaFooter } from "@/components/product-page/ProductCtaFooter";
 import { HowItWorksSection } from "@/components/products/firefighting/lakhta/HowItWorksSection";
 import { firefightingContent } from "@/content/products/firefighting";
+import {
+  breadcrumbLd,
+  ldScriptProps,
+  productLd,
+} from "@/lib/schema-org";
 
 /**
  * /products/pumps/firefighting
@@ -71,8 +76,28 @@ export default function FirefightingProductPage() {
     footerCta,
   } = firefightingContent;
 
+  // Schema.org Product + Breadcrumb. Model `HVS-NU` — working draft
+  // (см. _docs/water_supply_report.md, замена одной строкой когда
+  // заказчик финализирует серийное обозначение).
+  const productJsonLd = productLd({
+    slug,
+    name: "Насосные станции пожаротушения ANHEL®",
+    description: firefightingContent.metaDescription,
+    image: firefightingContent.hero.image.src,
+    category: "Pump / Fire suppression",
+    model: "HVS-NU",
+  });
+  const breadcrumbJsonLd = breadcrumbLd([
+    { name: "Главная", url: "/" },
+    { name: "Насосные станции", url: "/products" },
+    { name: "Пожаротушение", url: `/products/pumps/${slug}` },
+  ]);
+
   return (
     <ProductPageShell accent={accent}>
+      <script {...ldScriptProps(productJsonLd)} />
+      <script {...ldScriptProps(breadcrumbJsonLd)} />
+
       <ProductHero content={hero} accent={accent} />
       <TechSpecsGrid specs={techSpecs} />
       <HowItWorksSection />

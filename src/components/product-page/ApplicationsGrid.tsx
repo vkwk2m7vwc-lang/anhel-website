@@ -120,7 +120,7 @@ function ApplicationCard({
           hover it picks up the accent colour in sync with the ring. */}
       <p
         aria-hidden="true"
-        className="font-mono text-[11px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/40 transition-colors duration-300 group-hover:text-[var(--accent-current)]"
+        className="font-mono text-[11px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/65 transition-colors duration-300 group-hover:text-[var(--accent-current)]"
       >
         {item.mono}
       </p>
@@ -133,7 +133,7 @@ function ApplicationCard({
         <h3 className="font-display text-[24px] font-medium leading-tight text-[var(--color-secondary)] md:text-[28px]">
           {item.title}
         </h3>
-        <p className="font-mono text-[11px] uppercase tracking-[0.08em] text-[var(--color-secondary)]/50">
+        <p className="font-mono text-[11px] uppercase tracking-[0.08em] text-[var(--color-secondary)]/65">
           {item.example}
         </p>
       </div>

@@ -1,6 +1,11 @@
 "use client";
 
-import { FieldInput, RadioCard, FieldGroupTitle } from "../QuizFields";
+import {
+  FieldGroupTitle,
+  FieldInput,
+  FieldRadioGroup,
+  RadioCard,
+} from "../QuizFields";
 import type { ControlMode, QuizData } from "../quiz-schema";
 
 /**
@@ -38,46 +43,47 @@ export function StepPumps({
         </div>
       </div>
 
-      <div>
-        <FieldGroupTitle>Тип управления</FieldGroupTitle>
-        <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
-          <RadioCard<ControlMode>
-            value="vfd-controller"
-            selected={data.control}
-            onSelect={set}
-            label="Частотное с контроллером"
-            description="Общий ПЛК управляет группой"
-          />
-          <RadioCard<ControlMode>
-            value="vfd-per-pump"
-            selected={data.control}
-            onSelect={set}
-            label="Частотное на каждый насос с контроллером"
-            description="Индивидуальные VFD + ПЛК"
-          />
-          <RadioCard<ControlMode>
-            value="vfd-no-controller"
-            selected={data.control}
-            onSelect={set}
-            label="Частотное без контроллера"
-            description="Автономные преобразователи"
-          />
-          <RadioCard<ControlMode>
-            value="relay-controller"
-            selected={data.control}
-            onSelect={set}
-            label="Релейное с контроллером"
-            description="Прямой пуск, ПЛК"
-          />
-          <RadioCard<ControlMode>
-            value="relay-softstart"
-            selected={data.control}
-            onSelect={set}
-            label="Релейное с контроллером + плавный пуск"
-            description="ПЛК + soft-starter"
-          />
-        </div>
-      </div>
+      <FieldRadioGroup
+        label="Тип управления"
+        idPrefix="quiz-control"
+        className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3"
+      >
+        <RadioCard<ControlMode>
+          value="vfd-controller"
+          selected={data.control}
+          onSelect={set}
+          label="Частотное с контроллером"
+          description="Общий ПЛК управляет группой"
+        />
+        <RadioCard<ControlMode>
+          value="vfd-per-pump"
+          selected={data.control}
+          onSelect={set}
+          label="Частотное на каждый насос с контроллером"
+          description="Индивидуальные VFD + ПЛК"
+        />
+        <RadioCard<ControlMode>
+          value="vfd-no-controller"
+          selected={data.control}
+          onSelect={set}
+          label="Частотное без контроллера"
+          description="Автономные преобразователи"
+        />
+        <RadioCard<ControlMode>
+          value="relay-controller"
+          selected={data.control}
+          onSelect={set}
+          label="Релейное с контроллером"
+          description="Прямой пуск, ПЛК"
+        />
+        <RadioCard<ControlMode>
+          value="relay-softstart"
+          selected={data.control}
+          onSelect={set}
+          label="Релейное с контроллером + плавный пуск"
+          description="ПЛК + soft-starter"
+        />
+      </FieldRadioGroup>
     </div>
   );
 }
