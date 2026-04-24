@@ -107,24 +107,17 @@ function TechSpecCard({ spec, index }: { spec: TechSpecTile; index: number }) {
       <span
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 ring-1 ring-transparent transition-[box-shadow,ring-color] duration-300 [@media(hover:hover)]:group-hover:ring-[var(--accent-current)]"
-        style={{
-          boxShadow: "inset 0 0 0 0 transparent",
-        }}
-      />
-      <span
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 [@media(hover:hover)]:group-hover:opacity-100"
-        style={{
-          boxShadow: "inset 0 0 40px 0 var(--accent-current)",
-          // Mix accent at ~10% visibility — enough to read as a glow
-          // inside the card, not an alarm. Tuned against #D72638; softer
-          // accents (treatment steel) will look proportionally quieter.
-          mixBlendMode: "soft-light",
-        }}
       />
 
-      {/* Label — mono caps, dim */}
-      <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/40">
+      {/* Label — mono caps, dim. Lifts to accent-current on hover to
+          match Applications/Advantages cards (crisp ring + coloured
+          mono prefix). Previously we layered a `mixBlendMode: soft-light`
+          inner glow on top, which diffused the ring into a fuzzy red
+          tint and read as a different visual state than the other grids
+          on the page. Dropped the glow, added a coordinated colour
+          transition here instead — cell now reads as one family with
+          the rest of the product page. */}
+      <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/40 transition-colors duration-300 [@media(hover:hover)]:group-hover:text-[var(--accent-current)]">
         {spec.label}
       </p>
 
