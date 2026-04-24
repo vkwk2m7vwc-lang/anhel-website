@@ -165,9 +165,9 @@ export type BrandsContent = {
  * One card in the Advantages grid (section 7 «Преимущества»).
  *
  * Layout: a big mono index + a single-line title + a short body line
- * that expands the title. Nine items is the МФМК reference count —
- * we preserve it in full so the engineering audience reads the whole
- * spec sheet at a glance.
+ * that expands the title. Nine items — полный spec-набор ANHEL,
+ * preserved so the engineering audience reads the whole sheet at a
+ * glance.
  */
 export type AdvantageItem = {
   /** Stable id. */
@@ -225,9 +225,9 @@ export type GalleryContent = {
 /**
  * One implemented-project card (section 9 «Кейсы»).
  *
- * Data is a mix of copy and real reference numbers from the МФМК
- * implemented-projects list. `equipment` is a short one-liner that
- * reads as a spec, not a sentence, e.g. «HVS-NU-250, 3+1 насоса».
+ * Data carries real reference numbers from реализованных объектов.
+ * `equipment` is a short one-liner that reads as a spec, not a
+ * sentence, e.g. «HVS-NU-250, 3+1 насоса».
  */
 export type CaseItem = {
   id: string;
@@ -273,7 +273,7 @@ export type ProductContent = {
   applications: ApplicationsContent;
   /** Section 6 — «Бренды». */
   brands: BrandsContent;
-  /** Section 7 — «Преимущества» (9 tiles per МФМК reference). */
+  /** Section 7 — «Преимущества» (9 tiles, full spec sheet). */
   advantages: AdvantagesContent;
   /** Section 8 — «Галерея» (production + site photos). */
   gallery: GalleryContent;
@@ -297,8 +297,8 @@ export type ProductContent = {
 /**
  * One PDF card in section 11. `href` is the URL the card links to —
  * real files live under `/public/docs/firefighting/...` once the
- * user uploads them; external links (e.g. mfmc.ru) are also allowed
- * for files that are still hosted upstream.
+ * user uploads them; external links also allowed via the `external`
+ * flag if a file is still hosted elsewhere temporarily.
  */
 export type DocumentItem = {
   id: string;

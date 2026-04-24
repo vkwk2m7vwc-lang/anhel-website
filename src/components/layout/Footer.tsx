@@ -17,16 +17,16 @@ export function Footer() {
       <div className="mx-auto grid max-w-[1440px] gap-10 px-6 py-16 md:grid-cols-4 md:px-12 md:py-20">
         <div className="md:col-span-2">
           <p className="font-display text-2xl leading-tight md:text-3xl">
-            ANHEL — инженерное
+            ANHEL® — инженерное
             <br />
             оборудование для зданий,
             <br />
             которые будут стоять десятилетиями.
           </p>
           <p className="mt-6 max-w-md text-sm text-[var(--color-secondary)]/60">
-            Производство и монтаж в Санкт-Петербурге. Проектирование под
-            задачу объекта, сервис и гарантия — от теплообменных пунктов до
-            систем водоподготовки.
+            Офис — Санкт-Петербург, производство — Москва. Проектирование
+            под задачу объекта, сервис и гарантия — от теплообменных пунктов
+            до систем водоподготовки.
           </p>
         </div>
 
@@ -75,7 +75,7 @@ export function Footer() {
 
       <div className="border-t border-[var(--color-hairline)]">
         <div className="mx-auto flex max-w-[1440px] flex-col items-start justify-between gap-2 px-6 py-6 text-xs text-[var(--color-secondary)]/50 md:flex-row md:items-center md:px-12">
-          <p>© {year} ANHEL. Все права защищены.</p>
+          <p>© {year} ANHEL®. Все права защищены.</p>
           <p>Санкт-Петербург · anhelspb.com</p>
         </div>
       </div>

@@ -105,6 +105,12 @@ export function ProductCtaFooter({
  * picks up the neighbour's OWN accent (water / treatment / heat etc),
  * not the current page's — it's a hand-off out of this product,
  * colour-coded by destination.
+ *
+ * When the product is flagged `comingSoon`, the card renders as a
+ * non-interactive tile with a "Скоро" badge in place of the arrow —
+ * no href, `aria-disabled="true"`, muted opacity. Prevents the
+ * previous 404-on-click trap when sibling product pages haven't
+ * shipped yet (audit finding 6).
  */
 function NeighbourCard({
   product,
@@ -122,6 +128,41 @@ function NeighbourCard({
   };
   const neighbourAccent = ACCENT_VAR[product.accent];
 
+  // Inner body — shared by the link branch and the disabled branch so the
+  // markup stays in one place. The trailing indicator is the only
+  // difference (arrow vs. "Скоро" badge).
+  const body = (
+    <>
+      <span
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 ring-1 ring-transparent transition-[box-shadow,ring-color] duration-300 group-hover:ring-[color:var(--neighbour-accent)]"
+      />
+      <div className="flex items-baseline justify-between gap-4">
+        <span className="font-display text-[20px] font-medium text-[var(--color-secondary)] md:text-[22px]">
+          {product.title}
+        </span>
+        {product.comingSoon ? (
+          <span
+            aria-hidden="true"
+            className="font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/40"
+          >
+            Скоро
+          </span>
+        ) : (
+          <span
+            aria-hidden="true"
+            className="font-mono transition-transform duration-300 ease-out-expo group-hover:translate-x-1 group-hover:text-[color:var(--neighbour-accent)]"
+          >
+            →
+          </span>
+        )}
+      </div>
+      <p className="text-[13px] leading-relaxed text-[var(--color-secondary)]/55">
+        {product.tagline}
+      </p>
+    </>
+  );
+
   return (
     <motion.li
       initial={{ opacity: 0, y: 12 }}
@@ -133,35 +174,28 @@ function NeighbourCard({
         delay: Math.min(index, 3) * 0.06,
       }}
     >
-      <Link
-        href={product.href}
-        data-cursor="hover"
-        style={{ ["--neighbour-accent" as string]: neighbourAccent }}
-        className={cn(
-          "group relative flex flex-col gap-2 bg-[var(--color-primary)] p-5 transition-colors duration-300 hover:bg-[#111] md:p-6"
-        )}
-      >
-        {/* Ring styled with the neighbour's OWN accent variable —
-            see the inline style above for how the colour is injected. */}
-        <span
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-0 ring-1 ring-transparent transition-[box-shadow,ring-color] duration-300 group-hover:ring-[color:var(--neighbour-accent)]"
-        />
-        <div className="flex items-baseline justify-between gap-4">
-          <span className="font-display text-[20px] font-medium text-[var(--color-secondary)] md:text-[22px]">
-            {product.title}
-          </span>
-          <span
-            aria-hidden="true"
-            className="font-mono transition-transform duration-300 ease-out-expo group-hover:translate-x-1 group-hover:text-[color:var(--neighbour-accent)]"
-          >
-            →
-          </span>
+      {product.comingSoon ? (
+        <div
+          aria-disabled="true"
+          style={{ ["--neighbour-accent" as string]: neighbourAccent }}
+          className={cn(
+            "group relative flex cursor-not-allowed flex-col gap-2 bg-[var(--color-primary)] p-5 opacity-55 md:p-6"
+          )}
+        >
+          {body}
         </div>
-        <p className="text-[13px] leading-relaxed text-[var(--color-secondary)]/55">
-          {product.tagline}
-        </p>
-      </Link>
+      ) : (
+        <Link
+          href={product.href}
+          data-cursor="hover"
+          style={{ ["--neighbour-accent" as string]: neighbourAccent }}
+          className={cn(
+            "group relative flex flex-col gap-2 bg-[var(--color-primary)] p-5 transition-colors duration-300 hover:bg-[#111] md:p-6"
+          )}
+        >
+          {body}
+        </Link>
+      )}
     </motion.li>
   );
 }

@@ -40,7 +40,7 @@ export const HERO_PRODUCTS: readonly HeroProduct[] = [
     name: "Насосная станция водоснабжения",
     image: "/assets/products/hvs-nu.png",
     accent: "#1E6FD9",
-    alt: "ANHEL — насосная станция холодного водоснабжения, модель HVS-NU",
+    alt: "ANHEL® — насосная станция холодного водоснабжения, модель HVS-NU",
     // href — not ready yet
   },
   {
@@ -48,7 +48,7 @@ export const HERO_PRODUCTS: readonly HeroProduct[] = [
     name: "Насосная станция пожаротушения",
     image: "/assets/products/hvs-nu-red2.png",
     accent: "#D72638",
-    alt: "ANHEL — насосная станция пожаротушения, красный шкаф HVS-NU",
+    alt: "ANHEL® — насосная станция пожаротушения, красный шкаф HVS-NU",
     href: "/products/pumps/firefighting",
   },
   {
@@ -56,7 +56,7 @@ export const HERO_PRODUCTS: readonly HeroProduct[] = [
     name: "Установка водоподготовки",
     image: "/assets/products/vpu.png",
     accent: "#8A94A0",
-    alt: "ANHEL — установка водоподготовки VPU со стальными фильтрами",
+    alt: "ANHEL® — установка водоподготовки VPU со стальными фильтрами",
     // href — not ready yet
   },
   {
@@ -64,7 +64,7 @@ export const HERO_PRODUCTS: readonly HeroProduct[] = [
     name: "Блочный тепловой пункт",
     image: "/assets/products/bitp.png",
     accent: "#E8873B",
-    alt: "ANHEL — блочный индивидуальный тепловой пункт (БИТП)",
+    alt: "ANHEL® — блочный индивидуальный тепловой пункт (БИТП)",
     // href — not ready yet
   },
 ] as const;

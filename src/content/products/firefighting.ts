@@ -20,12 +20,15 @@ export const firefightingContent: ProductContent = {
   // SEO + social — Product schema.org data is wired up in commit 6.
   metaTitle: "Насосные станции пожаротушения",
   metaDescription:
-    "Насосные станции пожаротушения ANHEL — серийное производство с контролем качества и индивидуальным исполнением под ТЗ. Срок службы от 10 лет.",
+    "Насосные станции пожаротушения ANHEL® — серийное производство с контролем качества и индивидуальным исполнением под ТЗ. Срок службы от 10 лет.",
 
   hero: {
     breadcrumbs: [
       { label: "Главная", href: "/" },
-      { label: "Насосные станции", href: "/products" },
+      // «Насосные станции» — href убран до готовности каталога
+      // /products. Breadcrumb рендерится как текст без ссылки,
+      // чтобы не вести в 404. Audit finding 3.
+      { label: "Насосные станции" },
       { label: "Пожаротушение" },
     ],
     sectionTag: "01 · НАСОСНЫЕ СТАНЦИИ · ПОЖАРОТУШЕНИЕ",
@@ -34,7 +37,7 @@ export const firefightingContent: ProductContent = {
       "Оборудование для систем, на которые полагаются жизни. Автоматический запуск, горячее резервирование и полный комплект разрешительной документации.",
     image: {
       src: "/assets/products/hvs-nu-red2.png",
-      alt: "ANHEL — насосная станция пожаротушения в красном шкафу, серия HVS-NU",
+      alt: "ANHEL® — насосная станция пожаротушения в красном шкафу, серия HVS-NU",
     },
     // Both CTAs point at the quiz anchor — section 10 is built in commits 5-6.
     // Until then, clicking the anchor is a no-op (target doesn't exist yet),
@@ -48,7 +51,7 @@ export const firefightingContent: ProductContent = {
       label: "Опросный лист",
       href: "#quiz",
       variant: "ghost",
-      hint: "5 шагов",
+      hint: "6 шагов",
     },
   },
 
@@ -69,12 +72,12 @@ export const firefightingContent: ProductContent = {
   ],
 
   // Section 5 «Применение». Six object types the fire-fighting station
-  // is installed on. Examples are drawn from МФМК reference cases where
-  // real object names exist (жилые, Москва/Одинцово); other categories
-  // carry a typical-object descriptor until a real reference lands, at
-  // which point we swap the string in place.
+  // is installed on. Examples use real object names where confirmed
+  // (жилые, Москва/Одинцово); other categories carry a typical-object
+  // descriptor until a real reference lands, at which point we swap
+  // the string in place.
   applications: {
-    tag: "05 · ПРИМЕНЕНИЕ",
+    tag: "04 · ПРИМЕНЕНИЕ",
     title: "Где ставится",
     lede: "От жилых комплексов до инфраструктурных объектов. Каждая установка собирается под проект объекта.",
     items: [
@@ -118,13 +121,13 @@ export const firefightingContent: ProductContent = {
   },
 
   // Section 6 «Бренды». Two tiers — pump brands (main line of trust)
-  // and automation / power components (supporting tier). Lists mirror
-  // the МФМК reference catalogue + Wilo and Lowara added per user
-  // request. `href` points at the manufacturer's Russia-facing portal
-  // where the brand still has one; when the Russia site is offline
-  // or was never set up we fall back to the global domain.
+  // and automation / power components (supporting tier). `href` points
+  // at the manufacturer's Russia-facing portal where the brand still
+  // has one; when the Russia site is offline or was never set up we
+  // fall back to the global domain. Brands without a stable portal
+  // render as plain word-marks.
   brands: {
-    tag: "06 · БРЕНДЫ",
+    tag: "05 · БРЕНДЫ",
     title: "Собираем из оборудования мировых производителей",
     lede: "Насосы — от проверенных производителей, автоматика — собственное и импортное.",
     rowPumps: [
@@ -164,6 +167,10 @@ export const firefightingContent: ProductContent = {
         series: "КМ",
         href: "https://hms.ru/",
       },
+      {
+        id: "kq",
+        name: "KQ",
+      },
     ],
     rowComponents: [
       { id: "dekraft", name: "DEKraft", href: "https://dekraft.ru/" },
@@ -179,15 +186,14 @@ export const firefightingContent: ProductContent = {
       { id: "dkc", name: "DKC", href: "https://www.dkc.ru/" },
       { id: "weintek", name: "Weintek", href: "https://www.weintek.com/" },
       { id: "titan", name: "ТИТАН Контрол" },
-      { id: "mfmk", name: "МФМК", href: "https://mfmc.ru/" },
     ],
   },
 
-  // Section 7 «Преимущества». All nine points from the МФМК reference —
-  // user asked for the full list, not a cut-down to six.
+  // Section 7 «Преимущества». Full nine-point spec sheet (not a cut-down
+  // to six) — инженерному читателю важен полный список.
   advantages: {
-    tag: "07 · ПРЕИМУЩЕСТВА",
-    title: "Почему ANHEL",
+    tag: "06 · ПРЕИМУЩЕСТВА",
+    title: "Почему ANHEL®",
     lede: "Серийное производство, контроль качества и собственная автоматика.",
     items: [
       {
@@ -252,11 +258,11 @@ export const firefightingContent: ProductContent = {
   // /public/assets/gallery/firefighting/ and fill in `src` here; the
   // layout keeps working unchanged.
   gallery: {
-    tag: "08 · ГАЛЕРЕЯ",
+    tag: "07 · ГАЛЕРЕЯ",
     title: "Производство и монтаж",
     lede: "Цех сборки, испытательный стенд, установки на объектах.",
     photos: [
-      { id: "shop-01", alt: "Сборочный цех ANHEL, общий вид", caption: "Цех, Санкт-Петербург", aspect: "4/5" },
+      { id: "shop-01", alt: "Сборочный цех ANHEL®, общий вид", caption: "Цех, Москва", aspect: "4/5" },
       { id: "shop-02", alt: "Насосные агрегаты на сборке", caption: "Монтаж насосной группы", aspect: "4/5" },
       { id: "shop-03", alt: "Шкаф управления, крупный план", caption: "Шкаф управления с ПЛК", aspect: "4/5" },
       { id: "test-01", alt: "Гидравлические испытания установки", caption: "Испытательный стенд", aspect: "4/5" },
@@ -267,56 +273,46 @@ export const firefightingContent: ProductContent = {
     ],
   },
 
-  // Section 9 «Кейсы». Two real entries lifted from the МФМК
-  // implemented-projects list for this product line. Added one
-  // аnonymised example (БЦ in Санкт-Петербурге) to give the carousel
-  // a third card until the real roster is handed over.
+  // Section 9 «Кейсы». Two real implemented projects for this product
+  // line. The anonymised BC-SPb placeholder was removed in the audit
+  // round-1 fixes — кейсы должны быть только реальными.
   cases: {
-    tag: "09 · КЕЙСЫ",
+    tag: "08 · КЕЙСЫ",
     title: "Где уже работает",
-    lede: "Жилые комплексы, бизнес-центры и промышленные площадки под нашими станциями.",
+    lede: "Жилые комплексы и промышленные площадки под нашими станциями.",
     items: [
       {
         id: "zhk-dmitrovsky",
         title: "ЖК «Дмитровский парк»",
         location: "Москва, 2023",
-        equipment: "5 пожарных насосных установок Альфа Stream™",
+        equipment: "5 насосных установок ANHEL HVS-NU для АПТ",
         photo: { alt: "Жилой комплекс «Дмитровский парк», общий вид" },
       },
       {
         id: "zhk-odingrad",
         title: "ЖК «Одинград»",
         location: "Одинцово, 2022",
-        equipment: "Насосная установка Альфа Stream™ АПТ",
+        equipment: "Насосная установка ANHEL HVS-NU АПТ",
         photo: { alt: "Жилой комплекс «Одинград», общий вид" },
-      },
-      {
-        id: "bc-spb",
-        title: "Бизнес-центр класса А",
-        location: "Санкт-Петербург, 2024",
-        equipment: "Станция пожаротушения на 3+1 насос",
-        photo: { alt: "Бизнес-центр класса А, пример объекта" },
       },
     ],
   },
 
   // Section 10 «Опросный лист». Only the header copy is per-product —
-  // the full field schema lives inside QuizSection because it's lifted
-  // directly from the МФМК quiz PDF and is identical across all four
-  // station lines.
+  // the full field schema lives inside QuizSection because оно
+  // идентично для всех четырёх линеек станций ANHEL.
   quiz: {
-    tag: "10 · ОПРОСНЫЙ ЛИСТ",
+    tag: "09 · ОПРОСНЫЙ ЛИСТ",
     title: "Подбор под ваш объект",
     lede: "Шесть шагов — от контактов до технических параметров системы. Отвечаем в течение рабочего дня.",
   },
 
-  // Section 11 «Документация». Four PDFs straight from the МФМК
-  // reference. Real files go under /public/docs/firefighting/ when
-  // the user drops them in; until then the hrefs point at the
-  // canonical mfmc.ru copies so the click still lands on the right
-  // document.
+  // Section 11 «Документация». Four PDFs — опросный лист, два
+  // сертификата и руководство. Реальные файлы лежат в
+  // /public/docs/firefighting/; до их появления ссылки ведут на
+  // локальные пути (будут 404 до загрузки файлов — ожидаемый gap).
   documents: {
-    tag: "11 · ДОКУМЕНТАЦИЯ",
+    tag: "10 · ДОКУМЕНТАЦИЯ",
     title: "Документы и сертификаты",
     lede: "Опросный лист, сертификаты и руководство — для проектирования и приёмки.",
     items: [
@@ -328,19 +324,19 @@ export const firefightingContent: ProductContent = {
       },
       {
         id: "cert-pump",
-        title: "Сертификат — насосные установки АЛЬФА (водяное и пенное пожаротушение)",
+        title: "Сертификат — насосные установки ANHEL для водяного и пенного пожаротушения",
         size: "0.33 МБ",
         href: "/docs/firefighting/cert-pump-station.pdf",
       },
       {
         id: "cert-shu",
-        title: "Сертификат соответствия на ШУ ОМЕГА типа АШУ",
+        title: "Сертификат соответствия на шкаф управления ANHEL",
         size: "0.87 МБ",
         href: "/docs/firefighting/cert-shu.pdf",
       },
       {
         id: "manual",
-        title: "Руководство по эксплуатации НУ АЛЬФА СПД",
+        title: "Руководство по эксплуатации насосной установки ANHEL",
         size: "0.81 МБ",
         href: "/docs/firefighting/manual.pdf",
       },
@@ -351,7 +347,7 @@ export const firefightingContent: ProductContent = {
   // strip pulls from src/lib/products.ts and excludes this slug
   // automatically.
   footerCta: {
-    tag: "12 · ЗАПРОС КП",
+    tag: "11 · ЗАПРОС КП",
     title: "Соберите свою станцию под проект",
     subtitle: "Ответим в течение рабочего дня. Расчёт подбора бесплатный.",
     cta: { label: "Заполнить опросный лист", href: "#quiz" },

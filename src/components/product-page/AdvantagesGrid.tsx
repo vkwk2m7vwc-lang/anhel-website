@@ -11,9 +11,9 @@ import type {
  *
  * Nine cards laid out 3×3 on desktop, 2×5 (the last one spans) on
  * tablet, 1×9 on mobile. Each card carries a large mono index plus
- * a short title and a 1-2 sentence body. Nine cells is the МФМК
- * reference count — we preserve it in full so the engineering reader
- * sees the whole proof sheet without scrolling off to a "read more".
+ * a short title and a 1-2 sentence body. Nine cells — полный
+ * proof-набор, preserved so the engineering reader sees the whole
+ * sheet without scrolling off to a "read more".
  *
  * Design note — we use the same `gap-px bg-hairline` trick as
  * ApplicationsGrid and TechSpecsGrid so the cell borders are a single

@@ -1,6 +1,8 @@
 "use client";
 
+import { useId } from "react";
 import { cn } from "@/lib/utils";
+import { formatPhoneMask } from "./validators";
 
 /**
  * Shared form primitives for the quiz. All use the ANHEL palette —
@@ -14,22 +16,47 @@ export function FieldInput({
   label,
   value,
   onChange,
+  onBlur,
   type = "text",
   required,
   unit,
   placeholder,
   width = "full",
+  mask,
+  error,
 }: {
   label: string;
   value: string | undefined;
   onChange: (v: string) => void;
+  onBlur?: () => void;
   type?: "text" | "email" | "tel" | "number";
   required?: boolean;
   unit?: string;
   placeholder?: string;
   /** "full" fills its column, "short" caps at ~14ch for numeric fields. */
   width?: "full" | "short";
+  /**
+   * "phone" — applies the Russian phone mask (+7 (XXX) XXX-XX-XX) as
+   * the user types. The formatted string is pushed through `onChange`,
+   * so state always stores the display value.
+   */
+  mask?: "phone";
+  /**
+   * Error message shown under the field. Non-null value also switches
+   * the field into `aria-invalid="true"` and tints the underline red
+   * so screen readers and sighted users stay in sync.
+   */
+  error?: string;
 }) {
+  const errorId = useId();
+  const handleChange = (raw: string) => {
+    if (mask === "phone") {
+      onChange(formatPhoneMask(raw));
+      return;
+    }
+    onChange(raw);
+  };
+
   return (
     <label className="flex flex-col gap-2">
       <FieldLabel label={label} required={required} />
@@ -37,11 +64,18 @@ export function FieldInput({
         <input
           type={type}
           required={required}
+          aria-required={required || undefined}
+          aria-invalid={error ? true : undefined}
+          aria-describedby={error ? errorId : undefined}
           value={value ?? ""}
           placeholder={placeholder}
-          onChange={(e) => onChange(e.target.value)}
+          onChange={(e) => handleChange(e.target.value)}
+          onBlur={onBlur}
           className={cn(
-            "w-full border-b border-[var(--color-hairline)] bg-transparent py-2 text-sm text-[var(--color-secondary)] placeholder-[var(--color-secondary)]/30 outline-none transition-colors focus:border-[var(--accent-current)]",
+            "w-full border-b bg-transparent py-2 text-sm text-[var(--color-secondary)] placeholder-[var(--color-secondary)]/30 outline-none transition-colors",
+            error
+              ? "border-[var(--accent-fire)] focus:border-[var(--accent-fire)]"
+              : "border-[var(--color-hairline)] focus:border-[var(--accent-current)]",
             width === "short" && "max-w-[14ch]"
           )}
         />
@@ -51,6 +85,15 @@ export function FieldInput({
           </span>
         ) : null}
       </div>
+      {error ? (
+        <span
+          id={errorId}
+          role="alert"
+          className="font-mono text-[10px] uppercase tracking-[0.08em] text-[var(--accent-fire)]"
+        >
+          {error}
+        </span>
+      ) : null}
     </label>
   );
 }

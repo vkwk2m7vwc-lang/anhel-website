@@ -3,6 +3,7 @@
 import { useCallback, useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { CONTACTS } from "@/lib/contacts";
 import type { ProductContent } from "@/content/products/types";
 import { QUIZ_STEPS, type QuizData, type QuizStepId } from "./quiz-schema";
 import { StepContact } from "./steps/StepContact";
@@ -12,14 +13,17 @@ import { StepPumps } from "./steps/StepPumps";
 import { StepOptions } from "./steps/StepOptions";
 import { StepExtra } from "./steps/StepExtra";
 import { QuizSuccess } from "./QuizSuccess";
+import { isValidEmail, isValidPhone } from "./validators";
+import { buildMailtoHref } from "./mailto";
 
 /**
  * Опросный лист / quiz — section 10.
  *
- * Six-step form lifted verbatim from the МФМК PDF questionnaire —
- * fields, labels, radio options are the official spec. Visual shell
- * is entirely ANHEL: dark panel, mono-tag header, fire-red accent
- * wherever the accent shows. Progress bar at the top with six segments.
+ * Six-step form based on the official опросный лист для подбора
+ * насосных установок ANHEL — поля, подписи, варианты радио — тот же
+ * спец. Visual shell is entirely ANHEL: dark panel, mono-tag header,
+ * fire-red accent wherever the accent shows. Progress bar at the top
+ * with six segments.
  *
  * UI only in this commit — there is no submit handler yet (email
  * + Telegram + Turnstile is a deferred backend commit). The final
@@ -34,8 +38,8 @@ import { QuizSuccess } from "./QuizSuccess";
  *
  * Reuse: same component on every product page. The only per-product
  * field is the section header (`content`); the schema itself is
- * product-independent because the PDF is shared across the whole
- * станция line (МФМК confirmed this when we sourced the file).
+ * product-independent because опросный лист идентичен для всей
+ * линейки станций ANHEL.
  */
 export function QuizSection({
   content,
@@ -61,25 +65,44 @@ export function QuizSection({
   }, []);
 
   /**
-   * Required-fields gate for step 1 only — name, org, phone, email.
-   * Other steps pass through unconditionally (see the doc comment on
-   * validation above).
+   * Progression gates:
+   *   - step 1: every required contact field + regex-valid email +
+   *     10-digit phone (see validators.ts)
+   *   - intermediate steps: pass-through (engineer inquirers often
+   *     leave technical numbers blank on purpose — ANHEL engineers
+   *     fill the gaps on the follow-up call)
+   *   - last step: `consent` must be true. ФЗ-152 requires explicit
+   *     consent before any PII can be processed; blocking the final
+   *     CTA is the cheapest way to enforce it without modals.
    */
   const canAdvance = useMemo(() => {
-    if (stepIndex !== 0) return true;
-    return Boolean(
-      data.org?.trim() &&
-        data.fullName?.trim() &&
-        data.role?.trim() &&
-        data.email?.trim() &&
-        data.phone?.trim()
-    );
-  }, [stepIndex, data]);
+    if (stepIndex === 0) {
+      return Boolean(
+        data.org?.trim() &&
+          data.fullName?.trim() &&
+          data.role?.trim() &&
+          isValidEmail(data.email) &&
+          isValidPhone(data.phone)
+      );
+    }
+    if (isLast) {
+      return Boolean(data.consent);
+    }
+    return true;
+  }, [stepIndex, isLast, data]);
 
   const goNext = () => {
     if (!canAdvance) return;
     if (isLast) {
-      // UI stub — real submission lives in a later backend commit.
+      // Backend (Resend + Telegram + Turnstile) not ready yet — we
+      // don't fake a «Заявка принята» screen because нет заявки.
+      // Instead, hand the data to the user's own mail client via
+      // mailto:, and flip to a terminal panel that explains what
+      // just happened + provides direct fallback contacts.
+      const href = buildMailtoHref(data);
+      if (typeof window !== "undefined") {
+        window.location.href = href;
+      }
       setSubmitted(true);
       return;
     }
@@ -117,6 +140,46 @@ export function QuizSection({
           <QuizSuccess onRestart={() => { setSubmitted(false); setStepIndex(0); setData({}); }} />
         ) : (
           <>
+            {/* Honest-submit notice — visible throughout form filling.
+                Until the real form backend ships, «отправка» opens
+                the user's own mail client instead of pretending a
+                server received the заявка. Telling people this up
+                front is cheaper than surprising them after step 6. */}
+            <div
+              className="mt-10 flex flex-col gap-3 border-l-2 border-[var(--accent-current)] bg-[var(--color-secondary)]/[0.03] p-5 md:flex-row md:items-start md:gap-6"
+              role="note"
+            >
+              <span className="font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--accent-current)]">
+                Форма в разработке
+              </span>
+              <div className="flex flex-col gap-2 text-[13px] leading-relaxed text-[var(--color-secondary)]/70">
+                <p>
+                  Онлайн-отправка заявок сейчас дорабатывается. Нажатие
+                  «Открыть в почтовом клиенте» сформирует письмо
+                  с введёнными данными — останется нажать «Отправить»
+                  в вашем почтовом клиенте.
+                </p>
+                <p>
+                  Не работает? Свяжитесь напрямую:{" "}
+                  <a
+                    href={`tel:${CONTACTS.phoneTel}`}
+                    data-cursor="hover"
+                    className="font-mono text-[var(--color-secondary)] underline-offset-2 hover:underline"
+                  >
+                    {CONTACTS.phone}
+                  </a>
+                  {" · "}
+                  <a
+                    href={`mailto:${CONTACTS.email}`}
+                    data-cursor="hover"
+                    className="font-mono text-[var(--color-secondary)] underline-offset-2 hover:underline"
+                  >
+                    {CONTACTS.email}
+                  </a>
+                </p>
+              </div>
+            </div>
+
             {/* Progress — six equal segments, the active one grows from 0
                 to full as its step is "on". We fade the completed ones
                 full-secondary and the upcoming ones hairline. */}
@@ -186,7 +249,7 @@ export function QuizSection({
                     : "cursor-not-allowed bg-[var(--color-secondary)]/20 text-[var(--color-secondary)]/40"
                 )}
               >
-                {isLast ? "Отправить заявку" : "Далее"}
+                {isLast ? "Открыть в почтовом клиенте" : "Далее"}
                 <span
                   aria-hidden="true"
                   className="inline-block font-mono transition-transform duration-300 ease-out-expo group-hover:translate-x-1"
@@ -198,7 +261,7 @@ export function QuizSection({
 
             {/* Disclaimer from the original PDF, verbatim */}
             <p className="mt-8 border-l-2 border-[var(--accent-current)]/60 pl-4 text-[11px] leading-relaxed text-[var(--color-secondary)]/45">
-              Внимание: ANHEL не несёт ответственности за корректность
+              Внимание: ANHEL® не несёт ответственности за корректность
               исходных данных для подбора оборудования, указанных в опросном
               листе. Отказ заполнить опросный лист означает согласие со
               всеми техническими характеристиками, определяемыми условным

@@ -1,16 +1,18 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { CONTACTS } from "@/lib/contacts";
 
 /**
- * Success state shown after the final "Отправить заявку" click.
+ * Mailto-confirmation panel shown after the final-step button fires.
  *
- * UI-only in this commit — no network request actually fires; the
- * state flip in QuizSection is a local one. When the backend commit
- * lands we'll replace the fake submit with a real fetch and show
- * this same success screen on 2xx. The restart action drops back
- * to an empty step 1 so the viewer can submit a second inquiry
- * without reloading the page.
+ * Until the real form backend (Resend + Telegram + Turnstile) ships,
+ * the submit action opens the user's mail client with a pre-filled
+ * letter to ANHEL®. We can't legitimately say «Заявка принята»
+ * because no заявка has been transmitted from our side — the user
+ * just sent it via their own mailbox. This panel reflects that
+ * reality and doubles as a fallback for users whose browser doesn't
+ * launch a mail client (hand-off to direct phone call / manual email).
  */
 export function QuizSuccess({ onRestart }: { onRestart: () => void }) {
   return (
@@ -21,16 +23,35 @@ export function QuizSuccess({ onRestart }: { onRestart: () => void }) {
       className="mt-12 flex flex-col items-start gap-6 border-t border-[var(--color-hairline)] pt-10"
     >
       <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--accent-current)]">
-        Заявка принята
+        Открыт почтовый клиент
       </p>
       <h3 className="max-w-[620px] font-display text-[28px] font-medium leading-tight text-[var(--color-secondary)] md:text-[36px]">
-        Спасибо — мы свяжемся в течение рабочего дня.
+        Проверьте почтовый клиент — в нём уже письмо с вашими параметрами.
       </h3>
-      <p className="max-w-[560px] text-sm leading-relaxed text-[var(--color-secondary)]/60">
-        Инженер ANHEL свяжется по указанному номеру или email, уточнит
-        параметры и подготовит подбор оборудования. Если данных в опросе
-        хватит — пришлём предварительное КП без дополнительных вопросов.
+      <p className="max-w-[620px] text-sm leading-relaxed text-[var(--color-secondary)]/60">
+        Нажмите «Отправить» в почтовом клиенте — инженер ANHEL® свяжется
+        по указанному номеру или email и подготовит подбор оборудования.
+        Если клиент не открылся автоматически, напишите напрямую:
       </p>
+
+      <div className="flex flex-col gap-3 font-mono text-[13px] uppercase tracking-[0.08em] md:flex-row md:gap-8">
+        <a
+          href={`tel:${CONTACTS.phoneTel}`}
+          data-cursor="hover"
+          className="inline-flex items-center gap-2 text-[var(--color-secondary)]/80 transition-colors hover:text-[var(--color-secondary)]"
+        >
+          <span aria-hidden="true">☎</span>
+          {CONTACTS.phone}
+        </a>
+        <a
+          href={`mailto:${CONTACTS.email}`}
+          data-cursor="hover"
+          className="inline-flex items-center gap-2 text-[var(--color-secondary)]/80 transition-colors hover:text-[var(--color-secondary)]"
+        >
+          <span aria-hidden="true">✉</span>
+          {CONTACTS.email}
+        </a>
+      </div>
 
       <button
         type="button"
@@ -38,7 +59,7 @@ export function QuizSuccess({ onRestart }: { onRestart: () => void }) {
         data-cursor="hover"
         className="mt-4 inline-flex items-center gap-2 border-b border-[var(--color-hairline)] pb-1 font-mono text-[11px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/60 transition-colors hover:border-[var(--accent-current)] hover:text-[var(--color-secondary)]"
       >
-        Отправить ещё одну заявку
+        Заполнить ещё одну заявку
         <span aria-hidden="true">→</span>
       </button>
     </motion.div>

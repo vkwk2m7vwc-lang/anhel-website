@@ -1,7 +1,7 @@
 /**
- * Quiz schema — fields are lifted verbatim from the МФМК
- * "Опросный лист для подбора насосных установок" PDF. We group the
- * PDF's three logical sections into six UI steps to lower cognitive
+ * Quiz schema — fields take their structure from the official
+ * «Опросный лист для подбора насосных установок» ANHEL. PDF's three
+ * logical sections are grouped into six UI steps to lower cognitive
  * load — the field set is identical, only the pacing changes.
  *
  * Radio option values are stable keys (not localised strings) so a
