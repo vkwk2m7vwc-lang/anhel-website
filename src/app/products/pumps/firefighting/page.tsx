@@ -8,6 +8,8 @@ import { AdvantagesGrid } from "@/components/product-page/AdvantagesGrid";
 import { GalleryRail } from "@/components/product-page/GalleryRail";
 import { CasesCarousel } from "@/components/product-page/CasesCarousel";
 import { QuizSection } from "@/components/product-page/quiz/QuizSection";
+import { DocumentsGrid } from "@/components/product-page/DocumentsGrid";
+import { ProductCtaFooter } from "@/components/product-page/ProductCtaFooter";
 import { HowItWorksSection } from "@/components/products/firefighting/lakhta/HowItWorksSection";
 import { firefightingContent } from "@/content/products/firefighting";
 
@@ -31,8 +33,8 @@ import { firefightingContent } from "@/content/products/firefighting";
  *   8  Галерея                         ✓  GalleryRail (skeletons)
  *   9  Кейсы                           ✓  CasesCarousel (skeletons)
  *   10 Опросный лист (квиз)            ✓  QuizSection (UI only)
- *   11 Документация                    ⏳
- *   12 Финальный CTA + соседние        ⏳
+ *   11 Документация                    ✓  DocumentsGrid
+ *   12 Финальный CTA + соседние        ✓  ProductCtaFooter
  *
  * The `#quiz` anchor referenced by the hero CTAs lands with section 10.
  * Until then clicking the buttons is a no-op (lands on nothing, no
@@ -57,6 +59,7 @@ export const metadata: Metadata = {
 
 export default function FirefightingProductPage() {
   const {
+    slug,
     hero,
     techSpecs,
     accent,
@@ -66,6 +69,8 @@ export default function FirefightingProductPage() {
     gallery,
     cases,
     quiz,
+    documents,
+    footerCta,
   } = firefightingContent;
 
   return (
@@ -79,10 +84,10 @@ export default function FirefightingProductPage() {
       <GalleryRail content={gallery} />
       <CasesCarousel content={cases} />
       <QuizSection content={quiz} />
+      <DocumentsGrid content={documents} />
+      <ProductCtaFooter content={footerCta} currentSlug={slug} />
       {/*
-        Next commits (in order):
-          — Sections 11 + 12: documents + final CTA + neighbour nav
-          — Deferred:      quiz email / Telegram / Turnstile
+        Deferred: quiz email / Telegram / Turnstile backend.
       */}
     </ProductPageShell>
   );

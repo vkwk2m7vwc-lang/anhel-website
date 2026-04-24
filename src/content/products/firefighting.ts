@@ -270,4 +270,52 @@ export const firefightingContent: ProductContent = {
     title: "Подбор под ваш объект",
     lede: "Шесть шагов — от контактов до технических параметров системы. Отвечаем в течение рабочего дня.",
   },
+
+  // Section 11 «Документация». Four PDFs straight from the МФМК
+  // reference. Real files go under /public/docs/firefighting/ when
+  // the user drops them in; until then the hrefs point at the
+  // canonical mfmc.ru copies so the click still lands on the right
+  // document.
+  documents: {
+    tag: "11 · ДОКУМЕНТАЦИЯ",
+    title: "Документы и сертификаты",
+    lede: "Опросный лист, сертификаты и руководство — для проектирования и приёмки.",
+    items: [
+      {
+        id: "oprosnik",
+        title: "Опросный лист для подбора насосных установок",
+        size: "2.28 МБ",
+        href: "/docs/firefighting/oprosnyi-list.pdf",
+      },
+      {
+        id: "cert-pump",
+        title: "Сертификат — насосные установки АЛЬФА (водяное и пенное пожаротушение)",
+        size: "0.33 МБ",
+        href: "/docs/firefighting/cert-pump-station.pdf",
+      },
+      {
+        id: "cert-shu",
+        title: "Сертификат соответствия на ШУ ОМЕГА типа АШУ",
+        size: "0.87 МБ",
+        href: "/docs/firefighting/cert-shu.pdf",
+      },
+      {
+        id: "manual",
+        title: "Руководство по эксплуатации НУ АЛЬФА СПД",
+        size: "0.81 МБ",
+        href: "/docs/firefighting/manual.pdf",
+      },
+    ],
+  },
+
+  // Section 12 «Финальный CTA + соседние продукты». The neighbour
+  // strip pulls from src/lib/products.ts and excludes this slug
+  // automatically.
+  footerCta: {
+    tag: "12 · ЗАПРОС КП",
+    title: "Соберите свою станцию под проект",
+    subtitle: "Ответим в течение рабочего дня. Расчёт подбора бесплатный.",
+    cta: { label: "Заполнить опросный лист", href: "#quiz" },
+    neighboursCaption: "Остальные продукты",
+  },
 };

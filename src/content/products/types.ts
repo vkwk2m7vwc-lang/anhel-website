@@ -281,4 +281,51 @@ export type ProductContent = {
     title: string;
     lede?: string;
   };
+  /** Section 11 — «Документация» (PDF cards). */
+  documents: DocumentsContent;
+  /** Section 12 — final CTA + neighbour-products footer. */
+  footerCta: FooterCtaContent;
+};
+
+/**
+ * One PDF card in section 11. `href` is the URL the card links to —
+ * real files live under `/public/docs/firefighting/...` once the
+ * user uploads them; external links (e.g. mfmc.ru) are also allowed
+ * for files that are still hosted upstream.
+ */
+export type DocumentItem = {
+  id: string;
+  title: string;
+  /** File size shown under the title, e.g. «0.33 МБ». */
+  size?: string;
+  /** Absolute or root-relative URL. */
+  href: string;
+  /** If true, open in a new tab. */
+  external?: boolean;
+};
+
+export type DocumentsContent = {
+  tag: string;
+  title: string;
+  lede?: string;
+  items: DocumentItem[];
+};
+
+/**
+ * Final CTA block — one big hook on the left, three neighbour product
+ * cards on the right. The neighbour cards are rendered from a global
+ * `ProductSummary` list in `src/lib/products.ts`, filtered to exclude
+ * the current product — so each of the four pages shows the other
+ * three automatically.
+ */
+export type FooterCtaContent = {
+  tag: string;
+  /** Big left-column hook, e.g. «Соберите свою станцию под проект». */
+  title: string;
+  /** One-liner sub-hook. */
+  subtitle?: string;
+  /** CTA label + href (usually the quiz anchor). */
+  cta: { label: string; href: string };
+  /** Column caption for the right-hand strip, e.g. «Остальные продукты». */
+  neighboursCaption?: string;
 };
