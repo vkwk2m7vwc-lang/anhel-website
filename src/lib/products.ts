@@ -60,8 +60,7 @@ export const PRODUCTS: readonly ProductSummary[] = [
     slug: "heating-unit",
     href: "/products/pumps/heating-unit",
     title: "Тепловые пункты",
-    tagline: "Блочные индивидуальные тепловые пункты (БИТП).",
+    tagline: "Блочные индивидуальные тепловые пункты (БИТП) — отопление, ГВС, комбинированные.",
     accent: "heat",
-    comingSoon: true,
   },
 ] as const;
