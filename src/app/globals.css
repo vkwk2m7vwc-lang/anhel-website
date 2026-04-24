@@ -45,6 +45,12 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
+
+    /* Fixed header is 64px mobile / 80px desktop. 96px leaves a breathing
+       gap below the header when anchors (#quiz, #applications, etc.)
+       land the user on a new section. Works with Lenis smooth-scroll and
+       native scroll-into-view alike. Audit finding 2. */
+    scroll-padding-top: 96px;
   }
 
   body {

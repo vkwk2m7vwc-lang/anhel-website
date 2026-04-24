@@ -23,6 +23,14 @@ export type ProductSummary = {
   tagline: string;
   /** Accent key — drives the neighbour card's hover highlight. */
   accent: ProductAccent;
+  /**
+   * When `true` the product's detail page isn't published yet.
+   * Consumers (neighbour strip, future catalogue grid) render the card
+   * as a disabled "Скоро" tile with no anchor, so clicks don't 404.
+   * Once the detail page lands, flip the flag to `false` (or remove
+   * it) and the card becomes a live link with no other changes.
+   */
+  comingSoon?: boolean;
 };
 
 export const PRODUCTS: readonly ProductSummary[] = [
@@ -32,6 +40,7 @@ export const PRODUCTS: readonly ProductSummary[] = [
     title: "Водоснабжение",
     tagline: "Насосные станции для жилых и коммерческих объектов.",
     accent: "water",
+    comingSoon: true,
   },
   {
     slug: "firefighting",
@@ -46,6 +55,7 @@ export const PRODUCTS: readonly ProductSummary[] = [
     title: "Водоподготовка",
     tagline: "Установки фильтрации и подготовки воды.",
     accent: "treatment",
+    comingSoon: true,
   },
   {
     slug: "heating-unit",
@@ -53,5 +63,6 @@ export const PRODUCTS: readonly ProductSummary[] = [
     title: "Тепловые пункты",
     tagline: "Блочные индивидуальные тепловые пункты (БИТП).",
     accent: "heat",
+    comingSoon: true,
   },
 ] as const;

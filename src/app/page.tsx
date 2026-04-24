@@ -15,7 +15,7 @@ import { HeroBgCarousel } from "@/components/hero/HeroBgCarousel";
 export default function Home() {
   return (
     <HeroShell
-      variantLabel="ANHEL"
+      variantLabel="ANHEL®"
       background={<HeroBgCarousel autoplay={true} />}
     />
   );

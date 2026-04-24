@@ -22,30 +22,28 @@ import { firefightingContent } from "@/content/products/firefighting";
  * `src/content/products/firefighting.ts`; this file is only the
  * assembly.
  *
- * Section map (current vs planned):
- *   1  Hero                           ✓  ProductHero
- *   2  Тех. характеристики             ✓  TechSpecsGrid
- *   3  Как срабатывает (+ 4 системы)   ✓  HowItWorksSection
- *   4  [merged into 3 — the 4-system switcher sits inside section 3]
- *   5  Применение                      ✓  ApplicationsGrid
- *   6  Бренды насосов + комплектующие  ✓  BrandsStrip
- *   7  Преимущества (9 пунктов)        ✓  AdvantagesGrid
- *   8  Галерея                         ✓  GalleryRail (skeletons)
- *   9  Кейсы                           ✓  CasesCarousel (skeletons)
- *   10 Опросный лист (квиз)            ✓  QuizSection (UI only)
- *   11 Документация                    ✓  DocumentsGrid
- *   12 Финальный CTA + соседние        ✓  ProductCtaFooter
+ * Section map (renumbered in audit round-1 to remove the 04 gap
+ * left behind by merging the old «Как работает» into section 3):
+ *   01 Hero                           ✓  ProductHero
+ *   02 Тех. характеристики             ✓  TechSpecsGrid
+ *   03 Как срабатывает (+ 4 системы)   ✓  HowItWorksSection
+ *   04 Применение                      ✓  ApplicationsGrid
+ *   05 Бренды насосов + комплектующие  ✓  BrandsStrip
+ *   06 Преимущества (9 пунктов)        ✓  AdvantagesGrid
+ *   07 Галерея                         ✓  GalleryRail (skeletons)
+ *   08 Кейсы                           ✓  CasesCarousel (skeletons)
+ *   09 Опросный лист (квиз)            ✓  QuizSection (UI only)
+ *   10 Документация                    ✓  DocumentsGrid
+ *   11 Финальный CTA + соседние        ✓  ProductCtaFooter
  *
- * The `#quiz` anchor referenced by the hero CTAs lands with section 10.
- * Until then clicking the buttons is a no-op (lands on nothing, no
- * error) — cleanest stub.
+ * The `#quiz` anchor referenced by the hero CTAs lands with section 09.
  */
 export const metadata: Metadata = {
   title: firefightingContent.metaTitle,
   description: firefightingContent.metaDescription,
   openGraph: {
     type: "website",
-    title: `${firefightingContent.metaTitle} · ANHEL`,
+    title: `${firefightingContent.metaTitle} · ANHEL®`,
     description: firefightingContent.metaDescription,
     url: `/products/pumps/firefighting`,
     images: [

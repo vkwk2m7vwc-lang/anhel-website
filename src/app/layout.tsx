@@ -22,15 +22,15 @@ export const metadata: Metadata = {
     process.env.NEXT_PUBLIC_SITE_URL ?? "https://anhelspb.com"
   ),
   title: {
-    default: "ANHEL — инженерное оборудование для зданий",
-    template: "%s · ANHEL",
+    default: "ANHEL® — инженерное оборудование для зданий",
+    template: "%s · ANHEL®",
   },
   description:
-    "ANHEL — производитель инженерного оборудования в Санкт-Петербурге. Насосные станции, пожарные установки, теплообменные пункты, системы водоподготовки.",
+    "ANHEL® — производитель инженерного оборудования. Офис — Санкт-Петербург, производство — Москва. Насосные станции, пожарные установки, теплообменные пункты, системы водоподготовки.",
   openGraph: {
     type: "website",
     locale: "ru_RU",
-    siteName: "ANHEL",
+    siteName: "ANHEL®",
     url: "/",
   },
   robots: {

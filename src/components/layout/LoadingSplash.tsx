@@ -47,6 +47,15 @@ export function LoadingSplash() {
             transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
           >
             ANHEL
+            {/* ® rendered with its own tighter tracking + superscript size
+                so the mark hugs the last letter and doesn't drift into the
+                next letter-slot when the wordmark expands to 0.6em. */}
+            <span
+              aria-hidden="true"
+              className="align-super text-[0.5em] tracking-normal"
+            >
+              ®
+            </span>
           </motion.span>
         </motion.div>
       )}
