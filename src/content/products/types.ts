@@ -272,4 +272,13 @@ export type ProductContent = {
   gallery: GalleryContent;
   /** Section 9 — «Кейсы» (implemented projects). */
   cases: CasesContent;
+  /** Section 10 — «Опросный лист» header copy. The form itself is
+      defined declaratively inside the QuizSection component because
+      its field schema is shared across all four products — the PDF
+      we source it from is the same for every station line. */
+  quiz: {
+    tag: string;
+    title: string;
+    lede?: string;
+  };
 };

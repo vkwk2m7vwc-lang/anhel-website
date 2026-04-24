@@ -260,4 +260,14 @@ export const firefightingContent: ProductContent = {
       },
     ],
   },
+
+  // Section 10 «Опросный лист». Only the header copy is per-product —
+  // the full field schema lives inside QuizSection because it's lifted
+  // directly from the МФМК quiz PDF and is identical across all four
+  // station lines.
+  quiz: {
+    tag: "10 · ОПРОСНЫЙ ЛИСТ",
+    title: "Подбор под ваш объект",
+    lede: "Шесть шагов — от контактов до технических параметров системы. Отвечаем в течение рабочего дня.",
+  },
 };

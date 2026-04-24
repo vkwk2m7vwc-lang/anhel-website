@@ -7,6 +7,7 @@ import { BrandsStrip } from "@/components/product-page/BrandsStrip";
 import { AdvantagesGrid } from "@/components/product-page/AdvantagesGrid";
 import { GalleryRail } from "@/components/product-page/GalleryRail";
 import { CasesCarousel } from "@/components/product-page/CasesCarousel";
+import { QuizSection } from "@/components/product-page/quiz/QuizSection";
 import { HowItWorksSection } from "@/components/products/firefighting/lakhta/HowItWorksSection";
 import { firefightingContent } from "@/content/products/firefighting";
 
@@ -29,7 +30,7 @@ import { firefightingContent } from "@/content/products/firefighting";
  *   7  Преимущества (9 пунктов)        ✓  AdvantagesGrid
  *   8  Галерея                         ✓  GalleryRail (skeletons)
  *   9  Кейсы                           ✓  CasesCarousel (skeletons)
- *   10 Опросный лист (квиз)            ⏳  (backend deferred)
+ *   10 Опросный лист (квиз)            ✓  QuizSection (UI only)
  *   11 Документация                    ⏳
  *   12 Финальный CTA + соседние        ⏳
  *
@@ -64,6 +65,7 @@ export default function FirefightingProductPage() {
     advantages,
     gallery,
     cases,
+    quiz,
   } = firefightingContent;
 
   return (
@@ -76,9 +78,9 @@ export default function FirefightingProductPage() {
       <AdvantagesGrid content={advantages} />
       <GalleryRail content={gallery} />
       <CasesCarousel content={cases} />
+      <QuizSection content={quiz} />
       {/*
         Next commits (in order):
-          — Section 10:    quiz UI (no backend)
           — Sections 11 + 12: documents + final CTA + neighbour nav
           — Deferred:      quiz email / Telegram / Turnstile
       */}
