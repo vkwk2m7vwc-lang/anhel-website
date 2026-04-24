@@ -72,7 +72,7 @@ export function FieldInput({
           onChange={(e) => handleChange(e.target.value)}
           onBlur={onBlur}
           className={cn(
-            "w-full border-b bg-transparent py-2 text-sm text-[var(--color-secondary)] placeholder-[var(--color-secondary)]/55 outline-none transition-colors",
+            "w-full border-b bg-transparent py-2 text-sm text-[var(--color-secondary)] placeholder-[var(--color-secondary)]/30 outline-none transition-colors",
             error
               ? "border-[var(--accent-fire)] focus:border-[var(--accent-fire)]"
               : "border-[var(--color-hairline)] focus:border-[var(--accent-current)]",
@@ -80,7 +80,7 @@ export function FieldInput({
           )}
         />
         {unit ? (
-          <span className="pointer-events-none absolute right-0 top-2 font-mono text-[11px] uppercase tracking-[0.08em] text-[var(--color-secondary)]/65">
+          <span className="pointer-events-none absolute right-0 top-2 font-mono text-[11px] uppercase tracking-[0.08em] text-[var(--color-secondary)]/40">
             {unit}
           </span>
         ) : null}
@@ -122,7 +122,7 @@ export function FieldTextarea({
         value={value ?? ""}
         placeholder={placeholder}
         onChange={(e) => onChange(e.target.value)}
-        className="w-full resize-y border border-[var(--color-hairline)] bg-transparent p-3 text-sm text-[var(--color-secondary)] placeholder-[var(--color-secondary)]/55 outline-none transition-colors focus:border-[var(--accent-current)]"
+        className="w-full resize-y border border-[var(--color-hairline)] bg-transparent p-3 text-sm text-[var(--color-secondary)] placeholder-[var(--color-secondary)]/30 outline-none transition-colors focus:border-[var(--accent-current)]"
       />
     </label>
   );
@@ -184,7 +184,7 @@ export function RadioCard<V extends string>({
         {label}
       </span>
       {description ? (
-        <span className="text-xs text-[var(--color-secondary)]/65">
+        <span className="text-xs text-[var(--color-secondary)]/50">
           {description}
         </span>
       ) : null}
@@ -247,7 +247,7 @@ export function CheckboxCard({
           {label}
         </span>
         {description ? (
-          <span className="text-xs text-[var(--color-secondary)]/65">
+          <span className="text-xs text-[var(--color-secondary)]/50">
             {description}
           </span>
         ) : null}
@@ -303,7 +303,7 @@ export function ConsentCheckbox({
 export function FieldGroupTitle({ children }: { children: React.ReactNode }) {
   return (
     <div className="mt-4 border-t border-[var(--color-hairline)] pt-6">
-      <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/60">
+      <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/35">
         {children}
       </p>
     </div>

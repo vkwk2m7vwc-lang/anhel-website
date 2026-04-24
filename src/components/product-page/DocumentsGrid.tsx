@@ -88,11 +88,11 @@ function DocCard({ doc, index }: { doc: DocumentItem; index: number }) {
             the accent-current ink on hover; helps the card read as a
             document at a glance. */}
         <div className="flex items-start justify-between gap-4">
-          <span className="font-mono text-[11px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/65 transition-colors group-hover:text-[var(--accent-current)]">
+          <span className="font-mono text-[11px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/40 transition-colors group-hover:text-[var(--accent-current)]">
             PDF
           </span>
           {doc.size ? (
-            <span className="font-mono text-[10px] uppercase tracking-[0.08em] text-[var(--color-secondary)]/65">
+            <span className="font-mono text-[10px] uppercase tracking-[0.08em] text-[var(--color-secondary)]/40">
               {doc.size}
             </span>
           ) : null}

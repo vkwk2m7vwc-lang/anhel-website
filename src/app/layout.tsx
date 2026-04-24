@@ -7,6 +7,7 @@ import { Footer } from "@/components/layout/Footer";
 import { CustomCursor } from "@/components/layout/CustomCursor";
 import { PageTransition } from "@/components/layout/PageTransition";
 import { LoadingSplash } from "@/components/layout/LoadingSplash";
+import { ldScriptProps, organizationLd } from "@/lib/schema-org";
 
 /**
  * Root layout.
@@ -46,6 +47,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ru" className={fontVariables}>
+      <head>
+        {/* Site-wide Organization JSON-LD. Rendered once in <head> so
+            Google's structured-data graph has a single canonical
+            organization @id to link Product/Article/Breadcrumb
+            records to — deduplicates cleanly across all pages. */}
+        <script {...ldScriptProps(organizationLd())} />
+      </head>
       <body className="antialiased">
         <LenisProvider>
           <LoadingSplash />

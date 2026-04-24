@@ -189,7 +189,7 @@ export function QuizSection({
                 progress bar above stays anchored during the transition. */}
             <div className="mt-10 flex items-baseline justify-between gap-4">
               <div>
-                <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/65">
+                <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/40">
                   Шаг {String(stepIndex + 1).padStart(2, "0")} из {String(QUIZ_STEPS.length).padStart(2, "0")}
                 </p>
                 <h3 className="mt-2 font-display text-[22px] font-medium leading-tight text-[var(--color-secondary)] md:text-[26px]">
@@ -197,7 +197,7 @@ export function QuizSection({
                 </h3>
               </div>
               {step.subtitle ? (
-                <p className="hidden max-w-[320px] text-right text-xs text-[var(--color-secondary)]/65 md:block">
+                <p className="hidden max-w-[320px] text-right text-xs text-[var(--color-secondary)]/50 md:block">
                   {step.subtitle}
                 </p>
               ) : null}
@@ -246,7 +246,7 @@ export function QuizSection({
                   "group inline-flex items-center gap-3 rounded-md px-5 py-3 text-sm font-medium transition-all",
                   canAdvance
                     ? "bg-[var(--color-secondary)] text-[var(--color-primary)] hover:bg-[var(--accent-current)] hover:text-[var(--color-secondary)]"
-                    : "cursor-not-allowed bg-[var(--color-secondary)]/20 text-[var(--color-secondary)]/65"
+                    : "cursor-not-allowed bg-[var(--color-secondary)]/20 text-[var(--color-secondary)]/40"
                 )}
               >
                 {isLast ? "Открыть в почтовом клиенте" : "Далее"}
@@ -260,7 +260,7 @@ export function QuizSection({
             </div>
 
             {/* Disclaimer from the original PDF, verbatim */}
-            <p className="mt-8 border-l-2 border-[var(--accent-current)]/60 pl-4 text-[13px] leading-relaxed text-[var(--color-secondary)]/65">
+            <p className="mt-8 border-l-2 border-[var(--accent-current)]/60 pl-4 text-[11px] leading-relaxed text-[var(--color-secondary)]/45">
               Внимание: ANHEL® не несёт ответственности за корректность
               исходных данных для подбора оборудования, указанных в опросном
               листе. Отказ заполнить опросный лист означает согласие со
@@ -314,7 +314,7 @@ function QuizProgress({
           </div>
         ))}
       </div>
-      <div className="flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/65">
+      <div className="flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/40">
         <span>Прогресс</span>
         <span>{Math.round(progress * 100)} %</span>
       </div>

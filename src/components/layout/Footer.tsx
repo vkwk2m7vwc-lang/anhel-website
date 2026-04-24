@@ -74,7 +74,7 @@ export function Footer() {
       </div>
 
       <div className="border-t border-[var(--color-hairline)]">
-        <div className="mx-auto flex max-w-[1440px] flex-col items-start justify-between gap-2 px-6 py-6 text-xs text-[var(--color-secondary)]/65 md:flex-row md:items-center md:px-12">
+        <div className="mx-auto flex max-w-[1440px] flex-col items-start justify-between gap-2 px-6 py-6 text-xs text-[var(--color-secondary)]/50 md:flex-row md:items-center md:px-12">
           <p>© {year} ANHEL®. Все права защищены.</p>
           <p>Санкт-Петербург · anhelspb.com</p>
         </div>

@@ -178,7 +178,7 @@ export function MobileMenu({
                             <span className="font-display text-2xl font-medium text-[var(--color-secondary)]">
                               {p.title}
                             </span>
-                            <span className="font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/65">
+                            <span className="font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/50">
                               Скоро
                             </span>
                           </div>

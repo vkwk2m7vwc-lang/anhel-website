@@ -84,7 +84,7 @@ export function ProductCtaFooter({
           {/* Right — neighbour strip */}
           <div className="flex flex-col gap-5">
             {content.neighboursCaption ? (
-              <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/65">
+              <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/40">
                 {content.neighboursCaption}
               </p>
             ) : null}
@@ -144,7 +144,7 @@ function NeighbourCard({
         {product.comingSoon ? (
           <span
             aria-hidden="true"
-            className="font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/65"
+            className="font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/40"
           >
             Скоро
           </span>

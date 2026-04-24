@@ -102,7 +102,7 @@ function GalleryTile({ photo, index }: { photo: GalleryPhoto; index: number }) {
       <div className="mt-4 flex items-start justify-between gap-4">
         <span
           aria-hidden="true"
-          className="font-mono text-[11px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/65"
+          className="font-mono text-[11px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/40"
         >
           {String(index + 1).padStart(2, "0")}
         </span>
@@ -137,7 +137,7 @@ function GallerySkeleton() {
       />
       {/* Centre label so the skeleton is unambiguous at a glance */}
       <div className="absolute inset-0 flex items-center justify-center">
-        <span className="font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/55">
+        <span className="font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/25">
           Фото появится
         </span>
       </div>

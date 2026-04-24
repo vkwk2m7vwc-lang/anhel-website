@@ -231,7 +231,7 @@ export function ProductHero({
 
         {/* Thin baseline: hairline + scroll hint + timestamp of sorts */}
         <div className="mt-12 flex flex-col gap-4 border-t border-[var(--color-hairline)] pt-6 md:mt-16 md:flex-row md:items-center md:justify-between">
-          <p className="font-mono text-[10px] uppercase tracking-[0.1em] text-[var(--color-secondary)]/65">
+          <p className="font-mono text-[10px] uppercase tracking-[0.1em] text-[var(--color-secondary)]/40">
             Проектирование · Производство · Автоматизация
           </p>
           <motion.p
@@ -293,7 +293,7 @@ function ProductCtaButton({ cta }: { cta: ProductCTA }) {
     >
       {cta.label}
       {cta.hint && (
-        <span className="font-mono text-[10px] uppercase tracking-[0.1em] text-[var(--color-secondary)]/65">
+        <span className="font-mono text-[10px] uppercase tracking-[0.1em] text-[var(--color-secondary)]/40">
           {cta.hint}
         </span>
       )}
