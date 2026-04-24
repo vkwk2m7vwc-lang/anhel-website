@@ -38,9 +38,8 @@ export const PRODUCTS: readonly ProductSummary[] = [
     slug: "water-supply",
     href: "/products/pumps/water-supply",
     title: "Водоснабжение",
-    tagline: "Насосные станции для жилых и коммерческих объектов.",
+    tagline: "Насосные станции ХВС, ГВС и повышения давления для жилых и коммерческих объектов.",
     accent: "water",
-    comingSoon: true,
   },
   {
     slug: "firefighting",
