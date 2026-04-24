@@ -55,8 +55,13 @@ export function TechSpecsGrid({ specs }: { specs: readonly TechSpecTile[] }) {
           </p>
         </div>
 
-        {/* 1 × 8 → 2 × 4 → 4 × 2 */}
-        <ul className="mt-12 grid grid-cols-1 gap-px bg-[var(--color-hairline)] md:mt-16 md:grid-cols-2 lg:grid-cols-4">
+        {/* 2 × 4 → 4 × 2. Mobile starts at 2 columns — прежний 1×8 stack
+            заставлял пользователя листать 8 экранов, чтобы прочитать
+            ТТХ. На lg+ возвращаемся к hairline-grid через `gap-px` +
+            `bg-hairline`; на меньших экранах оставляем простой `gap-3`
+            (12px): 170-180px на ячейку + небольшое воздушное разделение
+            читается лучше, чем 1px хайрлайн между тесными плитками. */}
+        <ul className="mt-12 grid grid-cols-2 gap-3 md:mt-16 lg:grid-cols-4 lg:gap-px lg:bg-[var(--color-hairline)]">
           {specs.map((spec, i) => (
             <TechSpecCard key={spec.label} spec={spec} index={i} />
           ))}
@@ -89,7 +94,7 @@ function TechSpecCard({ spec, index }: { spec: TechSpecTile; index: number }) {
         ease: [0.16, 1, 0.3, 1],
         delay: staggerDelay,
       }}
-      className="group relative flex min-h-[180px] flex-col justify-between bg-[var(--color-primary)] p-6 transition-colors duration-300 hover:bg-[#111] md:min-h-[220px] md:p-8"
+      className="group relative flex min-h-[140px] flex-col justify-between bg-[var(--color-primary)] p-4 transition-colors duration-300 hover:bg-[#111] md:min-h-[180px] md:p-6 lg:min-h-[220px] lg:p-8"
     >
       {/* Accent ring — appears on hover, sits just inside the cell. Uses
           the page-level accent CSS variable so each product gets its own
@@ -121,8 +126,8 @@ function TechSpecCard({ spec, index }: { spec: TechSpecTile; index: number }) {
       {/* Value + unit — display type paired with a mono unit that sits
           on the baseline. Keeping them in one baseline-flex row so long
           values ("от 2 до 6", "релейное / частотное") wrap cleanly. */}
-      <div className="mt-6 flex flex-wrap items-baseline gap-x-2">
-        <span className="font-display text-[28px] font-medium leading-none text-[var(--color-secondary)] md:text-[32px]">
+      <div className="mt-4 flex flex-wrap items-baseline gap-x-2 md:mt-6">
+        <span className="font-display text-[22px] font-medium leading-none text-[var(--color-secondary)] md:text-[28px] lg:text-[32px]">
           {spec.value}
         </span>
         {spec.unit && (
