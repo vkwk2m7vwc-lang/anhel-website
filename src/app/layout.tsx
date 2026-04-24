@@ -55,12 +55,28 @@ export default function RootLayout({
         <script {...ldScriptProps(organizationLd())} />
       </head>
       <body className="antialiased">
+        {/* Skip-link — первый фокусируемый элемент в DOM. Видим только
+            на focus (Tab с freshly-loaded page). Позволяет пользователям
+            клавиатуры и screen-reader'ов перепрыгнуть через fixed header
+            + логотип + nav и приземлиться в <main>. Target id
+            `main-content` висит на <main> ниже.
+            z-[300] выше чем LoadingSplash (z-[200]) и Header (z-50),
+            чтобы focus-версия линка перекрывала splash если он ещё не
+            исчез на момент Tab. Audit finding 52. */}
+        <a
+          href="#main-content"
+          className="sr-only rounded-md bg-[var(--color-secondary)] px-4 py-2 text-sm font-medium text-[var(--color-primary)] focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[300]"
+        >
+          Перейти к содержимому
+        </a>
         <LenisProvider>
           <LoadingSplash />
           <CustomCursor />
           <Header />
           <PageTransition>
-            <main className="min-h-screen">{children}</main>
+            <main id="main-content" className="min-h-screen">
+              {children}
+            </main>
             <Footer />
           </PageTransition>
         </LenisProvider>
