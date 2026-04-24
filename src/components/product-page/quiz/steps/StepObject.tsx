@@ -1,12 +1,6 @@
 "use client";
 
-import {
-  FieldGroupTitle,
-  FieldInput,
-  FieldRadioGroup,
-  FieldTextarea,
-  RadioCard,
-} from "../QuizFields";
+import { FieldInput, FieldTextarea, RadioCard, FieldGroupTitle } from "../QuizFields";
 import type { QuizData, SystemType } from "../quiz-schema";
 
 /**
@@ -38,76 +32,75 @@ export function StepObject({
         placeholder="ЖК «Пример», Москва, 1-я очередь"
       />
 
-      <FieldRadioGroup
-        label="Тип системы"
-        idPrefix="quiz-system-type"
-        className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3"
-      >
-        <RadioCard<SystemType>
-          value="water"
-          selected={data.systemType}
-          onSelect={set}
-          label="Водоснабжение"
-        />
-        <RadioCard<SystemType>
-          value="fire-drencher"
-          selected={data.systemType}
-          onSelect={set}
-          label="Пожаротушение — дренчерное"
-        />
-        <RadioCard<SystemType>
-          value="fire-sprinkler"
-          selected={data.systemType}
-          onSelect={set}
-          label="Пожаротушение — спринклерное"
-        />
-        <RadioCard<SystemType>
-          value="heating-closed"
-          selected={data.systemType}
-          onSelect={set}
-          label="Отопление — закрытая"
-        />
-        <RadioCard<SystemType>
-          value="heating-open"
-          selected={data.systemType}
-          onSelect={set}
-          label="Отопление — открытая"
-        />
-        <RadioCard<SystemType>
-          value="aircon"
-          selected={data.systemType}
-          onSelect={set}
-          label="Кондиционирование"
-        />
-        <RadioCard<SystemType>
-          value="wells"
-          selected={data.systemType}
-          onSelect={set}
-          label="Скважинные насосы в кожухе"
-        />
-        <RadioCard<SystemType>
-          value="combined"
-          selected={data.systemType}
-          onSelect={set}
-          label="Совмещённая (пожар + водоснабжение)"
-        />
-        <RadioCard<SystemType>
-          value="other"
-          selected={data.systemType}
-          onSelect={set}
-          label="Другое"
-        />
-      </FieldRadioGroup>
-      {data.systemType === "other" ? (
-        <div>
-          <FieldInput
-            label="Опишите систему"
-            value={data.systemTypeOther}
-            onChange={(v) => onChange({ systemTypeOther: v })}
-            placeholder="Например, оборотное водоснабжение"
+      <div>
+        <FieldGroupTitle>Тип системы</FieldGroupTitle>
+        <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
+          <RadioCard<SystemType>
+            value="water"
+            selected={data.systemType}
+            onSelect={set}
+            label="Водоснабжение"
+          />
+          <RadioCard<SystemType>
+            value="fire-drencher"
+            selected={data.systemType}
+            onSelect={set}
+            label="Пожаротушение — дренчерное"
+          />
+          <RadioCard<SystemType>
+            value="fire-sprinkler"
+            selected={data.systemType}
+            onSelect={set}
+            label="Пожаротушение — спринклерное"
+          />
+          <RadioCard<SystemType>
+            value="heating-closed"
+            selected={data.systemType}
+            onSelect={set}
+            label="Отопление — закрытая"
+          />
+          <RadioCard<SystemType>
+            value="heating-open"
+            selected={data.systemType}
+            onSelect={set}
+            label="Отопление — открытая"
+          />
+          <RadioCard<SystemType>
+            value="aircon"
+            selected={data.systemType}
+            onSelect={set}
+            label="Кондиционирование"
+          />
+          <RadioCard<SystemType>
+            value="wells"
+            selected={data.systemType}
+            onSelect={set}
+            label="Скважинные насосы в кожухе"
+          />
+          <RadioCard<SystemType>
+            value="combined"
+            selected={data.systemType}
+            onSelect={set}
+            label="Совмещённая (пожар + водоснабжение)"
+          />
+          <RadioCard<SystemType>
+            value="other"
+            selected={data.systemType}
+            onSelect={set}
+            label="Другое"
           />
         </div>
-      ) : null}
+        {data.systemType === "other" ? (
+          <div className="mt-4">
+            <FieldInput
+              label="Опишите систему"
+              value={data.systemTypeOther}
+              onChange={(v) => onChange({ systemTypeOther: v })}
+              placeholder="Например, оборотное водоснабжение"
+            />
+          </div>
+        ) : null}
+      </div>
 
       <div>
         <FieldGroupTitle>Расход</FieldGroupTitle>
