@@ -1,6 +1,5 @@
 "use client";
 
-import { useCallback, useEffect, useRef } from "react";
 import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
 import { Pause, Play } from "lucide-react";
@@ -9,21 +8,6 @@ import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 import { useHeroCarousel } from "@/hooks/useHeroCarousel";
 import { HERO_PRODUCTS } from "@/lib/hero-products";
 import { cn } from "@/lib/utils";
-
-/**
- * How long the carousel stays paused after the user *explicitly* picks
- * a slide by clicking a number. Matches the auto-advance interval so a
- * click feels like "start this slide's interval fresh" — the user gets
- * one full 5 s window to look at their pick, then the carousel resumes
- * from that slide.
- *
- * Hover leave has no dedicated delay constant: we simply `resume()`
- * on pointer leave and the underlying hook picks the progress bar
- * back up from wherever it was paused. If the user hovered 2 s into
- * the interval, the remaining ~3 s plays out after they leave —
- * faster and less laggy-feeling than a forced grace window.
- */
-const CLICK_RESUME_DELAY_MS = 5000;
 
 type HeroBgCarouselProps = {
   /**
@@ -60,84 +44,24 @@ export function HeroBgCarousel({
     });
 
   /*
-   * Pause / resume state machine --------------------------------------
-   * Two sources can park the carousel, and they must not fight:
+   * Pause model --------------------------------------------------------
+   * Only one source parks the carousel: hover. Pointer inside → pause,
+   * pointer outside → resume. No timers, no grace windows.
    *
-   *   1. Hover pause — pointer is inside the zone. Pauses on enter,
-   *      resumes on leave. No grace window: the underlying RAF loop
-   *      keeps the progress bar at whatever fraction it was paused at,
-   *      so leaving picks up the remaining time of the 5-s interval.
+   * A click on a number previously added a dedicated pause window
+   * (9 s → 5 s in earlier iterations) to let the viewer study their
+   * pick, but it felt too static: users saw a non-ticking progress
+   * bar and thought the carousel had stalled. New behaviour is to
+   * just switch slides on click and let the normal 5-s interval run
+   * from 0 immediately — so the progress bar starts moving the very
+   * moment you click.
    *
-   *   2. Click pause — user explicitly clicked a tab. Holds for 5 s
-   *      regardless of where the pointer is, giving them a full
-   *      interval to look at the slide they picked. Can outlive a
-   *      pointer leave: if the user clicks 03 then moves the mouse
-   *      off, the pause must NOT collapse on `pointerleave`.
-   *
-   * `clickPauseRef` tracks whether a click-pause is currently live.
-   * `isHoveringRef` tracks pointer state. Both are refs (not state)
-   * because they're read from inside handlers and don't need to
-   * trigger re-renders.
-   *
-   * Resolution rules:
-   *   - pointer enter → `pause()` (always)
-   *   - pointer leave → `resume()` only if the click-pause isn't live
-   *   - click        → `pause()`, jump, start 5-s timer; when the timer
-   *                    fires, `resume()` only if the pointer has since
-   *                    left the zone (otherwise hover still holds it)
+   * If the user happens to be hovering at the time of click, hover
+   * continues to hold the carousel until they move off. `goTo` resets
+   * the progress bar to 0, and the RAF loop in useHeroCarousel keeps
+   * it at 0 while `hoverPaused` is true, then picks up from 0 on
+   * pointerleave.
    */
-  const resumeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const clickPauseRef = useRef(false);
-  const isHoveringRef = useRef(false);
-
-  const clearResumeTimer = useCallback(() => {
-    if (resumeTimerRef.current !== null) {
-      clearTimeout(resumeTimerRef.current);
-      resumeTimerRef.current = null;
-    }
-    clickPauseRef.current = false;
-  }, []);
-
-  const handlePointerEnter = useCallback(() => {
-    isHoveringRef.current = true;
-    pause();
-  }, [pause]);
-
-  const handlePointerLeave = useCallback(() => {
-    isHoveringRef.current = false;
-    // Click-pause outranks hover: if it's live, the pointer leaving
-    // doesn't release the carousel. The click timer will handle the
-    // final resume when it expires.
-    if (!clickPauseRef.current) resume();
-  }, [resume]);
-
-  const handleTabClick = useCallback(
-    (index: number) => {
-      // Fresh click wins — kill any prior click-pause timer, re-arm.
-      if (resumeTimerRef.current !== null) {
-        clearTimeout(resumeTimerRef.current);
-        resumeTimerRef.current = null;
-      }
-      clickPauseRef.current = true;
-      pause();
-      goTo(index);
-      resumeTimerRef.current = setTimeout(() => {
-        clickPauseRef.current = false;
-        resumeTimerRef.current = null;
-        // If the user is still hovering when the click-pause expires,
-        // hover is holding the carousel — skip resume and let the
-        // eventual pointerleave handle it.
-        if (!isHoveringRef.current) resume();
-      }, CLICK_RESUME_DELAY_MS);
-    },
-    [pause, goTo, resume]
-  );
-
-  // Tidy up on unmount so a stray timer doesn't try to flip state on a
-  // dead component.
-  useEffect(() => {
-    return clearResumeTimer;
-  }, [clearResumeTimer]);
 
   const product = HERO_PRODUCTS[active];
 
@@ -183,10 +107,10 @@ export function HeroBgCarousel({
       <div
         className="pointer-events-auto absolute inset-y-0 right-0 hidden w-[45%] flex-col items-center justify-center md:flex"
         style={{ perspective: "1200px" }}
-        onMouseEnter={handlePointerEnter}
-        onMouseLeave={handlePointerLeave}
-        onPointerEnter={handlePointerEnter}
-        onPointerLeave={handlePointerLeave}
+        onMouseEnter={pause}
+        onMouseLeave={resume}
+        onPointerEnter={pause}
+        onPointerLeave={resume}
       >
         {/* The tilt + float wrapper is stable — only the <img> inside swaps,
             so the spring-smoothed tilt never stutters on slide change.
@@ -302,7 +226,7 @@ export function HeroBgCarousel({
                     aria-controls="hero-carousel-product"
                     aria-label={`Показать: ${p.name}`}
                     data-cursor="hover"
-                    onClick={() => handleTabClick(i)}
+                    onClick={() => goTo(i)}
                     className={cn(
                       "cursor-pointer rounded-pill border px-3 py-1 font-mono text-[11px] uppercase tracking-[0.1em]",
                       "transition-[background-color,color,border-color,transform] duration-200",
@@ -391,10 +315,10 @@ export function HeroBgCarousel({
           leave-to-resume-after-4-s works on mobile too. */}
       <div
         className="pointer-events-auto absolute inset-x-0 bottom-24 flex flex-col items-center gap-4 md:hidden"
-        onMouseEnter={handlePointerEnter}
-        onMouseLeave={handlePointerLeave}
-        onPointerEnter={handlePointerEnter}
-        onPointerLeave={handlePointerLeave}
+        onMouseEnter={pause}
+        onMouseLeave={resume}
+        onPointerEnter={pause}
+        onPointerLeave={resume}
       >
         <motion.div className="relative h-[200px] w-[200px]">
           {/* Pedestal glow — mobile version. Smaller footprint (75%×35%)
@@ -449,7 +373,7 @@ export function HeroBgCarousel({
                 type="button"
                 aria-label={`Показать: ${p.name}`}
                 aria-pressed={isActive}
-                onClick={() => handleTabClick(i)}
+                onClick={() => goTo(i)}
                 className={cn(
                   "h-1.5 rounded-pill transition-all duration-200",
                   "active:scale-[0.88]",
