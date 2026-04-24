@@ -116,4 +116,95 @@ export const firefightingContent: ProductContent = {
       },
     ],
   },
+
+  // Section 6 «Бренды». Two tiers — pump brands (main line of trust)
+  // and automation / power components (supporting tier). Lists mirror
+  // the МФМК reference catalogue.
+  brands: {
+    tag: "06 · БРЕНДЫ",
+    title: "Собираем из оборудования мировых производителей",
+    lede: "Насосы — от проверенных производителей, автоматика — собственное и импортное.",
+    rowPumps: [
+      { id: "aquadeus", name: "AquaDeus", series: "RCP, RHP" },
+      { id: "cnp", name: "CNP", series: "NIS, TD" },
+      { id: "leo", name: "Leo", series: "Lez" },
+      { id: "gms", name: "ГМС", series: "КМ" },
+    ],
+    rowComponents: [
+      { id: "dekraft", name: "DEKraft" },
+      { id: "unitronics", name: "Unitronics" },
+      { id: "iek", name: "IEK" },
+      { id: "keaz", name: "КЭАЗ" },
+      { id: "ekf", name: "EKF" },
+      { id: "chint", name: "CHINT" },
+      { id: "dkc", name: "DKC" },
+      { id: "weintek", name: "Weintek" },
+      { id: "titan", name: "ТИТАН Контрол" },
+      { id: "mfmk", name: "МФМК" },
+    ],
+  },
+
+  // Section 7 «Преимущества». All nine points from the МФМК reference —
+  // user asked for the full list, not a cut-down to six.
+  advantages: {
+    tag: "07 · ПРЕИМУЩЕСТВА",
+    title: "Почему ANHEL",
+    lede: "Серийное производство, контроль качества и собственная автоматика.",
+    items: [
+      {
+        id: "serial",
+        mono: "01",
+        title: "Серийное производство",
+        body: "Профессиональный сборочный цикл — не кустарная сборка на объекте.",
+      },
+      {
+        id: "custom",
+        mono: "02",
+        title: "Индивидуальное исполнение",
+        body: "Сборка по техническому заданию заказчика, гибкая конфигурация под проект.",
+      },
+      {
+        id: "qc",
+        mono: "03",
+        title: "Контроль качества",
+        body: "Каждая станция проходит гидравлические и электрические испытания перед отгрузкой.",
+      },
+      {
+        id: "control-modes",
+        mono: "04",
+        title: "Многообразие режимов управления",
+        body: "Релейное, частотное, с контроллером и плавным пуском — под задачи объекта.",
+      },
+      {
+        id: "reliability",
+        mono: "05",
+        title: "Надёжность и долгий срок службы",
+        body: "Полный средний срок службы — не менее 10 лет при штатной эксплуатации.",
+      },
+      {
+        id: "own-modules",
+        mono: "06",
+        title: "Модули ввода/вывода собственного производства",
+        body: "Автоматика собирается у нас в цеху, что упрощает интеграцию и сервис.",
+      },
+      {
+        id: "compact",
+        mono: "07",
+        title: "Компактное исполнение",
+        body: "Удобство транспортировки и монтажа даже в ограниченных помещениях насосных.",
+      },
+      {
+        id: "references",
+        mono: "08",
+        title: "Рекомендации крупнейших заказчиков",
+        body: "Жилые комплексы Москвы и Санкт-Петербурга, промышленные площадки.",
+      },
+      {
+        id: "documentation",
+        mono: "09",
+        title: "Полный комплект документации",
+        body: "Разрешительная и эксплуатационная — все сертификаты и паспорта в поставке.",
+      },
+    ],
+  },
 };

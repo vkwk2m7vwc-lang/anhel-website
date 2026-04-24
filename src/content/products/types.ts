@@ -118,8 +118,74 @@ export type ApplicationsContent = {
 };
 
 /**
+ * One brand word-mark shown in the brands strip (section 6).
+ *
+ * No SVG logos yet — we render the brand name in our display font,
+ * lightly letterspaced, in the hairline/steel palette so the row
+ * reads as a proof line rather than a marketing collage. When real
+ * logos arrive we swap `name` for an `svg` field and update the
+ * component (chore commit).
+ */
+export type BrandItem = {
+  /** Stable id — used as React key. */
+  id: string;
+  /** Display name, e.g. «AquaDeus», «CNP», «DEKraft». */
+  name: string;
+  /** Optional short descriptor shown on hover / below, e.g. «RCP, RHP». */
+  series?: string;
+};
+
+/**
+ * Brands section — two rows in source order:
+ *   rowPumps       насосные бренды (крупнее, ключевые)
+ *   rowComponents  комплектующие (мельче, проходной ряд)
+ * The component renders both in two visually distinct tiers.
+ */
+export type BrandsContent = {
+  /** Mono tag, e.g. «06 · БРЕНДЫ». */
+  tag: string;
+  /** Section h2, e.g. «Собираем из оборудования мировых производителей». */
+  title: string;
+  /** One-line hint, right-aligned on desktop. */
+  lede?: string;
+  /** Row 1 — brands of pumps themselves. */
+  rowPumps: BrandItem[];
+  /** Row 2 — brands of electrical + automation components. */
+  rowComponents: BrandItem[];
+};
+
+/**
+ * One card in the Advantages grid (section 7 «Преимущества»).
+ *
+ * Layout: a big mono index + a single-line title + a short body line
+ * that expands the title. Nine items is the МФМК reference count —
+ * we preserve it in full so the engineering audience reads the whole
+ * spec sheet at a glance.
+ */
+export type AdvantageItem = {
+  /** Stable id. */
+  id: string;
+  /** Mono prefix: «01»..«09». */
+  mono: string;
+  /** Short one-line title, e.g. «Серийное производство». */
+  title: string;
+  /** 1-2 sentences expanding the title. */
+  body: string;
+};
+
+/**
+ * Advantages section config.
+ */
+export type AdvantagesContent = {
+  tag: string;
+  title: string;
+  lede?: string;
+  items: AdvantageItem[];
+};
+
+/**
  * Top-level product-page content. As we build commits 3-6 we extend this
- * with more fields (brands, cases, quiz, etc.). Commit 1 only populated
+ * with more fields (cases, quiz, etc.). Commit 1 only populated
  * `hero` and `techSpecs`; the firefighting commit sequence for sections
  * 5-12 adds the remaining fields one commit at a time.
  */
@@ -134,4 +200,8 @@ export type ProductContent = {
   techSpecs: TechSpecTile[];
   /** Section 5 — «Применение». */
   applications: ApplicationsContent;
+  /** Section 6 — «Бренды». */
+  brands: BrandsContent;
+  /** Section 7 — «Преимущества» (9 tiles per МФМК reference). */
+  advantages: AdvantagesContent;
 };
