@@ -184,8 +184,72 @@ export type AdvantagesContent = {
 };
 
 /**
+ * One photo in the production / site gallery (section 8).
+ *
+ * Images live under `/public/assets/gallery/<slug>/...`. `src` is a
+ * path relative to `/public`, so we can swap in real photos later
+ * without touching the content schema. When the `src` is undefined
+ * the component renders a skeleton placeholder at the declared ratio
+ * so the layout stays locked even before the real images are imported.
+ */
+export type GalleryPhoto = {
+  /** Stable id — used as React key. */
+  id: string;
+  /** Optional path under /public; undefined renders as skeleton. */
+  src?: string;
+  /** Alt text; required even for placeholders so a11y is consistent. */
+  alt: string;
+  /** Short caption below the image, e.g. «Цех, Санкт-Петербург». */
+  caption?: string;
+  /** Aspect ratio, e.g. "3/4" | "16/9"; default "4/5". */
+  aspect?: string;
+};
+
+/**
+ * Gallery section — horizontal photo lane, 6–10 items.
+ */
+export type GalleryContent = {
+  tag: string;
+  title: string;
+  lede?: string;
+  photos: GalleryPhoto[];
+};
+
+/**
+ * One implemented-project card (section 9 «Кейсы»).
+ *
+ * Data is a mix of copy and real reference numbers from the МФМК
+ * implemented-projects list. `equipment` is a short one-liner that
+ * reads as a spec, not a sentence, e.g. «HVS-NU-250, 3+1 насоса».
+ */
+export type CaseItem = {
+  id: string;
+  /** Object name, e.g. «ЖК Дмитровский парк». */
+  title: string;
+  /** City + year when the project went live. */
+  location: string;
+  /** One-line equipment summary. */
+  equipment: string;
+  /** Optional hero photo, same placeholder rules as GalleryPhoto. */
+  photo?: {
+    src?: string;
+    alt: string;
+  };
+};
+
+/**
+ * Cases section — 3-5 implemented projects in a horizontal carousel.
+ */
+export type CasesContent = {
+  tag: string;
+  title: string;
+  lede?: string;
+  items: CaseItem[];
+};
+
+/**
  * Top-level product-page content. As we build commits 3-6 we extend this
- * with more fields (cases, quiz, etc.). Commit 1 only populated
+ * with more fields (quiz, documents, cta). Commit 1 only populated
  * `hero` and `techSpecs`; the firefighting commit sequence for sections
  * 5-12 adds the remaining fields one commit at a time.
  */
@@ -204,4 +268,8 @@ export type ProductContent = {
   brands: BrandsContent;
   /** Section 7 — «Преимущества» (9 tiles per МФМК reference). */
   advantages: AdvantagesContent;
+  /** Section 8 — «Галерея» (production + site photos). */
+  gallery: GalleryContent;
+  /** Section 9 — «Кейсы» (implemented projects). */
+  cases: CasesContent;
 };

@@ -5,6 +5,8 @@ import { TechSpecsGrid } from "@/components/product-page/TechSpecsGrid";
 import { ApplicationsGrid } from "@/components/product-page/ApplicationsGrid";
 import { BrandsStrip } from "@/components/product-page/BrandsStrip";
 import { AdvantagesGrid } from "@/components/product-page/AdvantagesGrid";
+import { GalleryRail } from "@/components/product-page/GalleryRail";
+import { CasesCarousel } from "@/components/product-page/CasesCarousel";
 import { HowItWorksSection } from "@/components/products/firefighting/lakhta/HowItWorksSection";
 import { firefightingContent } from "@/content/products/firefighting";
 
@@ -25,8 +27,8 @@ import { firefightingContent } from "@/content/products/firefighting";
  *   5  Применение                      ✓  ApplicationsGrid
  *   6  Бренды насосов + комплектующие  ✓  BrandsStrip
  *   7  Преимущества (9 пунктов)        ✓  AdvantagesGrid
- *   8  Галерея                         ⏳
- *   9  Кейсы                           ⏳
+ *   8  Галерея                         ✓  GalleryRail (skeletons)
+ *   9  Кейсы                           ✓  CasesCarousel (skeletons)
  *   10 Опросный лист (квиз)            ⏳  (backend deferred)
  *   11 Документация                    ⏳
  *   12 Финальный CTA + соседние        ⏳
@@ -60,6 +62,8 @@ export default function FirefightingProductPage() {
     applications,
     brands,
     advantages,
+    gallery,
+    cases,
   } = firefightingContent;
 
   return (
@@ -70,9 +74,10 @@ export default function FirefightingProductPage() {
       <ApplicationsGrid content={applications} />
       <BrandsStrip content={brands} />
       <AdvantagesGrid content={advantages} />
+      <GalleryRail content={gallery} />
+      <CasesCarousel content={cases} />
       {/*
         Next commits (in order):
-          — Sections 8 + 9: gallery + cases
           — Section 10:    quiz UI (no backend)
           — Sections 11 + 12: documents + final CTA + neighbour nav
           — Deferred:      quiz email / Telegram / Turnstile

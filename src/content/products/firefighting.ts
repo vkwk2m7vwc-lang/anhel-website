@@ -207,4 +207,57 @@ export const firefightingContent: ProductContent = {
       },
     ],
   },
+
+  // Section 8 «Галерея». No real photos yet — eight aspect-locked
+  // placeholders. When the shooting deck lands we drop files into
+  // /public/assets/gallery/firefighting/ and fill in `src` here; the
+  // layout keeps working unchanged.
+  gallery: {
+    tag: "08 · ГАЛЕРЕЯ",
+    title: "Производство и монтаж",
+    lede: "Цех сборки, испытательный стенд, установки на объектах.",
+    photos: [
+      { id: "shop-01", alt: "Сборочный цех ANHEL, общий вид", caption: "Цех, Санкт-Петербург", aspect: "4/5" },
+      { id: "shop-02", alt: "Насосные агрегаты на сборке", caption: "Монтаж насосной группы", aspect: "4/5" },
+      { id: "shop-03", alt: "Шкаф управления, крупный план", caption: "Шкаф управления с ПЛК", aspect: "4/5" },
+      { id: "test-01", alt: "Гидравлические испытания установки", caption: "Испытательный стенд", aspect: "4/5" },
+      { id: "site-01", alt: "Готовая станция перед отгрузкой", caption: "Приёмка ОТК", aspect: "4/5" },
+      { id: "site-02", alt: "Смонтированная станция на объекте", caption: "Объект — Москва", aspect: "4/5" },
+      { id: "detail-01", alt: "Коллектор и обратные клапаны", caption: "Коллектор с запорной арматурой", aspect: "4/5" },
+      { id: "detail-02", alt: "Крупный план рабочего колеса", caption: "Рабочее колесо насоса", aspect: "4/5" },
+    ],
+  },
+
+  // Section 9 «Кейсы». Two real entries lifted from the МФМК
+  // implemented-projects list for this product line. Added one
+  // аnonymised example (БЦ in Санкт-Петербурге) to give the carousel
+  // a third card until the real roster is handed over.
+  cases: {
+    tag: "09 · КЕЙСЫ",
+    title: "Где уже работает",
+    lede: "Жилые комплексы, бизнес-центры и промышленные площадки под нашими станциями.",
+    items: [
+      {
+        id: "zhk-dmitrovsky",
+        title: "ЖК «Дмитровский парк»",
+        location: "Москва, 2023",
+        equipment: "5 пожарных насосных установок Альфа Stream™",
+        photo: { alt: "Жилой комплекс «Дмитровский парк», общий вид" },
+      },
+      {
+        id: "zhk-odingrad",
+        title: "ЖК «Одинград»",
+        location: "Одинцово, 2022",
+        equipment: "Насосная установка Альфа Stream™ АПТ",
+        photo: { alt: "Жилой комплекс «Одинград», общий вид" },
+      },
+      {
+        id: "bc-spb",
+        title: "Бизнес-центр класса А",
+        location: "Санкт-Петербург, 2024",
+        equipment: "Станция пожаротушения на 3+1 насос",
+        photo: { alt: "Бизнес-центр класса А, пример объекта" },
+      },
+    ],
+  },
 };
