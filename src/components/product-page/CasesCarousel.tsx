@@ -101,7 +101,7 @@ function CaseCard({ item, index }: { item: CaseItem; index: number }) {
 
         {/* Copy block — location mono, title display, equipment line mono */}
         <div className="flex flex-col gap-3">
-          <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/50">
+          <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/65">
             {item.location}
           </p>
           <h3 className="font-display text-[22px] font-medium leading-tight text-[var(--color-secondary)] md:text-[26px]">
@@ -129,7 +129,7 @@ function CaseSkeleton() {
         }}
       />
       <div className="absolute inset-0 flex items-center justify-center">
-        <span className="font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/25">
+        <span className="font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/55">
           Фото объекта
         </span>
       </div>

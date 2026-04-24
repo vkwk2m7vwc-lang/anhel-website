@@ -100,13 +100,15 @@
     text-wrap: pretty;
   }
 
-  /* Thin uppercase mono line — used for section tags like "01 / 04 · …" */
+  /* Thin uppercase mono line — used for section tags like "01 / 04 · …"
+     WCAG AA: 0.65 alpha on #0A0A0A ≈ 5.9:1 contrast ratio (body-text
+     threshold is 4.5:1; 0.5 was ~4.4:1, borderline fail). */
   .mono-tag {
     font-family: var(--font-mono), "JetBrains Mono", ui-monospace, monospace;
     font-size: 11px;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: rgba(245, 245, 243, 0.5);
+    color: rgba(245, 245, 243, 0.65);
   }
 
   /* Hairline divider */

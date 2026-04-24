@@ -28,7 +28,7 @@ export function Breadcrumbs({ items }: { items: readonly BreadcrumbLink[] }) {
                 <Link
                   href={item.href}
                   data-cursor="hover"
-                  className="text-[var(--color-secondary)]/50 transition-colors hover:text-[var(--color-secondary)]"
+                  className="text-[var(--color-secondary)]/65 transition-colors hover:text-[var(--color-secondary)]"
                 >
                   {item.label}
                 </Link>
@@ -45,7 +45,7 @@ export function Breadcrumbs({ items }: { items: readonly BreadcrumbLink[] }) {
                   aria-hidden="true"
                   size={12}
                   strokeWidth={1.5}
-                  className="text-[var(--color-secondary)]/25"
+                  className="text-[var(--color-secondary)]/55"
                 />
               )}
             </li>
