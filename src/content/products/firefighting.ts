@@ -119,28 +119,67 @@ export const firefightingContent: ProductContent = {
 
   // Section 6 «Бренды». Two tiers — pump brands (main line of trust)
   // and automation / power components (supporting tier). Lists mirror
-  // the МФМК reference catalogue.
+  // the МФМК reference catalogue + Wilo and Lowara added per user
+  // request. `href` points at the manufacturer's Russia-facing portal
+  // where the brand still has one; when the Russia site is offline
+  // or was never set up we fall back to the global domain.
   brands: {
     tag: "06 · БРЕНДЫ",
     title: "Собираем из оборудования мировых производителей",
     lede: "Насосы — от проверенных производителей, автоматика — собственное и импортное.",
     rowPumps: [
-      { id: "aquadeus", name: "AquaDeus", series: "RCP, RHP" },
-      { id: "cnp", name: "CNP", series: "NIS, TD" },
-      { id: "leo", name: "Leo", series: "Lez" },
-      { id: "gms", name: "ГМС", series: "КМ" },
+      {
+        id: "aquadeus",
+        name: "AquaDeus",
+        series: "RCP, RHP",
+        href: "https://aquadeus.ru/",
+      },
+      {
+        id: "cnp",
+        name: "CNP",
+        series: "NIS, TD",
+        href: "https://www.cnppumps.com/",
+      },
+      {
+        id: "wilo",
+        name: "Wilo",
+        series: "Helix, SCP",
+        href: "https://wilo.com/ru/ru/",
+      },
+      {
+        id: "lowara",
+        name: "Lowara",
+        series: "e-SV, NSC",
+        href: "https://www.xylem.com/ru-ru/brands/lowara/",
+      },
+      {
+        id: "leo",
+        name: "Leo",
+        series: "Lez",
+        href: "https://www.leo.cn/",
+      },
+      {
+        id: "gms",
+        name: "ГМС",
+        series: "КМ",
+        href: "https://hms.ru/",
+      },
     ],
     rowComponents: [
-      { id: "dekraft", name: "DEKraft" },
-      { id: "unitronics", name: "Unitronics" },
-      { id: "iek", name: "IEK" },
-      { id: "keaz", name: "КЭАЗ" },
-      { id: "ekf", name: "EKF" },
-      { id: "chint", name: "CHINT" },
-      { id: "dkc", name: "DKC" },
-      { id: "weintek", name: "Weintek" },
+      { id: "dekraft", name: "DEKraft", href: "https://dekraft.ru/" },
+      {
+        id: "unitronics",
+        name: "Unitronics",
+        href: "https://unitronicsplc.com/",
+      },
+      { id: "iek", name: "IEK", href: "https://www.iek.ru/" },
+      { id: "keaz", name: "КЭАЗ", href: "https://keaz.ru/" },
+      { id: "ekf", name: "EKF", href: "https://ekfgroup.com/ru-ru" },
+      { id: "chint", name: "CHINT", href: "https://chint.ru/" },
+      { id: "dkc", name: "DKC", href: "https://www.dkc.ru/" },
+      { id: "weintek", name: "Weintek", href: "https://www.weintek.com/" },
       { id: "titan", name: "ТИТАН Контрол" },
-      { id: "mfmk", name: "МФМК" },
+      { id: "mfmk", name: "МФМК", href: "https://mfmc.ru/" },
     ],
   },
 

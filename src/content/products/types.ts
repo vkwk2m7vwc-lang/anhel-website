@@ -125,6 +125,11 @@ export type ApplicationsContent = {
  * reads as a proof line rather than a marketing collage. When real
  * logos arrive we swap `name` for an `svg` field and update the
  * component (chore commit).
+ *
+ * `href` points at the manufacturer's Russia-facing site where known.
+ * When present the component upgrades the word-mark to an external
+ * link (new tab, noreferrer). Some brands don't have an RU portal
+ * right now — those stay as plain text word-marks.
  */
 export type BrandItem = {
   /** Stable id — used as React key. */
@@ -133,6 +138,8 @@ export type BrandItem = {
   name: string;
   /** Optional short descriptor shown on hover / below, e.g. «RCP, RHP». */
   series?: string;
+  /** Optional manufacturer URL (RU site preferred). */
+  href?: string;
 };
 
 /**

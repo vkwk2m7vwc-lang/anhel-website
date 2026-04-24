@@ -78,7 +78,13 @@ export function BrandsStrip({ content }: { content: BrandsContent }) {
  * `tier` = "pump" renders larger (display face, 22–28px), "component"
  * smaller (18–22px, muted). Both honour the same hover treatment —
  * colour lifts from steel-dark to secondary, and the optional `series`
- * hint unveils beneath when hover is active.
+ * hint picks up the page accent on hover.
+ *
+ * When `brand.href` is set the whole card becomes an external link
+ * (new tab, noreferrer). A subtle arrow glyph appears in-line with
+ * the name so users know it's clickable before they hover. Brands
+ * without an `href` render as plain `<span>` word-marks — no dead
+ * link, no mystery cursor.
  */
 function BrandWordMark({
   brand,
@@ -90,6 +96,38 @@ function BrandWordMark({
   index: number;
 }) {
   const staggerDelay = Math.min(index, 8) * 0.04;
+  const nameClass =
+    tier === "pump"
+      ? "font-display text-[22px] font-medium tracking-tight text-[var(--color-steel-dark)] transition-colors duration-300 group-hover:text-[var(--color-secondary)] md:text-[28px]"
+      : "font-display text-[18px] font-medium tracking-tight text-[var(--color-steel-dark)]/80 transition-colors duration-300 group-hover:text-[var(--color-secondary)] md:text-[22px]";
+
+  // The inner content is shared by both the link and span branches —
+  // avoids duplicating the markup for the one-line difference.
+  const inner = (
+    <>
+      <span className="inline-flex items-baseline gap-1">
+        <span className={nameClass}>{brand.name}</span>
+        {brand.href ? (
+          <span
+            aria-hidden="true"
+            className={
+              tier === "pump"
+                ? "font-mono text-[12px] text-[var(--color-steel-dark)]/50 transition-all duration-300 group-hover:text-[var(--accent-current)] group-hover:-translate-y-[2px] group-hover:translate-x-[1px] md:text-[14px]"
+                : "font-mono text-[10px] text-[var(--color-steel-dark)]/50 transition-all duration-300 group-hover:text-[var(--accent-current)] group-hover:-translate-y-[2px] group-hover:translate-x-[1px] md:text-[12px]"
+            }
+          >
+            ↗
+          </span>
+        ) : null}
+      </span>
+      {brand.series ? (
+        <span className="font-mono text-[10px] uppercase tracking-[0.08em] text-[var(--color-secondary)]/35 transition-colors duration-300 group-hover:text-[var(--accent-current)]">
+          {brand.series}
+        </span>
+      ) : null}
+    </>
+  );
+
   return (
     <motion.li
       initial={{ opacity: 0, y: 10 }}
@@ -100,25 +138,22 @@ function BrandWordMark({
         ease: [0.16, 1, 0.3, 1],
         delay: staggerDelay,
       }}
-      className="group relative flex flex-col gap-1"
+      className="group relative"
     >
-      <span
-        className={
-          tier === "pump"
-            ? "font-display text-[22px] font-medium tracking-tight text-[var(--color-steel-dark)] transition-colors duration-300 group-hover:text-[var(--color-secondary)] md:text-[28px]"
-            : "font-display text-[18px] font-medium tracking-tight text-[var(--color-steel-dark)]/80 transition-colors duration-300 group-hover:text-[var(--color-secondary)] md:text-[22px]"
-        }
-      >
-        {brand.name}
-      </span>
-      {brand.series ? (
-        <span
-          aria-hidden="true"
-          className="font-mono text-[10px] uppercase tracking-[0.08em] text-[var(--color-secondary)]/35 transition-colors duration-300 group-hover:text-[var(--accent-current)]"
+      {brand.href ? (
+        <a
+          href={brand.href}
+          target="_blank"
+          rel="noreferrer noopener"
+          data-cursor="hover"
+          aria-label={`Перейти на сайт производителя: ${brand.name}`}
+          className="flex flex-col gap-1"
         >
-          {brand.series}
-        </span>
-      ) : null}
+          {inner}
+        </a>
+      ) : (
+        <div className="flex flex-col gap-1">{inner}</div>
+      )}
     </motion.li>
   );
 }
