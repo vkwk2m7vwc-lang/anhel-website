@@ -1,5 +1,6 @@
 "use client";
 
+import { useCallback, useEffect, useRef } from "react";
 import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
 import { Pause, Play } from "lucide-react";
@@ -8,6 +9,22 @@ import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 import { useHeroCarousel } from "@/hooks/useHeroCarousel";
 import { HERO_PRODUCTS } from "@/lib/hero-products";
 import { cn } from "@/lib/utils";
+
+/**
+ * How long the carousel stays paused after the user's pointer leaves the
+ * interactive zone (product image + tab row). Gives the viewer a beat to
+ * re-enter if they overshot, instead of snapping back to auto-advance
+ * the instant they drift a few pixels off.
+ */
+const HOVER_RESUME_DELAY_MS = 4000;
+
+/**
+ * How long the carousel stays paused after the user *explicitly* picks
+ * a slide by clicking a number. Longer than the hover delay — a click is
+ * an intentional "I want to look at this one", so we give them ~9s
+ * before the auto-advance kicks back in.
+ */
+const CLICK_RESUME_DELAY_MS = 9000;
 
 type HeroBgCarouselProps = {
   /**
@@ -43,6 +60,69 @@ export function HeroBgCarousel({
       interval: 5000,
     });
 
+  /*
+   * Resume-with-delay state machine ------------------------------------
+   * The underlying hook exposes instant `pause` / `resume`. We layer a
+   * small timer on top so that:
+   *
+   *   - Pointer leaves the zone → wait 4 s, then resume.
+   *   - Pointer re-enters before 4 s → cancel the pending resume.
+   *   - User clicks a tab → pause, jump to slide, schedule a *9-s*
+   *     resume (longer than hover because the click is an explicit
+   *     "slow down, let me look").
+   *
+   * Only one timer is alive at a time; every new pause clears the
+   * previous pending resume so multiple interactions don't stack.
+   */
+  const resumeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const clearResumeTimer = useCallback(() => {
+    if (resumeTimerRef.current !== null) {
+      clearTimeout(resumeTimerRef.current);
+      resumeTimerRef.current = null;
+    }
+  }, []);
+
+  const scheduleResume = useCallback(
+    (delayMs: number) => {
+      clearResumeTimer();
+      resumeTimerRef.current = setTimeout(() => {
+        resume();
+        resumeTimerRef.current = null;
+      }, delayMs);
+    },
+    [resume, clearResumeTimer]
+  );
+
+  // Hover enter: cancel any pending resume and pause immediately.
+  const handlePointerEnter = useCallback(() => {
+    clearResumeTimer();
+    pause();
+  }, [pause, clearResumeTimer]);
+
+  // Hover leave: start the 4-s grace timer. If the user re-enters before
+  // it fires, handlePointerEnter clears it.
+  const handlePointerLeave = useCallback(() => {
+    scheduleResume(HOVER_RESUME_DELAY_MS);
+  }, [scheduleResume]);
+
+  // Explicit tab click: jump to slide, then park autoplay for 9 s.
+  const handleTabClick = useCallback(
+    (index: number) => {
+      clearResumeTimer();
+      pause();
+      goTo(index);
+      scheduleResume(CLICK_RESUME_DELAY_MS);
+    },
+    [pause, goTo, scheduleResume, clearResumeTimer]
+  );
+
+  // Tidy up on unmount so a stray timer doesn't try to flip state on a
+  // dead component.
+  useEffect(() => {
+    return clearResumeTimer;
+  }, [clearResumeTimer]);
+
   const product = HERO_PRODUCTS[active];
 
   // Accent driven gradient — we rebuild the string on every render, then
@@ -70,12 +150,27 @@ export function HeroBgCarousel({
 
       {/* Product zone — right 45% on desktop, full-width below md.
           `pointer-events-auto` so tilt/hover/clicks fire while the rest of
-          the background layer stays click-through. */}
+          the background layer stays click-through.
+
+          Pause/resume hooks: we listen to BOTH `onMouseEnter/Leave` and
+          `onPointerEnter/Leave`. In a real browser a mouse hover will
+          fire both (pointer events subsume mouse events on desktop),
+          but our handlers are idempotent so the duplicate call is a
+          no-op. The reason we keep both:
+            - `MouseEvent` covers legacy/headless paths where CDP-driven
+              test tooling only dispatches mouse events (e.g. Puppeteer
+              headless, used by our automated UX regression).
+            - `PointerEvent` covers touch and pen where the browser
+              does *not* synthesise mouse events (e.g. iOS Safari tap).
+          The union gives us uniform pause-on-interact behaviour across
+          every input type we actually care about. */}
       <div
         className="pointer-events-auto absolute inset-y-0 right-0 hidden w-[45%] flex-col items-center justify-center md:flex"
         style={{ perspective: "1200px" }}
-        onMouseEnter={pause}
-        onMouseLeave={resume}
+        onMouseEnter={handlePointerEnter}
+        onMouseLeave={handlePointerLeave}
+        onPointerEnter={handlePointerEnter}
+        onPointerLeave={handlePointerLeave}
       >
         {/* The tilt + float wrapper is stable — only the <img> inside swaps,
             so the spring-smoothed tilt never stutters on slide change.
@@ -189,13 +284,16 @@ export function HeroBgCarousel({
                     role="tab"
                     aria-selected={isActive}
                     aria-controls="hero-carousel-product"
+                    aria-label={`Показать: ${p.name}`}
                     data-cursor="hover"
-                    onClick={() => goTo(i)}
+                    onClick={() => handleTabClick(i)}
                     className={cn(
-                      "rounded-pill border px-3 py-1 font-mono text-[11px] uppercase tracking-[0.1em] transition-colors",
+                      "cursor-pointer rounded-pill border px-3 py-1 font-mono text-[11px] uppercase tracking-[0.1em]",
+                      "transition-[background-color,color,border-color,transform] duration-200",
+                      "active:scale-[0.94]",
                       isActive
                         ? "border-transparent bg-[var(--color-secondary)] text-[var(--color-primary)]"
-                        : "border-[var(--color-hairline)] text-[var(--color-secondary)]/60 hover:text-[var(--color-secondary)]"
+                        : "border-[var(--color-hairline)] text-[var(--color-secondary)]/60 hover:border-[var(--color-secondary)]/40 hover:bg-[var(--color-secondary)]/10 hover:text-[var(--color-secondary)]"
                     )}
                   >
                     {String(i + 1).padStart(2, "0")}
@@ -271,8 +369,17 @@ export function HeroBgCarousel({
           carousel still reads on narrow screens.
 
           Same pedestal-glow approach as desktop — see the block above for
-          the rationale on why we don't use `filter: drop-shadow` here. */}
-      <div className="absolute inset-x-0 bottom-24 flex flex-col items-center gap-4 md:hidden">
+          the rationale on why we don't use `filter: drop-shadow` here.
+
+          Pointer handlers mirror the desktop zone so tap-to-pause /
+          leave-to-resume-after-4-s works on mobile too. */}
+      <div
+        className="pointer-events-auto absolute inset-x-0 bottom-24 flex flex-col items-center gap-4 md:hidden"
+        onMouseEnter={handlePointerEnter}
+        onMouseLeave={handlePointerLeave}
+        onPointerEnter={handlePointerEnter}
+        onPointerLeave={handlePointerLeave}
+      >
         <motion.div className="relative h-[200px] w-[200px]">
           {/* Pedestal glow — mobile version. Smaller footprint (75%×35%)
               to match the scaled-down 200×200 product container. */}
@@ -317,7 +424,7 @@ export function HeroBgCarousel({
           </AnimatePresence>
         </motion.div>
 
-        <div className="pointer-events-auto flex items-center gap-2">
+        <div className="flex items-center gap-2">
           {HERO_PRODUCTS.map((p, i) => {
             const isActive = i === active;
             return (
@@ -325,12 +432,14 @@ export function HeroBgCarousel({
                 key={`m-${p.slug}`}
                 type="button"
                 aria-label={`Показать: ${p.name}`}
-                onClick={() => goTo(i)}
+                aria-pressed={isActive}
+                onClick={() => handleTabClick(i)}
                 className={cn(
-                  "h-1.5 rounded-pill transition-all",
+                  "h-1.5 rounded-pill transition-all duration-200",
+                  "active:scale-[0.88]",
                   isActive
                     ? "w-6 bg-[var(--color-secondary)]"
-                    : "w-1.5 bg-[var(--color-secondary)]/30"
+                    : "w-1.5 bg-[var(--color-secondary)]/30 hover:bg-[var(--color-secondary)]/60"
                 )}
               />
             );
