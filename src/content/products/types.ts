@@ -82,9 +82,46 @@ export type ProductHeroContent = {
 };
 
 /**
+ * One card in the Applications grid (section 5 «Применение»).
+ *
+ * Six items arranged 3×2 desktop, 2×3 tablet, 1×6 mobile. Each card
+ * reads as a mono index, a short object-type title, and a single-line
+ * example (usually a real reference object, e.g. «ЖК Дмитровский парк,
+ * Москва»). Examples are deliberately short — if it doesn't fit in one
+ * line at the designed size, cut it rather than wrap.
+ */
+export type ApplicationItem = {
+  /** Stable id — used as React key and for ARIA. */
+  id: string;
+  /** Mono prefix: «01»..«06». */
+  mono: string;
+  /** Object type, e.g. «Жилые комплексы». */
+  title: string;
+  /** Single-line reference, e.g. «ЖК Дмитровский парк, Москва». */
+  example: string;
+};
+
+/**
+ * Applications section config. The copy sits in the content file so
+ * different products can tweak their own tag/title/lede without forking
+ * the component.
+ */
+export type ApplicationsContent = {
+  /** Mono tag in header, e.g. «05 · ПРИМЕНЕНИЕ». */
+  tag: string;
+  /** Section h2, e.g. «Где ставится». */
+  title: string;
+  /** Optional single-line intro on the right of the header. */
+  lede?: string;
+  /** Six items, in display order. */
+  items: ApplicationItem[];
+};
+
+/**
  * Top-level product-page content. As we build commits 3-6 we extend this
- * with more fields (applications, brands, cases, etc.). Commit 1 only
- * populates `hero` and `techSpecs`.
+ * with more fields (brands, cases, quiz, etc.). Commit 1 only populated
+ * `hero` and `techSpecs`; the firefighting commit sequence for sections
+ * 5-12 adds the remaining fields one commit at a time.
  */
 export type ProductContent = {
   /** URL slug — the last segment of the route. */
@@ -95,4 +132,6 @@ export type ProductContent = {
   metaDescription: string;
   hero: ProductHeroContent;
   techSpecs: TechSpecTile[];
+  /** Section 5 — «Применение». */
+  applications: ApplicationsContent;
 };

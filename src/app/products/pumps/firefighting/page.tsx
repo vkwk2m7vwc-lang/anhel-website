@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { ProductHero } from "@/components/product-page/ProductHero";
+import { ProductPageShell } from "@/components/product-page/ProductPageShell";
 import { TechSpecsGrid } from "@/components/product-page/TechSpecsGrid";
+import { ApplicationsGrid } from "@/components/product-page/ApplicationsGrid";
 import { HowItWorksSection } from "@/components/products/firefighting/lakhta/HowItWorksSection";
 import { firefightingContent } from "@/content/products/firefighting";
 
@@ -13,10 +15,23 @@ import { firefightingContent } from "@/content/products/firefighting";
  * `src/content/products/firefighting.ts`; this file is only the
  * assembly.
  *
- * Commit 1 landed sections 1-2 (hero + tech specs). Sections 3-12 are
- * placeholders for subsequent commits. The `#quiz` anchor referenced by
- * the hero CTAs lands in commit 5 — until then clicking the buttons is
- * a no-op (lands on nothing, no error).
+ * Section map (current vs planned):
+ *   1  Hero                           ✓  ProductHero
+ *   2  Тех. характеристики             ✓  TechSpecsGrid
+ *   3  Как срабатывает (+ 4 системы)   ✓  HowItWorksSection
+ *   4  [merged into 3 — the 4-system switcher sits inside section 3]
+ *   5  Применение                      ✓  ApplicationsGrid
+ *   6  Бренды насосов + комплектующие  ⏳
+ *   7  Преимущества (9 пунктов)        ⏳
+ *   8  Галерея                         ⏳
+ *   9  Кейсы                           ⏳
+ *   10 Опросный лист (квиз)            ⏳  (backend deferred)
+ *   11 Документация                    ⏳
+ *   12 Финальный CTA + соседние        ⏳
+ *
+ * The `#quiz` anchor referenced by the hero CTAs lands with section 10.
+ * Until then clicking the buttons is a no-op (lands on nothing, no
+ * error) — cleanest stub.
  */
 export const metadata: Metadata = {
   title: firefightingContent.metaTitle,
@@ -36,20 +51,22 @@ export const metadata: Metadata = {
 };
 
 export default function FirefightingProductPage() {
-  const { hero, techSpecs, accent } = firefightingContent;
+  const { hero, techSpecs, accent, applications } = firefightingContent;
 
   return (
-    <>
+    <ProductPageShell accent={accent}>
       <ProductHero content={hero} accent={accent} />
       <TechSpecsGrid specs={techSpecs} />
       <HowItWorksSection />
+      <ApplicationsGrid content={applications} />
       {/*
-        Commit 3     — sections 4-7 (types, applications, brands, advantages)
-        Commit 4     — sections 8, 9, 11 (gallery, cases, documentation)
-        Commit 5     — section 10 UI (quiz multi-step form, local only)
-        Commit 6     — section 10 PDF + section 12 (CTA + neighbour nav)
-        Commit 7     — quiz email submission + Turnstile (deferred)
+        Next commits (in order):
+          — Sections 6 + 7: brands + advantages
+          — Sections 8 + 9: gallery + cases
+          — Section 10:    quiz UI (no backend)
+          — Sections 11 + 12: documents + final CTA + neighbour nav
+          — Deferred:      quiz email / Telegram / Turnstile
       */}
-    </>
+    </ProductPageShell>
   );
 }

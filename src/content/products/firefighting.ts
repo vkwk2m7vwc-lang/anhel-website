@@ -67,4 +67,53 @@ export const firefightingContent: ProductContent = {
     { label: "Тип регулирования", value: "релейное / частотное" },
     { label: "Температура окружающей среды", value: "до 40", unit: "°С" },
   ],
+
+  // Section 5 «Применение». Six object types the fire-fighting station
+  // is installed on. Examples are drawn from МФМК reference cases where
+  // real object names exist (жилые, Москва/Одинцово); other categories
+  // carry a typical-object descriptor until a real reference lands, at
+  // which point we swap the string in place.
+  applications: {
+    tag: "05 · ПРИМЕНЕНИЕ",
+    title: "Где ставится",
+    lede: "От жилых комплексов до инфраструктурных объектов. Каждая установка собирается под проект объекта.",
+    items: [
+      {
+        id: "residential",
+        mono: "01",
+        title: "Жилые комплексы",
+        example: "ЖК «Дмитровский парк», Москва",
+      },
+      {
+        id: "business",
+        mono: "02",
+        title: "Бизнес-центры",
+        example: "БЦ класса A, 20+ этажей",
+      },
+      {
+        id: "retail",
+        mono: "03",
+        title: "Торговые центры",
+        example: "ТРЦ с закрытой автостоянкой",
+      },
+      {
+        id: "industrial",
+        mono: "04",
+        title: "Промышленные предприятия",
+        example: "Склады, производственные цеха",
+      },
+      {
+        id: "hotels",
+        mono: "05",
+        title: "Гостиницы",
+        example: "Отели 4–5★, апарт-отели",
+      },
+      {
+        id: "infrastructure",
+        mono: "06",
+        title: "Инфраструктурные объекты",
+        example: "Аэропорты, вокзалы, стадионы",
+      },
+    ],
+  },
 };
