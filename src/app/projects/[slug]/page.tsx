@@ -24,7 +24,7 @@ export async function generateMetadata({
   if (!project) return { title: "Объект не найден" };
   return {
     title: `${project.title} — объект ANHEL®`,
-    description: `${project.title} (${project.customer}) — поставлено: ${project.equipment.join(", ")}`,
+    description: `${project.title} — поставлено: ${project.equipment.join(", ")}`,
     alternates: { canonical: `/projects/${project.slug}` },
   };
 }
@@ -69,7 +69,7 @@ export default function ProjectDetailPage({ params }: { params: Params }) {
         className="mx-auto w-full max-w-[1440px] px-6 pb-12 pt-8 md:px-12 md:pb-20 md:pt-12"
       >
         <p className="mono-tag">
-          {project.customer} · {PROJECT_CATEGORY_LABELS[project.category]}
+          {PROJECT_CATEGORY_LABELS[project.category]}
         </p>
         <h1
           id="project-title"
@@ -175,7 +175,7 @@ export default function ProjectDetailPage({ params }: { params: Params }) {
                   </div>
                   <div className="flex flex-1 flex-col gap-2 p-5">
                     <span className="font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/60">
-                      {p.customer}
+                      {PROJECT_CATEGORY_LABELS[p.category]}
                     </span>
                     <p className="font-display text-[16px] font-medium leading-snug">
                       {p.title}

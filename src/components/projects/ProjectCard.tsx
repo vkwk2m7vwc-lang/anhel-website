@@ -1,12 +1,15 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { ProjectItem } from "@/content/projects/types";
+import { PROJECT_CATEGORY_LABELS } from "@/content/projects/data";
 
 /**
  * Single project card — appears inside ProjectsGrid.
  *
- * Layout: hero photo with mono-tag overlay (категория и заказчик), затем
- * подложка с названием и кратким переченем поставленного оборудования.
+ * Layout: hero photo с mono-tag overlay (категория объекта), затем
+ * подложка с названием и кратким перечнем поставленного оборудования.
+ * Заказчик с карточек убран — все объекты от одного девелопера, и
+ * это создавало впечатление однотипности.
  *
  * Visual idiom matches existing engineering-restraint pages: hairline
  * borders, mono-uppercase tags, accent ring on hover, no decorative noise.
@@ -32,9 +35,9 @@ export function ProjectCard({ project }: { project: ProjectItem }) {
           sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
           className="object-cover transition-transform duration-700 ease-out-expo group-hover:scale-[1.04]"
         />
-        {/* Top-left mono tag — заказчик */}
+        {/* Top-left mono tag — категория объекта */}
         <span className="absolute left-4 top-4 z-10 inline-flex items-center gap-2 rounded-full bg-[var(--color-primary)]/85 px-3 py-1 font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/85 backdrop-blur-sm">
-          {project.customer}
+          {PROJECT_CATEGORY_LABELS[project.category]}
         </span>
       </div>
 

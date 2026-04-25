@@ -149,3 +149,81 @@
 - `retouch_production.py` — авто-кроп + blur (для отладки, production требует ручной ретуши).
 - `rebrand_forms.py` — генерация ANHEL-overlay для опросных PDF (повторный запуск после правок).
 - `rebrand_manual.py` — генерация ANHEL-cover + overlay для руководства.
+
+---
+
+## Сессия 2026-04-25 / 23:00 — Реструктуризация каталога + интеграция
+
+### Что смержено
+
+Слиты три параллельные линии работы в одну ветку `merge/integrate-catalog-projects`:
+
+1. **`feat/3-new-pump-stations`** — реструктуризация каталога на 3 верхних раздела:
+   - `/products/pumps` — раздел-каталог 5 серий насосных станций
+     - `/products/pumps/water-supply` (Водоснабжение)
+     - `/products/pumps/firefighting` (Пожаротушение)
+     - `/products/pumps/heating-cooling` (Отопление и кондиционирование)
+     - `/products/pumps/pressure-boost` (Поддержание давления / АУПД)
+     - `/products/pumps/special` (Специальное исполнение)
+   - `/products/water-treatment` — отдельная категория
+   - `/products/heating-unit` — раздел с 8 модулями ИТП
+   - 301-редиректы со старых URL `/products/pumps/water-treatment` и `/products/pumps/heating-unit/*`
+
+2. **Контент `main` (projects + fillable forms)** сохранён:
+   - `/projects` со списком объектов и фильтром
+   - Опросные листы и декларации соответствия в блоке «Документация» на каждой продуктовой странице
+
+Конфликтов после auto-merge: 0 (auto-resolved 4 файла — `firefighting.ts`, `heating-unit.ts`, `water-supply.ts`, `water-treatment.ts`). После мержа `npm run build` собрал 43 статические страницы без ошибок.
+
+### Очистка `/projects`
+
+- Все 13 объектов в `data.ts` имеют категории `pumps` (5) или `mixed` (8) — категорий «БТП», «трансформаторы», «сточные воды» в данных не было. **Объекты не удалялись — все 13 остались.**
+- Поле `customer` удалено из:
+  - `src/content/projects/types.ts` — поле и комментарий
+  - `src/content/projects/data.ts` — 13 строк `customer:`
+  - `src/components/projects/ProjectCard.tsx` — заменено на `PROJECT_CATEGORY_LABELS[project.category]` в overlay-теге
+  - `src/app/projects/[slug]/page.tsx` — meta description, h1-mono-tag, neighbours strip
+- Счётчики фильтра: «Все» 13, «Насосные станции» 5, «Водоподготовка» 0, «Смешанные» 8 (рассчитываются автоматически из `PROJECTS`).
+
+### Финальный список разделов каталога
+
+```
+/products
+├── /products/pumps              (раздел: 5 серий)
+│     ├── /products/pumps/water-supply
+│     ├── /products/pumps/firefighting
+│     ├── /products/pumps/heating-cooling
+│     ├── /products/pumps/pressure-boost
+│     └── /products/pumps/special
+├── /products/water-treatment    (категория)
+└── /products/heating-unit       (раздел: 8 модулей ИТП)
+      └── /products/heating-unit/[slug]
+```
+
+Внизу отдельно: `/projects` (13 объектов, фильтр по категориям).
+
+### Проверка
+
+- `npx tsc --noEmit` clean
+- `npm run build` 43 страниц / 0 ошибок:
+  - `/products` (3 верхних раздела)
+  - `/products/pumps` (5 насосных)
+  - 5 насосных подстраниц
+  - `/products/water-treatment`
+  - `/products/heating-unit` + 8 модулей через `[slug]`
+  - `/projects` + 13 детальных
+- Sitemap.xml auto-generated
+
+### Vercel preview
+
+PR смерджен через `gh pr merge --squash` в `main`. Production preview:
+**https://anhel-website.vercel.app**
+
+После auto-deploy проверить:
+- `/products` — 3 карточки разделов
+- `/products/pumps` — 5 карточек насосных
+- `/products/heating-unit` — 8 модулей (новый URL)
+- `/products/water-treatment` — отдельная страница (новый URL)
+- 301 со старых URL `/products/pumps/water-treatment` → `/products/water-treatment`
+- `/projects` — фильтр по категориям, без признаков заказчика
+- Документация на каждом продукте — опросник + декларация

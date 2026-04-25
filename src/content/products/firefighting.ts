@@ -18,23 +18,21 @@ export const firefightingContent: ProductContent = {
   accent: "fire",
 
   // SEO + social — Product schema.org data is wired up in commit 6.
-  metaTitle: "Насосные станции пожаротушения",
+  metaTitle: "Насосные станции ANHEL для систем пожаротушения",
   metaDescription:
-    "Насосные станции пожаротушения ANHEL® — серийное производство с контролем качества и индивидуальным исполнением под ТЗ. Срок службы от 10 лет.",
+    "Насосные станции ANHEL для систем пожаротушения. Обеспечивают необходимое давление и объём воды как в режиме ожидания, так и при тушении возгорания. От 2 до 6 насосов, релейное/частотное регулирование, срок службы не менее 10 лет.",
 
   hero: {
     breadcrumbs: [
       { label: "Главная", href: "/" },
-      // «Насосные станции» — href убран до готовности каталога
-      // /products. Breadcrumb рендерится как текст без ссылки,
-      // чтобы не вести в 404. Audit finding 3.
-      { label: "Насосные станции" },
+      { label: "Каталог", href: "/products" },
+      { label: "Насосные станции", href: "/products/pumps" },
       { label: "Пожаротушение" },
     ],
     sectionTag: "01 · НАСОСНЫЕ СТАНЦИИ · ПОЖАРОТУШЕНИЕ",
-    title: "Насосные станции пожаротушения",
+    title: "Насосные станции ANHEL для систем пожаротушения",
     subtitle:
-      "Оборудование для систем, на которые полагаются жизни. Автоматический запуск, горячее резервирование и полный комплект разрешительной документации.",
+      "Установки обеспечивают необходимое давление и объём воды в системе пожаротушения, как в режиме ожидания, так и во время увеличенного потребления при тушении возгорания. Автоматический запуск, горячее резервирование и полный комплект разрешительной документации.",
     image: {
       src: "/assets/products/hvs-nu-red2.png",
       alt: "ANHEL® — насосная станция пожаротушения в красном шкафу, серия HVS-NU",
@@ -55,20 +53,23 @@ export const firefightingContent: ProductContent = {
     },
   },
 
-  // Eight tiles — exact ordering and wording from the brief.
-  // `value` carries the number or short phrase; `unit` is the suffix we
-  // render beside it in mono type. Splitting avoids hacks like "70°С" as
-  // a single string (which we'd otherwise have to regex back apart for
-  // the typographic treatment on the grid).
+  // Восемь плиток — реальные значения с mfmc.ru/catalog/alfa/
+  // ...nasosnye-ustanovki-alfa-dlya-sistem-pozharotusheniya/.
+  // Сырой JSON в _docs/mfmc-research/firefighting-mfmc.json.
+  // Тип регулирования (релейное и частотное) разнесён на две
+  // строки — на mfmc.ru у этой страницы оба варианта с УПП и
+  // плавным пуском. Мощность / частота вращения / срок службы
+  // взяты с близкого аналога (страница water-supply, та же
+  // база линейки Альфа Stream → ANHEL® HVS-NU).
   techSpecs: [
-    { label: "Количество насосов", value: "от 2 до 6" },
+    { label: "Количество насосов", value: "от 2 до 6", unit: "стандарт" },
+    { label: "Тип регулирования (релейное)", value: "с контроллером / с УПП" },
+    { label: "Тип регулирования (частотное)", value: "с контроллером / на каждый насос / с плавным пуском" },
     { label: "Макс. температура жидкости", value: "70", unit: "°С" },
     { label: "Сетевое напряжение", value: "3 × 380", unit: "В" },
     { label: "Мощность одного насоса", value: "0,37 – 250", unit: "кВт" },
     { label: "Частота вращения", value: "2900 / 1450", unit: "об/мин" },
     { label: "Срок службы", value: "не менее 10", unit: "лет" },
-    { label: "Тип регулирования", value: "релейное / частотное" },
-    { label: "Температура окружающей среды", value: "до 40", unit: "°С" },
   ],
 
   // Section 5 «Применение». Six object types the fire-fighting station

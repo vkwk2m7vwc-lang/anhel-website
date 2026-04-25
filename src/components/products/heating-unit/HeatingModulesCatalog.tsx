@@ -36,7 +36,7 @@ export function HeatingModulesCatalog({
       <div className="mx-auto w-full max-w-[1440px] px-6 py-20 md:px-12 md:py-28">
         <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
           <div>
-            <p className="mono-tag">03 · ЛИНЕЙКА МОДУЛЕЙ</p>
+            <p className="mono-tag">02 · ЛИНЕЙКА МОДУЛЕЙ</p>
             <h2
               id="modules-title"
               className="mt-4 max-w-[640px] font-display text-h2 font-medium text-[var(--color-secondary)]"
@@ -82,7 +82,7 @@ function ModuleCard({
       }}
     >
       <Link
-        href={`/products/pumps/heating-unit/${m.slug}`}
+        href={`/products/heating-unit/${m.slug}`}
         data-cursor="hover"
         className="group relative flex h-full min-h-[220px] flex-col justify-between bg-[var(--color-primary)] p-4 transition-colors duration-300 [@media(hover:hover)]:hover:bg-[#111] sm:min-h-[260px] sm:p-6 md:min-h-[300px] md:p-8"
       >

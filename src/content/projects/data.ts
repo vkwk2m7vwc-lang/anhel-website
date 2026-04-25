@@ -13,7 +13,6 @@ export const PROJECTS: ProjectItem[] = [
   {
     slug: "sogaz-medical-complex",
     title: "Многофункциональный медицинский комплекс",
-    customer: "СОГАЗ, ENKA",
     category: "pumps",
     equipment: ["Насосные установки повышения давления и пожаротушения"],
     cover: "/assets/projects/sogaz-medical-complex/cover.jpg",
@@ -22,7 +21,6 @@ export const PROJECTS: ProjectItem[] = [
   {
     slug: "zhk-imperial-club",
     title: "ЖК Imperial Club",
-    customer: "SETL GROUP",
     category: "pumps",
     equipment: [
       "Насосные установки повышения давления и пожаротушения ANHEL",
@@ -34,7 +32,6 @@ export const PROJECTS: ProjectItem[] = [
   {
     slug: "zhk-grand-view",
     title: "ЖК «Гранд Вью»",
-    customer: "SETL GROUP",
     category: "mixed",
     equipment: [
       "Насосные установки повышения давления и пожаротушения ANHEL",
@@ -49,7 +46,6 @@ export const PROJECTS: ProjectItem[] = [
   {
     slug: "zhk-svetlana-park",
     title: "ЖК «Светлана парк»",
-    customer: "SETL GROUP",
     category: "mixed",
     equipment: [
       "Насосные установки повышения давления и пожаротушения ANHEL",
@@ -64,7 +60,6 @@ export const PROJECTS: ProjectItem[] = [
   {
     slug: "zhk-astra-continental",
     title: "ЖК «Астра Континенталь»",
-    customer: "SETL GROUP",
     category: "mixed",
     equipment: [
       "Насосные установки повышения давления и пожаротушения ANHEL",
@@ -79,7 +74,6 @@ export const PROJECTS: ProjectItem[] = [
   {
     slug: "zhk-astra-marine",
     title: "ЖК «Астра Марин»",
-    customer: "SETL GROUP",
     category: "mixed",
     equipment: [
       "Насосные установки повышения давления и пожаротушения ANHEL",
@@ -94,7 +88,6 @@ export const PROJECTS: ProjectItem[] = [
   {
     slug: "zhk-titul",
     title: "ЖК «Титул»",
-    customer: "SETL GROUP",
     category: "mixed",
     equipment: [
       "Насосные установки повышения давления и пожаротушения ANHEL",
@@ -109,7 +102,6 @@ export const PROJECTS: ProjectItem[] = [
   {
     slug: "zhk-amber-club",
     title: "ЖК «Амбер Клаб»",
-    customer: "SETL GROUP",
     category: "mixed",
     equipment: [
       "Насосные установки повышения давления и пожаротушения ANHEL",
@@ -124,7 +116,6 @@ export const PROJECTS: ProjectItem[] = [
   {
     slug: "zhk-senat",
     title: "ЖК «Сенат»",
-    customer: "SETL GROUP",
     category: "mixed",
     equipment: [
       "Насосные установки повышения давления и пожаротушения ANHEL",
@@ -139,7 +130,6 @@ export const PROJECTS: ProjectItem[] = [
   {
     slug: "zhk-panorama-park",
     title: "ЖК «Панорама Парк»",
-    customer: "SETL GROUP",
     category: "mixed",
     equipment: [
       "Насосные установки повышения давления и пожаротушения ANHEL",
@@ -154,7 +144,6 @@ export const PROJECTS: ProjectItem[] = [
   {
     slug: "zhk-vitebsky-park",
     title: "ЖК «Витебский парк»",
-    customer: "ПИК",
     category: "pumps",
     equipment: ["Насосное оборудование IMP PUMPS"],
     cover: "/assets/projects/zhk-vitebsky-park/cover.jpg",
@@ -163,7 +152,6 @@ export const PROJECTS: ProjectItem[] = [
   {
     slug: "zhk-upoint",
     title: "ЖК Upoint",
-    customer: "УНИСТРОЙ",
     category: "pumps",
     equipment: ["Насосные установки повышения давления ANHEL"],
     cover: "/assets/projects/zhk-upoint/cover.jpg",
@@ -172,7 +160,6 @@ export const PROJECTS: ProjectItem[] = [
   {
     slug: "zhk-graf-orlov",
     title: "ЖК «Граф Орлов»",
-    customer: "Л1",
     category: "pumps",
     equipment: ["Насосное оборудование LOWARA"],
     cover: "/assets/projects/zhk-graf-orlov/cover.jpg",
