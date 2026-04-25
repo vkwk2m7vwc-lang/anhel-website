@@ -9,6 +9,10 @@ import type { Config } from "tailwindcss";
  * follows the currently-focused product color on Stage 3).
  */
 const config: Config = {
+  // Class-based dark mode — `next-themes` toggles `class="dark"` / `class="light"`
+  // on <html>. Tailwind's `dark:` modifier still works, but most theming flows
+  // through CSS variables defined in `globals.css`.
+  darkMode: "class",
   content: [
     "./src/app/**/*.{ts,tsx,mdx}",
     "./src/components/**/*.{ts,tsx,mdx}",
