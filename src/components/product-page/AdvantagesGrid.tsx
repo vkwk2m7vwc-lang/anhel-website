@@ -9,17 +9,16 @@ import type {
 /**
  * Advantages grid — section 7.
  *
- * Nine cards laid out 3×3 on desktop, 2×5 (the last one spans) on
- * tablet, 1×9 on mobile. Each card carries a large mono index plus
- * a short title and a 1-2 sentence body. Nine cells — полный
- * proof-набор, preserved so the engineering reader sees the whole
- * sheet without scrolling off to a "read more".
+ * Same layout system as ApplicationsGrid:
+ *   - Mobile (<640px): 1-col compact row stack. Каждый пункт —
+ *     горизонтальная строка [mono][title — body на одной линии].
+ *     Padding минимальный (p-4), min-h ~72px tap-target.
+ *   - sm (640+): 2 колонки card-layout.
+ *   - lg (1024+): 3 колонки.
  *
- * Design note — we use the same `gap-px bg-hairline` trick as
- * ApplicationsGrid and TechSpecsGrid so the cell borders are a single
- * pixel with no double-border at the edges. Hover-ring + mono-number
- * colour lift are the only hover-state effects; the body copy stays
- * the same so the card doesn't visually jump on cursor enter.
+ * Hover gated to `@media (hover: hover)` чтобы tap на iOS не оставлял
+ * tile в hover-state. `active:ring-[var(--accent-current)]` даёт
+ * tap-фидбек цветом продукта (fire / water / heat / treatment).
  *
  * Reusable per product — `AdvantagesContent` drives everything.
  */
@@ -42,14 +41,14 @@ export function AdvantagesGrid({ content }: { content: AdvantagesContent }) {
             </h2>
           </div>
           {content.lede ? (
-            <p className="max-w-[420px] text-sm text-[var(--color-secondary)]/60 md:text-right">
+            <p className="max-w-[420px] text-sm text-[var(--color-secondary)]/65 md:text-right">
               {content.lede}
             </p>
           ) : null}
         </div>
 
-        {/* 1 × 9 → 2 × 5 → 3 × 3. Nine cells divide exactly on desktop. */}
-        <ul className="mt-12 grid grid-cols-1 gap-px bg-[var(--color-hairline)] md:mt-16 md:grid-cols-2 lg:grid-cols-3">
+        {/* Mobile 1-col rows → tablet 2-col → desktop 3-col card grid. */}
+        <ul className="mt-12 grid grid-cols-1 gap-px bg-[var(--color-hairline)] md:mt-16 sm:grid-cols-2 lg:grid-cols-3">
           {content.items.map((item, i) => (
             <AdvantageCard key={item.id} item={item} index={i} />
           ))}
@@ -70,33 +69,49 @@ function AdvantageCard({
 
   return (
     <motion.li
-      initial={{ opacity: 0, y: 16 }}
+      initial={{ opacity: 0, y: 12 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-80px" }}
       transition={{
-        duration: 0.6,
+        duration: 0.5,
         ease: [0.16, 1, 0.3, 1],
         delay: staggerDelay,
       }}
-      className="group relative flex min-h-[240px] flex-col justify-between bg-[var(--color-primary)] p-6 transition-colors duration-300 hover:bg-[#111] md:min-h-[280px] md:p-8"
+      tabIndex={0}
+      role="group"
+      aria-label={`${item.mono} · ${item.title}`}
+      className={[
+        "group relative flex bg-[var(--color-primary)] outline-none transition-colors duration-300",
+        // Mobile compact row — фикс-высота 64px, малый padding,
+        // line-clamp на title (1 строка) и body (2 строки) — 9
+        // преимуществ помещаются в 2-3 экрана.
+        "min-h-[64px] flex-row items-baseline gap-3 px-4 py-3",
+        // Tablet+ card.
+        "sm:min-h-[240px] sm:flex-col sm:justify-between sm:gap-0 sm:p-6 md:min-h-[280px] md:p-8",
+        "[@media(hover:hover)]:hover:bg-[#111]",
+        "active:ring-1 active:ring-[var(--accent-current)]",
+        "focus-visible:ring-1 focus-visible:ring-[var(--accent-current)]/70",
+      ].join(" ")}
     >
       <span
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 ring-1 ring-transparent transition-[box-shadow,ring-color] duration-300 group-hover:ring-[var(--accent-current)]"
+        className="pointer-events-none absolute inset-0 ring-1 ring-transparent transition-[box-shadow,ring-color] duration-300 [@media(hover:hover)]:group-hover:ring-[var(--accent-current)]"
       />
 
       <p
         aria-hidden="true"
-        className="font-mono text-[11px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/65 transition-colors duration-300 group-hover:text-[var(--accent-current)]"
+        className="font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/65 transition-colors duration-300 [@media(hover:hover)]:group-hover:text-[var(--accent-current)] sm:text-[11px]"
       >
         {item.mono}
       </p>
 
-      <div className="mt-10 flex flex-col gap-3">
-        <h3 className="font-display text-[22px] font-medium leading-tight text-[var(--color-secondary)] md:text-[24px]">
+      {/* Title + body — на mobile compact (line-clamp 1 + 2);
+          на sm+ — раскрывается полностью в карточке. */}
+      <div className="flex min-w-0 flex-1 flex-col gap-1 sm:mt-10 sm:gap-3">
+        <h3 className="line-clamp-1 font-display text-[14px] font-medium leading-tight text-[var(--color-secondary)] sm:line-clamp-none sm:text-[22px] md:text-[24px]">
           {item.title}
         </h3>
-        <p className="text-sm leading-relaxed text-[var(--color-secondary)]/60">
+        <p className="line-clamp-2 text-[11px] leading-snug text-[var(--color-secondary)]/65 sm:line-clamp-none sm:text-sm sm:leading-relaxed">
           {item.body}
         </p>
       </div>

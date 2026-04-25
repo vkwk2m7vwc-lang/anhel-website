@@ -7,6 +7,7 @@ import { motion, useMotionValueEvent, useScroll } from "framer-motion";
 import { Menu, Phone } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { CONTACTS } from "@/lib/contacts";
+import { CATALOG_PATH } from "@/lib/routes";
 import { MobileMenu } from "./MobileMenu";
 
 /**
@@ -22,7 +23,7 @@ import { MobileMenu } from "./MobileMenu";
  */
 
 const NAV = [
-  { label: "Продукты", href: "/products/pumps/firefighting" },
+  { label: "Продукты", href: CATALOG_PATH },
   { label: "Объекты", href: "/#projects" },
   { label: "О компании", href: "/#about" },
   { label: "Производство", href: "/#manufacturing" },

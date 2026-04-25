@@ -31,6 +31,16 @@ export function useMagnetic<T extends HTMLElement>({
 
   useEffect(() => {
     if (prefersReduced || isTouch) return;
+    // Belt-and-braces: read matchMedia synchronously inside the effect
+    // as well, so we never attach the global `mousemove` listener on a
+    // touch-capable device — even if some upstream React state hasn't
+    // settled yet. On iOS Safari, the synthetic mouse events fired
+    // during a tap would otherwise drag the magnetic element away
+    // from the touch target and cause the first tap to miss.
+    if (typeof window !== "undefined") {
+      if (window.matchMedia("(hover: none), (pointer: coarse)").matches) return;
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    }
     const el = ref.current;
     if (!el) return;
 

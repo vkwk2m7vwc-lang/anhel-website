@@ -3,128 +3,199 @@
 import type { FireSystem } from "@/content/products/firefighting-systems";
 
 /**
- * Left-rail step menu for the "Как срабатывает" section.
+ * Step viewer for the «Как срабатывает» section.
  *
- * Sticky inside the pinned section so the list of steps stays visible
- * while the right column (SVG) animates through the narrative. The
- * currently-active step is highlighted with the firefighting red
- * accent (#D72638) and an indicator bar, everything else sits at
- * low opacity.
+ * Two layout variants behind one component, picked via the `compact`
+ * prop:
  *
- * The title + body of the active step is surfaced here too — it's
- * what the reader actually follows while they scroll. Previous steps
- * "fade down" so they remain readable as context; future steps stay
- * dim to signal "not there yet".
+ *   • RAIL (default, desktop): a vertical button-list with the active
+ *     step's body rendered below it. Used in the desktop 2-col layout
+ *     where the rail sits to the left of the Lakhta scene.
  *
- * Steps are passed in as a prop rather than imported, because the
- * rail now swaps its copy when the user switches fire-suppression
- * system in the header (steps 02/05/06 vary per system; 01/03/04 are
- * shared). Keeping the component dumb means the parent can animate
- * the swap without this component knowing about it.
+ *   • COMPACT (`compact={true}`, mobile): a 2×3 grid of chip buttons
+ *     followed by the body card. Designed to live directly under the
+ *     Lakhta scene on phones so the user can see both the chip they're
+ *     tapping and the tower changing in the same viewport. Without this
+ *     variant the rail rendered tall enough that the tower scrolled
+ *     out of view by the time the user reached step 03+.
  *
- * Height-lock: the active-step body card below the list is given a
- * `min-h-[STEP_BODY_MIN_H]` sized from the longest known variant +
- * 12px buffer. When the parent swaps in a shorter body (e.g. drencher
- * step 05 "Вода одновременно…" is two words shorter than sprinkler
- * step 05), the card doesn't collapse — no jitter in the pinned
- * layout, no ScrollTrigger pin-spacer recompute needed.
+ * Both variants:
+ *   - Drive the same `activeStep` parent state via `onSelectStep`.
+ *   - Use the same body-card layout (`[mono] TITLE` + body) so a system
+ *     switch produces the same content regardless of viewport.
+ *   - Hover-states are gated to `@media (hover: hover)` so the last
+ *     tapped chip / row doesn't stay highlighted on iOS after the tap.
  *
- * Click handlers are intentionally omitted in this iteration. The
- * section is scroll-driven by design; adding click-to-jump would make
- * the narrative feel like a slideshow instead of a continuous read.
- * We can revisit in a later pass if user-testing shows friction.
+ * The section header (label + h2 + intro) lives in the parent now —
+ * keeping it here too duplicated «03 ·» on screen.
  */
 
 type Props = {
   activeStep: number;
   steps: FireSystem["steps"];
+  onSelectStep: (index: number) => void;
+  /**
+   * When true, render the 2×3 chip grid layout (mobile-friendly).
+   * When false / omitted, render the desktop rail.
+   */
+  compact?: boolean;
 };
 
-// Height budget for the active-step body card. Longest body among
-// sprinkler + drencher step 06 renders at ~3 lines × ~24px leading
-// ≈ 72px; plus the mono label (~18px) and 12px top gap → ~102px. Round
-// up to 128px for a 12-16px buffer so font-rendering differences
-// across devices never cause a jitter on system change.
-// NOTE: when we add ВПВ + combined in 4.2, re-measure here. If any new
-// body pushes past ~110px rendered height, bump this to 144 and update
-// the matching lock on SystemDetailCard too.
+// Body-card height budget — longest body among sprinkler + drencher
+// step 06 renders at ~3 lines × ~24px leading ≈ 72px; plus the mono
+// label (~18px) and 12px top gap → ~102px. Rounded up to 128px for a
+// buffer so font-rendering differences across devices don't cause
+// jitter on system change. Compact uses 112px (one more line of
+// vertical breathing room is fine on mobile, but a tighter bound keeps
+// the body card close to the chips above).
 const STEP_BODY_MIN_H = 128;
+const STEP_BODY_MIN_H_COMPACT = 112;
 
-export function LakhtaSteps({ activeStep, steps }: Props) {
-  const active = steps[activeStep] ?? steps[0];
+export function LakhtaSteps({
+  activeStep,
+  steps,
+  onSelectStep,
+  compact = false,
+}: Props) {
+  const safeIndex = Math.min(Math.max(activeStep, 0), steps.length - 1);
+  const active = steps[safeIndex];
 
-  return (
-    <div className="flex h-full flex-col justify-between gap-12 py-4">
-      {/* Section label */}
-      <div className="space-y-3">
-        <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-[var(--color-secondary)]/50">
-          03 · Как срабатывает
-        </p>
-        <h2 className="max-w-[360px] text-2xl font-medium leading-tight text-[var(--color-secondary)] md:text-3xl">
-          Шесть шагов от первой искры до локализации.
-        </h2>
-        <p className="max-w-[360px] text-sm leading-relaxed text-[var(--color-secondary)]/60">
-          Прокрутите секцию — на схеме справа подсветятся элементы, которые
-          срабатывают на каждом этапе. Вся последовательность —
-          автоматическая, занимает секунды.
-        </p>
+  if (compact) {
+    return (
+      <div className="flex flex-col gap-3">
+        {/* 2-column chip grid: 3 строки × 2 чипа. Чипы — компактная
+            навигация под башней. У неактивных чипов нет рамки —
+            только нижняя hairline-граница (через ul gap-px
+            bg-hairline + bg-primary на чипе). Активный — 1px
+            accent-fire ring, без bg. Это даёт «вторичный»
+            визуальный вес кнопкам — башня доминирует. */}
+        <ol
+          className="grid grid-cols-2 gap-px bg-[var(--color-hairline)]"
+          role="list"
+          aria-label="Шаги срабатывания"
+        >
+          {steps.map((step) => {
+            const isActive = step.index === activeStep;
+            return (
+              <li key={step.index}>
+                <button
+                  type="button"
+                  onClick={() => onSelectStep(step.index)}
+                  aria-pressed={isActive}
+                  data-active={isActive ? "true" : "false"}
+                  className={[
+                    "group relative flex h-full min-h-[52px] w-full flex-col items-start justify-center gap-0.5 bg-[var(--color-primary)] px-3 py-2 text-left transition-colors",
+                    "[@media(hover:hover)]:hover:bg-[#111]",
+                    "focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--accent-fire)]/70",
+                    isActive
+                      ? "ring-1 ring-inset ring-[var(--accent-fire)]"
+                      : "",
+                  ].join(" ")}
+                >
+                  <span
+                    className={[
+                      "font-mono text-[10px] uppercase tracking-[0.12em] transition-colors",
+                      isActive
+                        ? "text-[var(--accent-fire)]"
+                        : "text-[var(--color-secondary)]/55",
+                    ].join(" ")}
+                  >
+                    {step.mono}
+                  </span>
+                  <span
+                    className={[
+                      "line-clamp-1 text-[12px] font-medium leading-tight transition-colors",
+                      isActive
+                        ? "text-[var(--color-secondary)]"
+                        : "text-[var(--color-secondary)]/70",
+                    ].join(" ")}
+                  >
+                    {step.title}
+                  </span>
+                </button>
+              </li>
+            );
+          })}
+        </ol>
+
+        {/* Body card — same content as the desktop rail. Slightly
+            tighter min-height (112 vs 128) since mobile typography is
+            naturally a hair smaller. */}
+        <div
+          className="border-t border-[var(--color-hairline)] pt-4"
+          style={{ minHeight: STEP_BODY_MIN_H_COMPACT }}
+        >
+          <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-[var(--accent-fire)]">
+            [{active.mono}] {active.title.toUpperCase()}
+          </p>
+          <p className="mt-2 text-[13px] leading-relaxed text-[var(--color-secondary)]/80">
+            {active.body}
+          </p>
+        </div>
       </div>
+    );
+  }
 
-      {/* Step list */}
+  // Desktop rail — vertical button list with body card below.
+  return (
+    <div className="flex h-full flex-col gap-8">
       <ol className="space-y-0" role="list">
         {steps.map((step) => {
           const isActive = step.index === activeStep;
           const isPast = step.index < activeStep;
           return (
-            <li
-              key={step.index}
-              data-active={isActive ? "true" : "false"}
-              data-past={isPast ? "true" : "false"}
-              className="group relative border-l border-[var(--color-hairline)] py-3 pl-5 transition-colors data-[active=true]:border-[var(--accent-fire)]"
-            >
-              {/* Active marker — a 2px accent bar that occupies the left border
-                  slot cleanly. */}
-              <span
-                aria-hidden="true"
-                className="pointer-events-none absolute left-0 top-0 h-full w-[2px] origin-top scale-y-0 bg-[var(--accent-fire)] transition-transform duration-300 ease-out group-data-[active=true]:scale-y-100"
-              />
+            <li key={step.index}>
+              <button
+                type="button"
+                onClick={() => onSelectStep(step.index)}
+                aria-pressed={isActive}
+                data-active={isActive ? "true" : "false"}
+                data-past={isPast ? "true" : "false"}
+                className="group relative block w-full border-l border-[var(--color-hairline)] py-3 pl-5 text-left transition-colors data-[active=true]:border-[var(--accent-fire)] [@media(hover:hover)]:hover:border-[var(--accent-fire)]/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-fire)]/60"
+              >
+                {/* Active marker — a 2px accent bar that occupies the
+                    left border slot cleanly. */}
+                <span
+                  aria-hidden="true"
+                  className="pointer-events-none absolute left-0 top-0 h-full w-[2px] origin-top scale-y-0 bg-[var(--accent-fire)] transition-transform duration-300 ease-out group-data-[active=true]:scale-y-100"
+                />
 
-              <div className="flex items-baseline gap-3">
-                <span
-                  className={[
-                    "font-mono text-[10px] uppercase tracking-[0.12em] transition-colors",
-                    isActive
-                      ? "text-[var(--accent-fire)]"
-                      : isPast
-                        ? "text-[var(--color-secondary)]/55"
-                        : "text-[var(--color-secondary)]/25",
-                  ].join(" ")}
-                >
-                  {step.mono}
-                </span>
-                <span
-                  className={[
-                    "text-base font-medium transition-colors",
-                    isActive
-                      ? "text-[var(--color-secondary)]"
-                      : isPast
-                        ? "text-[var(--color-secondary)]/70"
-                        : "text-[var(--color-secondary)]/35",
-                  ].join(" ")}
-                >
-                  {step.title}
-                </span>
-              </div>
+                <div className="flex items-baseline gap-3">
+                  <span
+                    className={[
+                      "font-mono text-[10px] uppercase tracking-[0.12em] transition-colors",
+                      isActive
+                        ? "text-[var(--accent-fire)]"
+                        : isPast
+                          ? "text-[var(--color-secondary)]/55"
+                          : "text-[var(--color-secondary)]/35",
+                    ].join(" ")}
+                  >
+                    {step.mono}
+                  </span>
+                  <span
+                    className={[
+                      "text-base font-medium transition-colors",
+                      isActive
+                        ? "text-[var(--color-secondary)]"
+                        : isPast
+                          ? "text-[var(--color-secondary)]/70"
+                          : "text-[var(--color-secondary)]/55",
+                    ].join(" ")}
+                  >
+                    {step.title}
+                  </span>
+                </div>
+              </button>
             </li>
           );
         })}
       </ol>
 
-      {/* Active step body — one block that updates as activeStep changes,
-          kept below the list so the reader's eye has a stable anchor.
-          min-height locked (see STEP_BODY_MIN_H comment above) so a
-          system switch that swaps in shorter copy doesn't collapse the
-          card and trigger a pin-spacer recompute. */}
+      {/* Active step body — one block that updates as activeStep
+          changes, kept below the list so the reader's eye has a stable
+          anchor. min-height locked so a system switch that swaps in
+          shorter copy doesn't collapse the card. */}
       <div
         className="max-w-[420px] border-t border-[var(--color-hairline)] pt-6"
         style={{ minHeight: STEP_BODY_MIN_H }}

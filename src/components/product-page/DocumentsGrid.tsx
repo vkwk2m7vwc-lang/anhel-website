@@ -45,8 +45,10 @@ export function DocumentsGrid({ content }: { content: DocumentsContent }) {
           ) : null}
         </div>
 
-        {/* 1 × 4 → 2 × 2 → 4 × 1. Works cleanly with either 3 or 4 items. */}
-        <ul className="mt-12 grid grid-cols-1 gap-px bg-[var(--color-hairline)] md:mt-16 md:grid-cols-2 lg:grid-cols-4">
+        {/* Mobile: 1-col compact rows (4 docs влезают в 1 экран).
+            Tablet (sm-md): 2 col card layout.
+            Desktop (lg+): 4 col card layout. */}
+        <ul className="mt-12 grid grid-cols-1 gap-px bg-[var(--color-hairline)] md:mt-16 sm:grid-cols-2 lg:grid-cols-4">
           {content.items.map((doc, i) => (
             <DocCard key={doc.id} doc={doc} index={i} />
           ))}
@@ -75,44 +77,66 @@ function DocCard({ doc, index }: { doc: DocumentItem; index: number }) {
         rel={doc.external ? "noreferrer noopener" : undefined}
         data-cursor="hover"
         download={doc.external ? undefined : doc.title}
-        className="group relative flex min-h-[220px] flex-col justify-between bg-[var(--color-primary)] p-6 transition-colors duration-300 hover:bg-[#111] md:min-h-[260px] md:p-8"
+        className={[
+          "group relative flex bg-[var(--color-primary)] transition-colors duration-300",
+          // Mobile: compact 1 visual unit — [PDF][title+size][→]
+          // в одной строке, без пустот.
+          "min-h-[64px] flex-row items-center gap-3 px-4 py-3",
+          // Tablet+ : block-card (PDF/size сверху, title+CTA снизу).
+          "sm:min-h-[220px] sm:flex-col sm:items-stretch sm:justify-between sm:gap-0 sm:p-6 md:min-h-[260px] md:p-8",
+          "[@media(hover:hover)]:hover:bg-[#111]",
+          "active:ring-1 active:ring-[var(--accent-current)]",
+        ].join(" ")}
       >
         {/* Accent ring — same language as the Applications/Advantages
             grids, so every card on the page reads as a single family. */}
         <span
           aria-hidden="true"
-          className="pointer-events-none absolute inset-0 ring-1 ring-transparent transition-[box-shadow,ring-color] duration-300 group-hover:ring-[var(--accent-current)]"
+          className="pointer-events-none absolute inset-0 ring-1 ring-transparent transition-[box-shadow,ring-color] duration-300 [@media(hover:hover)]:group-hover:ring-[var(--accent-current)]"
         />
 
-        {/* Top row: PDF badge + file size. Badge is plain text (`PDF`) in
-            the accent-current ink on hover; helps the card read as a
-            document at a glance. */}
-        <div className="flex items-start justify-between gap-4">
-          <span className="font-mono text-[11px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/65 transition-colors group-hover:text-[var(--accent-current)]">
+        {/* PDF-badge: на mobile inline-слева, на sm+ — top-row блок. */}
+        <div className="flex items-start gap-3 sm:justify-between">
+          <span className="font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/65 transition-colors [@media(hover:hover)]:group-hover:text-[var(--accent-current)] sm:text-[11px]">
             PDF
           </span>
           {doc.size ? (
-            <span className="font-mono text-[10px] uppercase tracking-[0.08em] text-[var(--color-secondary)]/65">
+            <span className="hidden font-mono text-[10px] uppercase tracking-[0.08em] text-[var(--color-secondary)]/65 sm:inline">
               {doc.size}
             </span>
           ) : null}
         </div>
 
-        {/* Title + download affordance */}
-        <div className="mt-10 flex flex-col gap-4">
-          <h3 className="font-display text-[18px] font-medium leading-snug text-[var(--color-secondary)] md:text-[20px]">
+        {/* Title + (mobile-inline size) + download affordance */}
+        <div className="flex min-w-0 flex-1 flex-col gap-0.5 sm:mt-10 sm:gap-4">
+          <h3 className="line-clamp-2 font-display text-[13px] font-medium leading-snug text-[var(--color-secondary)] sm:line-clamp-none sm:text-[18px] md:text-[20px]">
             {doc.title}
           </h3>
-          <span className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/55 transition-colors group-hover:text-[var(--color-secondary)]">
+          {/* Mobile: размер inline под title; sm+: размер уже выведен сверху. */}
+          {doc.size ? (
+            <span className="font-mono text-[10px] uppercase tracking-[0.08em] text-[var(--color-secondary)]/55 sm:hidden">
+              {doc.size}
+            </span>
+          ) : null}
+          {/* На sm+ — отдельный CTA «Скачать →»; на mobile это место занимает arrow справа от строки. */}
+          <span className="hidden items-center gap-2 font-mono text-[11px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/55 transition-colors [@media(hover:hover)]:group-hover:text-[var(--color-secondary)] sm:inline-flex">
             {doc.external ? "Открыть" : "Скачать"}
             <span
               aria-hidden="true"
-              className="inline-block transition-transform duration-300 ease-out-expo group-hover:translate-x-1"
+              className="inline-block transition-transform duration-300 ease-out-expo [@media(hover:hover)]:group-hover:translate-x-1"
             >
               →
             </span>
           </span>
         </div>
+
+        {/* Mobile-only arrow справа (визуальный affordance скачивания). */}
+        <span
+          aria-hidden="true"
+          className="font-mono text-[14px] text-[var(--color-secondary)]/55 sm:hidden"
+        >
+          →
+        </span>
       </Link>
     </motion.li>
   );

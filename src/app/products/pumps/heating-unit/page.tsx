@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { ProductHero } from "@/components/product-page/ProductHero";
 import { ProductPageShell } from "@/components/product-page/ProductPageShell";
 import { TechSpecsGrid } from "@/components/product-page/TechSpecsGrid";
-import { ApplicationsGrid } from "@/components/product-page/ApplicationsGrid";
 import { BrandsStrip } from "@/components/product-page/BrandsStrip";
 import { AdvantagesGrid } from "@/components/product-page/AdvantagesGrid";
 import { GalleryRail } from "@/components/product-page/GalleryRail";
@@ -10,7 +9,9 @@ import { CasesCarousel } from "@/components/product-page/CasesCarousel";
 import { QuizSection } from "@/components/product-page/quiz/QuizSection";
 import { DocumentsGrid } from "@/components/product-page/DocumentsGrid";
 import { ProductCtaFooter } from "@/components/product-page/ProductCtaFooter";
+import { HeatingModulesCatalog } from "@/components/products/heating-unit/HeatingModulesCatalog";
 import { heatingUnitContent } from "@/content/products/heating-unit";
+import { heatingModules } from "@/content/products/heating-unit-modules/data";
 import {
   breadcrumbLd,
   ldScriptProps,
@@ -68,7 +69,6 @@ export default function HeatingUnitProductPage() {
     hero,
     techSpecs,
     accent,
-    applications,
     brands,
     advantages,
     gallery,
@@ -99,7 +99,11 @@ export default function HeatingUnitProductPage() {
 
       <ProductHero content={hero} accent={accent} />
       <TechSpecsGrid specs={techSpecs} />
-      <ApplicationsGrid content={applications} />
+      {/* Линейка модулей — 8 кликабельных карточек, каждая ведёт на
+          /products/pumps/heating-unit/<slug>. Заменила старую секцию
+          ApplicationsGrid с 6 пунктами «где ставится» — для ИТП
+          важнее каталог конфигураций, чем типы объектов. */}
+      <HeatingModulesCatalog modules={heatingModules} />
       <BrandsStrip content={brands} />
       <AdvantagesGrid content={advantages} />
       <GalleryRail content={gallery} />
