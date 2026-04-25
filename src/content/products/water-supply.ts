@@ -277,31 +277,19 @@ export const waterSupplyContent: ProductContent = {
   documents: {
     tag: "09 · ДОКУМЕНТАЦИЯ",
     title: "Документы и сертификаты",
-    lede: "Опросный лист, сертификаты и руководство — для проектирования и приёмки.",
+    lede: "Декларация соответствия ЕАЭС, опросный лист и руководство — для проектирования и приёмки.",
     items: [
       {
         id: "oprosnik",
         title: "Опросный лист для подбора насосных установок",
-        size: "2.28 МБ",
+        size: "1.85 МБ",
         href: "/docs/water-supply/oprosnyi-list.pdf",
       },
       {
-        id: "cert-pump",
-        title: "Сертификат — насосные установки ANHEL® для систем водоснабжения",
-        size: "0.33 МБ",
-        href: "/docs/water-supply/cert-pump-station.pdf",
-      },
-      {
-        id: "cert-shu",
-        title: "Сертификат соответствия на шкаф управления ANHEL®",
-        size: "0.87 МБ",
-        href: "/docs/water-supply/cert-shu.pdf",
-      },
-      {
-        id: "manual",
-        title: "Руководство по эксплуатации насосной установки ANHEL®",
-        size: "0.81 МБ",
-        href: "/docs/water-supply/manual.pdf",
+        id: "cert-deklaratsiya",
+        title: "Декларация соответствия ЕАЭС — насосные установки водоснабжения ANHEL®",
+        size: "0.86 МБ",
+        href: "/docs/water-supply/cert-deklaratsiya.pdf",
       },
     ],
   },

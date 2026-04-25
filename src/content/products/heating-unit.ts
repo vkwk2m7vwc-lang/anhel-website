@@ -278,31 +278,13 @@ export const heatingUnitContent: ProductContent = {
   documents: {
     tag: "09 · ДОКУМЕНТАЦИЯ",
     title: "Документы и сертификаты",
-    lede: "Опросный лист, сертификаты и руководство — для проектирования и приёмки.",
+    lede: "Опросный лист и техническая документация — для проектирования и приёмки.",
     items: [
       {
         id: "oprosnik",
         title: "Опросный лист для подбора ИТП",
-        size: "2.28 МБ",
+        size: "7.20 МБ",
         href: "/docs/heating-unit/oprosnyi-list.pdf",
-      },
-      {
-        id: "cert-unit",
-        title: "Сертификат — блочные индивидуальные тепловые пункты ANHEL®",
-        size: "0.33 МБ",
-        href: "/docs/heating-unit/cert-unit.pdf",
-      },
-      {
-        id: "cert-shu",
-        title: "Сертификат соответствия на шкаф управления ANHEL®",
-        size: "0.87 МБ",
-        href: "/docs/heating-unit/cert-shu.pdf",
-      },
-      {
-        id: "manual",
-        title: "Руководство по эксплуатации БИТП ANHEL®",
-        size: "0.81 МБ",
-        href: "/docs/heating-unit/manual.pdf",
       },
     ],
   },
