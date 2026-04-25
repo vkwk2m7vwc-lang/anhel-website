@@ -23,7 +23,6 @@ export default function Home() {
       <HeroShell
         variantLabel="ANHEL®"
         background={<HeroBgCarousel autoplay={true} />}
-        mobileProductInBackground
       />
       <ProductsShowcase />
     </>

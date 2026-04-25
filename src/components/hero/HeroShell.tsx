@@ -26,28 +26,10 @@ export function HeroShell({
   background,
   foreground,
   variantLabel,
-  mobileProductInBackground = false,
 }: {
   background: ReactNode;
   foreground?: ReactNode;
   variantLabel: string;
-  /**
-   * When the background slot itself renders a product image at the top
-   * of the mobile viewport (e.g. HeroBgCarousel's mobile fallback),
-   * we need to push the content grid down so the mono-tag + H1 + lede
-   * + CTAs land *below* that product, not on top of it. With this flag
-   * set, mobile content gets a much larger top padding (~340px instead
-   * of 112px). Desktop is unaffected — the product render lives in
-   * the right 45% column there and never collides with the copy.
-   *
-   * Why a flag instead of a slot: the carousel manages its own active
-   * state via `useHeroCarousel`, so duplicating its render in a
-   * separate `mobileProduct` slot would mean two consumers of the
-   * hook (or prop drilling). Letting the background do its own mobile
-   * placement and just reserving room for it from the shell is the
-   * cheapest way to keep them in sync.
-   */
-  mobileProductInBackground?: boolean;
 }) {
   return (
     <section
@@ -84,12 +66,7 @@ export function HeroShell({
 
           The counters / variant-label row at the bottom is text-only
           and can stay click-through (no explicit auto on it). */}
-      <div
-        className={
-          "pointer-events-none relative z-20 mx-auto flex min-h-[100svh] w-full max-w-[1440px] flex-col justify-between px-6 pb-10 md:px-12 md:pb-14 md:pt-32 " +
-          (mobileProductInBackground ? "pt-[340px]" : "pt-28")
-        }
-      >
+      <div className="pointer-events-none relative z-20 mx-auto flex min-h-[100svh] w-full max-w-[1440px] flex-col justify-between px-6 pb-10 pt-28 md:px-12 md:pb-14 md:pt-32">
         <div className="pointer-events-auto flex-1">
           <motion.p
             initial={{ opacity: 0, y: 12 }}
