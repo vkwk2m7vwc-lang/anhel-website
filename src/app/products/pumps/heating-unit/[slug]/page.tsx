@@ -23,14 +23,18 @@ import {
  * Dynamic route for individual heating-unit module —
  * /products/pumps/heating-unit/[slug].
  *
- * 8 модулей линейки ANHEL® BITP-NU. Каждая подстраница содержит:
- *   - Hero с картинкой модуля + tagline + CTA
- *   - ТТХ модуля (4–8 строк, специфичные для модуля)
- *   - Полное описание (1–3 абзаца)
- *   - Состав установки (опционально)
- *   - Назначение / применение (4–5 пунктов)
- *   - Опросный лист (общий с родительской страницей)
- *   - Возврат в каталог + соседние модули
+ * 8 модулей линейки. Перенумерованная (после удаления секции
+ * «Состав установки») структура подстраницы:
+ *   01 Hero (картинка модуля + tagline + CTA)
+ *   02 Параметры (ТТХ, 4–8 строк)
+ *   03 Описание (1–3 абзаца)
+ *   04 Применение (4–5 пунктов)
+ *   05 Опросный лист (общий с родительской страницей)
+ *   06 Смежные модули (соседи по линейке)
+ *
+ * Секция «Состав установки» (composition) удалена по UX-фидбеку
+ * заказчика — на mfmc.ru-источнике она тоже отсутствовала, был
+ * placeholder-список с дублированием smyslov.
  *
  * Бренды, документы, преимущества, кейсы — на родительской
  * /products/pumps/heating-unit/, чтобы не дублировать контент.
@@ -58,11 +62,11 @@ export async function generateMetadata({
   const m = getModule(slug);
   if (!m) return { title: "Модуль не найден · ANHEL®" };
   return {
-    title: `${m.title} · ANHEL® BITP-NU`,
+    title: `${m.title} · ANHEL`,
     description: m.tagline,
     openGraph: {
       type: "website",
-      title: `${m.title} · ANHEL® BITP-NU`,
+      title: `${m.title} · ANHEL`,
       description: m.tagline,
       url: `/products/pumps/heating-unit/${m.slug}`,
       images: [{ url: m.image.src, alt: m.image.alt }],
@@ -79,7 +83,7 @@ export default async function HeatingModulePage({ params }: RouteParams) {
 
   const productJsonLd = productLd({
     slug: `heating-unit-${m.slug}`,
-    name: `${m.title} · ANHEL® BITP-NU`,
+    name: `${m.title} · ANHEL`,
     description: m.tagline,
     image: m.image.src,
     category: "HVAC / Heat exchanger module",
@@ -103,10 +107,13 @@ export default async function HeatingModulePage({ params }: RouteParams) {
       <script {...ldScriptProps(productJsonLd)} />
       <script {...ldScriptProps(breadcrumbJsonLd)} />
 
-      {/* Hero модуля — компактная shell, не reuse ProductHero потому что
-          там много hero-specific логики (tilt, magnetic CTA, mobile-product
-          в верхней половине). Здесь нужен сжатый header. */}
+      {/* 01 Hero модуля — единая 12-col grid схема под одинаковые
+          пропорции с ProductHero (текст col-6 / изображение col-6,
+          mobile aspect-[4/3] под текстом). Кастомный hero оставлен
+          (не reuse ProductHero), потому что мы рендерим module-specific
+          breadcrumbs + кнопку «← К каталогу модулей». */}
       <section
+        id="product-hero"
         className="relative overflow-hidden bg-[var(--color-primary)]"
         style={{
           ["--accent-current" as string]:
@@ -117,67 +124,74 @@ export default async function HeatingModulePage({ params }: RouteParams) {
           aria-hidden="true"
           className="absolute inset-0 bg-grid-hairline bg-grid opacity-30"
         />
-        <div className="relative mx-auto flex w-full max-w-[1440px] flex-col gap-10 px-6 pb-16 pt-28 md:flex-row md:items-center md:gap-16 md:px-12 md:pb-20 md:pt-32">
-          <div className="flex-1">
-            <Breadcrumbs
-              items={[
-                { label: "Главная", href: "/" },
-                { label: "Каталог", href: "/products" },
-                {
-                  label: "Тепловые пункты",
-                  href: "/products/pumps/heating-unit",
-                },
-                { label: m.shortTitle },
-              ]}
-            />
-            <p className="mono-tag mt-6">
-              {m.mono} · МОДУЛЬ ANHEL® BITP-NU
-              {m.draft ? " · DRAFT" : ""}
-            </p>
-            <h1 className="mt-6 max-w-[640px] font-display text-section font-medium text-[var(--color-secondary)] md:mt-8">
-              {m.title}
-            </h1>
-            <p className="mt-6 max-w-[540px] text-body text-[var(--color-secondary)]/75 md:mt-8">
-              {m.tagline}
-            </p>
-            <div className="mt-10 flex flex-wrap items-center gap-4 md:mt-12 md:gap-5">
-              <Link
-                href="#quiz"
-                data-cursor="hover"
-                className="inline-flex items-center gap-3 rounded-md bg-[var(--color-secondary)] px-[22px] py-[14px] text-sm font-medium text-[var(--color-primary)]"
-              >
-                Быстрый запрос
-                <span aria-hidden="true" className="font-mono">
-                  →
-                </span>
-              </Link>
-              <Link
-                href="/products/pumps/heating-unit"
-                data-cursor="hover"
-                className="inline-flex items-center gap-3 rounded-md border-[0.5px] border-[var(--color-secondary)]/40 bg-transparent px-[22px] py-[14px] text-sm font-medium text-[var(--color-secondary)]/80 transition-colors hover:border-[var(--color-secondary)] hover:text-[var(--color-secondary)]"
-              >
-                ← К каталогу модулей
-              </Link>
-            </div>
-          </div>
+        <div className="relative z-20 mx-auto w-full max-w-[1440px] px-6 pb-10 pt-24 md:px-12 md:pb-14 md:pt-28">
+          <Breadcrumbs
+            items={[
+              { label: "Главная", href: "/" },
+              { label: "Каталог", href: "/products" },
+              {
+                label: "Тепловые пункты",
+                href: "/products/pumps/heating-unit",
+              },
+              { label: m.shortTitle },
+            ]}
+          />
 
-          {/* Module image */}
-          <div className="relative mx-auto flex h-[min(45vw,260px)] w-[min(45vw,260px)] items-center justify-center md:mx-0 md:h-[320px] md:w-[320px]">
-            <Image
-              src={m.image.src}
-              alt={m.image.alt}
-              fill
-              sizes="320px"
-              className="object-contain"
-              priority
-            />
+          <div className="mt-8 grid grid-cols-1 gap-8 md:mt-10 md:grid-cols-12 md:gap-10 lg:gap-14">
+            {/* TEXT — col-6 на md+ */}
+            <div className="md:col-span-6">
+              <p className="mono-tag">
+                01 · {m.mono} МОДУЛЬ
+                {m.draft ? " · DRAFT" : ""}
+              </p>
+              <h1 className="mt-6 font-display text-5xl font-medium leading-[1.05] text-[var(--color-secondary)] md:mt-8 lg:text-7xl">
+                {m.title}
+              </h1>
+              <p className="mt-6 max-w-[540px] text-body text-[var(--color-secondary)]/75 md:mt-8">
+                {m.tagline}
+              </p>
+              <div className="mt-10 flex flex-wrap items-center gap-4 md:mt-12 md:gap-5">
+                <Link
+                  href="#quiz"
+                  data-cursor="hover"
+                  className="group inline-flex items-center gap-3 rounded-md bg-[var(--color-secondary)] px-[22px] py-[14px] text-sm font-medium text-[var(--color-primary)]"
+                >
+                  Быстрый запрос
+                  <span aria-hidden="true" className="font-mono">
+                    →
+                  </span>
+                </Link>
+                <Link
+                  href="/products/pumps/heating-unit"
+                  data-cursor="hover"
+                  className="inline-flex items-center gap-3 rounded-md border-[0.5px] border-[var(--color-secondary)]/40 bg-transparent px-[22px] py-[14px] text-sm font-medium text-[var(--color-secondary)]/80 transition-colors hover:border-[var(--color-secondary)] hover:text-[var(--color-secondary)]"
+                >
+                  ← К каталогу модулей
+                </Link>
+              </div>
+            </div>
+
+            {/* IMAGE — col-6 на md+, aspect-4/3 на mobile под текстом */}
+            <div className="md:col-span-6">
+              <div className="relative aspect-[4/3] w-full md:aspect-auto md:min-h-[520px]">
+                <Image
+                  src={m.image.src}
+                  alt={m.image.alt}
+                  fill
+                  sizes="(min-width: 1024px) 600px, (min-width: 768px) 50vw, 100vw"
+                  className="object-contain"
+                  priority
+                />
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
+      {/* 02 ТТХ — TechSpecsGrid внутри уже фильтрует пустые */}
       <TechSpecsGrid specs={m.techSpecs} />
 
-      {/* Описание */}
+      {/* 03 Описание */}
       <section
         className="relative border-t border-[var(--color-hairline)] bg-[var(--color-primary)]"
         aria-labelledby="module-description"
@@ -196,51 +210,13 @@ export default async function HeatingModulePage({ params }: RouteParams) {
         </div>
       </section>
 
-      {/* Состав установки — опционально */}
-      {m.composition?.length ? (
-        <section
-          className="relative border-t border-[var(--color-hairline)] bg-[var(--color-primary)]"
-          aria-labelledby="module-composition"
-        >
-          <div className="mx-auto w-full max-w-[1440px] px-6 py-20 md:px-12 md:py-28">
-            <p className="mono-tag">04 · СОСТАВ УСТАНОВКИ</p>
-            <h2
-              id="module-composition"
-              className="mt-4 max-w-[640px] font-display text-h2 font-medium text-[var(--color-secondary)]"
-            >
-              Что входит в модуль
-            </h2>
-            <ul className="mt-8 grid grid-cols-1 gap-px bg-[var(--color-hairline)] md:grid-cols-2 lg:grid-cols-3">
-              {m.composition.map((item, i) => (
-                <li
-                  key={i}
-                  className="flex items-baseline gap-3 bg-[var(--color-primary)] p-4 sm:p-6"
-                >
-                  <span
-                    aria-hidden="true"
-                    className="font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/55"
-                  >
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                  <span className="text-sm leading-relaxed text-[var(--color-secondary)]/85">
-                    {item}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </section>
-      ) : null}
-
-      {/* Применение */}
+      {/* 04 Применение */}
       <section
         className="relative border-t border-[var(--color-hairline)] bg-[var(--color-primary)]"
         aria-labelledby="module-applications"
       >
         <div className="mx-auto w-full max-w-[1440px] px-6 py-20 md:px-12 md:py-28">
-          <p className="mono-tag">
-            {m.composition?.length ? "05" : "04"} · ПРИМЕНЕНИЕ
-          </p>
+          <p className="mono-tag">04 · ПРИМЕНЕНИЕ</p>
           <h2
             id="module-applications"
             className="mt-4 max-w-[640px] font-display text-h2 font-medium text-[var(--color-secondary)]"
@@ -268,15 +244,16 @@ export default async function HeatingModulePage({ params }: RouteParams) {
         </div>
       </section>
 
+      {/* 05 Опросный лист */}
       <QuizSection content={heatingUnitContent.quiz} />
 
-      {/* Соседние модули — навигация без возврата на каталог */}
+      {/* 06 Соседние модули — навигация без возврата на каталог */}
       <section
         className="relative border-t border-[var(--color-hairline)] bg-[var(--color-primary)]"
         aria-labelledby="module-neighbours"
       >
         <div className="mx-auto w-full max-w-[1440px] px-6 py-20 md:px-12 md:py-28">
-          <p className="mono-tag">{m.composition?.length ? "07" : "06"} · СМЕЖНЫЕ МОДУЛИ</p>
+          <p className="mono-tag">06 · СМЕЖНЫЕ МОДУЛИ</p>
           <h2
             id="module-neighbours"
             className="mt-4 max-w-[640px] font-display text-h2 font-medium text-[var(--color-secondary)]"

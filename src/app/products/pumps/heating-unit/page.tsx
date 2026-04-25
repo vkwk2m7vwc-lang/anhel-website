@@ -51,7 +51,7 @@ export const metadata: Metadata = {
   description: heatingUnitContent.metaDescription,
   openGraph: {
     type: "website",
-    title: `${heatingUnitContent.metaTitle} · ANHEL®`,
+    title: `${heatingUnitContent.metaTitle} · ANHEL`,
     description: heatingUnitContent.metaDescription,
     url: `/products/pumps/heating-unit`,
     images: [
@@ -80,7 +80,7 @@ export default function HeatingUnitProductPage() {
 
   const productJsonLd = productLd({
     slug,
-    name: "Блочные индивидуальные тепловые пункты ANHEL®",
+    name: "Блочные индивидуальные тепловые пункты ANHEL",
     description: heatingUnitContent.metaDescription,
     image: heatingUnitContent.hero.image.src,
     category: "HVAC / Heat exchanger unit",

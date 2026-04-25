@@ -55,12 +55,13 @@ export interface HeatingModule {
   techSpecs: HeatingModuleSpec[];
   /** Назначение / область применения — 2–4 пункта */
   applications: string[];
-  /** Состав установки — что входит в модуль (опционально) */
-  composition?: string[];
   /**
    * Флаг draft — если true, контент модуля содержит общие
    * отраслевые формулировки и не сверен 1-в-1 с источником.
    * См. _docs/heating_unit_modules_gaps.md.
+   *
+   * Поле composition (Состав установки) удалено — секция убрана
+   * со страницы модуля по UX-фидбеку.
    */
   draft?: boolean;
 }

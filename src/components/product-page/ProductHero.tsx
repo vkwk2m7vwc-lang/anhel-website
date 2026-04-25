@@ -27,11 +27,6 @@ const ACCENT_HEX: Record<ProductAccent, string> = {
   heat: "#E8873B",
 };
 
-/**
- * Map accent key to the CSS variable that `globals.css` exposes. We use
- * this for the thin "shell" colour (e.g. underlines, bullet ticks) so
- * the whole page picks up one source of truth.
- */
 const ACCENT_VAR: Record<ProductAccent, string> = {
   fire: "var(--accent-fire)",
   water: "var(--accent-water)",
@@ -42,30 +37,26 @@ const ACCENT_VAR: Record<ProductAccent, string> = {
 /**
  * Product-page hero.
  *
- * Layout (desktop, ≥ md):
- *   ┌──────────────────────────────┬─────────────────┐
- *   │  breadcrumbs                 │                 │
- *   │  mono-tag                    │                 │
- *   │                              │   3D product    │
- *   │  H1 title                    │   render with   │
- *   │  subtitle                    │   tilt + glow   │
- *   │                              │                 │
- *   │  [primary] [ghost]           │                 │
- *   │                              │                 │
- *   │  ────────────────────────────────────          │
- *   │  scroll hint                                   │
- *   └────────────────────────────────────────────────┘
+ * Layout (CSS-grid, 12 columns):
+ *   ┌─────────────────────┬─────────────────┐
+ *   │ breadcrumbs (full)                    │
+ *   ├─────────────────────┬─────────────────┤
+ *   │ col-span-6: text    │ col-span-6: img │
+ *   │  - mono-tag          │  - aspect ratio │
+ *   │  - H1 (5xl/7xl)      │    auto на md+ │
+ *   │  - subtitle          │    с min-h 520 │
+ *   │  - CTAs              │  - object-contain
+ *   └─────────────────────┴─────────────────┘
+ *   - На мобиле (<md) одна колонка: текст сверху, картинка под
+ *     CTA-кнопками (aspect-[4/3], object-contain).
  *
- * Below `md` the layout stacks: breadcrumbs + copy on top, image
- * beneath with a smaller footprint. Tilt / magnetic cursor disable on
- * touch and for users with reduced motion (enforced inside the hooks).
+ * Прежний вариант использовал absolute positioning картинки в правой
+ * 45% колонке + content grid с pt-28. Это давало непредсказуемые
+ * пересечения на нестандартных viewport-ширинах. Новая grid-схема
+ * жёстко делит hero пополам — пропорции стабильны на любых брейкпоинтах.
  *
- * The shell deliberately does NOT reuse `HeroShell` from `src/components/hero/`.
- * HeroShell is home-hero-specific (counters strip, variant labels). Product
- * hero has breadcrumbs and no counters. Trying to fold one into the other
- * would compromise both. Shared DNA (grid, mono-tag treatment, tilt, glow)
- * is just reproduced here — 30 lines of duplication trades cleanly against
- * keeping either component from sprouting conditionals.
+ * Tilt и magnetic-cursor сохранены: tilt применяется к product-блоку
+ * на md+, magnetic — к CTA-кнопкам. Оба disable на touch.
  */
 export function ProductHero({
   content,
@@ -80,9 +71,6 @@ export function ProductHero({
   const hex = ACCENT_HEX[accent];
   const accentVar = ACCENT_VAR[accent];
 
-  // Build the radial glow + drop-shadow once — simple strings, no motion
-  // values needed because the accent doesn't animate inside a single
-  // product page (it's fixed for the whole route).
   const glow = `radial-gradient(circle at 72% 50%, ${hexToRgba(
     hex,
     0.18
@@ -92,163 +80,124 @@ export function ProductHero({
   return (
     <section
       id="product-hero"
-      className="relative flex min-h-[88svh] flex-col overflow-hidden bg-[var(--color-primary)]"
+      className="relative overflow-hidden bg-[var(--color-primary)]"
       style={{
-        // Expose the current accent to downstream sections (tech specs etc.)
-        // on the same route — they read `var(--accent-current)` rather than
-        // hard-coding the key.
         ["--accent-current" as string]: accentVar,
       }}
     >
-      {/* Radial accent glow — static, no cross-fade needed */}
+      {/* Radial accent glow — статичный */}
       <div
         aria-hidden="true"
         className="absolute inset-0 z-0"
         style={{ background: glow }}
       />
-      {/* 40×40 hairline grid — continuity with home hero */}
+      {/* 40×40 hairline grid */}
       <div
         aria-hidden="true"
         className="absolute inset-0 z-0 bg-grid-hairline bg-grid opacity-60"
       />
 
-      {/* Right-side product render — absolute so the copy grid can claim
-          full width for alignment, and the image floats without affecting
-          the flow. Hidden below md; a smaller mobile render appears at
-          the bottom of the stack. */}
-      <div
-        className="pointer-events-auto absolute inset-y-0 right-0 z-10 hidden w-[45%] items-center justify-center md:flex"
-        style={{ perspective: "1200px" }}
-      >
-        <motion.div
-          ref={tilt.ref}
-          onMouseMove={tilt.onMouseMove}
-          onMouseLeave={tilt.onMouseLeave}
-          style={{
-            rotateX: prefersReduced ? 0 : tilt.rotateX,
-            rotateY: prefersReduced ? 0 : tilt.rotateY,
-            transformStyle: "preserve-3d",
-            filter: dropShadow,
-          }}
-          animate={prefersReduced ? undefined : { y: [0, -8, 0] }}
-          transition={
-            prefersReduced
-              ? undefined
-              : { y: { duration: 6, repeat: Infinity, ease: "easeInOut" } }
-          }
-          className="relative h-[72%] w-[85%]"
-        >
-          <Image
-            src={content.image.src}
-            alt={content.image.alt}
-            fill
-            priority
-            sizes="(min-width: 1440px) 600px, 45vw"
-            className="object-contain"
-          />
-        </motion.div>
-      </div>
+      <div className="relative z-20 mx-auto w-full max-w-[1440px] px-6 pb-10 pt-24 md:px-12 md:pb-14 md:pt-28">
+        <Breadcrumbs items={content.breadcrumbs} />
 
-      {/* Content grid */}
-      <div className="relative z-20 mx-auto flex min-h-[88svh] w-full max-w-[1440px] flex-col justify-between px-6 pb-10 pt-28 md:px-12 md:pb-14 md:pt-32">
-        <div className="flex-1">
-          <motion.div
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-          >
-            <Breadcrumbs items={content.breadcrumbs} />
-          </motion.div>
-
-          <motion.p
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{
-              duration: 0.7,
-              ease: [0.16, 1, 0.3, 1],
-              delay: 0.15,
-            }}
-            className="mono-tag mt-6"
-          >
-            {content.sectionTag}
-          </motion.p>
-
-          <motion.h1
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{
-              duration: 0.9,
-              ease: [0.16, 1, 0.3, 1],
-              delay: 0.25,
-            }}
-            className="mt-8 max-w-[720px] font-display text-section font-medium text-[var(--color-secondary)] md:mt-10"
-          >
-            {content.title}
-          </motion.h1>
-
-          <motion.p
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{
-              duration: 0.7,
-              ease: [0.16, 1, 0.3, 1],
-              delay: 0.45,
-            }}
-            className="mt-6 max-w-[540px] text-body text-[var(--color-secondary)]/70 md:mt-8"
-          >
-            {content.subtitle}
-          </motion.p>
-
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1], delay: 0.6 }}
-            className="mt-10 flex flex-wrap items-center gap-4 md:mt-12 md:gap-5"
-          >
-            <ProductCtaButton cta={content.primaryCta} />
-            {content.secondaryCta && (
-              <ProductCtaButton cta={content.secondaryCta} />
-            )}
-          </motion.div>
-
-          {/* Mobile render — scaled, centred under the copy block */}
-          <div className="mt-12 flex justify-center md:hidden">
-            <div
-              className="relative h-[260px] w-[260px]"
-              style={{ filter: dropShadow }}
+        {/* Two-column grid — col-span-6 / col-span-6 на md+, single
+            column на mobile (картинка под текстом). */}
+        <div className="mt-8 grid grid-cols-1 gap-8 md:mt-10 md:grid-cols-12 md:gap-10 lg:gap-14">
+          {/* TEXT column */}
+          <div className="md:col-span-6">
+            <motion.p
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{
+                duration: 0.7,
+                ease: [0.16, 1, 0.3, 1],
+                delay: 0.1,
+              }}
+              className="mono-tag"
             >
-              <Image
-                src={content.image.src}
-                alt=""
-                aria-hidden="true"
-                fill
-                sizes="260px"
-                className="object-contain"
-              />
+              {content.sectionTag}
+            </motion.p>
+
+            <motion.h1
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{
+                duration: 0.9,
+                ease: [0.16, 1, 0.3, 1],
+                delay: 0.2,
+              }}
+              className="mt-6 font-display text-5xl font-medium leading-[1.05] text-[var(--color-secondary)] md:mt-8 lg:text-7xl"
+            >
+              {content.title}
+            </motion.h1>
+
+            <motion.p
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{
+                duration: 0.7,
+                ease: [0.16, 1, 0.3, 1],
+                delay: 0.4,
+              }}
+              className="mt-6 max-w-[540px] text-body text-[var(--color-secondary)]/75 md:mt-8"
+            >
+              {content.subtitle}
+            </motion.p>
+
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{
+                duration: 0.7,
+                ease: [0.16, 1, 0.3, 1],
+                delay: 0.55,
+              }}
+              className="mt-10 flex flex-wrap items-center gap-4 md:mt-12 md:gap-5"
+            >
+              <ProductCtaButton cta={content.primaryCta} />
+              {content.secondaryCta && (
+                <ProductCtaButton cta={content.secondaryCta} />
+              )}
+            </motion.div>
+          </div>
+
+          {/* IMAGE column — на mobile под CTA, на md+ справа */}
+          <div className="md:col-span-6">
+            <div
+              className="relative aspect-[4/3] w-full md:aspect-auto md:min-h-[520px]"
+              style={{ perspective: "1200px" }}
+            >
+              <motion.div
+                ref={tilt.ref}
+                onMouseMove={tilt.onMouseMove}
+                onMouseLeave={tilt.onMouseLeave}
+                style={{
+                  rotateX: prefersReduced ? 0 : tilt.rotateX,
+                  rotateY: prefersReduced ? 0 : tilt.rotateY,
+                  transformStyle: "preserve-3d",
+                  filter: dropShadow,
+                }}
+                animate={prefersReduced ? undefined : { y: [0, -8, 0] }}
+                transition={
+                  prefersReduced
+                    ? undefined
+                    : {
+                        y: { duration: 6, repeat: Infinity, ease: "easeInOut" },
+                      }
+                }
+                className="relative h-full w-full"
+              >
+                <Image
+                  src={content.image.src}
+                  alt={content.image.alt}
+                  fill
+                  priority
+                  sizes="(min-width: 1024px) 600px, (min-width: 768px) 50vw, 100vw"
+                  className="object-contain"
+                />
+              </motion.div>
             </div>
           </div>
-        </div>
-
-        {/* Thin baseline: hairline + scroll hint + timestamp of sorts */}
-        <div className="mt-12 flex flex-col gap-4 border-t border-[var(--color-hairline)] pt-6 md:mt-16 md:flex-row md:items-center md:justify-between">
-          <p className="font-mono text-[10px] uppercase tracking-[0.1em] text-[var(--color-secondary)]/65">
-            Проектирование · Производство · Автоматизация
-          </p>
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1, delay: 1.2 }}
-            className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.1em] text-[var(--color-secondary)]/60 md:justify-end"
-          >
-            Прокрутить
-            <motion.span
-              aria-hidden="true"
-              animate={{ y: [0, 4, 0] }}
-              transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
-            >
-              ↓
-            </motion.span>
-          </motion.p>
         </div>
       </div>
     </section>
@@ -256,9 +205,9 @@ export function ProductHero({
 }
 
 /**
- * CTA pill — lifted out of the main component to keep the magnetic-ref
- * attachment clean. Primary = filled white pill, ghost = hairline
- * outline. Both follow the cursor subtly within 120px (see `useMagnetic`).
+ * CTA pill — primary (filled white) или ghost (hairline outline).
+ * Оба тянутся за курсором на 120px на desktop (см. useMagnetic);
+ * на touch magnetic-эффект отключён внутри хука.
  */
 function ProductCtaButton({ cta }: { cta: ProductCTA }) {
   const ref = useMagnetic<HTMLAnchorElement>({
@@ -271,7 +220,7 @@ function ProductCtaButton({ cta }: { cta: ProductCTA }) {
         ref={ref}
         href={cta.href}
         data-cursor="hover"
-        className="group inline-flex items-center gap-3 rounded-md bg-[var(--color-secondary)] px-[22px] py-[14px] text-sm font-medium text-[var(--color-primary)] transition-transform duration-300 ease-out-expo will-change-transform"
+        className="group inline-flex items-center gap-3 rounded-md bg-[var(--color-secondary)] px-[22px] py-[14px] text-sm font-medium text-[var(--color-primary)]"
       >
         {cta.label}
         <span
