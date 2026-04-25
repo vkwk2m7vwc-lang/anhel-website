@@ -61,7 +61,10 @@ export function TechSpecsGrid({ specs }: { specs: readonly TechSpecTile[] }) {
             `bg-hairline`; на меньших экранах оставляем простой `gap-3`
             (12px): 170-180px на ячейку + небольшое воздушное разделение
             читается лучше, чем 1px хайрлайн между тесными плитками. */}
-        <ul className="mt-12 grid grid-cols-2 gap-3 md:mt-16 lg:grid-cols-4 lg:gap-px lg:bg-[var(--color-hairline)]">
+        {/* Mobile: 1-col compact rows со встроенной flex-row [label][value]
+            раскладкой. Tablet (sm-md): 2 колонки card-блоки. Desktop (lg+):
+            4 колонки в одну строку с hairline-grid через gap-px. */}
+        <ul className="mt-12 grid grid-cols-1 gap-px bg-[var(--color-hairline)] md:mt-16 sm:grid-cols-2 sm:gap-3 sm:bg-transparent lg:grid-cols-4 lg:gap-px lg:bg-[var(--color-hairline)]">
           {specs.map((spec, i) => (
             <TechSpecCard key={spec.label} spec={spec} index={i} />
           ))}
@@ -94,7 +97,21 @@ function TechSpecCard({ spec, index }: { spec: TechSpecTile; index: number }) {
         ease: [0.16, 1, 0.3, 1],
         delay: staggerDelay,
       }}
-      className="group relative flex min-h-[140px] flex-col justify-between bg-[var(--color-primary)] p-4 transition-colors duration-300 [@media(hover:hover)]:hover:bg-[#111] md:min-h-[180px] md:p-6 lg:min-h-[220px] lg:p-8"
+      tabIndex={0}
+      role="group"
+      aria-label={spec.label}
+      className={[
+        "group relative flex bg-[var(--color-primary)] outline-none transition-colors duration-300",
+        // Mobile compact row — label слева, value+unit справа.
+        "min-h-[64px] flex-row items-baseline justify-between gap-3 p-4",
+        // Tablet (sm-md): block-card.
+        "sm:min-h-[140px] sm:flex-col sm:items-stretch sm:justify-between sm:gap-0 sm:p-4",
+        // Desktop:
+        "md:min-h-[180px] md:p-6 lg:min-h-[220px] lg:p-8",
+        "[@media(hover:hover)]:hover:bg-[#111]",
+        "active:ring-1 active:ring-[var(--accent-current)]",
+        "focus-visible:ring-1 focus-visible:ring-[var(--accent-current)]/70",
+      ].join(" ")}
     >
       {/* Accent ring — appears on hover, sits just inside the cell. Uses
           the page-level accent CSS variable so each product gets its own
@@ -117,19 +134,19 @@ function TechSpecCard({ spec, index }: { spec: TechSpecTile; index: number }) {
           on the page. Dropped the glow, added a coordinated colour
           transition here instead — cell now reads as one family with
           the rest of the product page. */}
-      <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/65 transition-colors duration-300 [@media(hover:hover)]:group-hover:text-[var(--accent-current)]">
+      <p className="min-w-0 flex-1 font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/65 transition-colors duration-300 [@media(hover:hover)]:group-hover:text-[var(--accent-current)] sm:flex-none">
         {spec.label}
       </p>
 
-      {/* Value + unit — display type paired with a mono unit that sits
-          on the baseline. Keeping them in one baseline-flex row so long
-          values ("от 2 до 6", "релейное / частотное") wrap cleanly. */}
-      <div className="mt-4 flex flex-wrap items-baseline gap-x-2 md:mt-6">
-        <span className="font-display text-[22px] font-medium leading-none text-[var(--color-secondary)] md:text-[28px] lg:text-[32px]">
+      {/* Value + unit — на mobile inline справа, на sm+ block ниже label
+          с большим font-size. Long values ("от 2 до 6", "релейное /
+          частотное") wrap cleanly thanks to flex-wrap baseline-row. */}
+      <div className="flex flex-wrap items-baseline gap-x-2 sm:mt-4 md:mt-6">
+        <span className="font-display text-[16px] font-medium leading-none text-[var(--color-secondary)] sm:text-[22px] md:text-[28px] lg:text-[32px]">
           {spec.value}
         </span>
         {spec.unit && (
-          <span className="font-mono text-[11px] uppercase tracking-[0.08em] text-[var(--color-secondary)]/65">
+          <span className="font-mono text-[10px] uppercase tracking-[0.08em] text-[var(--color-secondary)]/65 sm:text-[11px]">
             {spec.unit}
           </span>
         )}

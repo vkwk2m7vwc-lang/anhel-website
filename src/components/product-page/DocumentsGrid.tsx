@@ -46,7 +46,7 @@ export function DocumentsGrid({ content }: { content: DocumentsContent }) {
         </div>
 
         {/* 1 × 4 → 2 × 2 → 4 × 1. Works cleanly with either 3 or 4 items. */}
-        <ul className="mt-12 grid grid-cols-1 gap-px bg-[var(--color-hairline)] md:mt-16 md:grid-cols-2 lg:grid-cols-4">
+        <ul className="mt-12 grid grid-cols-2 gap-px bg-[var(--color-hairline)] md:mt-16 lg:grid-cols-4">
           {content.items.map((doc, i) => (
             <DocCard key={doc.id} doc={doc} index={i} />
           ))}
@@ -75,20 +75,20 @@ function DocCard({ doc, index }: { doc: DocumentItem; index: number }) {
         rel={doc.external ? "noreferrer noopener" : undefined}
         data-cursor="hover"
         download={doc.external ? undefined : doc.title}
-        className="group relative flex min-h-[220px] flex-col justify-between bg-[var(--color-primary)] p-6 transition-colors duration-300 hover:bg-[#111] md:min-h-[260px] md:p-8"
+        className="group relative flex min-h-[160px] flex-col justify-between bg-[var(--color-primary)] p-4 transition-colors duration-300 [@media(hover:hover)]:hover:bg-[#111] sm:min-h-[220px] sm:p-6 md:min-h-[260px] md:p-8"
       >
         {/* Accent ring — same language as the Applications/Advantages
             grids, so every card on the page reads as a single family. */}
         <span
           aria-hidden="true"
-          className="pointer-events-none absolute inset-0 ring-1 ring-transparent transition-[box-shadow,ring-color] duration-300 group-hover:ring-[var(--accent-current)]"
+          className="pointer-events-none absolute inset-0 ring-1 ring-transparent transition-[box-shadow,ring-color] duration-300 [@media(hover:hover)]:group-hover:ring-[var(--accent-current)]"
         />
 
         {/* Top row: PDF badge + file size. Badge is plain text (`PDF`) in
             the accent-current ink on hover; helps the card read as a
             document at a glance. */}
         <div className="flex items-start justify-between gap-4">
-          <span className="font-mono text-[11px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/65 transition-colors group-hover:text-[var(--accent-current)]">
+          <span className="font-mono text-[11px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/65 transition-colors [@media(hover:hover)]:group-hover:text-[var(--accent-current)]">
             PDF
           </span>
           {doc.size ? (
@@ -99,15 +99,15 @@ function DocCard({ doc, index }: { doc: DocumentItem; index: number }) {
         </div>
 
         {/* Title + download affordance */}
-        <div className="mt-10 flex flex-col gap-4">
-          <h3 className="font-display text-[18px] font-medium leading-snug text-[var(--color-secondary)] md:text-[20px]">
+        <div className="mt-6 flex flex-col gap-3 sm:mt-10 sm:gap-4">
+          <h3 className="font-display text-[14px] font-medium leading-snug text-[var(--color-secondary)] sm:text-[18px] md:text-[20px]">
             {doc.title}
           </h3>
-          <span className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/55 transition-colors group-hover:text-[var(--color-secondary)]">
+          <span className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/55 transition-colors [@media(hover:hover)]:group-hover:text-[var(--color-secondary)]">
             {doc.external ? "Открыть" : "Скачать"}
             <span
               aria-hidden="true"
-              className="inline-block transition-transform duration-300 ease-out-expo group-hover:translate-x-1"
+              className="inline-block transition-transform duration-300 ease-out-expo [@media(hover:hover)]:group-hover:translate-x-1"
             >
               →
             </span>

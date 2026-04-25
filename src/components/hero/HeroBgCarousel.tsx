@@ -355,19 +355,30 @@ export function HeroBgCarousel({
           No tilt, no play/pause chrome; we keep the swap animation so the
           carousel still reads on narrow screens.
 
+          Position: `top-[120px]` instead of the original `bottom-24` so
+          the product is visible on the first scroll-screen on iPhone.
+          With the previous bottom anchor, mono-tag + H1 + lede + CTAs
+          ate the entire fold and the product render was below it. Now
+          the product sits in the upper third of the hero, and HeroShell
+          reserves space for it via `mobileProductInBackground=true`.
+
+          Size: shrunk to `min(40vw, 180px)` (was 200×200) so the
+          product + switcher dots fit within ~240px of vertical real
+          estate at the top of the hero on small phones.
+
           Same pedestal-glow approach as desktop — see the block above for
           the rationale on why we don't use `filter: drop-shadow` here.
 
           Pointer handlers mirror the desktop zone so tap-to-pause /
           leave-to-resume-after-4-s works on mobile too. */}
       <div
-        className="pointer-events-auto absolute inset-x-0 bottom-24 flex flex-col items-center gap-4 md:hidden"
+        className="pointer-events-auto absolute inset-x-0 top-[120px] flex flex-col items-center gap-4 md:hidden"
         onMouseEnter={pause}
         onMouseLeave={resume}
         onPointerEnter={pause}
         onPointerLeave={resume}
       >
-        <motion.div className="relative h-[200px] w-[200px]">
+        <motion.div className="relative h-[min(40vw,180px)] w-[min(40vw,180px)]">
           {/* Pedestal glow — mobile version. Smaller footprint (75%×35%)
               to match the scaled-down 200×200 product container. */}
           <div

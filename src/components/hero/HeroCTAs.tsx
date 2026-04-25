@@ -2,30 +2,44 @@
 
 import Link from "next/link";
 import { useMagnetic } from "@/hooks/useMagnetic";
+import { useIsTouch } from "@/hooks/useIsTouch";
 
 /**
  * Two hero CTAs:
  *  1. «Смотреть каталог» — primary pill, white background, arrow glyph
- *     slides on hover. Magnetic cursor pull.
+ *     slides on hover. Magnetic cursor pull (desktop only).
  *  2. «Опросный лист» — ghost pill, currently disabled until Stage 7
  *     wires up the form. We render it visibly but mark it
  *     `aria-disabled` and block pointer/keyboard activation. A native
  *     tooltip explains the state ("Скоро").
  *
- * Both buttons are wrapped in refs from `useMagnetic` so they subtly
- * track the cursor when within 120px.
+ * Touch handling: on coarse-pointer devices we deliberately do NOT
+ * attach the magnetic ref — even though `useMagnetic` itself bails
+ * out on touch, the ref attachment must also be gated to avoid a
+ * one-render gap during hydration where the listener would briefly
+ * be live. iOS Safari synthesises a `mousemove` during tap, which
+ * (without this gate) would shift the button mid-tap and cause the
+ * primary CTA to fail to navigate. See `useIsTouch` for the full
+ * background on that race.
+ *
+ * Note: we intentionally leave `transition-transform` off the <Link>
+ * itself. The arrow span keeps its own transition (group-hover slide),
+ * but the parent doesn't need one — magnetic motion is GSAP-driven
+ * and shouldn't be re-interpolated by the browser, which would amplify
+ * any residual transform on tap.
  */
 export function HeroCTAs() {
+  const isTouch = useIsTouch();
   const primaryRef = useMagnetic<HTMLAnchorElement>({ strength: 0.35 });
   const secondaryRef = useMagnetic<HTMLButtonElement>({ strength: 0.3 });
 
   return (
     <div className="mt-10 flex flex-wrap items-center gap-4 md:mt-12 md:gap-5">
       <Link
-        ref={primaryRef}
-        href="/products/pumps/firefighting"
+        ref={isTouch ? undefined : primaryRef}
+        href="/products"
         data-cursor="hover"
-        className="group inline-flex items-center gap-3 rounded-md bg-[var(--color-secondary)] px-[22px] py-[14px] text-sm font-medium text-[var(--color-primary)] transition-transform duration-300 ease-out-expo will-change-transform"
+        className="group inline-flex items-center gap-3 rounded-md bg-[var(--color-secondary)] px-[22px] py-[14px] text-sm font-medium text-[var(--color-primary)]"
       >
         Смотреть каталог
         <span
@@ -37,7 +51,7 @@ export function HeroCTAs() {
       </Link>
 
       <button
-        ref={secondaryRef}
+        ref={isTouch ? undefined : secondaryRef}
         type="button"
         aria-disabled="true"
         title="Скоро"

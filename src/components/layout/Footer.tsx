@@ -56,7 +56,7 @@ export function Footer() {
         <div className="space-y-3 text-sm">
           <p className="mono-tag">Навигация</p>
           {[
-            { label: "Продукты", href: "/products/pumps/firefighting" },
+            { label: "Продукты", href: "/products" },
             { label: "Объекты", href: "/#projects" },
             { label: "О компании", href: "/#about" },
             { label: "Производство", href: "/#manufacturing" },

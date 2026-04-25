@@ -173,6 +173,39 @@ export function ProductHero({
             {content.sectionTag}
           </motion.p>
 
+          {/* Mobile product render — sits between the mono-tag and the
+              big H1 so the user actually sees the product on the first
+              scroll-screen. Was originally at the bottom of the stack
+              (after lede + CTAs); on iPhone SE / Pro Max the product
+              ended up below the fold, so the page read as 4-5 lines of
+              copy with no visual.
+              Hidden on md+ — desktop has its own large render in the
+              right 45% column. */}
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{
+              duration: 0.8,
+              ease: [0.16, 1, 0.3, 1],
+              delay: 0.25,
+            }}
+            className="mt-8 flex justify-center md:hidden"
+          >
+            <div
+              className="relative h-[min(55vw,200px)] w-[min(55vw,200px)]"
+              style={{ filter: dropShadow }}
+            >
+              <Image
+                src={content.image.src}
+                alt=""
+                aria-hidden="true"
+                fill
+                sizes="200px"
+                className="object-contain"
+              />
+            </div>
+          </motion.div>
+
           <motion.h1
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
@@ -211,22 +244,9 @@ export function ProductHero({
             )}
           </motion.div>
 
-          {/* Mobile render — scaled, centred under the copy block */}
-          <div className="mt-12 flex justify-center md:hidden">
-            <div
-              className="relative h-[260px] w-[260px]"
-              style={{ filter: dropShadow }}
-            >
-              <Image
-                src={content.image.src}
-                alt=""
-                aria-hidden="true"
-                fill
-                sizes="260px"
-                className="object-contain"
-              />
-            </div>
-          </div>
+          {/* Mobile render moved above (between mono-tag and H1) so the
+              product is visible on the first scroll-screen. See the
+              motion.div block higher up. */}
         </div>
 
         {/* Thin baseline: hairline + scroll hint + timestamp of sorts */}

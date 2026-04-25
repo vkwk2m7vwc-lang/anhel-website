@@ -9,28 +9,30 @@ import type {
 /**
  * Applications grid — section 5 «Применение».
  *
- * Six cards laid out 3×2 desktop, 2×3 tablet, 1×6 mobile. Each card is
- * a monolithic block: large mono index, object-type headline, one-line
- * reference example. Hover lifts the card's border from hairline to
- * the page's accent colour (fire-red on firefighting, blue on water
- * supply, etc.) via the `--accent-current` CSS variable that ProductHero
- * writes to the page — no prop drilling.
+ * Layout:
+ *   - Mobile (<640px): 1-колоночный compact-row stack. Каждая строка
+ *     — горизонтальный flex-row: [mono-индекс][title][meta]. Padding
+ *     минимальный (p-4), min-h ~72px чтобы tap-target оставался
+ *     удобным. На <640 пустоту больших карточек больше не видно —
+ *     текст заполняет строку.
+ *   - sm (640+): 2 колонки в каталожном виде с большими карточками.
+ *   - lg (1024+): 3 колонки.
  *
- * Design intent: this is the first "inventory" section after the
- * scroll-driven Lakhta narrative. The tone shifts from cinematic to
- * catalogue, so the grid is deliberately calm — hairline cells, no
- * inner glow, minimal hover drama. Just a colour change and a number
- * that picks up the same accent.
+ * Hover / tap states:
+ *   - Hover gated to `@media (hover: hover)` так что iOS Safari не
+ *     оставляет ring + bg в hover-state после tap (та же категория
+ *     что у TechSpecsGrid фикса 1336ce9).
+ *   - `active:ring-[var(--accent-current)]` даёт tap-фидбек на
+ *     touch-устройствах: при прижатии пальца строка получает 1px
+ *     accent-ring, цвет берётся из --accent-current контекста
+ *     продукта (fire / water / heat / treatment). Освобождается
+ *     при отпускании пальца — без залипания.
+ *   - `focus-visible:ring-[var(--accent-current)]/60` для
+ *     клавиатурных пользователей.
  *
- * Component-level accessibility:
- *   - The section uses `aria-labelledby` on its h2
- *   - Each card is a plain <li> (no interactivity yet; we'll swap in
- *     links when the /applications deep-page lands in Stage 3)
- *   - The mono prefix is flagged `aria-hidden` so the screen reader
- *     doesn't double-announce "zero one ... Жилые комплексы"
- *
- * Reuse: same component on all four product pages. Content comes from
- * `src/content/products/<slug>.ts#applications`.
+ * Каждая карточка — `<li>` с `tabIndex={0}` и `role="group"` чтобы
+ * tap-feedback / focus работал на mobile (без превращения карточки
+ * в Link, потому что детальной страницы applications сейчас нет).
  */
 export function ApplicationsGrid({
   content,
@@ -44,8 +46,6 @@ export function ApplicationsGrid({
       className="relative border-t border-[var(--color-hairline)] bg-[var(--color-primary)]"
     >
       <div className="mx-auto w-full max-w-[1440px] px-6 py-20 md:px-12 md:py-28">
-        {/* Header mirrors TechSpecsGrid so the vertical rhythm of the
-            page stays predictable section-to-section. */}
         <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
           <div>
             <p className="mono-tag">{content.tag}</p>
@@ -57,16 +57,14 @@ export function ApplicationsGrid({
             </h2>
           </div>
           {content.lede ? (
-            <p className="max-w-[420px] text-sm text-[var(--color-secondary)]/60 md:text-right">
+            <p className="max-w-[420px] text-sm text-[var(--color-secondary)]/65 md:text-right">
               {content.lede}
             </p>
           ) : null}
         </div>
 
-        {/* 1 × 6 → 2 × 3 → 3 × 2. Same `gap-px bg-hairline` trick as
-            TechSpecsGrid so the hairlines between cells are a single
-            pixel thick with no double-border doubling at the edges. */}
-        <ul className="mt-12 grid grid-cols-1 gap-px bg-[var(--color-hairline)] md:mt-16 md:grid-cols-2 lg:grid-cols-3">
+        {/* Mobile: 1-col compact rows. Tablet+ : 2-3 cols каталожный grid. */}
+        <ul className="mt-12 grid grid-cols-1 gap-px bg-[var(--color-hairline)] md:mt-16 sm:grid-cols-2 lg:grid-cols-3">
           {content.items.map((item, i) => (
             <ApplicationCard key={item.id} item={item} index={i} />
           ))}
@@ -76,14 +74,6 @@ export function ApplicationsGrid({
   );
 }
 
-/**
- * One card in the grid.
- *
- * Layout: mono index top-left, title centred-ish below, example at the
- * bottom. On hover the accent colour (read from `--accent-current`)
- * fills the mono number and rings the card. Stagger mirrors the grid
- * reading order so the eye picks them up left-to-right, top-to-bottom.
- */
 function ApplicationCard({
   item,
   index,
@@ -91,49 +81,58 @@ function ApplicationCard({
   item: ApplicationItem;
   index: number;
 }) {
-  // Cap delay so the last card (index 5) isn't sitting for 300 ms after
-  // the first — feels laggy past ~0.2 s total.
   const staggerDelay = Math.min(index, 5) * 0.06;
 
   return (
     <motion.li
-      initial={{ opacity: 0, y: 16 }}
+      initial={{ opacity: 0, y: 12 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-80px" }}
       transition={{
-        duration: 0.6,
+        duration: 0.5,
         ease: [0.16, 1, 0.3, 1],
         delay: staggerDelay,
       }}
-      className="group relative flex min-h-[220px] flex-col justify-between bg-[var(--color-primary)] p-6 transition-colors duration-300 hover:bg-[#111] md:min-h-[260px] md:p-8"
+      tabIndex={0}
+      role="group"
+      aria-label={`${item.mono} · ${item.title}`}
+      className={[
+        "group relative flex bg-[var(--color-primary)] outline-none transition-colors duration-300",
+        // Mobile: compact horizontal row, ~72px min-height для удобного tap-target.
+        "min-h-[72px] flex-row items-baseline gap-3 p-4",
+        // Tablet+ : block-card с большим padding.
+        "sm:min-h-[220px] sm:flex-col sm:justify-between sm:gap-0 sm:p-6 md:min-h-[260px] md:p-8",
+        // Hover scoped to (hover: hover) so the last-tapped tile doesn't
+        // stay highlighted on iOS / Android after a tap.
+        "[@media(hover:hover)]:hover:bg-[#111]",
+        // Active = подсветка при tap (touch-feedback). Отпускание
+        // пальца возвращает в default — никакого залипания.
+        "active:ring-1 active:ring-[var(--accent-current)]",
+        // Focus-visible для клавиатуры.
+        "focus-visible:ring-1 focus-visible:ring-[var(--accent-current)]/70",
+      ].join(" ")}
     >
-      {/* Accent ring — same pattern as TechSpecsGrid: transparent by
-          default, lights up on hover. Uses `ring` rather than `border`
-          so the 1 px line draws *inside* the cell and doesn't fight the
-          ul's hairline grid. */}
+      {/* Accent ring — transparent by default, появляется на hover на
+          desktop. На mobile та же роль играет active:ring (см. выше). */}
       <span
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 ring-1 ring-transparent transition-[box-shadow,ring-color] duration-300 group-hover:ring-[var(--accent-current)]"
+        className="pointer-events-none absolute inset-0 ring-1 ring-transparent transition-[box-shadow,ring-color] duration-300 [@media(hover:hover)]:group-hover:ring-[var(--accent-current)]"
       />
 
-      {/* Mono prefix — the number does most of the visual work. On
-          hover it picks up the accent colour in sync with the ring. */}
+      {/* Mono prefix */}
       <p
         aria-hidden="true"
-        className="font-mono text-[11px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/65 transition-colors duration-300 group-hover:text-[var(--accent-current)]"
+        className="font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/65 transition-colors duration-300 [@media(hover:hover)]:group-hover:text-[var(--accent-current)] sm:text-[11px]"
       >
         {item.mono}
       </p>
 
-      {/* Title + example — kept close so the card reads as one unit
-          rather than three stacked lines. The title gets the display
-          face for typographic weight; the example drops back to mono
-          so the card has a clear primary / secondary text hierarchy. */}
-      <div className="mt-10 flex flex-col gap-3">
-        <h3 className="font-display text-[24px] font-medium leading-tight text-[var(--color-secondary)] md:text-[28px]">
+      {/* Title + example — на mobile in-line column, на sm+ block. */}
+      <div className="flex min-w-0 flex-1 flex-col gap-1 sm:mt-10 sm:gap-3">
+        <h3 className="font-display text-[15px] font-medium leading-tight text-[var(--color-secondary)] sm:text-[22px] md:text-[28px]">
           {item.title}
         </h3>
-        <p className="font-mono text-[11px] uppercase tracking-[0.08em] text-[var(--color-secondary)]/65">
+        <p className="font-mono text-[10px] uppercase leading-snug tracking-[0.08em] text-[var(--color-secondary)]/65 sm:text-[11px]">
           {item.example}
         </p>
       </div>

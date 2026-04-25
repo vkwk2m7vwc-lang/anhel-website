@@ -13,6 +13,7 @@ export default function HeroEPage() {
     <HeroShell
       variantLabel="Вариант E · Карусель (авто)"
       background={<HeroBgCarousel autoplay={true} />}
+      mobileProductInBackground
     />
   );
 }
