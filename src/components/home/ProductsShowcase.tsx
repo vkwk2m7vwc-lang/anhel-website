@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { PRODUCTS } from "@/lib/products";
+import { TOP_LEVEL_PRODUCTS, type ProductSummary } from "@/lib/products";
 import type { ProductAccent } from "@/content/products/types";
 
 /**
@@ -42,6 +42,12 @@ type Props = {
   monoTag?: string;
   title?: string;
   lede?: string;
+  /**
+   * Какие продукты рендерить. По умолчанию TOP_LEVEL_PRODUCTS
+   * (3 раздела для главной + /products). На /products/pumps
+   * передаётся PUMPS_PRODUCTS — 5 насосных серий.
+   */
+  products?: readonly ProductSummary[];
 };
 
 const ACCENT_VAR: Record<ProductAccent, string> = {
@@ -54,12 +60,13 @@ const ACCENT_VAR: Record<ProductAccent, string> = {
 export function ProductsShowcase({
   tone = "section",
   monoTag = "02 · ЛИНЕЙКА ПРОДУКТОВ",
-  title = "Семь направлений, одна сборка",
-  lede = "Насосные станции, тепловые пункты и установки водоподготовки. Заводская сборка, серийное производство, индивидуальная конфигурация под ТЗ.",
+  title = "Три направления, одна сборка",
+  lede = "Насосные станции, водоподготовка и тепловые пункты. Заводская сборка, серийное производство, индивидуальная конфигурация под ТЗ.",
+  products,
 }: Props) {
-  // Один источник данных — PRODUCTS. Order = маркетинговый порядок
-  // линейки (5 насосных станций → водоподготовка → тепловые пункты).
-  const cards = PRODUCTS;
+  // Источник данных по умолчанию — TOP_LEVEL_PRODUCTS (3 раздела).
+  // На /products/pumps передаётся PUMPS_PRODUCTS извне (5 серий).
+  const cards = products ?? TOP_LEVEL_PRODUCTS;
 
   const sectionPadding =
     tone === "page" ? "px-6 py-14 md:px-12 md:py-20" : "px-6 py-20 md:px-12 md:py-28";

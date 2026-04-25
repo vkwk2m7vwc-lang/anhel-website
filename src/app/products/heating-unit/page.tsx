@@ -18,7 +18,7 @@ import {
 } from "@/lib/schema-org";
 
 /**
- * /products/pumps/heating-unit
+ * /products/heating-unit
  *
  * БИТП — модульное тепловое оборудование. Отличие от насосных
  * станций: секция 3 переопределена как «Линейка модулей» (6 модулей
@@ -41,7 +41,7 @@ import {
  * ТТХ убраны с родительской страницы — каждый модуль ИТП имеет свои
  * параметры, поэтому аггрегированные диапазоны линейки на родителе
  * вводили в заблуждение. Технические характеристики показываются на
- * подстранице конкретного модуля (/products/pumps/heating-unit/[slug]).
+ * подстранице конкретного модуля (/products/heating-unit/[slug]).
  */
 export const metadata: Metadata = {
   title: heatingUnitContent.metaTitle,
@@ -50,7 +50,7 @@ export const metadata: Metadata = {
     type: "website",
     title: `${heatingUnitContent.metaTitle} · ANHEL`,
     description: heatingUnitContent.metaDescription,
-    url: `/products/pumps/heating-unit`,
+    url: `/products/heating-unit`,
     images: [
       {
         url: heatingUnitContent.hero.image.src,
@@ -81,11 +81,12 @@ export default function HeatingUnitProductPage() {
     image: heatingUnitContent.hero.image.src,
     category: "HVAC / Heat exchanger unit",
     model: "BITP-NU",
+    routePath: `/products/${slug}`,
   });
   const breadcrumbJsonLd = breadcrumbLd([
     { name: "Главная", url: "/" },
-    { name: "Инженерное оборудование", url: "/products" },
-    { name: "Тепловые пункты", url: `/products/pumps/${slug}` },
+    { name: "Каталог", url: "/products" },
+    { name: "Тепловые пункты", url: `/products/${slug}` },
   ]);
 
   return (
@@ -95,7 +96,7 @@ export default function HeatingUnitProductPage() {
 
       <ProductHero content={hero} accent={accent} />
       {/* 02 Линейка модулей — 8 кликабельных карточек, каждая ведёт на
-          /products/pumps/heating-unit/<slug>. ТТХ убраны с родителя:
+          /products/heating-unit/<slug>. ТТХ убраны с родителя:
           у каждого модуля свои параметры, агрегированные диапазоны
           линейки путали юзера. Технические характеристики раскрываются
           только когда выбран конкретный модуль (на подстранице). */}

@@ -68,7 +68,7 @@ export async function generateMetadata({
       type: "website",
       title: `${m.title} · ANHEL`,
       description: m.tagline,
-      url: `/products/pumps/heating-unit/${m.slug}`,
+      url: `/products/heating-unit/${m.slug}`,
       images: [{ url: m.image.src, alt: m.image.alt }],
     },
   };
@@ -88,12 +88,13 @@ export default async function HeatingModulePage({ params }: RouteParams) {
     image: m.image.src,
     category: "HVAC / Heat exchanger module",
     model: "BITP-NU",
+    routePath: `/products/heating-unit/${m.slug}`,
   });
   const breadcrumbJsonLd = breadcrumbLd([
     { name: "Главная", url: "/" },
     { name: "Каталог", url: "/products" },
-    { name: "Тепловые пункты", url: "/products/pumps/heating-unit" },
-    { name: m.shortTitle, url: `/products/pumps/heating-unit/${m.slug}` },
+    { name: "Тепловые пункты", url: "/products/heating-unit" },
+    { name: m.shortTitle, url: `/products/heating-unit/${m.slug}` },
   ]);
 
   // Соседи — два следующих модуля по списку (зацикленно)
@@ -131,7 +132,7 @@ export default async function HeatingModulePage({ params }: RouteParams) {
               { label: "Каталог", href: "/products" },
               {
                 label: "Тепловые пункты",
-                href: "/products/pumps/heating-unit",
+                href: "/products/heating-unit",
               },
               { label: m.shortTitle },
             ]}
@@ -162,7 +163,7 @@ export default async function HeatingModulePage({ params }: RouteParams) {
                   </span>
                 </Link>
                 <Link
-                  href="/products/pumps/heating-unit"
+                  href="/products/heating-unit"
                   data-cursor="hover"
                   className="inline-flex items-center gap-3 rounded-md border-[0.5px] border-[var(--color-secondary)]/40 bg-transparent px-[22px] py-[14px] text-sm font-medium text-[var(--color-secondary)]/80 transition-colors hover:border-[var(--color-secondary)] hover:text-[var(--color-secondary)]"
                 >
@@ -264,7 +265,7 @@ export default async function HeatingModulePage({ params }: RouteParams) {
             {neighbours.map((n) => (
               <li key={n.slug}>
                 <Link
-                  href={`/products/pumps/heating-unit/${n.slug}`}
+                  href={`/products/heating-unit/${n.slug}`}
                   data-cursor="hover"
                   className="group flex h-full flex-col justify-between bg-[var(--color-primary)] p-6 transition-colors duration-300 [@media(hover:hover)]:hover:bg-[#111] sm:p-8"
                 >

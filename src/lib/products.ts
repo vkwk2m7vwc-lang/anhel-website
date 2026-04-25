@@ -1,28 +1,28 @@
 import type { ProductAccent } from "@/content/products/types";
 
 /**
- * Global summary of all ANHEL product pages. Used by:
- *   - the final CTA block (section 12) to render "остальные продукты"
- *     by filtering out the current slug
- *   - the products catalogue page (/products)
- *   - mobile menu navigation
- *   - the product showcase grid on home + catalog pages
+ * Каталог ANHEL устроен в две ступени:
  *
- * Each entry carries the visual fields (image, imageAlt, accentHex) so
- * that consumers like `ProductsShowcase` don't need a second source —
- * everything required to render a card is here. `HERO_PRODUCTS` in
- * `lib/hero-products.ts` stays separate for the main-hero carousel
- * (which intentionally features only the original four direction).
+ *   /products                  — TOP_LEVEL (3 раздела + 4-й позже)
+ *     /products/pumps          — раздел «Насосные станции» (5 продуктов)
+ *       /products/pumps/<slug>
+ *     /products/water-treatment — отдельная категория (без подразделов)
+ *     /products/heating-unit   — раздел ИТП (8 модулей внутри)
  *
- * Order: marketing-canonical pump-station block first (5), then
- * non-pump products (water-treatment, heating-unit). When a new
- * product is added, list it here and neighbour-strips, mobile menu and
- * catalog grid pick it up automatically.
+ * Плоский массив `PRODUCTS` остаётся для:
+ *   - финального CTA-блока на каждой продуктовой странице
+ *     (соседние карточки фильтруются по slug)
+ *   - mobile menu (показывает все продукты в одном списке)
+ *   - поиска по slug
+ *
+ * Двух-уровневые консумеры:
+ *   - `TOP_LEVEL_PRODUCTS` — для каталога /products
+ *   - `PUMPS_PRODUCTS`     — для каталога /products/pumps
  */
 
 export type ProductSummary = {
   slug: string;
-  /** Route path, e.g. "/products/pumps/firefighting". */
+  /** Route path. Top-level: `/products/<slug>`. Sub: `/products/pumps/<slug>`. */
   href: string;
   /** Short card title. */
   title: string;
@@ -37,14 +37,57 @@ export type ProductSummary = {
   /** Accent hex — drives the radial glow behind the product render. */
   accentHex: string;
   /**
-   * When `true` the product's detail page isn't published yet.
-   * Consumers (neighbour strip, future catalogue grid) render the card
-   * as a disabled "Скоро" tile with no anchor, so clicks don't 404.
+   * Когда `true` страница раздела/продукта ещё не опубликована.
+   * Карточка рендерится как «Скоро» без ссылки.
    */
   comingSoon?: boolean;
 };
 
-export const PRODUCTS: readonly ProductSummary[] = [
+/**
+ * Top-level каталог `/products` — 3 раздела сейчас, 4-й добавится позже.
+ * Каждый раздел — точка входа в подкаталог либо в одну продуктовую
+ * страницу.
+ */
+export const TOP_LEVEL_PRODUCTS: readonly ProductSummary[] = [
+  {
+    slug: "pumps",
+    href: "/products/pumps",
+    title: "Насосные станции",
+    tagline:
+      "Пять серий — водоснабжение, пожаротушение, отопление и кондиционирование, поддержание давления, специальное исполнение.",
+    accent: "water",
+    // Visual для верхне-уровневой карточки — тот же hero, что у
+    // первой подкатегории (водоснабжение).
+    image: "/assets/products/hvs-nu.png",
+    imageAlt: "ANHEL — насосные станции для инженерных систем",
+    accentHex: "#1E6FD9",
+  },
+  {
+    slug: "water-treatment",
+    href: "/products/water-treatment",
+    title: "Водоподготовка",
+    tagline: "Установки фильтрации, умягчения, обезжелезивания и обратного осмоса.",
+    accent: "treatment",
+    image: "/assets/products/vpu.png",
+    imageAlt: "ANHEL — установка водоподготовки",
+    accentHex: "#8A94A0",
+  },
+  {
+    slug: "heating-unit",
+    href: "/products/heating-unit",
+    title: "Тепловые пункты",
+    tagline: "Блочные индивидуальные тепловые пункты (БИТП) — отопление, ГВС, комбинированные.",
+    accent: "heat",
+    image: "/assets/products/bitp.png",
+    imageAlt: "ANHEL — блочный индивидуальный тепловой пункт (БИТП)",
+    accentHex: "#E8873B",
+  },
+] as const;
+
+/**
+ * Подкаталог `/products/pumps` — 5 серий насосных станций.
+ */
+export const PUMPS_PRODUCTS: readonly ProductSummary[] = [
   {
     slug: "water-supply",
     href: "/products/pumps/water-supply",
@@ -95,24 +138,18 @@ export const PRODUCTS: readonly ProductSummary[] = [
     imageAlt: "ANHEL — насосная станция специального исполнения",
     accentHex: "#8A94A0",
   },
-  {
-    slug: "water-treatment",
-    href: "/products/pumps/water-treatment",
-    title: "Водоподготовка",
-    tagline: "Установки фильтрации, умягчения, обезжелезивания и обратного осмоса.",
-    accent: "treatment",
-    image: "/assets/products/vpu.png",
-    imageAlt: "ANHEL — установка водоподготовки",
-    accentHex: "#8A94A0",
-  },
-  {
-    slug: "heating-unit",
-    href: "/products/pumps/heating-unit",
-    title: "Тепловые пункты",
-    tagline: "Блочные индивидуальные тепловые пункты (БИТП) — отопление, ГВС, комбинированные.",
-    accent: "heat",
-    image: "/assets/products/bitp.png",
-    imageAlt: "ANHEL — блочный индивидуальный тепловой пункт (БИТП)",
-    accentHex: "#E8873B",
-  },
+] as const;
+
+/**
+ * Полный плоский массив всех 7 продуктов — для совместимости с
+ * консумерами, которые работают по slug без знания иерархии:
+ *   - `ProductCtaFooter` (соседние продукты на странице товара)
+ *   - `MobileMenu` (плоский список всех продуктов)
+ *   - старые потребители по slug
+ *
+ * Order: насосные → водоподготовка → ИТП. Маркетинговый порядок.
+ */
+export const PRODUCTS: readonly ProductSummary[] = [
+  ...PUMPS_PRODUCTS,
+  ...TOP_LEVEL_PRODUCTS.filter((p) => p.slug !== "pumps"),
 ] as const;

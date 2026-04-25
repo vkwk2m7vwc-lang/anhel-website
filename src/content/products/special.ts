@@ -31,6 +31,7 @@ export const specialContent: ProductContent = {
     breadcrumbs: [
       { label: "Главная", href: "/" },
       { label: "Каталог", href: "/products" },
+      { label: "Насосные станции", href: "/products/pumps" },
       { label: "Специальное исполнение" },
     ],
     sectionTag: "01 · НАСОСНЫЕ СТАНЦИИ · СПЕЦИАЛЬНОЕ ИСПОЛНЕНИЕ",

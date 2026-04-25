@@ -34,6 +34,7 @@ export const waterSupplyContent: ProductContent = {
     breadcrumbs: [
       { label: "Главная", href: "/" },
       { label: "Каталог", href: "/products" },
+      { label: "Насосные станции", href: "/products/pumps" },
       { label: "Водоснабжение" },
     ],
     sectionTag: "01 · НАСОСНЫЕ СТАНЦИИ · ВОДОСНАБЖЕНИЕ",

@@ -31,6 +31,7 @@ export const heatingCoolingContent: ProductContent = {
     breadcrumbs: [
       { label: "Главная", href: "/" },
       { label: "Каталог", href: "/products" },
+      { label: "Насосные станции", href: "/products/pumps" },
       { label: "Отопление и кондиционирование" },
     ],
     sectionTag:

@@ -31,6 +31,7 @@ export const pressureBoostContent: ProductContent = {
     breadcrumbs: [
       { label: "Главная", href: "/" },
       { label: "Каталог", href: "/products" },
+      { label: "Насосные станции", href: "/products/pumps" },
       { label: "Поддержание давления" },
     ],
     sectionTag: "01 · НАСОСНЫЕ СТАНЦИИ · ПОДДЕРЖАНИЕ ДАВЛЕНИЯ",

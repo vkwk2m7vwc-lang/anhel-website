@@ -93,8 +93,14 @@ export function productLd(params: {
   category: string;
   /** e.g. «HVS-NU» — added to Product.model + sku when provided. */
   model?: string;
+  /**
+   * Optional explicit route path (e.g. `/products/water-treatment`).
+   * If omitted, defaults to `/products/pumps/<slug>` for back-compat
+   * with pump-station pages.
+   */
+  routePath?: string;
 }): JsonLd {
-  const url = `${SITE_URL}/products/pumps/${params.slug}`;
+  const url = `${SITE_URL}${params.routePath ?? `/products/pumps/${params.slug}`}`;
   const imageAbs = params.image.startsWith("http")
     ? params.image
     : `${SITE_URL}${params.image}`;

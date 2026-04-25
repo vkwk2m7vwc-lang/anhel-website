@@ -82,7 +82,7 @@ function ModuleCard({
       }}
     >
       <Link
-        href={`/products/pumps/heating-unit/${m.slug}`}
+        href={`/products/heating-unit/${m.slug}`}
         data-cursor="hover"
         className="group relative flex h-full min-h-[220px] flex-col justify-between bg-[var(--color-primary)] p-4 transition-colors duration-300 [@media(hover:hover)]:hover:bg-[#111] sm:min-h-[260px] sm:p-6 md:min-h-[300px] md:p-8"
       >
