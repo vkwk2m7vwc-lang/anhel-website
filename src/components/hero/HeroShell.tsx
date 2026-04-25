@@ -34,7 +34,12 @@ export function HeroShell({
   return (
     <section
       id="hero"
-      className="relative flex min-h-[100svh] flex-col overflow-hidden bg-[var(--color-primary)]"
+      // hero-stage — keeps the hero canvas dark regardless of the
+      // global theme. The 3D product renders are styled for a dark
+      // theatre, and the accent radial-glow loses impact on a light
+      // surface. Treat the hero as the one always-dark moment of
+      // the page; the rest of the site flips with the toggle.
+      className="hero-stage relative flex min-h-[100svh] flex-col overflow-hidden"
     >
       {/* z-0 — pure background (video / radial gradient / SVG schema) */}
       <div className="pointer-events-none absolute inset-0 z-0">
