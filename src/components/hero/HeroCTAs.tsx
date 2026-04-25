@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useMagnetic } from "@/hooks/useMagnetic";
 import { useIsTouch } from "@/hooks/useIsTouch";
 import { CATALOG_PATH } from "@/lib/routes";
+import { useLocale } from "@/components/providers/LocaleProvider";
 
 /**
  * Two hero CTAs:
@@ -33,6 +34,7 @@ export function HeroCTAs() {
   const isTouch = useIsTouch();
   const primaryRef = useMagnetic<HTMLAnchorElement>({ strength: 0.35 });
   const secondaryRef = useMagnetic<HTMLButtonElement>({ strength: 0.3 });
+  const { t } = useLocale();
 
   return (
     <div className="mt-10 flex flex-wrap items-center gap-4 md:mt-12 md:gap-5">
@@ -43,7 +45,7 @@ export function HeroCTAs() {
         data-cta="catalog"
         className="group inline-flex items-center gap-3 rounded-md bg-[var(--color-secondary)] px-[22px] py-[14px] text-sm font-medium text-[var(--color-primary)]"
       >
-        Смотреть каталог
+        {t("hero.cta.primary")}
         <span
           aria-hidden="true"
           className="inline-block font-mono transition-transform duration-300 ease-out-expo group-hover:translate-x-1"
@@ -63,7 +65,7 @@ export function HeroCTAs() {
         onClick={(e) => e.preventDefault()}
         className="inline-flex cursor-not-allowed items-center gap-3 rounded-md border-[0.5px] border-[var(--color-secondary)]/40 bg-transparent px-[22px] py-[14px] text-sm font-medium text-[var(--color-secondary)]/70 transition-colors hover:border-[var(--color-secondary)]/40 hover:bg-transparent"
       >
-        Опросный лист
+        {t("hero.cta.secondary")}
         <span className="font-mono text-[10px] uppercase tracking-[0.1em] text-[var(--color-secondary)]/40">
           Скоро
         </span>

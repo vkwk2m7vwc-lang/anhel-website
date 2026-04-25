@@ -10,6 +10,9 @@ import { CONTACTS } from "@/lib/contacts";
 import { CATALOG_PATH, PROJECTS_PATH } from "@/lib/routes";
 import { MobileMenu } from "./MobileMenu";
 import { ThemeToggle } from "./ThemeToggle";
+import { LocaleToggle } from "./LocaleToggle";
+import { useLocale } from "@/components/providers/LocaleProvider";
+import type { TranslationKey } from "@/lib/i18n";
 
 /**
  * Fixed header with two behaviours:
@@ -23,12 +26,14 @@ import { ThemeToggle } from "./ThemeToggle";
  * the sections exist.
  */
 
-const NAV = [
-  { label: "Продукты", href: CATALOG_PATH },
-  { label: "Объекты", href: PROJECTS_PATH },
-  { label: "О компании", href: "/#about" },
-  { label: "Производство", href: "/#manufacturing" },
-  { label: "Контакты", href: "/#contact" },
+// Nav items in i18n form: keep the route stable (server-side concern)
+// and resolve the label per-locale via `t()` at render time.
+const NAV: { labelKey: TranslationKey; href: string }[] = [
+  { labelKey: "nav.products", href: CATALOG_PATH },
+  { labelKey: "nav.projects", href: PROJECTS_PATH },
+  { labelKey: "nav.about", href: "/#about" },
+  { labelKey: "nav.manufacturing", href: "/#manufacturing" },
+  { labelKey: "nav.contacts", href: "/#contact" },
 ];
 
 export function Header() {
@@ -37,6 +42,7 @@ export function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const pathname = usePathname();
+  const { t } = useLocale();
 
   useMotionValueEvent(scrollY, "change", (latest) => {
     const previous = scrollY.getPrevious() ?? 0;
@@ -71,13 +77,13 @@ export function Header() {
             href="/"
             data-cursor="hover"
             className="font-display text-lg tracking-tight text-[var(--color-secondary)]"
-            aria-label="ANHEL® — на главную"
+            aria-label={t("common.toHome")}
           >
             ANHEL®
           </Link>
 
           <nav
-            aria-label="Основная навигация"
+            aria-label={t("nav.products")}
             className="hidden items-center gap-8 md:flex"
           >
             {NAV.map((item) => (
@@ -87,7 +93,7 @@ export function Header() {
                 data-cursor="hover"
                 className="text-sm text-[var(--color-secondary)]/70 transition-colors hover:text-[var(--color-secondary)]"
               >
-                {item.label}
+                {t(item.labelKey)}
               </Link>
             ))}
           </nav>
@@ -106,13 +112,14 @@ export function Header() {
               <span className="font-mono tracking-[0.02em]">{CONTACTS.phone}</span>
             </Link>
 
+            <LocaleToggle />
             <ThemeToggle />
 
             {/* Mobile menu trigger — full-screen menu lives in MobileMenu.tsx. */}
             <button
               type="button"
               onClick={() => setMenuOpen(true)}
-              aria-label="Открыть меню"
+              aria-label={t("common.openMenu")}
               aria-expanded={menuOpen}
               aria-controls="mobile-menu"
               className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[var(--color-secondary)]/20 text-[var(--color-secondary)] md:hidden"

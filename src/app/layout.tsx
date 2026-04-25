@@ -3,6 +3,7 @@ import "./globals.css";
 import { fontVariables } from "@/lib/fonts";
 import { LenisProvider } from "@/components/providers/LenisProvider";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
+import { LocaleProvider } from "@/components/providers/LocaleProvider";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { CustomCursor } from "@/components/layout/CustomCursor";
@@ -71,17 +72,19 @@ export default function RootLayout({
           Перейти к содержимому
         </a>
         <ThemeProvider>
-          <LenisProvider>
-            <LoadingSplash />
-            <CustomCursor />
-            <Header />
-            <PageTransition>
-              <main id="main-content" className="min-h-screen">
-                {children}
-              </main>
-              <Footer />
-            </PageTransition>
-          </LenisProvider>
+          <LocaleProvider>
+            <LenisProvider>
+              <LoadingSplash />
+              <CustomCursor />
+              <Header />
+              <PageTransition>
+                <main id="main-content" className="min-h-screen">
+                  {children}
+                </main>
+                <Footer />
+              </PageTransition>
+            </LenisProvider>
+          </LocaleProvider>
         </ThemeProvider>
       </body>
     </html>

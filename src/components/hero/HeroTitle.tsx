@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import { gsap, SplitText } from "@/lib/gsap";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
+import { useLocale } from "@/components/providers/LocaleProvider";
 
 /**
  * Hero headline with GSAP SplitText reveal.
@@ -17,6 +18,7 @@ import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 export function HeroTitle() {
   const ref = useRef<HTMLHeadingElement | null>(null);
   const prefersReduced = usePrefersReducedMotion();
+  const { t, locale } = useLocale();
 
   useEffect(() => {
     if (prefersReduced) return;
@@ -45,18 +47,21 @@ export function HeroTitle() {
     });
 
     return () => cancelAnimationFrame(raf);
-  }, [prefersReduced]);
+    // Re-split when locale changes — the new copy needs a fresh
+    // SplitText pass; otherwise the GSAP refs would point at the
+    // old word spans and the animation wouldn't fire.
+  }, [prefersReduced, locale]);
 
   return (
     <h1
       ref={ref}
       className="font-display text-hero font-medium text-[var(--color-secondary)]"
     >
-      <span className="block overflow-hidden">Системы,</span>
+      <span className="block overflow-hidden">{t("hero.title.line1")}</span>
       <span className="block overflow-hidden opacity-50">
-        которые держат здание
+        {t("hero.title.line2")}
       </span>
-      <span className="block overflow-hidden">живым.</span>
+      <span className="block overflow-hidden">{t("hero.title.line3")}</span>
     </h1>
   );
 }

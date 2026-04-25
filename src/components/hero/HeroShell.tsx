@@ -5,6 +5,7 @@ import type { ReactNode } from "react";
 import { HeroTitle } from "./HeroTitle";
 import { HeroCTAs } from "./HeroCTAs";
 import { HeroCounters } from "./HeroCounters";
+import { useLocale } from "@/components/providers/LocaleProvider";
 
 /**
  * HeroShell — shared hero scaffold used by all three variants (A/B/C).
@@ -31,6 +32,7 @@ export function HeroShell({
   foreground?: ReactNode;
   variantLabel: string;
 }) {
+  const { t } = useLocale();
   return (
     <section
       id="hero"
@@ -79,7 +81,7 @@ export function HeroShell({
             transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
             className="mono-tag"
           >
-            01 / 04 · Инженерное оборудование
+            {t("hero.tag")}
           </motion.p>
 
           <div className="mt-8 max-w-[1100px] md:mt-12">
@@ -97,7 +99,7 @@ export function HeroShell({
 
           <div className="flex flex-col gap-3 text-right md:items-end">
             <p className="font-mono text-[10px] uppercase tracking-[0.1em] text-[var(--color-secondary)]/40">
-              Проектирование · Производство · Автоматизация
+              {t("hero.footer.disciplines")}
             </p>
             <p className="font-mono text-[10px] uppercase tracking-[0.1em] text-[var(--color-secondary)]/50">
               {variantLabel}
@@ -108,7 +110,7 @@ export function HeroShell({
               transition={{ duration: 1, delay: 1.4 }}
               className="flex items-center justify-end gap-2 font-mono text-[10px] uppercase tracking-[0.1em] text-[var(--color-secondary)]/60"
             >
-              Прокрутить
+              {t("hero.footer.scrollHint")}
               <motion.span
                 aria-hidden="true"
                 animate={{ y: [0, 4, 0] }}
