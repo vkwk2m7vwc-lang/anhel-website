@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { CATALOG_PATH } from "@/lib/routes";
 
 /**
  * Minimal footer for Stage 1.
@@ -56,7 +57,7 @@ export function Footer() {
         <div className="space-y-3 text-sm">
           <p className="mono-tag">Навигация</p>
           {[
-            { label: "Продукты", href: "/products" },
+            { label: "Продукты", href: CATALOG_PATH },
             { label: "Объекты", href: "/#projects" },
             { label: "О компании", href: "/#about" },
             { label: "Производство", href: "/#manufacturing" },
