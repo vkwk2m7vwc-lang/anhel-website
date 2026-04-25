@@ -32,7 +32,7 @@ import { CONTACTS } from "@/lib/contacts";
  */
 
 const NAV_ANCHORS = [
-  { label: "Объекты", href: "/#projects" },
+  { label: "Объекты", href: "/projects" },
   { label: "О компании", href: "/#about" },
   { label: "Производство", href: "/#manufacturing" },
   { label: "Контакты", href: "/#contact" },

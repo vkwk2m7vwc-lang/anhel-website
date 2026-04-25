@@ -58,7 +58,7 @@ export function Footer() {
           <p className="mono-tag">Навигация</p>
           {[
             { label: "Продукты", href: CATALOG_PATH },
-            { label: "Объекты", href: "/#projects" },
+            { label: "Объекты", href: "/projects" },
             { label: "О компании", href: "/#about" },
             { label: "Производство", href: "/#manufacturing" },
           ].map((item) => (

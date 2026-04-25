@@ -21,3 +21,6 @@
 
 /** Корневой каталог продукции — карточки 4 групп. */
 export const CATALOG_PATH = "/products" as const;
+
+/** Портфолио объектов — карточная сетка с фильтром (Насосные / Водоподготовка). */
+export const PROJECTS_PATH = "/projects" as const;
