@@ -270,7 +270,7 @@ radial за продуктами, в dark — глубокий navy канвас
 ### 3. Техно-контраст (Stripe / Vercel / Linear)
 
 Ветка: `design/variant-2-techno` · `7c8019f`
-Preview: <https://anhel-website-git-design-variant-2-techno-anurin7-5494s-projects.vercel.app>
+Preview: <https://anhel-website-git-design-variant-d74257-anurin7-5494s-projects.vercel.app>
 
 Янтарный `#FBBF24` + оранжевый `#F97316` берут роль «system signal»;
 все остальные акценты приглушены до greyscale. Hero — всегда тёмный
@@ -282,7 +282,7 @@ chrome. Hero clamp поднят до 200px, kerning -0.03em — заголово
 ### 4. Премиум-минимализм (Mont-Fort / Apple)
 
 Ветка: `design/variant-3-premium` · `45b91ea`
-Preview: <https://anhel-website-git-design-variant-3-premium-anurin7-5494s-projects.vercel.app>
+Preview: <https://anhel-website-git-design-variant-351028-anurin7-5494s-projects.vercel.app>
 
 Канвас `#FAFAFA`, текст `#0F0F0F`, единственный шёпот цвета — изумрудный
 `#0F4C3A` (на тёмной — `#2a8c6a`). Бордюры карточек ушли в hairline
