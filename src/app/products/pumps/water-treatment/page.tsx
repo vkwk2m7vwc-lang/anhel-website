@@ -72,7 +72,7 @@ export default function WaterTreatmentProductPage() {
 
   const productJsonLd = productLd({
     slug,
-    name: "Установки водоподготовки ANHEL®",
+    name: "Установки водоподготовки ANHEL",
     description: waterTreatmentContent.metaDescription,
     image: waterTreatmentContent.hero.image.src,
     category: "Water treatment / Filtration",

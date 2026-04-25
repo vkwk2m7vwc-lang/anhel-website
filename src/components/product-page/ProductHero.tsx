@@ -161,42 +161,42 @@ export function ProductHero({
             </motion.div>
           </div>
 
-          {/* IMAGE column — на mobile под CTA, на md+ справа */}
+          {/* IMAGE column — на mobile под CTA, на md+ справа.
+              Явные высоты (а не min-h + aspect-auto) — гарантируют, что
+              <Image fill> получит реальную high от родителя. На md+
+              фиксируем 520px как просил макет; на mobile — aspect-[4/3].
+              Tilt-эффект восстановим позже отдельной правкой — сейчас
+              приоритет на стабильное появление картинки. */}
           <div className="md:col-span-6">
-            <div
-              className="relative aspect-[4/3] w-full md:aspect-auto md:min-h-[520px]"
-              style={{ perspective: "1200px" }}
+            <motion.div
+              animate={prefersReduced ? undefined : { y: [0, -8, 0] }}
+              transition={
+                prefersReduced
+                  ? undefined
+                  : {
+                      y: { duration: 6, repeat: Infinity, ease: "easeInOut" },
+                    }
+              }
+              ref={tilt.ref}
+              onMouseMove={tilt.onMouseMove}
+              onMouseLeave={tilt.onMouseLeave}
+              style={{
+                filter: dropShadow,
+                rotateX: prefersReduced ? 0 : tilt.rotateX,
+                rotateY: prefersReduced ? 0 : tilt.rotateY,
+                transformStyle: "preserve-3d",
+              }}
+              className="relative aspect-[4/3] w-full md:aspect-auto md:h-[520px]"
             >
-              <motion.div
-                ref={tilt.ref}
-                onMouseMove={tilt.onMouseMove}
-                onMouseLeave={tilt.onMouseLeave}
-                style={{
-                  rotateX: prefersReduced ? 0 : tilt.rotateX,
-                  rotateY: prefersReduced ? 0 : tilt.rotateY,
-                  transformStyle: "preserve-3d",
-                  filter: dropShadow,
-                }}
-                animate={prefersReduced ? undefined : { y: [0, -8, 0] }}
-                transition={
-                  prefersReduced
-                    ? undefined
-                    : {
-                        y: { duration: 6, repeat: Infinity, ease: "easeInOut" },
-                      }
-                }
-                className="relative h-full w-full"
-              >
-                <Image
-                  src={content.image.src}
-                  alt={content.image.alt}
-                  fill
-                  priority
-                  sizes="(min-width: 1024px) 600px, (min-width: 768px) 50vw, 100vw"
-                  className="object-contain"
-                />
-              </motion.div>
-            </div>
+              <Image
+                src={content.image.src}
+                alt={content.image.alt}
+                fill
+                priority
+                sizes="(min-width: 1024px) 600px, (min-width: 768px) 50vw, 100vw"
+                className="object-contain"
+              />
+            </motion.div>
           </div>
         </div>
       </div>

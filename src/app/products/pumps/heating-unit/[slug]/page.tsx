@@ -173,7 +173,7 @@ export default async function HeatingModulePage({ params }: RouteParams) {
 
             {/* IMAGE — col-6 на md+, aspect-4/3 на mobile под текстом */}
             <div className="md:col-span-6">
-              <div className="relative aspect-[4/3] w-full md:aspect-auto md:min-h-[520px]">
+              <div className="relative aspect-[4/3] w-full md:aspect-auto md:h-[520px]">
                 <Image
                   src={m.image.src}
                   alt={m.image.alt}
