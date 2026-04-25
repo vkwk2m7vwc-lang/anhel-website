@@ -85,7 +85,7 @@ export function LakhtaSteps({
                   data-active={isActive ? "true" : "false"}
                   className={[
                     "group relative flex h-full min-h-[52px] w-full flex-col items-start justify-center gap-0.5 bg-[var(--color-primary)] px-3 py-2 text-left transition-colors",
-                    "[@media(hover:hover)]:hover:bg-[#111]",
+                    "[@media(hover:hover)]:hover:bg-[var(--color-surface-1)]",
                     "focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--accent-fire)]/70",
                     isActive
                       ? "ring-1 ring-inset ring-[var(--accent-fire)]"
