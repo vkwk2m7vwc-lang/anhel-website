@@ -3,8 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { HERO_PRODUCTS } from "@/lib/hero-products";
-import { PRODUCTS } from "@/lib/products";
+import { TOP_LEVEL_PRODUCTS, type ProductSummary } from "@/lib/products";
 import type { ProductAccent } from "@/content/products/types";
 
 /**
@@ -12,19 +11,16 @@ import type { ProductAccent } from "@/content/products/types";
  * с главной на продуктовые страницы.
  *
  * Layout:
- *   - Header: mono-tag «02 · ЛИНЕЙКА ПРОДУКТОВ» + h2 + lede
- *   - 4 cards в 2×2 grid (desktop) / 1×4 (mobile)
+ *   - Header: mono-tag + h2 + lede
+ *   - N cards в 2-column grid на desktop (1 column на mobile)
  *   - Каждая карточка: product render + title + tagline + accent ring
  *     на hover
  *
- * Источники данных:
- *   - HERO_PRODUCTS — image, accent hex, alt
- *   - PRODUCTS      — title, tagline, href, accent key
- *
- * Совмещаем по slug-маппингу (hero-products использует
- * pump-water/pump-fire/water-treatment/heating-unit, а PRODUCTS —
- * water-supply/firefighting/water-treatment/heating-unit; первые
- * два различаются префиксом).
+ * Источник данных: PRODUCTS из `lib/products.ts` — там же лежат
+ * image, imageAlt и accentHex. Раньше компонент сшивал HERO_PRODUCTS
+ * + PRODUCTS через slug-mapping, но HERO_PRODUCTS зафиксирован на
+ * 4 продуктах (для главной hero-карусели), а каталог должен расти.
+ * Теперь источник один.
  *
  * Reuse: тот же компонент рендерится и на главной (как секция
  * между hero и footer), и на отдельной странице `/products` (как
@@ -46,16 +42,12 @@ type Props = {
   monoTag?: string;
   title?: string;
   lede?: string;
-};
-
-// Маппинг hero-products slug → PRODUCTS slug. Hero использует
-// «pump-water» как водоснабжение и «pump-fire» как пожаротушение;
-// PRODUCTS использует «water-supply» / «firefighting».
-const HERO_TO_PRODUCT: Record<string, string> = {
-  "pump-water": "water-supply",
-  "pump-fire": "firefighting",
-  "water-treatment": "water-treatment",
-  "heating-unit": "heating-unit",
+  /**
+   * Какие продукты рендерить. По умолчанию TOP_LEVEL_PRODUCTS
+   * (3 раздела для главной + /products). На /products/pumps
+   * передаётся PUMPS_PRODUCTS — 5 насосных серий.
+   */
+  products?: readonly ProductSummary[];
 };
 
 const ACCENT_VAR: Record<ProductAccent, string> = {
@@ -68,18 +60,13 @@ const ACCENT_VAR: Record<ProductAccent, string> = {
 export function ProductsShowcase({
   tone = "section",
   monoTag = "02 · ЛИНЕЙКА ПРОДУКТОВ",
-  title = "Четыре направления, одна сборка",
-  lede = "Насосные станции, тепловые пункты и установки водоподготовки. Заводская сборка, серийное производство, индивидуальная конфигурация под ТЗ.",
+  title = "Три направления, одна сборка",
+  lede = "Насосные станции, водоподготовка и тепловые пункты. Заводская сборка, серийное производство, индивидуальная конфигурация под ТЗ.",
+  products,
 }: Props) {
-  // Объединяем два источника в один массив с полным набором полей.
-  // Order совпадает с HERO_PRODUCTS — это «маркетинговый порядок»
-  // линейки (водоснабжение → пожаротушение → водоподготовка →
-  // тепловые пункты).
-  const cards = HERO_PRODUCTS.map((hero) => {
-    const productSlug = HERO_TO_PRODUCT[hero.slug];
-    const product = PRODUCTS.find((p) => p.slug === productSlug);
-    return { hero, product };
-  });
+  // Источник данных по умолчанию — TOP_LEVEL_PRODUCTS (3 раздела).
+  // На /products/pumps передаётся PUMPS_PRODUCTS извне (5 серий).
+  const cards = products ?? TOP_LEVEL_PRODUCTS;
 
   const sectionPadding =
     tone === "page" ? "px-6 py-14 md:px-12 md:py-20" : "px-6 py-20 md:px-12 md:py-28";
@@ -112,28 +99,27 @@ export function ProductsShowcase({
           ) : null}
         </div>
 
-        {/* 1×4 → 2×2 — четыре direction'a в плотной сетке.
-            На lg+ остаётся 2×2 (а не 4×1) сознательно: 4 карточки в
-            ряд в типичном desktop viewport дают слишком тонкие
-            тайлы; 2×2 даёт каждой карточке достаточно места для
-            продуктового рендера. */}
+        {/* 1×N → 2×N — карточки в плотной сетке. Mobile single-column,
+            md+ две колонки. Семь продуктов на 2 колонки = 3 ряда + 1
+            висящая карточка; принимаем такую асимметрию, чтобы каждая
+            карточка имела достаточную ширину под продуктовый рендер.
+            Если каталог станет 8+ — рассмотреть lg:grid-cols-3. */}
         <ul className="mt-12 grid grid-cols-1 gap-px bg-[var(--color-hairline)] md:mt-16 md:grid-cols-2">
-          {cards.map(({ hero, product }, i) => {
-            if (!product) return null;
+          {cards.map((product, i) => {
             const accentVar = ACCENT_VAR[product.accent];
             const isComingSoon = Boolean(product.comingSoon);
 
             return (
               <ProductCard
-                key={hero.slug}
+                key={product.slug}
                 index={i}
                 href={isComingSoon ? undefined : product.href}
                 title={product.title}
                 tagline={product.tagline}
-                imageSrc={hero.image}
-                imageAlt={hero.alt}
+                imageSrc={product.image}
+                imageAlt={product.imageAlt}
                 accentVar={accentVar}
-                accentHex={hero.accent}
+                accentHex={product.accentHex}
                 comingSoon={isComingSoon}
               />
             );

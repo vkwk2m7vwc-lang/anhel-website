@@ -18,7 +18,7 @@ import {
 } from "@/lib/schema-org";
 
 /**
- * /products/pumps/water-treatment
+ * /products/water-treatment
  *
  * Четвёртая продуктовая страница — водоподготовка. Структура
  * аналогична water-supply (10 секций, без HowItWorks), но
@@ -44,7 +44,7 @@ export const metadata: Metadata = {
     type: "website",
     title: `${waterTreatmentContent.metaTitle} · ANHEL®`,
     description: waterTreatmentContent.metaDescription,
-    url: `/products/pumps/water-treatment`,
+    url: `/products/water-treatment`,
     images: [
       {
         url: waterTreatmentContent.hero.image.src,
@@ -72,16 +72,17 @@ export default function WaterTreatmentProductPage() {
 
   const productJsonLd = productLd({
     slug,
-    name: "Установки водоподготовки ANHEL®",
+    name: "Установки водоподготовки ANHEL",
     description: waterTreatmentContent.metaDescription,
     image: waterTreatmentContent.hero.image.src,
     category: "Water treatment / Filtration",
     model: "VPU-NU",
+    routePath: `/products/${slug}`,
   });
   const breadcrumbJsonLd = breadcrumbLd([
     { name: "Главная", url: "/" },
-    { name: "Инженерное оборудование", url: "/products" },
-    { name: "Водоподготовка", url: `/products/pumps/${slug}` },
+    { name: "Каталог", url: "/products" },
+    { name: "Водоподготовка", url: `/products/${slug}` },
   ]);
 
   return (

@@ -29,6 +29,13 @@ import type { TechSpecTile } from "@/content/products/types";
  * every product.
  */
 export function TechSpecsGrid({ specs }: { specs: readonly TechSpecTile[] }) {
+  // Фильтруем пустые параметры (без value) — чтобы сетка не имела
+  // светлых заглушек с пустотой и адаптивно перестраивалась под
+  // реальное число строк.
+  const visibleSpecs = specs.filter((s) => s.value && String(s.value).trim());
+
+  if (visibleSpecs.length === 0) return null;
+
   return (
     <section
       id="tech-specs"
@@ -65,7 +72,7 @@ export function TechSpecsGrid({ specs }: { specs: readonly TechSpecTile[] }) {
             раскладкой. Tablet (sm-md): 2 колонки card-блоки. Desktop (lg+):
             4 колонки в одну строку с hairline-grid через gap-px. */}
         <ul className="mt-12 grid grid-cols-1 gap-px bg-[var(--color-hairline)] md:mt-16 sm:grid-cols-2 sm:gap-3 sm:bg-transparent lg:grid-cols-4 lg:gap-px lg:bg-[var(--color-hairline)]">
-          {specs.map((spec, i) => (
+          {visibleSpecs.map((spec, i) => (
             <TechSpecCard key={spec.label} spec={spec} index={i} />
           ))}
         </ul>

@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { ProductHero } from "@/components/product-page/ProductHero";
 import { ProductPageShell } from "@/components/product-page/ProductPageShell";
-import { TechSpecsGrid } from "@/components/product-page/TechSpecsGrid";
 import { BrandsStrip } from "@/components/product-page/BrandsStrip";
 import { AdvantagesGrid } from "@/components/product-page/AdvantagesGrid";
 import { GalleryRail } from "@/components/product-page/GalleryRail";
@@ -19,7 +18,7 @@ import {
 } from "@/lib/schema-org";
 
 /**
- * /products/pumps/heating-unit
+ * /products/heating-unit
  *
  * БИТП — модульное тепловое оборудование. Отличие от насосных
  * станций: секция 3 переопределена как «Линейка модулей» (6 модулей
@@ -28,32 +27,30 @@ import {
  * (везде, где нужен тепловой ввод); важнее показать, какие
  * конфигурации есть.
  *
- * Section map (10 секций):
+ * Section map (9 секций):
  *   01 Hero
- *   02 ТТХ                     (аггрегированные диапазоны линейки)
- *   03 Линейка модулей         (6 модульных исполнений)
- *   04 Бренды                  (теплообменники, регуляторы, насосы)
- *   05 Преимущества (9)
- *   06 Галерея (skeletons)
- *   07 Кейсы (placeholders)
- *   08 Опросный лист (квиз)
- *   09 Документация (4 PDF skeleton)
- *   10 Финальный CTA + соседние
+ *   02 Линейка модулей         (8 модульных исполнений)
+ *   03 Бренды                  (теплообменники, регуляторы, насосы)
+ *   04 Преимущества (9)
+ *   05 Галерея (skeletons)
+ *   06 Кейсы (placeholders)
+ *   07 Опросный лист (квиз)
+ *   08 Документация (4 PDF skeleton)
+ *   09 Финальный CTA + соседние
  *
- * Контент работает через стандартный `ApplicationsGrid` компонент —
- * поле `applications` в `ProductContent` используется здесь как
- * «линейка модулей». Без изменения типа: значения items остаются
- * (id/mono/title/example) — просто семантически они теперь модули,
- * а не типы объектов.
+ * ТТХ убраны с родительской страницы — каждый модуль ИТП имеет свои
+ * параметры, поэтому аггрегированные диапазоны линейки на родителе
+ * вводили в заблуждение. Технические характеристики показываются на
+ * подстранице конкретного модуля (/products/heating-unit/[slug]).
  */
 export const metadata: Metadata = {
   title: heatingUnitContent.metaTitle,
   description: heatingUnitContent.metaDescription,
   openGraph: {
     type: "website",
-    title: `${heatingUnitContent.metaTitle} · ANHEL®`,
+    title: `${heatingUnitContent.metaTitle} · ANHEL`,
     description: heatingUnitContent.metaDescription,
-    url: `/products/pumps/heating-unit`,
+    url: `/products/heating-unit`,
     images: [
       {
         url: heatingUnitContent.hero.image.src,
@@ -67,7 +64,6 @@ export default function HeatingUnitProductPage() {
   const {
     slug,
     hero,
-    techSpecs,
     accent,
     brands,
     advantages,
@@ -80,16 +76,17 @@ export default function HeatingUnitProductPage() {
 
   const productJsonLd = productLd({
     slug,
-    name: "Блочные индивидуальные тепловые пункты ANHEL®",
+    name: "Блочные индивидуальные тепловые пункты ANHEL",
     description: heatingUnitContent.metaDescription,
     image: heatingUnitContent.hero.image.src,
     category: "HVAC / Heat exchanger unit",
     model: "BITP-NU",
+    routePath: `/products/${slug}`,
   });
   const breadcrumbJsonLd = breadcrumbLd([
     { name: "Главная", url: "/" },
-    { name: "Инженерное оборудование", url: "/products" },
-    { name: "Тепловые пункты", url: `/products/pumps/${slug}` },
+    { name: "Каталог", url: "/products" },
+    { name: "Тепловые пункты", url: `/products/${slug}` },
   ]);
 
   return (
@@ -98,11 +95,11 @@ export default function HeatingUnitProductPage() {
       <script {...ldScriptProps(breadcrumbJsonLd)} />
 
       <ProductHero content={hero} accent={accent} />
-      <TechSpecsGrid specs={techSpecs} />
-      {/* Линейка модулей — 8 кликабельных карточек, каждая ведёт на
-          /products/pumps/heating-unit/<slug>. Заменила старую секцию
-          ApplicationsGrid с 6 пунктами «где ставится» — для ИТП
-          важнее каталог конфигураций, чем типы объектов. */}
+      {/* 02 Линейка модулей — 8 кликабельных карточек, каждая ведёт на
+          /products/heating-unit/<slug>. ТТХ убраны с родителя:
+          у каждого модуля свои параметры, агрегированные диапазоны
+          линейки путали юзера. Технические характеристики раскрываются
+          только когда выбран конкретный модуль (на подстранице). */}
       <HeatingModulesCatalog modules={heatingModules} />
       <BrandsStrip content={brands} />
       <AdvantagesGrid content={advantages} />

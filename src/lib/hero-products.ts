@@ -65,8 +65,8 @@ export const HERO_PRODUCTS: readonly HeroProduct[] = [
     name: "Установка водоподготовки",
     image: "/assets/products/vpu.png",
     accent: "#8A94A0",
-    alt: "ANHEL® — установка водоподготовки VPU со стальными фильтрами",
-    href: "/products/pumps/water-treatment",
+    alt: "ANHEL — установка водоподготовки со стальными фильтрами",
+    href: "/products/water-treatment",
   },
   {
     slug: "heating-unit",
@@ -74,6 +74,6 @@ export const HERO_PRODUCTS: readonly HeroProduct[] = [
     image: "/assets/products/bitp.png",
     accent: "#E8873B",
     alt: "ANHEL® — блочный индивидуальный тепловой пункт (БИТП)",
-    href: "/products/pumps/heating-unit",
+    href: "/products/heating-unit",
   },
 ] as const;
