@@ -103,7 +103,8 @@ function TechSpecCard({ spec, index }: { spec: TechSpecTile; index: number }) {
       className={[
         "group relative flex bg-[var(--color-primary)] outline-none transition-colors duration-300",
         // Mobile compact row — label слева, value+unit справа.
-        "min-h-[64px] flex-row items-baseline justify-between gap-3 p-4",
+        // Унифицированный rhythm: min-h-[64px], px-4 py-3 (как все гриды).
+        "min-h-[64px] flex-row items-baseline justify-between gap-3 px-4 py-3",
         // Tablet (sm-md): block-card.
         "sm:min-h-[140px] sm:flex-col sm:items-stretch sm:justify-between sm:gap-0 sm:p-4",
         // Desktop:

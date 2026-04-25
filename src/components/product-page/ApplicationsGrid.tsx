@@ -98,28 +98,21 @@ function ApplicationCard({
       aria-label={`${item.mono} · ${item.title}`}
       className={[
         "group relative flex bg-[var(--color-primary)] outline-none transition-colors duration-300",
-        // Mobile: compact horizontal row, ~72px min-height для удобного tap-target.
-        "min-h-[72px] flex-row items-baseline gap-3 p-4",
+        // Mobile compact row — единый rhythm с Advantages/TechSpecs/Documents:
+        // min-h-[64px], px-4 py-3, line-clamp на длинных полях.
+        "min-h-[64px] flex-row items-baseline gap-3 px-4 py-3",
         // Tablet+ : block-card с большим padding.
         "sm:min-h-[220px] sm:flex-col sm:justify-between sm:gap-0 sm:p-6 md:min-h-[260px] md:p-8",
-        // Hover scoped to (hover: hover) so the last-tapped tile doesn't
-        // stay highlighted on iOS / Android after a tap.
         "[@media(hover:hover)]:hover:bg-[#111]",
-        // Active = подсветка при tap (touch-feedback). Отпускание
-        // пальца возвращает в default — никакого залипания.
         "active:ring-1 active:ring-[var(--accent-current)]",
-        // Focus-visible для клавиатуры.
         "focus-visible:ring-1 focus-visible:ring-[var(--accent-current)]/70",
       ].join(" ")}
     >
-      {/* Accent ring — transparent by default, появляется на hover на
-          desktop. На mobile та же роль играет active:ring (см. выше). */}
       <span
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 ring-1 ring-transparent transition-[box-shadow,ring-color] duration-300 [@media(hover:hover)]:group-hover:ring-[var(--accent-current)]"
       />
 
-      {/* Mono prefix */}
       <p
         aria-hidden="true"
         className="font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/65 transition-colors duration-300 [@media(hover:hover)]:group-hover:text-[var(--accent-current)] sm:text-[11px]"
@@ -127,12 +120,12 @@ function ApplicationCard({
         {item.mono}
       </p>
 
-      {/* Title + example — на mobile in-line column, на sm+ block. */}
+      {/* Title + example — на mobile compact (line-clamp), на sm+ block. */}
       <div className="flex min-w-0 flex-1 flex-col gap-1 sm:mt-10 sm:gap-3">
-        <h3 className="font-display text-[15px] font-medium leading-tight text-[var(--color-secondary)] sm:text-[22px] md:text-[28px]">
+        <h3 className="line-clamp-1 font-display text-[14px] font-medium leading-tight text-[var(--color-secondary)] sm:line-clamp-none sm:text-[22px] md:text-[28px]">
           {item.title}
         </h3>
-        <p className="font-mono text-[10px] uppercase leading-snug tracking-[0.08em] text-[var(--color-secondary)]/65 sm:text-[11px]">
+        <p className="line-clamp-1 font-mono text-[10px] uppercase leading-snug tracking-[0.08em] text-[var(--color-secondary)]/65 sm:line-clamp-none sm:text-[11px]">
           {item.example}
         </p>
       </div>
