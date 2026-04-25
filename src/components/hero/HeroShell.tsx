@@ -34,12 +34,12 @@ export function HeroShell({
   return (
     <section
       id="hero"
-      // hero-stage — keeps the hero canvas dark regardless of the
-      // global theme. The 3D product renders are styled for a dark
-      // theatre, and the accent radial-glow loses impact on a light
-      // surface. Treat the hero as the one always-dark moment of
-      // the page; the rest of the site flips with the toggle.
-      className="hero-stage relative flex min-h-[100svh] flex-col overflow-hidden"
+      // Variant 1 — Corporate: hero flips with the theme. In light
+      // mode the canvas is white and a soft navy radial sits behind
+      // the products; in dark mode the canvas is deep navy. No
+      // always-dark island — the corporate language is light-first
+      // and the products read fine on a structured neutral surface.
+      className="relative flex min-h-[100svh] flex-col overflow-hidden bg-[var(--color-primary)]"
     >
       {/* z-0 — pure background (video / radial gradient / SVG schema) */}
       <div className="pointer-events-none absolute inset-0 z-0">

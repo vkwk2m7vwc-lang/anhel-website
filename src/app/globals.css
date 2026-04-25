@@ -3,92 +3,84 @@
 @tailwind utilities;
 
 /*
- * ANHEL design tokens.
- * See _docs/BRAND.md — these are the single source of truth.
+ * ANHEL design tokens — VARIANT 1 «Corporate».
+ *
+ * Concept: Bosch / Siemens / Schneider Electric — light, structural,
+ * trustworthy. Navy + white as the base, one accent (Anhel red) for
+ * CTAs only. Sharp 4-px corners, minimal motion, deliberate spacing.
  *
  * Theming model:
- *   :root          → fallback (matches dark — preserves legacy first-paint)
+ *   :root          → fallback (light — corporate is light-first)
  *   :root.dark     → explicit dark theme (next-themes adds class="dark")
  *   :root.light    → explicit light theme (next-themes adds class="light")
  *
- * Semantic vars (--color-primary / --color-secondary etc.) keep their old
- * meaning: --color-primary = canvas background, --color-secondary = primary
- * fg / text. Only the values flip between themes.
- *
- * Rich SVG illustrations (Lakhta, Skyscraper, scenarios) hard-code white
- * strokes — they are wrapped in `.graphic-surface` so they keep a dark
- * inner canvas in light mode and stay legible.
+ * The dark mode keeps the same navy hue but on a dark canvas so the
+ * brand language stays consistent between themes — only the surface
+ * inverts, the navy-as-emphasis convention does not change.
  */
 :root,
-:root.dark {
-  /* Core palette — DARK */
-  --color-primary: #0a0a0a;
-  --color-secondary: #f5f5f3;
-  --color-steel-light: #c0c8d0;
-  --color-steel-dark: #8a94a0;
-  --color-hairline: rgba(255, 255, 255, 0.08);
-  --color-hairline-dark: rgba(10, 10, 10, 0.08);
+:root.light {
+  /* Core palette — LIGHT (corporate default) */
+  --color-primary: #ffffff;
+  --color-secondary: #0f2c5e; /* navy — primary text + brand */
+  --color-steel-light: #5a6b80;
+  --color-steel-dark: #2c3a4f;
+  --color-hairline: rgba(15, 44, 94, 0.14);
+  --color-hairline-dark: rgba(255, 255, 255, 0.10);
 
-  /* Semantic muted-fg — used by .mono-tag and other tertiary text */
-  --color-fg-muted: rgba(245, 245, 243, 0.65);
-  --color-fg-faint: rgba(245, 245, 243, 0.45);
+  --color-fg-muted: rgba(15, 44, 94, 0.70);
+  --color-fg-faint: rgba(15, 44, 94, 0.50);
 
-  /* Surface tokens — used by cards, panels, scrim overlays */
-  --color-surface-1: #111111;
-  --color-surface-2: #181818;
-  --color-scrim: rgba(0, 0, 0, 0.55);
+  --color-surface-1: #f4f6fa;
+  --color-surface-2: #e9eef5;
+  --color-scrim: rgba(255, 255, 255, 0.70);
 
-  /* Product accents */
-  --accent-water: #1e6fd9;
-  --accent-fire: #d72638;
-  --accent-treatment: #8a94a0;
-  --accent-heat: #e8873b;
+  /* Product accents — corporate desaturation, AA-safe on white */
+  --accent-water: #0f2c5e; /* same navy — corporate prefers monochrome */
+  --accent-fire: #c61e2e; /* the lone CTA red — used sparingly */
+  --accent-treatment: #5a6b80;
+  --accent-heat: #b06912;
 
-  /* Runtime tints (swapped per-section, e.g. current product color) */
+  /* Runtime tints */
   --accent-current: var(--accent-water);
 
   /* Motion */
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
   --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  --duration-instant: 150ms;
-  --duration-fast: 300ms;
-  --duration-base: 500ms;
-  --duration-slow: 800ms;
-  --duration-cinematic: 1200ms;
+  --duration-instant: 120ms;
+  --duration-fast: 220ms; /* corporate motion is shorter / less playful */
+  --duration-base: 360ms;
+  --duration-slow: 600ms;
+  --duration-cinematic: 900ms;
 }
 
 /*
- * LIGHT THEME OVERRIDES.
+ * DARK THEME OVERRIDES — corporate dark.
  *
- * - bg #fafafa, fg #0a0a0a (full inversion of the dark canvas)
- * - steel tokens darken proportionally so they remain readable as
- *   secondary text on a light surface
- * - hairlines flip color (dark line on light bg) but keep the same
- *   alpha so the perceived weight is consistent between themes
- * - product accents are slightly darkened to clear WCAG AA on white;
- *   the hue stays close so brand recognition holds
+ * Same navy hue but cooled to a near-black canvas (#0c1426). Navy
+ * promotes to a brighter rim (#3a6acc) so it still reads as the
+ * brand axis; the CTA red brightens slightly for AA on dark.
  */
-:root.light {
-  --color-primary: #fafafa;
-  --color-secondary: #0a0a0a;
-  --color-steel-light: #4a5258;
-  --color-steel-dark: #2a3138;
-  --color-hairline: rgba(10, 10, 10, 0.10);
-  --color-hairline-dark: rgba(255, 255, 255, 0.08);
+:root.dark {
+  --color-primary: #0c1426;
+  --color-secondary: #e8eef7;
+  --color-steel-light: #a3b1c4;
+  --color-steel-dark: #6b7a90;
+  --color-hairline: rgba(232, 238, 247, 0.10);
+  --color-hairline-dark: rgba(12, 20, 38, 0.30);
 
-  --color-fg-muted: rgba(10, 10, 10, 0.65);
-  --color-fg-faint: rgba(10, 10, 10, 0.45);
+  --color-fg-muted: rgba(232, 238, 247, 0.70);
+  --color-fg-faint: rgba(232, 238, 247, 0.45);
 
-  --color-surface-1: #ffffff;
-  --color-surface-2: #f0f0ee;
-  --color-scrim: rgba(255, 255, 255, 0.65);
+  --color-surface-1: #14223a;
+  --color-surface-2: #1c2c47;
+  --color-scrim: rgba(8, 14, 28, 0.65);
 
-  /* Slightly darkened/desaturated brand accents for AA on light bg */
-  --accent-water: #1857b8;
-  --accent-fire: #b81e2c;
-  --accent-treatment: #4a5258;
-  --accent-heat: #c46c1e;
+  --accent-water: #5b8ee0; /* navy bright on dark */
+  --accent-fire: #e6394c;
+  --accent-treatment: #a3b1c4;
+  --accent-heat: #e6952e;
 }
 
 @layer base {

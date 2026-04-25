@@ -62,31 +62,39 @@ const config: Config = {
         body: ["var(--font-body)", "Inter", "system-ui", "sans-serif"],
         mono: ["var(--font-mono)", "JetBrains Mono", "ui-monospace", "monospace"],
       },
+      // Variant 1 — Corporate: typographic ladder is dialled back.
+      // Hero/section caps shrink so headlines read as functional, not
+      // editorial; line-heights open slightly (1.0 → 1.1) for a more
+      // formal cadence; letter-spacing flattens (negative tracking is
+      // an editorial flourish that fights the corporate posture).
       fontSize: {
         hero: [
-          "clamp(56px, 8vw, 180px)",
-          { lineHeight: "0.95", letterSpacing: "-0.025em" },
+          "clamp(44px, 5.5vw, 96px)",
+          { lineHeight: "1.05", letterSpacing: "-0.01em" },
         ],
         section: [
-          "clamp(40px, 5vw, 88px)",
-          { lineHeight: "1.05", letterSpacing: "-0.02em" },
+          "clamp(32px, 3.5vw, 56px)",
+          { lineHeight: "1.1", letterSpacing: "-0.005em" },
         ],
         h2: [
-          "clamp(28px, 3vw, 48px)",
-          { lineHeight: "1.1", letterSpacing: "-0.015em" },
+          "clamp(24px, 2.4vw, 40px)",
+          { lineHeight: "1.2", letterSpacing: "0" },
         ],
-        h3: ["clamp(20px, 2vw, 28px)", { lineHeight: "1.25" }],
-        body: ["clamp(16px, 1.2vw, 18px)", { lineHeight: "1.5" }],
-        mono: ["11px", { lineHeight: "1.2", letterSpacing: "0.08em" }],
+        h3: ["clamp(18px, 1.6vw, 24px)", { lineHeight: "1.3" }],
+        body: ["clamp(15px, 1vw, 17px)", { lineHeight: "1.65" }],
+        mono: ["11px", { lineHeight: "1.2", letterSpacing: "0.1em" }],
       },
       letterSpacing: {
         mono: "0.08em",
         hero: "-0.025em",
       },
+      // Variant 1 — Corporate: sharper corners.
+      // The whole language is rectangular; we cap at 4px so cards
+      // and buttons read as structural blocks, not pebbles.
       borderRadius: {
-        sm: "4px",
-        md: "8px",
-        lg: "16px",
+        sm: "2px",
+        md: "4px",
+        lg: "4px",
         pill: "9999px",
       },
       transitionTimingFunction: {
