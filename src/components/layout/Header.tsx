@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 import { CONTACTS } from "@/lib/contacts";
 import { CATALOG_PATH, PROJECTS_PATH } from "@/lib/routes";
 import { MobileMenu } from "./MobileMenu";
+import { ThemeToggle } from "./ThemeToggle";
 
 /**
  * Fixed header with two behaviours:
@@ -91,28 +92,35 @@ export function Header() {
             ))}
           </nav>
 
-          <Link
-            href={`tel:${CONTACTS.phoneTel}`}
-            data-cursor="hover"
-            aria-label={`Позвонить: ${CONTACTS.phone}`}
-            className="hidden items-center gap-2 text-sm text-[var(--color-secondary)]/80 transition-colors hover:text-[var(--color-secondary)] md:inline-flex"
-          >
-            <Phone size={14} strokeWidth={1.75} aria-hidden="true" />
-            <span className="font-mono tracking-[0.02em]">{CONTACTS.phone}</span>
-          </Link>
+          {/* Right cluster: phone (desktop only), theme toggle, burger.
+              Theme toggle sits between phone and burger so it's reachable
+              on both viewports. */}
+          <div className="flex items-center gap-3">
+            <Link
+              href={`tel:${CONTACTS.phoneTel}`}
+              data-cursor="hover"
+              aria-label={`Позвонить: ${CONTACTS.phone}`}
+              className="hidden items-center gap-2 text-sm text-[var(--color-secondary)]/80 transition-colors hover:text-[var(--color-secondary)] md:inline-flex"
+            >
+              <Phone size={14} strokeWidth={1.75} aria-hidden="true" />
+              <span className="font-mono tracking-[0.02em]">{CONTACTS.phone}</span>
+            </Link>
 
-          {/* Mobile menu trigger — full-screen menu lives in MobileMenu.tsx. */}
-          <button
-            type="button"
-            onClick={() => setMenuOpen(true)}
-            aria-label="Открыть меню"
-            aria-expanded={menuOpen}
-            aria-controls="mobile-menu"
-            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[var(--color-secondary)]/20 text-[var(--color-secondary)] md:hidden"
-            data-cursor="hover"
-          >
-            <Menu size={18} strokeWidth={1.5} aria-hidden="true" />
-          </button>
+            <ThemeToggle />
+
+            {/* Mobile menu trigger — full-screen menu lives in MobileMenu.tsx. */}
+            <button
+              type="button"
+              onClick={() => setMenuOpen(true)}
+              aria-label="Открыть меню"
+              aria-expanded={menuOpen}
+              aria-controls="mobile-menu"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[var(--color-secondary)]/20 text-[var(--color-secondary)] md:hidden"
+              data-cursor="hover"
+            >
+              <Menu size={18} strokeWidth={1.5} aria-hidden="true" />
+            </button>
+          </div>
         </div>
       </motion.header>
 
