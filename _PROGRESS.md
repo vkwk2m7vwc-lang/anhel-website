@@ -227,3 +227,89 @@ PR смерджен через `gh pr merge --squash` в `main`. Production prev
 - 301 со старых URL `/products/pumps/water-treatment` → `/products/water-treatment`
 - `/projects` — фильтр по категориям, без признаков заказчика
 - Документация на каждом продукте — опросник + декларация
+
+---
+
+## Эксперименты с дизайном (2026-04-26)
+
+Автономная сессия — четыре `design/*` ветки от main (`62a7b0e`),
+none merged. Vercel auto-preview по push, main не тронут.
+
+Базовая инфраструктура (next-themes, ThemeProvider, ThemeToggle,
+`.dark-island`/`.hero-stage` островки и `.graphic-surface` обёртка
+для SVG со встроенными белыми stroke'ами) сделана на
+`design/light-dark-toggle`, потом cherry-pick'нута на 3 концепт-ветки.
+Поэтому переключатель Light/Dark работает на всех четырёх preview.
+
+### 1. Light/Dark toggle (текущий стиль ANHEL)
+
+Ветка: `design/light-dark-toggle` · `530ddb8`
+Preview: <https://anhel-website-git-design-light-da-3cb0ba-anurin7-5494s-projects.vercel.app>
+
+Полная проработка: tokens (light палитра как инверсия тёмной + AA-сдвиг
+акцентов), кнопка sun/moon в Header, `prefers-color-scheme` на первом
+заходе, localStorage `anhel-theme`, плавный transition. Hero —
+всегда тёмный (3D-рендеры теряют контраст на светлом, ТЗ это
+допускал). LakhtaScene на `/products/pumps/firefighting` обёрнута
+в `.graphic-surface` — белые stroke'и SVG читаются в обоих темах.
+Все hover-стейты карточек переехали с хардкода `#111` на
+`--color-surface-1` (флипается с темой).
+
+### 2. Корпоративный светлый (Bosch / Siemens)
+
+Ветка: `design/variant-1-corporate` · `a47bf02`
+Preview: <https://anhel-website-git-design-variant-4d1eeb-anurin7-5494s-projects.vercel.app>
+
+Navy `#0F2C5E` как primary text + brand axis, белый канвас, единственный
+CTA-акцент `#C61E2E` (благородный красный). Скругления везде ≤4px —
+визуальный язык прямоугольный. Шрифтовая лестница «приземлена» —
+hero clamp 44–96px, line-height 1.05, tracking ≈0em (без editorial
+негативной разрядки). Hero флипается с темой: в light мягкий navy
+radial за продуктами, в dark — глубокий navy канвас (`#0c1426`).
+
+### 3. Техно-контраст (Stripe / Vercel / Linear)
+
+Ветка: `design/variant-2-techno` · `7c8019f`
+Preview: <https://anhel-website-git-design-variant-2-techno-anurin7-5494s-projects.vercel.app>
+
+Янтарный `#FBBF24` + оранжевый `#F97316` берут роль «system signal»;
+все остальные акценты приглушены до greyscale. Hero — всегда тёмный
+(техно-сцена). Header nav: uppercase font-mono, tracking 0.18em — IDE
+chrome. Hero clamp поднят до 200px, kerning -0.03em — заголовок становится
+визуальным якорем. Сетка 32px вместо 40, alpha удвоено (0.06). Добавлен
+`bg-dots-pattern` — альтернативная текстура для светлых секций.
+
+### 4. Премиум-минимализм (Mont-Fort / Apple)
+
+Ветка: `design/variant-3-premium` · `45b91ea`
+Preview: <https://anhel-website-git-design-variant-3-premium-anurin7-5494s-projects.vercel.app>
+
+Канвас `#FAFAFA`, текст `#0F0F0F`, единственный шёпот цвета — изумрудный
+`#0F4C3A` (на тёмной — `#2a8c6a`). Бордюры карточек ушли в hairline
+`rgba(15,15,15,0.08)` — карточки читаются как «нарисованные плитки».
+Радиусы 0–4px. Tracking ≈0em на дисплее, line-height 1.05/1.7. Анимации
+замедлены (fast=400ms, base=700ms) — editorial темп. Hero флипается
+с темой: в light воздушный белый канвас, в dark — глубокий чёрный
+с тем же монохромом.
+
+### Что сделано на каждом концепте (shell-уровень)
+
+- Своя пара палитр (light + dark)
+- Свой шрифтовой ladder + tracking + radii
+- HeroShell под концепт (всегда-тёмный или флип)
+- Header адаптирован (где уместно — mono nav)
+- next-themes toggle переиспользован 1:1
+
+Глубоко проработана только ветка `design/light-dark-toggle` (все
+страницы). Концепт-ветки 1/2/3 — на уровне tokens + Header + Hero
++ `/products/pumps/firefighting` (как ключевая продуктовая страница).
+Финализацию выбранного концепта на всех страницах делать отдельной
+задачей.
+
+### Технические детали
+
+- TS clean (`npx tsc --noEmit` × 4)
+- Build clean (`npm run build` × 4) — 43 страницы prerender, 0 ошибок
+- Атомарные коммиты по этапам (tokens → infrastructure → variant)
+- Push через Desktop Commander (sandbox без SSH-ключей к origin)
+- main не тронут
