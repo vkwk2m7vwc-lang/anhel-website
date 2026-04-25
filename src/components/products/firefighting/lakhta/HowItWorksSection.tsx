@@ -134,7 +134,10 @@ export function HowItWorksSection() {
             (52px min-h, без рамок, только нижняя hairline)
             переворачивают иерархию. */}
         <div className="md:hidden">
-          <div className="relative mx-auto flex aspect-[600/1000] max-h-[62svh] w-auto items-start justify-center">
+          {/* graphic-surface: keeps a dark inner canvas for the
+              white-stroked Lakhta SVG when the site is in light mode.
+              In dark mode the class is transparent → no visual change. */}
+          <div className="graphic-surface relative mx-auto flex aspect-[600/1000] max-h-[62svh] w-auto items-start justify-center">
             <LakhtaScene
               activeStep={activeStep}
               activeSystem={activeSystem}
@@ -164,9 +167,10 @@ export function HowItWorksSection() {
 
           {/* Scene stage — the SVG is square-ish portrait (600:1000),
               so we let it flex to its natural aspect inside the
-              column. */}
+              column. graphic-surface preserves white-stroke legibility
+              when the site is in light mode. */}
           <div className="relative flex items-start justify-center pt-2">
-            <div className="relative aspect-[600/1000] w-full max-w-[620px]">
+            <div className="graphic-surface relative aspect-[600/1000] w-full max-w-[620px]">
               <LakhtaScene
                 activeStep={activeStep}
                 activeSystem={activeSystem}
