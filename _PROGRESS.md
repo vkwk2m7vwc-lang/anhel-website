@@ -2,38 +2,150 @@
 
 **Старт:** 2026-04-25
 **Исполнитель:** Claude (Cowork mode)
-**Источник ТЗ:** uploads/TZ_ANHEL_большая_задача.md
+**Источник ТЗ:** `uploads/TZ_ANHEL_большая_задача.md`
 
 ---
 
-## Статус по задачам
+## Итог по задачам
 
 | # | Задача | Ветка | Статус |
 |---|---|---|---|
-| 1 | Объекты (портфолио) — насосные + водоподготовка | `feat/projects-portfolio` | в работе |
-| 2 | Фото производства MFMC + ретушь | `feat/production-photos` | ждёт |
-| 3 | Сертификаты в существующий блок | `feat/certificates` | ждёт |
-| 4 | 3 fillable PDF опросника | `feat/fillable-forms` | ждёт |
-| 5 | Руководство по эксплуатации (локально) | — | ждёт |
+| 1 | Объекты (портфолио) — насосные + водоподготовка | `feat/projects-portfolio` | ✅ merged |
+| 2 | Фото производства MFMC + ретушь | `feat/production-photos` | ⛔ блокер: ручная ретушь |
+| 3 | Сертификаты в существующий блок | `feat/certificates` | ✅ merged (через fillable-forms) |
+| 4 | 3 fillable PDF опросника | `feat/fillable-forms` | ✅ merged |
+| 5 | Руководство по эксплуатации (локально) | — | ✅ saved локально, требует мелкой правки |
 
 ---
 
 ## Технические заметки
 
-- Wordmark: текстовый `ANHEL®` в Inter Tight Display (Medium) + ® — соответствует существующему Header
-- Палитра: из `_docs/BRAND.md` (`#0A0A0A` primary, `#F5F5F3` secondary, акценты по продуктам)
-- Шрифты PDF: Inter (Google Fonts, Open Font License) — скачаю в скрипте генерации
-- Скачивание изображений: Chrome MCP `fetch → arrayBuffer → base64` → DC `python -c base64.decode | open(...)` (обходит CORS блокировку download-атрибута)
-- Ретушь: cv2.inpaint (TELEA + NS), отбраковка нечистых
-- Реквизиты ПРОФИТ: парсинг из `~/Desktop/ANHEL Сайт/Документы/Реквизиты с 15.12.2021 ООО _Профит_.docx`
+- Wordmark ANHEL®: текстовый в `font-display` Inter Tight (Medium) + ® — соответствует Header
+- Палитра: `_docs/BRAND.md` (`#0A0A0A` primary, `#F5F5F3` secondary; акценты по продуктам)
+- PDF-шрифт: DejaVu Sans (полный кириллический набор), регистрируется в reportlab
+- Скачивание изображений: DC + Python urllib (stdlib) на user's Mac
+- Ретушь фото: Pillow crop + GaussianBlur (минимально, cv2 не нужен)
+- Перебрендирование PDF: pypdf overlay + reportlab — сохраняет AcroForm-поля
+- Реквизиты ПРОФИТ: жёстко прописаны в скриптах (взяты из `Реквизиты с 15.12.2021 ООО _Профит_.docx`)
 
 ---
 
 ## Лог событий
 
-### 2026-04-25
-- ✅ Проверены все каналы (Chrome, DC, sandbox-libs)
-- ✅ Подтверждён pipeline base64-download (тест на kvartry-v-4990-zhk-i.jpg → 79KB OK)
-- ✅ Проверены исходники в `~/Desktop/ANHEL Сайт/Документы/` — все 3 опросника, 3 декларации, руководство МФМК, реквизиты, Excel со списком проектов на месте
-- ✅ Структура проекта изучена (Header, Footer, DocumentsGrid, types.ts, content-files)
-- ⏳ Начинаю Задачу 1: создаю ветку, парсер profitspb…
+### Подготовка
+- Проверены все каналы (Chrome MCP, Desktop Commander, sandbox python+libs)
+- Подтверждён pipeline base64-download через Chrome (тест 79KB OK)
+- Проверены исходники в `~/Desktop/ANHEL Сайт/Документы/`: 3 опросника, 3 декларации, руководство МФМК, реквизиты ПРОФИТ, Excel со списком проектов
+- Структура проекта изучена (Header, Footer, DocumentsGrid, types.ts, content-files)
+
+### Задача 1 — Объекты — ✅ pushed
+- Распарсено 76 карточек с `profitspb.com/projects` → отфильтровано **13** с насосными/водоподготовкой
+- Скачаны 13 cover-фото с `tildacdn.com`
+- Создана структура: `src/content/projects/types.ts`, `src/content/projects/data.ts`
+- Маршруты: `/projects` (фильтр Все/Насосные/Водоподготовка) и `/projects/[slug]` (детальная)
+- Компоненты: `src/components/projects/ProjectCard.tsx`, `ProjectsFilter.tsx`
+- Header / MobileMenu / Footer переключены: `/#projects` → `/projects` (константа `PROJECTS_PATH`)
+- `npx tsc --noEmit` clean, `npm run build` — 13 SSG-страниц + список
+- Commit: `feat(projects): add /projects portfolio with 13 объектов`
+
+### Задача 2 — Фото производства MFMC — ⛔ блокер
+**Статус:** не публикуется автономно. Требуется ручная ретушь в Photoshop / Affinity.
+
+**Сделано:**
+- Скачано **33 фото** с 4 продуктовых страниц `mfmc.ru` (water-supply 8, firefighting 11, pressure 8, special 6). Heating-страница не имеет фотоблока.
+- Скрипты в `_scripts/`: `download_production.py`, `retouch_production.py` (Pillow crop + blur).
+
+**Почему ОТБРАКОВКА:**
+После автоматической обработки логотипы МФМК остаются видимыми:
+- Шкафы управления — частичные шильдики «МФМК» / «АЛЬФА» в правом верхнем углу.
+- Рамы насосов — синие квадратные шильдики «MM» в центре кадра.
+- Трубопроводы — мелкие наклейки, могут содержать брендинг.
+
+ТЗ: «Если хоть один логотип проскочил — критическая ошибка». Решение в духе ТЗ — отбраковка.
+
+**Что нужно от Алексея:**
+1. Запустить `python3 _scripts/download_production.py` (заново скачает в `_tmp_production_raw/`).
+2. Открыть каждое фото в Photoshop/Affinity, удалить логотипы вручную (clone-stamp / heal).
+3. Сохранить очищенные в `public/assets/production/<category>/<file>.webp`.
+4. Подключить галерею через `gallery.photos[].src` в `src/content/products/<slug>.ts`.
+5. Альтернатива: собственные фото или стоковые с лицензией.
+
+Ветка `feat/production-photos` локально, без коммита фото — только подготовительные скрипты (включены в `_scripts/` через мерж feat/fillable-forms).
+
+### Задача 3 — Сертификаты — ✅ merged
+- 3 декларации соответствия ЕАЭС (заявитель/изготовитель — ООО «ПРОФИТ», бренд — ANHEL®) положены в:
+  - `public/docs/firefighting/cert-deklaratsiya.pdf` (876 KB)
+  - `public/docs/water-supply/cert-deklaratsiya.pdf` (876 KB)
+  - `public/docs/water-treatment/cert-deklaratsiya.pdf` (504 KB)
+- Обновлены `documents.items` в content-файлах продуктов: оставлены реальные карточки (oprosnik + cert-deklaratsiya), удалены 4 placeholder-ссылки которые вели на 404 (cert-shu, manual для НУ; cert-unit, cert-shu, manual для heating-unit, etc.).
+- Коммит: `feat(certificates): add 3 declarations of conformity to product pages`.
+- Заметка: Декларации ЕАЭС (ТР ТС) — это и есть «сертификаты» в терминологии заказчика (полноценные документы соответствия). Отдельных сертификатов на ШУ или руководств в исходниках не было — добавятся когда Алексей предоставит.
+
+### Задача 4 — Fillable PDF опросники — ✅ merged
+- Все 3 исходника от МФМК/ПРОФИТ — уже fillable PDF (НУ — 35 fields, ВПУ — 35 fields, ИТП — 82 fields).
+- Применён ANHEL-overlay через reportlab + pypdf: AcroForm-поля сохранены, заменён только визуальный брендинг.
+- Top banner на первой странице: white-rect + ANHEL® wordmark + реквизиты ПРОФИТ + accent hairline + новый title + краткий disclaimer.
+- На страницах 2+: компактный overlay (только шапка + футер).
+- Шрифт DejaVu Sans (зарегистрирован в reportlab) — кириллица читается без кракозябр.
+- 4 PDF под `public/docs/<product>/oprosnyi-list.pdf`:
+  - `firefighting/oprosnyi-list.pdf` — 1.85 МБ (universal NU опросник, accent-fire)
+  - `water-supply/oprosnyi-list.pdf` — 1.85 МБ (universal NU опросник, accent-water)
+  - `water-treatment/oprosnyi-list.pdf` — 1.95 МБ (ВПУ опросник, accent-treatment)
+  - `heating-unit/oprosnyi-list.pdf` — 7.20 МБ (ИТП опросник, accent-heat)
+- Скрипт: `_scripts/rebrand_forms.py` — для повторной генерации после правок брендинга.
+
+**Известные нюансы (не блокеры):**
+- Внутри опросников НУ и ИТП в основном тексте остались упоминания «Альфа Stream» / «Сигма» (бренды МФМК) и старый телефон ГК МФМК — overlay перекрывает только шапку/футер, не контентные параграфы. Видимая степень: малая (1-2 строки на 1 странице, ниже шапки).
+- Алексей при возвращении: для production-релиза опросников надо либо (а) переработать text content в исходных PDF через Adobe Acrobat (Edit Text), либо (б) сделать новый PDF с нуля по той же структуре полей.
+
+### Задача 5 — Руководство по эксплуатации — ✅ локально
+- Source: `Rukovodstvo-po-ekspluatatsii-NU-ALFA-SPD.pdf` (МФМК, 16 страниц, 829 KB).
+- Стратегия: новая ANHEL-обложка (полная пересборка через reportlab) + overlay на страницах 2..16 (ANHEL шапка + футер ПРОФИТ).
+- **Обложка** — тёмный фон ANHEL primary, wordmark ANHEL®, hero-render NU красной (с сайта), title «Руководство по эксплуатации» + подзаголовок «Насосные установки ANHEL® серии HVS-NU», версия 2026.04.
+- **Сохранено:** `~/Desktop/ANHEL Сайт/Документы/готовое/Руководство_эксплуатации_ANHEL.pdf` (2.7 МБ, 16 страниц).
+- Скрипт: `_scripts/rebrand_manual.py` — для повторной генерации.
+- **Не коммитится в репо** (по ТЗ).
+
+**Известные нюансы:**
+- Внутри текста параграфов остались «АЛЬФА STREAM», «Альфа», «МФМК» — pypdf не редактирует контент-stream без потери layout (схемы/таблицы); это требует ручной правки в Adobe Acrobat (Edit Text). Алексей: открыть PDF в Acrobat, Find & Replace «АЛЬФА STREAM» → «ANHEL®», «АЛЬФА» → «ANHEL», «МФМК» → «ПРОФИТ».
+- Внутренние фото и схемы сохранены 1-в-1 (как требует ТЗ).
+
+### Финал
+- Мерж `feat/projects-portfolio` → main (clean fast-forward).
+- Мерж `feat/fillable-forms` → main (включает все артефакты Задачи 3 + Задачи 4; конфликт разрешён в _PROGRESS.md).
+- `feat/certificates` остаётся на origin для истории — содержимое полностью включено в `feat/fillable-forms`.
+- `feat/production-photos` локально, без push.
+
+---
+
+## Файлы для Алексея — что проверить после возвращения
+
+1. **Vercel preview** — `https://anhel-website.vercel.app` после auto-deploy.
+2. `/projects` — открыть, проверить фильтр и кликабельность 13 карточек.
+3. `/products/pumps/firefighting` — секция «Документация» — скачать опросник (открыть в Adobe Reader, проверить, что поля заполняемые).
+4. `/products/pumps/water-supply`, `/water-treatment`, `/heating-unit` — то же.
+5. Открыть декларации (cert-deklaratsiya.pdf) — убедиться, что отображаются.
+6. Локально: `~/Desktop/ANHEL Сайт/Документы/готовое/Руководство_эксплуатации_ANHEL.pdf` — проверить cover-обложку.
+
+## Финальный чек-лист ТЗ
+
+- [✅] Раздел «Объекты» доступен, показывает насосные и водоподготовку
+- [✅] Каждый объект кликабелен → детальная страница
+- [⛔] Раздел «Производство» с фото — БЛОКЕР: ручная ретушь логотипов
+- [✅] Сертификаты добавлены в существующий блок (декларации ЕАЭС)
+- [✅] Сертификаты разделены по категориям (через привязку к продукту)
+- [✅] PDF опросники открываются и поля интерактивные (AcroForm сохранён)
+- [⚠️] Кнопка «Заполнить опросный лист» на 3 продуктовых страницах — кнопка `secondaryCta` уже в hero (`Опросный лист → #quiz`); опросник как PDF доступен в блоке «Документация»
+- [✅] Руководство сохранено локально в готовое/
+- [⚠️] В руководстве: ANHEL-обложка ✓, но внутренние тексты содержат остатки «Альфа/МФМК» — нужна правка через Acrobat
+- [✅] Существующие страницы НЕ задеты (БТП, пожаротушение, водоснабжение работают)
+- [✅] `_PROGRESS.md` заполнен полностью
+
+---
+
+## Скрипты в `_scripts/`
+
+- `download_production.py` — скачивание 33 фото с mfmc.ru (для Алексея).
+- `retouch_production.py` — авто-кроп + blur (для отладки, production требует ручной ретуши).
+- `rebrand_forms.py` — генерация ANHEL-overlay для опросных PDF (повторный запуск после правок).
+- `rebrand_manual.py` — генерация ANHEL-cover + overlay для руководства.
