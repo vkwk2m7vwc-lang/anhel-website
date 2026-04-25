@@ -5,15 +5,38 @@
 /*
  * ANHEL design tokens.
  * See _docs/BRAND.md — these are the single source of truth.
+ *
+ * Theming model:
+ *   :root          → fallback (matches dark — preserves legacy first-paint)
+ *   :root.dark     → explicit dark theme (next-themes adds class="dark")
+ *   :root.light    → explicit light theme (next-themes adds class="light")
+ *
+ * Semantic vars (--color-primary / --color-secondary etc.) keep their old
+ * meaning: --color-primary = canvas background, --color-secondary = primary
+ * fg / text. Only the values flip between themes.
+ *
+ * Rich SVG illustrations (Lakhta, Skyscraper, scenarios) hard-code white
+ * strokes — they are wrapped in `.graphic-surface` so they keep a dark
+ * inner canvas in light mode and stay legible.
  */
-:root {
-  /* Core palette */
+:root,
+:root.dark {
+  /* Core palette — DARK */
   --color-primary: #0a0a0a;
   --color-secondary: #f5f5f3;
   --color-steel-light: #c0c8d0;
   --color-steel-dark: #8a94a0;
   --color-hairline: rgba(255, 255, 255, 0.08);
   --color-hairline-dark: rgba(10, 10, 10, 0.08);
+
+  /* Semantic muted-fg — used by .mono-tag and other tertiary text */
+  --color-fg-muted: rgba(245, 245, 243, 0.65);
+  --color-fg-faint: rgba(245, 245, 243, 0.45);
+
+  /* Surface tokens — used by cards, panels, scrim overlays */
+  --color-surface-1: #111111;
+  --color-surface-2: #181818;
+  --color-scrim: rgba(0, 0, 0, 0.55);
 
   /* Product accents */
   --accent-water: #1e6fd9;
@@ -35,6 +58,39 @@
   --duration-cinematic: 1200ms;
 }
 
+/*
+ * LIGHT THEME OVERRIDES.
+ *
+ * - bg #fafafa, fg #0a0a0a (full inversion of the dark canvas)
+ * - steel tokens darken proportionally so they remain readable as
+ *   secondary text on a light surface
+ * - hairlines flip color (dark line on light bg) but keep the same
+ *   alpha so the perceived weight is consistent between themes
+ * - product accents are slightly darkened to clear WCAG AA on white;
+ *   the hue stays close so brand recognition holds
+ */
+:root.light {
+  --color-primary: #fafafa;
+  --color-secondary: #0a0a0a;
+  --color-steel-light: #4a5258;
+  --color-steel-dark: #2a3138;
+  --color-hairline: rgba(10, 10, 10, 0.10);
+  --color-hairline-dark: rgba(255, 255, 255, 0.08);
+
+  --color-fg-muted: rgba(10, 10, 10, 0.65);
+  --color-fg-faint: rgba(10, 10, 10, 0.45);
+
+  --color-surface-1: #ffffff;
+  --color-surface-2: #f0f0ee;
+  --color-scrim: rgba(255, 255, 255, 0.65);
+
+  /* Slightly darkened/desaturated brand accents for AA on light bg */
+  --accent-water: #1857b8;
+  --accent-fire: #b81e2c;
+  --accent-treatment: #4a5258;
+  --accent-heat: #c46c1e;
+}
+
 @layer base {
   html {
     /* Font variables are injected by next/font in layout.tsx.
@@ -45,6 +101,29 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
+
+    /* Theme-swap transition: fade between themes over 300ms instead
+       of snap-painting. Targets bg + text + border so visual surfaces
+       stay coherent during the swap. */
+    transition:
+      background-color var(--duration-fast, 300ms) var(--ease-out),
+      color var(--duration-fast, 300ms) var(--ease-out);
+  }
+
+  /* Disable theme-swap transitions during initial mount and route
+     transitions — we don't want a 300ms paint while the user is
+     actively reading. The class is added briefly by ThemeProvider on
+     theme change. */
+  html.theme-flush *,
+  html.theme-flush *::before,
+  html.theme-flush *::after {
+    transition:
+      background-color var(--duration-fast, 300ms) var(--ease-out),
+      color var(--duration-fast, 300ms) var(--ease-out),
+      border-color var(--duration-fast, 300ms) var(--ease-out),
+      fill var(--duration-fast, 300ms) var(--ease-out),
+      stroke var(--duration-fast, 300ms) var(--ease-out) !important;
+  }
 
     /* Fixed header is 64px mobile / 80px desktop. 96px leaves a breathing
        gap below the header when anchors (#quiz, #applications, etc.)
@@ -101,20 +180,62 @@
   }
 
   /* Thin uppercase mono line — used for section tags like "01 / 04 · …"
-     WCAG AA: 0.65 alpha on #0A0A0A ≈ 5.9:1 contrast ratio (body-text
-     threshold is 4.5:1; 0.5 was ~4.4:1, borderline fail). */
+     WCAG AA: 0.65 alpha on bg ≈ 5.9:1 contrast ratio (body-text
+     threshold is 4.5:1; 0.5 was ~4.4:1, borderline fail).
+     Color now flows through --color-fg-muted so it flips with theme. */
   .mono-tag {
     font-family: var(--font-mono), "JetBrains Mono", ui-monospace, monospace;
     font-size: 11px;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: rgba(245, 245, 243, 0.65);
+    color: var(--color-fg-muted);
   }
 
   /* Hairline divider */
   .hairline {
     height: 0.5px;
     background: var(--color-hairline);
+  }
+
+  /*
+   * `.graphic-surface` — scoped dark canvas for rich illustrations
+   * (Lakhta scene, scenarios, isometrics) whose internal SVG strokes
+   * are hard-coded white. In dark mode the surface is transparent so
+   * the illustration sits flush with the page; in light mode it
+   * forces a dark inner panel so the white strokes still read.
+   *
+   * Use as a wrapper around the figure / SVG container. Pair with
+   * `.graphic-surface-soft` for a softer fade-in at the edges.
+   */
+  .graphic-surface {
+    background: transparent;
+    border-radius: 16px;
+  }
+  :root.light .graphic-surface {
+    background: radial-gradient(
+        ellipse at center,
+        #1a1a1a 0%,
+        #0a0a0a 70%,
+        #0a0a0a 100%
+      );
+    color: #f5f5f3;
+    box-shadow:
+      0 1px 0 rgba(0, 0, 0, 0.04),
+      0 12px 40px -12px rgba(10, 10, 10, 0.18);
+  }
+  /* Soft variant — feathered edges so the panel blends into the page
+     instead of sitting as a hard dark block. Use for hero panels. */
+  :root.light .graphic-surface-soft {
+    -webkit-mask-image: radial-gradient(
+      ellipse at center,
+      black 60%,
+      transparent 100%
+    );
+    mask-image: radial-gradient(
+      ellipse at center,
+      black 60%,
+      transparent 100%
+    );
   }
 }
 
