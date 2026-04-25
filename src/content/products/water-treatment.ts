@@ -265,31 +265,19 @@ export const waterTreatmentContent: ProductContent = {
   documents: {
     tag: "09 · ДОКУМЕНТАЦИЯ",
     title: "Документы и сертификаты",
-    lede: "Опросный лист, сертификаты и руководство — для проектирования и приёмки.",
+    lede: "Декларация соответствия ЕАЭС, опросный лист и руководство — для проектирования и приёмки.",
     items: [
       {
         id: "oprosnik",
         title: "Опросный лист для подбора установки водоподготовки",
-        size: "2.28 МБ",
+        size: "2.39 МБ",
         href: "/docs/water-treatment/oprosnyi-list.pdf",
       },
       {
-        id: "cert-unit",
-        title: "Сертификат — установки водоподготовки ANHEL®",
-        size: "0.33 МБ",
-        href: "/docs/water-treatment/cert-unit.pdf",
-      },
-      {
-        id: "cert-shu",
-        title: "Сертификат соответствия на шкаф управления ANHEL®",
-        size: "0.87 МБ",
-        href: "/docs/water-treatment/cert-shu.pdf",
-      },
-      {
-        id: "manual",
-        title: "Руководство по эксплуатации установки водоподготовки ANHEL®",
-        size: "0.81 МБ",
-        href: "/docs/water-treatment/manual.pdf",
+        id: "cert-deklaratsiya",
+        title: "Декларация соответствия ЕАЭС — установки водоподготовки ANHEL®",
+        size: "0.49 МБ",
+        href: "/docs/water-treatment/cert-deklaratsiya.pdf",
       },
     ],
   },

@@ -307,38 +307,24 @@ export const firefightingContent: ProductContent = {
     lede: "Шесть шагов — от контактов до технических параметров системы. Отвечаем в течение рабочего дня.",
   },
 
-  // Section 11 «Документация». Four PDFs — опросный лист, два
-  // сертификата и руководство. Реальные файлы лежат в
-  // /public/docs/firefighting/; до их появления ссылки ведут на
-  // локальные пути (будут 404 до загрузки файлов — ожидаемый gap).
+  // Section 11 «Документация». Реальные файлы под /public/docs/firefighting/.
+  // Опросник и руководство будут добавлены отдельно (Задачи 4 и 5).
   documents: {
     tag: "10 · ДОКУМЕНТАЦИЯ",
     title: "Документы и сертификаты",
-    lede: "Опросный лист, сертификаты и руководство — для проектирования и приёмки.",
+    lede: "Декларация соответствия ЕАЭС, опросный лист и руководство — для проектирования и приёмки.",
     items: [
       {
         id: "oprosnik",
         title: "Опросный лист для подбора насосных установок",
-        size: "2.28 МБ",
+        size: "1.77 МБ",
         href: "/docs/firefighting/oprosnyi-list.pdf",
       },
       {
-        id: "cert-pump",
-        title: "Сертификат — насосные установки ANHEL для водяного и пенного пожаротушения",
-        size: "0.33 МБ",
-        href: "/docs/firefighting/cert-pump-station.pdf",
-      },
-      {
-        id: "cert-shu",
-        title: "Сертификат соответствия на шкаф управления ANHEL",
-        size: "0.87 МБ",
-        href: "/docs/firefighting/cert-shu.pdf",
-      },
-      {
-        id: "manual",
-        title: "Руководство по эксплуатации насосной установки ANHEL",
-        size: "0.81 МБ",
-        href: "/docs/firefighting/manual.pdf",
+        id: "cert-deklaratsiya",
+        title: "Декларация соответствия ЕАЭС — насосные установки пожаротушения ANHEL®",
+        size: "0.86 МБ",
+        href: "/docs/firefighting/cert-deklaratsiya.pdf",
       },
     ],
   },
