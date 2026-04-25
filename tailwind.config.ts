@@ -62,31 +62,39 @@ const config: Config = {
         body: ["var(--font-body)", "Inter", "system-ui", "sans-serif"],
         mono: ["var(--font-mono)", "JetBrains Mono", "ui-monospace", "monospace"],
       },
+      // Variant 3 — Premium: type lays back. Sizes grow modestly
+      // but tracking softens — display headlines run at -0.005em
+      // (almost neutral) so the letterforms breathe. Line-heights
+      // open to 1.1+ on hero and 1.3+ on body for editorial calm.
+      // Mono caption goes thinner and wider — annotation, not signal.
       fontSize: {
         hero: [
-          "clamp(56px, 8vw, 180px)",
-          { lineHeight: "0.95", letterSpacing: "-0.025em" },
+          "clamp(52px, 7vw, 140px)",
+          { lineHeight: "1.05", letterSpacing: "-0.005em" },
         ],
         section: [
-          "clamp(40px, 5vw, 88px)",
-          { lineHeight: "1.05", letterSpacing: "-0.02em" },
+          "clamp(36px, 4.5vw, 80px)",
+          { lineHeight: "1.1", letterSpacing: "-0.005em" },
         ],
         h2: [
-          "clamp(28px, 3vw, 48px)",
-          { lineHeight: "1.1", letterSpacing: "-0.015em" },
+          "clamp(28px, 2.8vw, 48px)",
+          { lineHeight: "1.15", letterSpacing: "0" },
         ],
-        h3: ["clamp(20px, 2vw, 28px)", { lineHeight: "1.25" }],
-        body: ["clamp(16px, 1.2vw, 18px)", { lineHeight: "1.5" }],
-        mono: ["11px", { lineHeight: "1.2", letterSpacing: "0.08em" }],
+        h3: ["clamp(20px, 2vw, 28px)", { lineHeight: "1.35" }],
+        body: ["clamp(16px, 1.1vw, 18px)", { lineHeight: "1.7" }],
+        mono: ["10px", { lineHeight: "1.2", letterSpacing: "0.22em" }],
       },
       letterSpacing: {
         mono: "0.08em",
         hero: "-0.025em",
       },
+      // Variant 3 — Premium: radii are even softer. Cards live as
+      // hairline-bordered tiles, not pebbles. Going down to near-
+      // zero so the geometry reads as "drawn", not "pillowy".
       borderRadius: {
-        sm: "4px",
-        md: "8px",
-        lg: "16px",
+        sm: "0px",
+        md: "2px",
+        lg: "4px",
         pill: "9999px",
       },
       transitionTimingFunction: {
