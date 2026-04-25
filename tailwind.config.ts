@@ -62,22 +62,29 @@ const config: Config = {
         body: ["var(--font-body)", "Inter", "system-ui", "sans-serif"],
         mono: ["var(--font-mono)", "JetBrains Mono", "ui-monospace", "monospace"],
       },
+      // Variant 2 — Techno: type ladder pushes harder.
+      // Hero crank-up to 200px clamp (200% of the original ceiling
+      // on giant screens) to hit a Stripe / Linear feel where the
+      // headline IS the picture. Tracking goes more negative for
+      // the optical density. Mono caption gets fatter (12px) and
+      // wider (0.18em) — the technical caption is its own visual
+      // beat, not just an annotation.
       fontSize: {
         hero: [
-          "clamp(56px, 8vw, 180px)",
-          { lineHeight: "0.95", letterSpacing: "-0.025em" },
+          "clamp(60px, 9vw, 200px)",
+          { lineHeight: "0.92", letterSpacing: "-0.03em" },
         ],
         section: [
-          "clamp(40px, 5vw, 88px)",
-          { lineHeight: "1.05", letterSpacing: "-0.02em" },
+          "clamp(44px, 5.5vw, 100px)",
+          { lineHeight: "1.0", letterSpacing: "-0.025em" },
         ],
         h2: [
-          "clamp(28px, 3vw, 48px)",
-          { lineHeight: "1.1", letterSpacing: "-0.015em" },
+          "clamp(28px, 3vw, 56px)",
+          { lineHeight: "1.05", letterSpacing: "-0.02em" },
         ],
-        h3: ["clamp(20px, 2vw, 28px)", { lineHeight: "1.25" }],
+        h3: ["clamp(20px, 2vw, 28px)", { lineHeight: "1.2" }],
         body: ["clamp(16px, 1.2vw, 18px)", { lineHeight: "1.5" }],
-        mono: ["11px", { lineHeight: "1.2", letterSpacing: "0.08em" }],
+        mono: ["12px", { lineHeight: "1.2", letterSpacing: "0.18em" }],
       },
       letterSpacing: {
         mono: "0.08em",
@@ -101,14 +108,22 @@ const config: Config = {
         slow: "800ms",
         cinematic: "1200ms",
       },
+      // Variant 2 — Techno: grids are louder. The grid-hairline pattern
+      // (used by the firefighting section bg + future hero variants)
+      // doubles its visibility from 0.03 → 0.06 alpha so the engineering
+      // grid actually reads. Dot-pattern added — alternative texture for
+      // light sections that would otherwise feel empty.
       backgroundImage: {
         "steel-gradient": "linear-gradient(135deg, #C0C8D0 0%, #8A94A0 100%)",
         "dark-gradient": "linear-gradient(180deg, #0A0A0A 0%, #1A1A1A 100%)",
         "grid-hairline":
-          "linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px)",
+          "linear-gradient(rgba(255,255,255,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.06) 1px, transparent 1px)",
+        "dots-pattern":
+          "radial-gradient(circle, currentColor 1px, transparent 1px)",
       },
       backgroundSize: {
-        grid: "40px 40px",
+        grid: "32px 32px", /* tighter than corporate's 40px — engineering scale */
+        dots: "20px 20px",
       },
     },
   },

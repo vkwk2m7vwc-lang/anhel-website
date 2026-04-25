@@ -78,14 +78,18 @@ export function Header() {
 
           <nav
             aria-label="Основная навигация"
-            className="hidden items-center gap-8 md:flex"
+            // Variant 2 — Techno: nav labels in uppercase mono.
+            // Reads like a system menu / IDE chrome rather than a
+            // marketing-website nav. Tracking widened to match the
+            // mono-tag aesthetic across the site.
+            className="hidden items-center gap-7 md:flex"
           >
             {NAV.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
                 data-cursor="hover"
-                className="text-sm text-[var(--color-secondary)]/70 transition-colors hover:text-[var(--color-secondary)]"
+                className="font-mono text-[11px] uppercase tracking-[0.18em] text-[var(--color-secondary)]/70 transition-colors hover:text-[var(--color-secondary)]"
               >
                 {item.label}
               </Link>
