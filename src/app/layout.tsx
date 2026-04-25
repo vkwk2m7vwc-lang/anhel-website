@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { fontVariables } from "@/lib/fonts";
 import { LenisProvider } from "@/components/providers/LenisProvider";
+import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { CustomCursor } from "@/components/layout/CustomCursor";
@@ -46,7 +47,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ru" className={fontVariables}>
+    // suppressHydrationWarning — required by next-themes: the inline
+    // pre-hydration script sets `class="dark|light"` on <html> before
+    // React mounts, which would otherwise trigger a class-attribute
+    // mismatch warning on the very first render.
+    <html lang="ru" className={fontVariables} suppressHydrationWarning>
       <head>
         {/* Site-wide Organization JSON-LD. Rendered once in <head> so
             Google's structured-data graph has a single canonical
@@ -65,17 +70,19 @@ export default function RootLayout({
         >
           Перейти к содержимому
         </a>
-        <LenisProvider>
-          <LoadingSplash />
-          <CustomCursor />
-          <Header />
-          <PageTransition>
-            <main id="main-content" className="min-h-screen">
-              {children}
-            </main>
-            <Footer />
-          </PageTransition>
-        </LenisProvider>
+        <ThemeProvider>
+          <LenisProvider>
+            <LoadingSplash />
+            <CustomCursor />
+            <Header />
+            <PageTransition>
+              <main id="main-content" className="min-h-screen">
+                {children}
+              </main>
+              <Footer />
+            </PageTransition>
+          </LenisProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
