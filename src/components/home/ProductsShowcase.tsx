@@ -217,8 +217,12 @@ function ProductCard({
     </>
   );
 
+  // Hover bg flows through --color-surface-1 instead of a hard-coded
+  // #111 so the card hover state stays correct in both themes (dark:
+  // #111 ≈ a hair brighter than the canvas; light: #fff over the
+  // #fafafa canvas).
   const containerClass =
-    "group relative flex min-h-[360px] flex-col bg-[var(--color-primary)] p-6 transition-colors duration-300 [@media(hover:hover)]:hover:bg-[#111] md:min-h-[440px] md:p-10";
+    "group relative flex min-h-[360px] flex-col bg-[var(--color-primary)] p-6 transition-colors duration-300 [@media(hover:hover)]:hover:bg-[var(--color-surface-1)] md:min-h-[440px] md:p-10";
 
   return (
     <motion.li
