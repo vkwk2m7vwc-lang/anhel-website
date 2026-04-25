@@ -123,13 +123,18 @@ export function HowItWorksSection() {
           <SystemDetailCard system={system} instant={reducedMotion} />
         </div>
 
-        {/* Mobile branch: compact stack (tower → chips → body).
-            Tower height capped at 42svh so chips and body land in the
-            same viewport. SVG keeps its 600:1000 aspect; the
-            max-h-based constraint shrinks width too, giving a narrow
-            centred tower with chips directly underneath. */}
+        {/* Mobile branch: tower доминирует (62svh), под ней
+            компактные chip-кнопки шагов (вторичный визуальный вес)
+            + body активного шага. При первом взгляде на секцию
+            пользователь сразу видит башню крупно — кнопки внизу
+            читаются как навигация, а не основной контент.
+
+            Раньше башня была 42svh — кнопки (большие card'ы)
+            доминировали визуально. Сейчас 62svh + компактные chips
+            (52px min-h, без рамок, только нижняя hairline)
+            переворачивают иерархию. */}
         <div className="md:hidden">
-          <div className="relative mx-auto flex aspect-[600/1000] max-h-[42svh] w-auto items-start justify-center">
+          <div className="relative mx-auto flex aspect-[600/1000] max-h-[62svh] w-auto items-start justify-center">
             <LakhtaScene
               activeStep={activeStep}
               activeSystem={activeSystem}

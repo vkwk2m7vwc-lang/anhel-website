@@ -62,14 +62,15 @@ export function LakhtaSteps({
 
   if (compact) {
     return (
-      <div className="flex flex-col gap-4">
-        {/* 2-column chip grid — three rows × two chips. Each chip lists
-            the mono code + step title. Active chip lights up in the
-            firefighting accent (border + mono colour); past / future
-            stay neutral. Min-height keeps the chip a comfortable
-            touch-target (>= 44px). */}
+      <div className="flex flex-col gap-3">
+        {/* 2-column chip grid: 3 строки × 2 чипа. Чипы — компактная
+            навигация под башней. У неактивных чипов нет рамки —
+            только нижняя hairline-граница (через ul gap-px
+            bg-hairline + bg-primary на чипе). Активный — 1px
+            accent-fire ring, без bg. Это даёт «вторичный»
+            визуальный вес кнопкам — башня доминирует. */}
         <ol
-          className="grid grid-cols-2 gap-2"
+          className="grid grid-cols-2 gap-px bg-[var(--color-hairline)]"
           role="list"
           aria-label="Шаги срабатывания"
         >
@@ -83,12 +84,12 @@ export function LakhtaSteps({
                   aria-pressed={isActive}
                   data-active={isActive ? "true" : "false"}
                   className={[
-                    "group flex min-h-[60px] w-full flex-col items-start justify-center gap-1 rounded-md border px-3 py-2 text-left transition-colors",
-                    "[@media(hover:hover)]:hover:border-[var(--accent-fire)]/60",
-                    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-fire)]/60",
+                    "group relative flex h-full min-h-[52px] w-full flex-col items-start justify-center gap-0.5 bg-[var(--color-primary)] px-3 py-2 text-left transition-colors",
+                    "[@media(hover:hover)]:hover:bg-[#111]",
+                    "focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--accent-fire)]/70",
                     isActive
-                      ? "border-[var(--accent-fire)] bg-[var(--accent-fire)]/10"
-                      : "border-[var(--color-hairline)] bg-transparent",
+                      ? "ring-1 ring-inset ring-[var(--accent-fire)]"
+                      : "",
                   ].join(" ")}
                 >
                   <span
@@ -103,10 +104,10 @@ export function LakhtaSteps({
                   </span>
                   <span
                     className={[
-                      "text-[13px] font-medium leading-tight transition-colors",
+                      "line-clamp-1 text-[12px] font-medium leading-tight transition-colors",
                       isActive
                         ? "text-[var(--color-secondary)]"
-                        : "text-[var(--color-secondary)]/75",
+                        : "text-[var(--color-secondary)]/70",
                     ].join(" ")}
                   >
                     {step.title}
