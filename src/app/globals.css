@@ -198,6 +198,35 @@
   }
 
   /*
+   * `.dark-island` — local theme override that keeps a section dark
+   * regardless of the global theme. CSS vars are redefined inside the
+   * subtree so every child component (text, hairlines, surfaces, mono
+   * tags, focus outlines) gets the same dark-mode contrast it had on
+   * the legacy site. Pair with `.hero-stage` for the home hero, and
+   * with `.graphic-surface` for figure-level wrappers.
+   *
+   * Why local-override instead of a global `dark` class? The latter
+   * would propagate `next-themes` state, which we want global. We just
+   * need a leaf-level "this section is always dark" without confusing
+   * the toggle.
+   */
+  .dark-island,
+  .hero-stage {
+    --color-primary: #0a0a0a;
+    --color-secondary: #f5f5f3;
+    --color-steel-light: #c0c8d0;
+    --color-steel-dark: #8a94a0;
+    --color-hairline: rgba(255, 255, 255, 0.08);
+    --color-hairline-dark: rgba(10, 10, 10, 0.08);
+    --color-fg-muted: rgba(245, 245, 243, 0.65);
+    --color-fg-faint: rgba(245, 245, 243, 0.45);
+    --color-surface-1: #111111;
+    --color-surface-2: #181818;
+    background: #0a0a0a;
+    color: #f5f5f3;
+  }
+
+  /*
    * `.graphic-surface` — scoped dark canvas for rich illustrations
    * (Lakhta scene, scenarios, isometrics) whose internal SVG strokes
    * are hard-coded white. In dark mode the surface is transparent so
