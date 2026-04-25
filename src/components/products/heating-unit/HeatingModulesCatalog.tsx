@@ -36,7 +36,7 @@ export function HeatingModulesCatalog({
       <div className="mx-auto w-full max-w-[1440px] px-6 py-20 md:px-12 md:py-28">
         <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
           <div>
-            <p className="mono-tag">03 · ЛИНЕЙКА МОДУЛЕЙ</p>
+            <p className="mono-tag">02 · ЛИНЕЙКА МОДУЛЕЙ</p>
             <h2
               id="modules-title"
               className="mt-4 max-w-[640px] font-display text-h2 font-medium text-[var(--color-secondary)]"
