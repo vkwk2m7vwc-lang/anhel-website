@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { ProductHero } from "@/components/product-page/ProductHero";
+import { LocalizedFirefightingHero } from "@/components/product-page/LocalizedFirefightingHero";
 import { ProductPageShell } from "@/components/product-page/ProductPageShell";
 import { TechSpecsGrid } from "@/components/product-page/TechSpecsGrid";
 import { ApplicationsGrid } from "@/components/product-page/ApplicationsGrid";
@@ -98,7 +98,7 @@ export default function FirefightingProductPage() {
       <script {...ldScriptProps(productJsonLd)} />
       <script {...ldScriptProps(breadcrumbJsonLd)} />
 
-      <ProductHero content={hero} accent={accent} />
+      <LocalizedFirefightingHero content={hero} accent={accent} />
       <TechSpecsGrid specs={techSpecs} />
       <HowItWorksSection />
       <ApplicationsGrid content={applications} />

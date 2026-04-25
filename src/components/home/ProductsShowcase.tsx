@@ -5,6 +5,8 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { TOP_LEVEL_PRODUCTS, type ProductSummary } from "@/lib/products";
 import type { ProductAccent } from "@/content/products/types";
+import { useLocale } from "@/components/providers/LocaleProvider";
+import type { TranslationKey } from "@/lib/i18n";
 
 /**
  * Section "Линейка продуктов" — одна из ключевых точек навигации
@@ -59,14 +61,20 @@ const ACCENT_VAR: Record<ProductAccent, string> = {
 
 export function ProductsShowcase({
   tone = "section",
-  monoTag = "02 · ЛИНЕЙКА ПРОДУКТОВ",
-  title = "Три направления, одна сборка",
-  lede = "Насосные станции, водоподготовка и тепловые пункты. Заводская сборка, серийное производство, индивидуальная конфигурация под ТЗ.",
+  monoTag,
+  title,
+  lede,
   products,
 }: Props) {
+  const { t } = useLocale();
   // Источник данных по умолчанию — TOP_LEVEL_PRODUCTS (3 раздела).
   // На /products/pumps передаётся PUMPS_PRODUCTS извне (5 серий).
   const cards = products ?? TOP_LEVEL_PRODUCTS;
+  // Defaults flow through i18n; props can still override (e.g. /products/pumps
+  // page passes its own monoTag for «04 · линейка насосных»).
+  const monoTagText = monoTag ?? t("showcase.tag");
+  const titleText = title ?? t("showcase.title");
+  const ledeText = lede ?? t("showcase.lede");
 
   const sectionPadding =
     tone === "page" ? "px-6 py-14 md:px-12 md:py-20" : "px-6 py-20 md:px-12 md:py-28";
@@ -84,17 +92,17 @@ export function ProductsShowcase({
             страницам. Lede — справа на md+, под h2 на mobile. */}
         <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
           <div>
-            <p className="mono-tag">{monoTag}</p>
+            <p className="mono-tag">{monoTagText}</p>
             <h2
               id="products-showcase-title"
               className="mt-4 max-w-[640px] font-display text-h2 font-medium text-[var(--color-secondary)]"
             >
-              {title}
+              {titleText}
             </h2>
           </div>
-          {lede ? (
+          {ledeText ? (
             <p className="max-w-[420px] text-sm text-[var(--color-secondary)]/65 md:text-right">
-              {lede}
+              {ledeText}
             </p>
           ) : null}
         </div>
@@ -108,14 +116,24 @@ export function ProductsShowcase({
           {cards.map((product, i) => {
             const accentVar = ACCENT_VAR[product.accent];
             const isComingSoon = Boolean(product.comingSoon);
+            // Each product slug has matching keys in i18n.ts:
+            //   product.<slug>.title / product.<slug>.tagline.
+            // RU still lives in lib/products.ts as the source-of-truth
+            // (same RU strings duplicated in i18n RU dict). EN comes
+            // from the dict only. Falls back to the lib/products value
+            // if a key is missing — protects future product additions.
+            const titleKey = `product.${product.slug}.title` as TranslationKey;
+            const taglineKey = `product.${product.slug}.tagline` as TranslationKey;
+            const titleText = t(titleKey) || product.title;
+            const taglineText = t(taglineKey) || product.tagline;
 
             return (
               <ProductCard
                 key={product.slug}
                 index={i}
                 href={isComingSoon ? undefined : product.href}
-                title={product.title}
-                tagline={product.tagline}
+                title={titleText}
+                tagline={taglineText}
                 imageSrc={product.image}
                 imageAlt={product.imageAlt}
                 accentVar={accentVar}
@@ -151,6 +169,7 @@ function ProductCard({
   accentHex: string;
   comingSoon: boolean;
 }) {
+  const { t } = useLocale();
   const staggerDelay = Math.min(index, 3) * 0.08;
 
   // Inner body — повторяется в обеих ветках (Link / disabled <div>),
@@ -199,7 +218,7 @@ function ProductCard({
               aria-hidden="true"
               className="font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/65"
             >
-              Скоро
+              {t("common.comingSoon")}
             </span>
           ) : (
             <span
