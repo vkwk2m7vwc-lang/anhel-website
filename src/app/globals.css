@@ -102,6 +102,12 @@
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
 
+    /* Fixed header is 64px mobile / 80px desktop. 96px leaves a breathing
+       gap below the header when anchors (#quiz, #applications, etc.)
+       land the user on a new section. Works with Lenis smooth-scroll and
+       native scroll-into-view alike. Audit finding 2. */
+    scroll-padding-top: 96px;
+
     /* Theme-swap transition: fade between themes over 300ms instead
        of snap-painting. Targets bg + text + border so visual surfaces
        stay coherent during the swap. */
@@ -110,10 +116,11 @@
       color var(--duration-fast, 300ms) var(--ease-out);
   }
 
-  /* Disable theme-swap transitions during initial mount and route
-     transitions — we don't want a 300ms paint while the user is
-     actively reading. The class is added briefly by ThemeProvider on
-     theme change. */
+  /* When the user toggles the theme, ThemeProvider can briefly add
+     `theme-flush` to <html> so children also get the cross-fade
+     (otherwise only <html>'s own bg/color animate and child surfaces
+     snap). The class isn't currently auto-applied — kept here for
+     opt-in or future use. */
   html.theme-flush *,
   html.theme-flush *::before,
   html.theme-flush *::after {
@@ -123,13 +130,6 @@
       border-color var(--duration-fast, 300ms) var(--ease-out),
       fill var(--duration-fast, 300ms) var(--ease-out),
       stroke var(--duration-fast, 300ms) var(--ease-out) !important;
-  }
-
-    /* Fixed header is 64px mobile / 80px desktop. 96px leaves a breathing
-       gap below the header when anchors (#quiz, #applications, etc.)
-       land the user on a new section. Works with Lenis smooth-scroll and
-       native scroll-into-view alike. Audit finding 2. */
-    scroll-padding-top: 96px;
   }
 
   body {
