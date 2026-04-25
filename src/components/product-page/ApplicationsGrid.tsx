@@ -103,7 +103,7 @@ function ApplicationCard({
         "min-h-[64px] flex-row items-baseline gap-3 px-4 py-3",
         // Tablet+ : block-card с большим padding.
         "sm:min-h-[220px] sm:flex-col sm:justify-between sm:gap-0 sm:p-6 md:min-h-[260px] md:p-8",
-        "[@media(hover:hover)]:hover:bg-[#111]",
+        "[@media(hover:hover)]:hover:bg-[var(--color-surface-1)]",
         "active:ring-1 active:ring-[var(--accent-current)]",
         "focus-visible:ring-1 focus-visible:ring-[var(--accent-current)]/70",
       ].join(" ")}
