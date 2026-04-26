@@ -375,3 +375,128 @@ PR через `gh pr create + gh pr merge --squash` в `main`. Production:
 
 1. `chore: clean third-party brands from project descriptions`
 2. `refactor: tighten "Why ANHEL" block to 6 features`
+
+
+---
+
+## Этап: Веб-форма опросника для подбора насосных установок
+
+**Дата:** 2026-04-26
+**Ветка:** `feat/web-questionnaire-pumps`
+**Сессия:** техника + UI + UX (без email-отправки — это следующая сессия)
+
+### Результат
+
+Веб-форма `/quiz/pumps` — полное зеркало PDF-опросника
+`pumps-questionnaire-anhel.pdf` (источник правды:
+`_scripts/build_pumps_questionnaire.py`).
+
+**Идентичность с PDF: 67/67 полей реализовано и проверено.**
+
+Сравнение проведено программно: имена AcroForm-полей в PDF совпадают
+байт-в-байт с `name`-ключами в `src/content/quiz/pumps-fields.ts`.
+Все 67 полей: 30 текстовых + 37 чекбоксов/радио — на своих местах,
+с теми же подписями, что и в PDF (взяты прямо из скрипта-источника
+1-в-1, без перефразирования).
+
+### Что сделано
+
+**1. Источник правды** — `src/content/quiz/pumps-fields.ts`
+- 5 шагов, 12 секций, 67 полей
+- `showIf`-логика для подвопросов (ВПВ/АПТ при пожаротушении,
+  закрытая/открытая при отоплении, sys_other_text при «Другое»,
+  flow_combined_*/head_combined_* при совмещ. системе,
+  opt_diff_diam_text, proto_other_text, source_other)
+- `pumpsPrefillMap` — pre-fill для 5 подкатегорий насосных
+
+**2. Zod-схема** — `src/content/quiz/pumps-schema.ts`
+- Required: только 6 контактных полей + `consent_pdn` на финале
+  (как в PDF — все технические поля опциональные)
+- `optionalNumberLike` приводит «12,5» → 12.5 (RU-локаль)
+- `stepFieldNames` для блокировки «Далее» на конкретном шаге
+
+**3. UI-компоненты** — `src/components/quiz/`
+- `QuizShell` — контейнер: RHF + zodResolver + localStorage
+  save/restore + slide-анимация Framer Motion + success/error экраны
+- `QuizProgress` — точки 01..05, кликабельны на пройденные шаги,
+  тонкая прогресс-полоса вверху
+- `QuizNavigation` — sticky-нижняя панель «Назад / Далее / Отправить»
+- `QuizSection` — заголовок секции + 2-колоночная сетка
+- `QuizFieldRenderer` — универсальный рендер по `QuizField` + showIf
+- `fields/TextField` — Material-style floating label, error/hint, unit
+- `fields/CheckboxField` — квадрат + sharp-галочка
+- `fields/RadioGroupField` — кружок + точка, inline или stack
+
+**4. Step 05 — сводка** (`ReviewStep` в QuizShell)
+- Read-only сводка всех заполненных полей по шагам
+- Кнопка «Изменить» возле каждого блока — возврат к шагу
+- Красный disclaimer (текст 1-в-1 с PDF, переписан под ANHEL/ПРОФИТ)
+- Чекбокс согласия на ОПД (required, ссылка `#` с заглушкой)
+
+**5. API stub** — `src/app/api/questionnaire/route.ts`
+- POST /api/questionnaire — zod-валидация
+- Проверка маппинга web↔PDF AcroForm: каждое поле формы проверяется
+  на наличие в `allPumpsFieldNames`, расхождения логируются как
+  `[questionnaire] Field mapping mismatch: <name> not found in PDF AcroForm`
+- console.log полного payload (видно в Vercel Functions logs)
+- Имитация задержки 1.5 с
+- Email НЕ отправляется (TODO в комментариях route.ts — это следующая сессия)
+
+**6. CTA на 5 продуктовых страницах**
+- Hero на `/products/pumps/firefighting`, `/water-supply`,
+  `/pressure-boost`, `/heating-cooling`, `/special` теперь имеет:
+  - `primary` → «Заполнить онлайн» → `/quiz/pumps?from={slug}`
+  - `secondary` → «Скачать PDF» → `/docs/{slug}/oprosnyi-list.pdf`
+- Pre-fill по `?from=`:
+  - `firefighting` → `sys_firefighting=true`
+  - `water-supply` → `sys_water_supply=true`
+  - `pressure-boost` → `sys_water_supply=true`
+  - `heating-cooling` → `sys_heating=true` + `sys_cooling=true`
+  - `special` → без pre-fill (пользователь выбирает сам)
+
+### Зависимости
+
+Добавлены в `package.json`:
+- `react-hook-form ^7.74`
+- `zod ^3.25`
+- `@hookform/resolvers ^3.10`
+
+### Проверка
+
+- `npx tsc --noEmit` — clean
+- `npx next lint` — clean (0 warnings, 0 errors)
+- `npm run build` — НЕ удалось проверить в моём sandbox (SIGBUS из-за
+  ресурсного лимита). Локально и на Vercel должен пройти — типы и lint
+  чистые, никаких рантайм-import-side-effects не используется.
+- **Парность web ↔ PDF: 67/67 ✓** (программная проверка через pypdf)
+
+### Коммиты
+
+1. `chore(deps): add react-hook-form, zod and @hookform/resolvers` — 2b3016a
+2. `feat(quiz): extract all 67 fields from PDF to content/quiz/pumps-fields.ts` — 3bd9a09
+3. `feat(quiz): multistep form scaffold with RHF + zod + framer-motion` — 71212a4
+4. `feat(quiz): integrate online quiz CTA on all 5 pumps subcategories` — b140ff4
+
+### TODO для следующих сессий
+
+- **Resend integration** (email-отправка):
+  - Установить `resend` и `pdf-lib`
+  - Создать `RESEND_API_KEY` в Vercel env
+  - В `/api/questionnaire/route.ts` (см. TODO-комментарий):
+    1. Загрузить шаблон PDF из `_tmp_anhel_готовые/` → перенести в `src/templates/` или `/public/docs/`
+    2. Заполнить через `pdf-lib` → form.getTextField/getCheckBox по `name`
+    3. Отправить на `info@anhelspb.com` + копию пользователю
+- **Создать страницу `/privacy`** — политика конфиденциальности.
+  Сейчас в финальном шаге согласие на ОПД ссылается на `#` (заглушка).
+- **Тиражирование на остальные опросники** (после успеха pumps):
+  - `aupd-questionnaire-anhel.pdf` (АУПД отдельно)
+  - `itp-questionnaire-anhel.pdf` (ИТП — отопление-узел)
+  - `vpu-questionnaire-anhel.pdf` (ВПУ — водоподготовка)
+  - Структура `pumps-fields.ts` готова к копированию: `aupd-fields.ts`,
+    `itp-fields.ts`, `vpu-fields.ts`. UI-компоненты универсальные.
+
+### Известные ограничения этой сессии
+
+- Email НЕ отправляется (заглушка, console.log + 1.5 с задержка)
+- Страница `/privacy` не существует — ссылка на неё в Step 05 отключена
+- Build не валидирован локально (sandbox SIGBUS) — нужна проверка после `git pull` на маке
