@@ -171,6 +171,12 @@ export const heatingCoolingContent: ProductContent = {
         series: "по запросу",
         href: "https://wilo.com/ru/ru/",
       },
+      {
+        id: "kq",
+        name: "KQ Pumps",
+        series: "KQDP, KQDS",
+        href: "https://kq.com.ru/",
+      },
     ],
     rowComponents: [
       { id: "dekraft", name: "DEKraft", href: "https://dekraft.ru/" },
@@ -309,8 +315,8 @@ export const heatingCoolingContent: ProductContent = {
       },
       {
         id: "manual",
-        title: "Руководство по эксплуатации насосной установки ANHEL",
-        size: "0.81 МБ",
+        title: "Руководство по эксплуатации насосных установок ANHEL® типа СПД",
+        size: "1.41 МБ",
         href: "/docs/heating-cooling/manual.pdf",
       },
     ],

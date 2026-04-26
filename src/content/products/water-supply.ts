@@ -145,6 +145,7 @@ export const waterSupplyContent: ProductContent = {
       { id: "gms", name: "ГМС", series: "Boosta", href: "https://hms.ru/" },
       { id: "wilo", name: "Wilo", series: "по запросу", href: "https://wilo.com/ru/ru/" },
       { id: "lowara", name: "Lowara", series: "по запросу", href: "https://www.xylem.com/ru-ru/brands/lowara/" },
+      { id: "kq", name: "KQ Pumps", series: "KQDP, KQDS", href: "https://kq.com.ru/" },
     ],
     rowComponents: [
       { id: "dekraft", name: "DEKraft", href: "https://dekraft.ru/" },
@@ -289,6 +290,12 @@ export const waterSupplyContent: ProductContent = {
         title: "Декларация соответствия ЕАЭС — насосные установки водоснабжения ANHEL®",
         size: "0.86 МБ",
         href: "/docs/water-supply/cert-deklaratsiya.pdf",
+      },
+      {
+        id: "manual",
+        title: "Руководство по эксплуатации насосных установок ANHEL® типа СПД",
+        size: "1.41 МБ",
+        href: "/docs/water-supply/manual.pdf",
       },
     ],
   },

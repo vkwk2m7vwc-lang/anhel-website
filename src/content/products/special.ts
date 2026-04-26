@@ -176,6 +176,12 @@ export const specialContent: ProductContent = {
         series: "по запросу",
         href: "https://www.xylem.com/ru-ru/brands/lowara/",
       },
+      {
+        id: "kq",
+        name: "KQ Pumps",
+        series: "по запросу",
+        href: "https://kq.com.ru/",
+      },
     ],
     rowComponents: [
       { id: "dekraft", name: "DEKraft", href: "https://dekraft.ru/" },
@@ -313,8 +319,8 @@ export const specialContent: ProductContent = {
       },
       {
         id: "manual",
-        title: "Руководство по эксплуатации насосной установки специсполнения",
-        size: "0.81 МБ",
+        title: "Руководство по эксплуатации насосных установок ANHEL® типа СПД",
+        size: "1.41 МБ",
         href: "/docs/special/manual.pdf",
       },
     ],

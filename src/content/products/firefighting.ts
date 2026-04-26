@@ -178,7 +178,9 @@ export const firefightingContent: ProductContent = {
       },
       {
         id: "kq",
-        name: "KQ",
+        name: "KQ Pumps",
+        series: "KQDP, KQDS",
+        href: "https://kq.com.ru/",
       },
     ],
     rowComponents: [
@@ -354,6 +356,12 @@ export const firefightingContent: ProductContent = {
         title: "Декларация соответствия ЕАЭС — насосные установки пожаротушения ANHEL®",
         size: "0.86 МБ",
         href: "/docs/firefighting/cert-deklaratsiya.pdf",
+      },
+      {
+        id: "manual",
+        title: "Руководство по эксплуатации насосных установок ANHEL® типа СПД",
+        size: "1.41 МБ",
+        href: "/docs/firefighting/manual.pdf",
       },
     ],
   },
