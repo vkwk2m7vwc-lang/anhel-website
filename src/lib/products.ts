@@ -90,13 +90,12 @@ export const TOP_LEVEL_PRODUCTS: readonly ProductSummary[] = [
     tagline:
       "Пять серий — частотные, для пожаротушения, дымоудаления, КНС и электрифицированной арматуры.",
     accent: "fire",
-    // Placeholder render — пока используется fire-render
-    // (pump-station hvs-nu-red2 имеет красный корпус, ассоциация
-    // с шкафом управления). Реальный фото-render шкафа добавит
-    // Алексей; путь резервируется под будущий ассет.
-    image: "/assets/products/control-systems-placeholder.svg",
-    imageAlt: "ANHEL — шкаф управления ОМЕГА",
-    accentHex: "#1E6FD9",
+    // Top-level превью использует красный шкаф пожаротушения
+    // (наиболее узнаваемый ассоциативно — ANHEL/control-systems = автоматика
+    // пожарных систем).
+    image: "/assets/products/control-systems/fire-suppression/hero.png",
+    imageAlt: "ANHEL — шкафы управления, серия пожаротушения",
+    accentHex: "#D72638",
   },
 ] as const;
 
@@ -170,7 +169,7 @@ export const CONTROL_SYSTEMS_PRODUCTS: readonly ProductSummary[] = [
     tagline:
       "Для повысительных насосов в системах ХВС, ГВС, отопления и кондиционирования. ПИД-регулирование, плавный пуск, каскадное управление до 6 насосов.",
     accent: "water",
-    image: "/assets/products/control-systems-placeholder.svg",
+    image: "/assets/products/control-systems/variable-frequency/hero.png",
     imageAlt: "ANHEL — шкаф управления с частотным регулированием",
     accentHex: "#1E6FD9",
   },
@@ -181,7 +180,7 @@ export const CONTROL_SYSTEMS_PRODUCTS: readonly ProductSummary[] = [
     tagline:
       "Управление пожарными насосами в дренчерных и спринклерных системах, пенном пожаротушении класса B. АВР, приоритет подачи, контроль ППКП.",
     accent: "fire",
-    image: "/assets/products/control-systems-placeholder.svg",
+    image: "/assets/products/control-systems/fire-suppression/hero.png",
     imageAlt: "ANHEL — шкаф управления для систем пожаротушения",
     accentHex: "#D72638",
   },
@@ -192,7 +191,7 @@ export const CONTROL_SYSTEMS_PRODUCTS: readonly ProductSummary[] = [
     tagline:
       "Управление противодымной вентиляцией. Пожарный сертификат ФЗ-123, IP54+, индикация «Пожар», устойчивость к высоким температурам.",
     accent: "fire",
-    image: "/assets/products/control-systems-placeholder.svg",
+    image: "/assets/products/control-systems/smoke-control/hero.png",
     imageAlt: "ANHEL — шкаф управления противодымной вентиляцией",
     accentHex: "#D72638",
   },
@@ -203,7 +202,7 @@ export const CONTROL_SYSTEMS_PRODUCTS: readonly ProductSummary[] = [
     tagline:
       "Управление дренажными и канализационными насосами, ливневыми стоками. Поплавки и уровнемеры, ручной/автоматический режим, до 4 насосов.",
     accent: "water",
-    image: "/assets/products/control-systems-placeholder.svg",
+    image: "/assets/products/control-systems/sewage-pumping/hero.png",
     imageAlt: "ANHEL — шкаф управления канализационных насосных станций",
     accentHex: "#1E6FD9",
   },
@@ -214,7 +213,7 @@ export const CONTROL_SYSTEMS_PRODUCTS: readonly ProductSummary[] = [
     tagline:
       "Управление электроприводами запорных и регулирующих задвижек. До 5 задвижек, прямой пуск, ручной/автоматический режим.",
     accent: "treatment",
-    image: "/assets/products/control-systems-placeholder.svg",
+    image: "/assets/products/control-systems/electric-actuators/hero.png",
     imageAlt: "ANHEL — шкаф управления электрифицированной арматурой",
     accentHex: "#8A94A0",
   },

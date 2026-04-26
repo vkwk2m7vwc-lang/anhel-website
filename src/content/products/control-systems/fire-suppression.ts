@@ -31,8 +31,8 @@ export const fireSuppressionContent: ProductContent = {
     subtitle:
       "Работа с повысительными и подпиточными насосами для поддержания давления и объёма воды в системах пожаротушения как в режиме ожидания, так и при тушении пожара. Автоматический пуск по сигналу «Пожар», приоритет подачи воды, АВР.",
     image: {
-      src: "/assets/products/control-systems-placeholder.svg",
-      alt: "ANHEL — шкаф управления для систем пожаротушения",
+      src: "/assets/products/control-systems/fire-suppression/hero.png",
+      alt: "ANHEL — шкаф управления для систем пожаротушения, красный высокий корпус с мнемосхемой",
     },
     primaryCta: {
       label: "Запрос КП",
