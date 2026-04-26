@@ -93,10 +93,14 @@ export function QuizFieldRenderer({ field }: Props) {
         render={({ field: f }) => (
           <TextField
             label={field.label}
+            // Use text + inputMode='decimal' instead of type='number' to avoid
+            // the native browser stepper (those tiny up/down arrows) overlapping
+            // the unit suffix and looking ugly. Numeric keyboard on mobile is
+            // preserved via inputMode.
             type={
-              field.type === 'textarea'
+              field.type === 'textarea' || field.type === 'number'
                 ? undefined
-                : (field.type as 'text' | 'email' | 'tel' | 'number')
+                : (field.type as 'text' | 'email' | 'tel')
             }
             multiline={field.multiline || field.type === 'textarea'}
             unit={field.unit}

@@ -271,7 +271,7 @@ function IntakeDiagramHint() {
       <p className="mb-3 text-xs text-secondary/65">
         Схема расположения резервуаров — выберите тип, соответствующий вашему объекту.
       </p>
-      <div className="relative aspect-[4/1] w-full">
+      <div className="relative aspect-[1042/210] w-full">
         <Image
           src="/assets/products/intake-diagram.png"
           alt="Типы забора воды: водоём, подземный, полузаглублённый, наземный"
