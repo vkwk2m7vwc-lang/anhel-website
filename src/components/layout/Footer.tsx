@@ -61,6 +61,7 @@ export function Footer() {
             { label: "Объекты", href: "/projects" },
             { label: "О компании", href: "/#about" },
             { label: "Производство", href: "/#manufacturing" },
+            { label: "Сервис", href: "/service" },
           ].map((item) => (
             <Link
               key={item.href}
