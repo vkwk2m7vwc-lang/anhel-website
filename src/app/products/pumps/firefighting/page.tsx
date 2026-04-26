@@ -47,7 +47,7 @@ export const metadata: Metadata = {
   description: firefightingContent.metaDescription,
   openGraph: {
     type: "website",
-    title: firefightingContent.metaTitle,
+    title: `${firefightingContent.metaTitle} · ANHEL®`,
     description: firefightingContent.metaDescription,
     url: `/products/pumps/firefighting`,
     images: [
