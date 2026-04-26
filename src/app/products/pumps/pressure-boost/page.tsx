@@ -33,7 +33,7 @@ export const metadata: Metadata = {
   description: pressureBoostContent.metaDescription,
   openGraph: {
     type: "website",
-    title: `${pressureBoostContent.metaTitle} · ANHEL®`,
+    title: pressureBoostContent.metaTitle,
     description: pressureBoostContent.metaDescription,
     url: `/products/pumps/pressure-boost`,
     images: [

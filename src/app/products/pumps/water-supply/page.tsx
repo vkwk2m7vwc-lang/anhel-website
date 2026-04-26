@@ -49,7 +49,7 @@ export const metadata: Metadata = {
   description: waterSupplyContent.metaDescription,
   openGraph: {
     type: "website",
-    title: `${waterSupplyContent.metaTitle} · ANHEL®`,
+    title: waterSupplyContent.metaTitle,
     description: waterSupplyContent.metaDescription,
     url: `/products/pumps/water-supply`,
     images: [
