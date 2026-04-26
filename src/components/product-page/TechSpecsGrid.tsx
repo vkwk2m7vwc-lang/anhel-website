@@ -48,7 +48,7 @@ export function TechSpecsGrid({ specs }: { specs: readonly TechSpecTile[] }) {
             every section. */}
         <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
           <div>
-            <p className="mono-tag">02 · Технические характеристики</p>
+            <p className="mono-tag">02 · ТЕХНИЧЕСКИЕ ХАРАКТЕРИСТИКИ</p>
             <h2
               id="tech-specs-title"
               className="mt-4 max-w-[640px] font-display text-h2 font-medium text-[var(--color-secondary)]"

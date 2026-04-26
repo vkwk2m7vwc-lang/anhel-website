@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, ChevronRight } from "lucide-react";
 import {
   PROJECTS,
   PROJECT_CATEGORY_LABELS,
@@ -51,12 +51,58 @@ export default function ProjectDetailPage({ params }: { params: Params }) {
 
   return (
     <article className="bg-[var(--color-primary)] text-[var(--color-secondary)]">
-      {/* Top breadcrumb / back-link */}
+      {/* Хлебные крошки + back-link. По стилю совпадают с /products
+          и /products/<slug>: одна mono-line с разделителями ChevronRight,
+          под ней — отдельная kbd-style ссылка «← Все объекты» как
+          быстрый возврат. */}
       <div className="mx-auto w-full max-w-[1440px] px-6 pt-28 md:px-12 md:pt-36">
+        <nav aria-label="Хлебные крошки" className="font-mono text-[11px]">
+          <ol className="flex flex-wrap items-center gap-x-1.5 gap-y-1 uppercase tracking-[0.08em]">
+            <li className="flex items-center gap-1.5">
+              <Link
+                href="/"
+                data-cursor="hover"
+                className="text-[var(--color-secondary)]/55 transition-colors hover:text-[var(--color-secondary)]"
+              >
+                Главная
+              </Link>
+              <ChevronRight
+                aria-hidden="true"
+                size={12}
+                strokeWidth={1.5}
+                className="text-[var(--color-secondary)]/25"
+              />
+            </li>
+            <li className="flex items-center gap-1.5">
+              <Link
+                href="/projects"
+                data-cursor="hover"
+                className="text-[var(--color-secondary)]/55 transition-colors hover:text-[var(--color-secondary)]"
+              >
+                Объекты
+              </Link>
+              <ChevronRight
+                aria-hidden="true"
+                size={12}
+                strokeWidth={1.5}
+                className="text-[var(--color-secondary)]/25"
+              />
+            </li>
+            <li className="flex items-center gap-1.5">
+              <span
+                aria-current="page"
+                className="text-[var(--color-secondary)]/80"
+              >
+                {project.title}
+              </span>
+            </li>
+          </ol>
+        </nav>
+
         <Link
           href="/projects"
           data-cursor="hover"
-          className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.14em] text-[var(--color-secondary)]/65 transition-colors hover:text-[var(--color-secondary)]"
+          className="mt-4 inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.14em] text-[var(--color-secondary)]/65 transition-colors hover:text-[var(--color-secondary)]"
         >
           <ArrowLeft size={14} strokeWidth={1.5} aria-hidden="true" />
           Все объекты

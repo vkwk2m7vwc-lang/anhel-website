@@ -33,7 +33,7 @@ export const metadata: Metadata = {
   description: specialContent.metaDescription,
   openGraph: {
     type: "website",
-    title: `${specialContent.metaTitle} · ANHEL®`,
+    title: specialContent.metaTitle,
     description: specialContent.metaDescription,
     url: `/products/pumps/special`,
     images: [

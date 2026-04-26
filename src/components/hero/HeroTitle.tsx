@@ -48,8 +48,13 @@ export function HeroTitle() {
   }, [prefersReduced]);
 
   return (
+    // aria-label прокидывает связный текст в screen reader / SEO-парсер.
+    // Без него три block-span дают textContent без пробелов:
+    // «Системы,которые держат зданиеживым.» — это ломает чтение.
+    // Визуально внутри h1 остаются три строки на разных уровнях opacity.
     <h1
       ref={ref}
+      aria-label="Системы, которые держат здание живым."
       className="font-display text-hero font-medium text-[var(--color-secondary)]"
     >
       <span className="block overflow-hidden">Системы,</span>
