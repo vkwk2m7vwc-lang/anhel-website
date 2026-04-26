@@ -15,7 +15,8 @@
 | 3 | Сертификаты в существующий блок | `feat/certificates` | ✅ merged (через fillable-forms) |
 | 4 | 3 fillable PDF опросника | `feat/fillable-forms` | ✅ merged |
 | 5 | Руководство по эксплуатации (локально) | — | ✅ saved локально, требует мелкой правки |
-| 7 | Шкафы управления (omega → control-systems) | `feat/omega-control-systems` | 🟡 готово локально, ждёт PR/merge |
+| 6 | Раздел /service + веб-форма заявки на диагностику | `feat/service-section` | ✅ merged |
+| 7 | Шкафы управления (omega → control-systems) | `feat/omega-control-systems` | ✅ merged |
 
 ---
 
@@ -376,6 +377,43 @@ PR через `gh pr create + gh pr merge --squash` в `main`. Production:
 
 1. `chore: clean third-party brands from project descriptions`
 2. `refactor: tighten "Why ANHEL" block to 6 features`
+
+---
+
+### Задача 6 — Раздел /service + форма заявки — ✅ merged
+
+**Ветка:** `feat/service-section` (от свежего main).
+
+**Контекст:** ТЗ — `uploads/cowork_prompt_service.md`. Замечание про
+параллельную ветку `feat/web-questionnaire-pumps` (там QuizShell
+архитектура): на момент работы её ещё не было в main, поэтому форма
+`/service/request` сделана автономной (нативный React state +
+localStorage, без `react-hook-form`/`zod`). Когда WIP-ветка сольётся —
+можно будет либо оставить как есть (service ≠ quiz), либо унифицировать.
+
+**Изменения:**
+
+- `feat(nav)`: пункт «Сервис» в Header / MobileMenu / Footer.
+- `feat(service)`: страница `/service` — Hero c CTA-кнопками (заполнить
+  онлайн / скачать PDF) + 4 карточки услуг + памятка «что нужно для
+  выезда». Тарифы/цены не размещали (подвижны), отдельной секции
+  контактов нет (Footer покрывает).
+- `feat(service)`: страница `/service/request` — multistep форма
+  (5 шагов, валидация, localStorage `anhel-service-request-v2`,
+  ReviewStep, заглушка отправки). Floating-label инпуты заменены на
+  обычный label сверху + серый placeholder с примером ввода
+  (24С574, +7 (___) ___-__-__, name@company.ru, ЖК «...»).
+  Прогресс — тонкая полоса + точки-маркеры, sticky-навигация снизу.
+  PDF-заявка в `public/documents/service-request-anhel.pdf`.
+
+**Что НЕ сделано (по ТЗ §7):**
+
+- Реальная отправка через Resend — отдельная задача.
+- Отдельные страницы для каждой услуги — карточки без ссылок.
+- EN-версия.
+
+**Stash:** WIP `feat/web-questionnaire-pumps` лежит в `stash@{1}` —
+ждёт возврата автора.
 
 ---
 

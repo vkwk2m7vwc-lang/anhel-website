@@ -28,6 +28,7 @@ const NAV = [
   { label: "Объекты", href: PROJECTS_PATH },
   { label: "О компании", href: "/#about" },
   { label: "Производство", href: "/#manufacturing" },
+  { label: "Сервис", href: "/service" },
   { label: "Контакты", href: "/#contact" },
 ];
 
