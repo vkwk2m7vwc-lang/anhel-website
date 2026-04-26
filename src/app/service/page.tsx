@@ -4,29 +4,26 @@ import { Phone, Mail, MapPin } from 'lucide-react';
 import { Breadcrumbs } from '@/components/product-page/Breadcrumbs';
 import {
   SERVICE_CARDS,
-  TARIFF_CARDS,
-  TARIFF_FOOTNOTE,
   REQUIREMENTS,
   SERVICE_PDF_HREF,
   SERVICE_REQUEST_HREF,
-  CTA_NOTE,
 } from '@/content/service/page-content';
 
 /**
  * /service — лендинг сервисного раздела ANHEL.
  *
- * Цель страницы — довести до заявки: либо PDF-файл скачать и отправить
- * на info@anhelspb.com, либо заполнить онлайн (`/service/request`). Всё
- * остальное (тарифы, памятка, перечень услуг) — поддержка решения, без
- * которой клиент справедливо засомневался бы.
+ * Главная цель — довести до заявки. Поэтому CTA-кнопки (Заполнить онлайн +
+ * Скачать PDF) живут прямо в Hero — без скролла. Дальше идут поддерживающие
+ * секции: что мы делаем, что нужно для выезда, контакты.
+ *
+ * Тарифы и сроки сознательно убраны — могут поменяться, и держать их в
+ * статичной разметке = риск устаревания.
  *
  * Section map:
- *   01 Hero (служебный, без 3D-фона — внимание держим на CTA-блоке).
- *   02 Услуги — 4 карточки 2×2 без переходов на отдельные страницы.
- *   03 CTA — две кнопки рядом + пояснение под ними.
- *   04 Тарифы и сроки — 4 цифровые карточки + сноска про негарантийные.
- *   05 «Что нужно для выезда» — 3 пункта.
- *   06 Контакты — компактный блок с телефоном/email/адресом.
+ *   01 Hero + CTA
+ *   02 Услуги (4 карточки 2×2)
+ *   03 Памятка «Что нужно для выезда» (3 пункта)
+ *   04 Контакты сервиса
  */
 export const metadata: Metadata = {
   title: 'Сервисное обслуживание',
@@ -49,21 +46,70 @@ const BREADCRUMBS = [
 export default function ServicePage() {
   return (
     <div className="bg-[var(--color-primary)] text-[var(--color-secondary)]">
-      {/* === 01 Hero === */}
-      <section className="relative border-b border-[var(--color-hairline)]">
-        <div className="mx-auto w-full max-w-[1440px] px-6 pb-14 pt-24 md:px-12 md:pb-20 md:pt-32">
+      {/* === 01 Hero + CTA === */}
+      <section className="relative overflow-hidden border-b border-[var(--color-hairline)]">
+        {/* Hairline grid фон — как на продуктовых страницах */}
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 z-0 bg-grid-hairline bg-grid opacity-60"
+        />
+        <div className="relative z-10 mx-auto w-full max-w-[1440px] px-6 pb-16 pt-24 md:px-12 md:pb-24 md:pt-32">
           <Breadcrumbs items={BREADCRUMBS} />
-          <p className="mono-tag mt-8">Сервис</p>
-          <h1 className="mt-6 max-w-[920px] font-display text-5xl font-medium leading-[1.05] md:text-6xl lg:text-7xl">
-            Сервисное обслуживание
-          </h1>
-          <p className="mt-6 max-w-[640px] text-body text-[var(--color-secondary)]/75 md:mt-8">
-            Диагностика, ремонт, пусконаладка и шефмонтаж оборудования ANHEL.
-          </p>
+
+          <div className="mt-8 grid grid-cols-1 gap-10 md:mt-10 md:grid-cols-12 md:gap-14">
+            <div className="md:col-span-7">
+              <p className="mono-tag">Сервис</p>
+              <h1 className="mt-6 font-display text-5xl font-medium leading-[1.05] md:mt-8 md:text-6xl lg:text-7xl">
+                Сервисное обслуживание
+              </h1>
+              <p className="mt-6 max-w-[560px] text-body text-[var(--color-secondary)]/75 md:mt-8">
+                Диагностика, ремонт, пусконаладка и шефмонтаж оборудования
+                ANHEL. Выезд инженера на объект — после получения заполненной
+                заявки.
+              </p>
+
+              {/* === CTA-кнопки в Hero === */}
+              <div className="mt-10 flex flex-wrap items-center gap-4 md:mt-12 md:gap-5">
+                <Link
+                  href={SERVICE_REQUEST_HREF}
+                  data-cursor="hover"
+                  className="group inline-flex items-center gap-3 rounded-md bg-[var(--color-secondary)] px-[22px] py-[14px] text-sm font-medium text-[var(--color-primary)]"
+                >
+                  Заполнить онлайн
+                  <span
+                    aria-hidden="true"
+                    className="inline-block font-mono transition-transform duration-300 ease-out-expo group-hover:translate-x-1"
+                  >
+                    →
+                  </span>
+                </Link>
+                <a
+                  href={SERVICE_PDF_HREF}
+                  download
+                  data-cursor="hover"
+                  className="inline-flex items-center gap-3 rounded-md border-[0.5px] border-[var(--color-secondary)]/40 bg-transparent px-[22px] py-[14px] text-sm font-medium text-[var(--color-secondary)]/85 transition-colors hover:border-[var(--color-secondary)] hover:text-[var(--color-secondary)]"
+                >
+                  Скачать PDF-заявку
+                  <span
+                    aria-hidden="true"
+                    className="font-mono text-[var(--color-secondary)]/65"
+                  >
+                    ↓
+                  </span>
+                </a>
+              </div>
+
+              <p className="mt-6 max-w-[520px] text-xs leading-relaxed text-[var(--color-secondary)]/55 md:text-sm">
+                Решение о выезде сервисного инженера принимается после
+                получения заполненной и пропечатанной заявки на
+                info@anhelspb.com.
+              </p>
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* === 02 Услуги (4 карточки) === */}
+      {/* === 02 Услуги === */}
       <section className="border-b border-[var(--color-hairline)]">
         <div className="mx-auto w-full max-w-[1440px] px-6 py-16 md:px-12 md:py-24">
           <p className="mono-tag">02 · Что мы делаем</p>
@@ -71,19 +117,19 @@ export default function ServicePage() {
             Четыре направления сервиса
           </h2>
 
-          <ul className="mt-10 grid grid-cols-1 gap-4 md:mt-14 md:grid-cols-2 md:gap-5">
+          <ul className="mt-10 grid grid-cols-1 gap-px overflow-hidden rounded-md border-[0.5px] border-[var(--color-hairline)] bg-[var(--color-hairline)] md:mt-14 md:grid-cols-2">
             {SERVICE_CARDS.map((card) => {
               const Icon = card.icon;
               return (
                 <li
                   key={card.title}
-                  className="flex flex-col gap-4 rounded-md border-[0.5px] border-[var(--color-hairline)] bg-[var(--color-hover-tint)] p-6 md:gap-5 md:p-8"
+                  className="flex flex-col gap-5 bg-[var(--color-primary)] p-6 transition-colors hover:bg-[var(--color-hover-tint)] md:gap-6 md:p-8"
                 >
                   <span
                     aria-hidden="true"
-                    className="inline-flex h-11 w-11 items-center justify-center rounded-md bg-[var(--color-secondary)]/5 text-[var(--color-secondary)]/85"
+                    className="inline-flex h-10 w-10 items-center justify-center text-[var(--color-secondary)]/85"
                   >
-                    <Icon size={20} strokeWidth={1.5} />
+                    <Icon size={22} strokeWidth={1.5} />
                   </span>
                   <div>
                     <h3 className="font-display text-xl font-medium leading-tight md:text-2xl">
@@ -100,118 +146,39 @@ export default function ServicePage() {
         </div>
       </section>
 
-      {/* === 03 CTA — главная цель страницы === */}
-      <section
-        id="request"
-        className="border-b border-[var(--color-hairline)] bg-[var(--color-hover-tint)]"
-      >
-        <div className="mx-auto w-full max-w-[1440px] px-6 py-16 md:px-12 md:py-24">
-          <p className="mono-tag">03 · Заявка на диагностику</p>
-          <h2 className="mt-4 max-w-[760px] font-display text-3xl font-medium leading-tight md:mt-6 md:text-4xl lg:text-5xl">
-            Оформите заявку — мы согласуем выезд инженера
-          </h2>
-
-          <div className="mt-10 flex flex-col flex-wrap gap-4 sm:flex-row sm:items-center md:mt-12 md:gap-5">
-            <Link
-              href={SERVICE_REQUEST_HREF}
-              data-cursor="hover"
-              className="group inline-flex items-center justify-center gap-3 rounded-md bg-[var(--color-secondary)] px-6 py-[14px] text-sm font-medium text-[var(--color-primary)]"
-            >
-              Заполнить онлайн
-              <span
-                aria-hidden="true"
-                className="inline-block font-mono transition-transform duration-300 ease-out-expo group-hover:translate-x-1"
-              >
-                →
-              </span>
-            </Link>
-            <a
-              href={SERVICE_PDF_HREF}
-              download
-              data-cursor="hover"
-              className="inline-flex items-center justify-center gap-3 rounded-md border-[0.5px] border-[var(--color-secondary)]/40 bg-transparent px-6 py-[14px] text-sm font-medium text-[var(--color-secondary)]/85 transition-colors hover:border-[var(--color-secondary)] hover:text-[var(--color-secondary)]"
-            >
-              Скачать PDF-заявку
-              <span
-                aria-hidden="true"
-                className="font-mono text-[var(--color-secondary)]/65"
-              >
-                ↓
-              </span>
-            </a>
-          </div>
-
-          <p className="mt-6 max-w-[640px] text-sm leading-relaxed text-[var(--color-secondary)]/65 md:mt-8 md:text-[15px]">
-            {CTA_NOTE}
-          </p>
-        </div>
-      </section>
-
-      {/* === 04 Тарифы и сроки === */}
+      {/* === 03 Памятка === */}
       <section className="border-b border-[var(--color-hairline)]">
         <div className="mx-auto w-full max-w-[1440px] px-6 py-16 md:px-12 md:py-24">
-          <p className="mono-tag">04 · Тарифы и сроки</p>
-          <h2 className="mt-4 max-w-[680px] font-display text-3xl font-medium leading-tight md:mt-6 md:text-4xl lg:text-5xl">
-            Прозрачно по стоимости и срокам
-          </h2>
-
-          <ul className="mt-10 grid grid-cols-1 gap-px overflow-hidden rounded-md border-[0.5px] border-[var(--color-hairline)] bg-[var(--color-hairline)] sm:grid-cols-2 md:mt-14 lg:grid-cols-4">
-            {TARIFF_CARDS.map((card, idx) => (
-              <li
-                key={`${card.value}-${idx}`}
-                className="flex flex-col gap-4 bg-[var(--color-primary)] p-6 md:gap-5 md:p-8"
-              >
-                <p className="font-display text-3xl font-medium leading-none tracking-tight md:text-[40px] lg:text-5xl">
-                  {card.value}
-                </p>
-                <p className="text-sm leading-relaxed text-[var(--color-secondary)]/70 md:text-[15px]">
-                  {card.label}
-                </p>
-              </li>
-            ))}
-          </ul>
-
-          <p className="mt-8 max-w-[840px] text-xs leading-relaxed text-[var(--color-secondary)]/55 md:mt-10 md:text-sm">
-            {TARIFF_FOOTNOTE}
-          </p>
-        </div>
-      </section>
-
-      {/* === 05 Памятка === */}
-      <section className="border-b border-[var(--color-hairline)]">
-        <div className="mx-auto w-full max-w-[1440px] px-6 py-16 md:px-12 md:py-24">
-          <p className="mono-tag">05 · Что нужно для выезда</p>
+          <p className="mono-tag">03 · Что нужно для выезда</p>
           <h2 className="mt-4 max-w-[760px] font-display text-3xl font-medium leading-tight md:mt-6 md:text-4xl lg:text-5xl">
             Чтобы выезд состоялся вовремя
           </h2>
 
-          <ol className="mt-10 grid grid-cols-1 gap-4 md:mt-14 md:grid-cols-3 md:gap-5">
+          <ol className="mt-10 grid grid-cols-1 gap-x-12 gap-y-10 md:mt-14 md:grid-cols-3">
             {REQUIREMENTS.map((req, i) => (
               <li
                 key={req.title}
-                className="flex flex-col gap-4 rounded-md border-[0.5px] border-[var(--color-hairline)] bg-[var(--color-hover-tint)] p-6 md:gap-5 md:p-8"
+                className="border-t border-[var(--color-hairline)] pt-6"
               >
                 <p className="font-mono text-xs uppercase tracking-[0.12em] text-[var(--color-secondary)]/55">
                   {String(i + 1).padStart(2, '0')}
                 </p>
-                <div>
-                  <h3 className="font-display text-lg font-medium leading-tight md:text-xl">
-                    {req.title}
-                  </h3>
-                  <p className="mt-3 text-sm leading-relaxed text-[var(--color-secondary)]/70 md:text-[15px]">
-                    {req.description}
-                  </p>
-                </div>
+                <h3 className="mt-3 font-display text-lg font-medium leading-tight md:text-xl">
+                  {req.title}
+                </h3>
+                <p className="mt-3 text-sm leading-relaxed text-[var(--color-secondary)]/70 md:text-[15px]">
+                  {req.description}
+                </p>
               </li>
             ))}
           </ol>
         </div>
       </section>
 
-      {/* === 06 Контакты сервиса === */}
+      {/* === 04 Контакты === */}
       <section>
         <div className="mx-auto w-full max-w-[1440px] px-6 py-14 md:px-12 md:py-20">
-          <p className="mono-tag">06 · Контакты сервиса</p>
+          <p className="mono-tag">04 · Контакты сервиса</p>
           <div className="mt-8 grid grid-cols-1 gap-6 md:mt-10 md:grid-cols-3 md:gap-8">
             <a
               href="tel:+78124164500"
@@ -220,9 +187,9 @@ export default function ServicePage() {
             >
               <span
                 aria-hidden="true"
-                className="mt-1 inline-flex h-9 w-9 items-center justify-center rounded-md bg-[var(--color-secondary)]/5 text-[var(--color-secondary)]/85"
+                className="mt-1 inline-flex h-9 w-9 items-center justify-center text-[var(--color-secondary)]/85"
               >
-                <Phone size={16} strokeWidth={1.5} />
+                <Phone size={18} strokeWidth={1.5} />
               </span>
               <div>
                 <p className="font-mono text-[11px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/55">
@@ -241,9 +208,9 @@ export default function ServicePage() {
             >
               <span
                 aria-hidden="true"
-                className="mt-1 inline-flex h-9 w-9 items-center justify-center rounded-md bg-[var(--color-secondary)]/5 text-[var(--color-secondary)]/85"
+                className="mt-1 inline-flex h-9 w-9 items-center justify-center text-[var(--color-secondary)]/85"
               >
-                <Mail size={16} strokeWidth={1.5} />
+                <Mail size={18} strokeWidth={1.5} />
               </span>
               <div>
                 <p className="font-mono text-[11px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/55">
@@ -258,9 +225,9 @@ export default function ServicePage() {
             <div className="flex items-start gap-4">
               <span
                 aria-hidden="true"
-                className="mt-1 inline-flex h-9 w-9 items-center justify-center rounded-md bg-[var(--color-secondary)]/5 text-[var(--color-secondary)]/85"
+                className="mt-1 inline-flex h-9 w-9 items-center justify-center text-[var(--color-secondary)]/85"
               >
-                <MapPin size={16} strokeWidth={1.5} />
+                <MapPin size={18} strokeWidth={1.5} />
               </span>
               <div>
                 <p className="font-mono text-[11px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/55">

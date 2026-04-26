@@ -2,8 +2,8 @@
  * Контент страницы /service.
  *
  * Тексты собраны в один файл, чтобы page.tsx был чистой сборкой секций.
- * Структура соответствует ТЗ (cowork_prompt_service.md): 5 секций +
- * контактный блок, всё одной длины — страница умещается в один scroll.
+ * Тарифы и сроки сознательно не хранятся — они подвижны, держать в коде
+ * рискованно, обсуждаются с клиентом устно.
  */
 
 import type { LucideIcon } from 'lucide-react';
@@ -13,13 +13,6 @@ export type ServiceCard = {
   title: string;
   description: string;
   icon: LucideIcon;
-};
-
-export type TariffCard = {
-  /** Главная цифра/срок: «12 000 ₽», «3-5 дн.» */
-  value: string;
-  /** Подпись под цифрой */
-  label: string;
 };
 
 export type RequirementItem = {
@@ -54,16 +47,6 @@ export const SERVICE_CARDS: readonly ServiceCard[] = [
   },
 ];
 
-export const TARIFF_CARDS: readonly TariffCard[] = [
-  { value: '12 000 ₽', label: 'Диагностика 1 ед. оборудования (СПб)' },
-  { value: '12 000 ₽', label: 'Холостой выезд (если объект не подготовлен)' },
-  { value: '3–5 дн.', label: 'С момента получения пропечатанной заявки' },
-  { value: '7–10 / 5–7 дн.', label: 'Механика / ПО — ориентировочные сроки' },
-];
-
-export const TARIFF_FOOTNOTE =
-  'Если случай признан негарантийным, Клиент оплачивает расходы (выезд, диагностика, ремонт) в течение пяти рабочих дней с момента выставления счёта. Регионы вне Санкт-Петербурга рассчитываются отдельно.';
-
 export const REQUIREMENTS: readonly RequirementItem[] = [
   {
     title: 'Представитель на объекте',
@@ -84,6 +67,3 @@ export const REQUIREMENTS: readonly RequirementItem[] = [
 
 export const SERVICE_PDF_HREF = '/documents/service-request-anhel.pdf';
 export const SERVICE_REQUEST_HREF = '/service/request';
-
-export const CTA_NOTE =
-  'Заполните и направьте на info@anhelspb.com. Решение о выезде сервисного инженера принимается после получения заполненного и пропечатанного обращения.';

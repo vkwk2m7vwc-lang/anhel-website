@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Check, AlertCircle } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Send, Check } from 'lucide-react';
 import {
   FORM_STEPS,
   FORM_STORAGE_KEY,
@@ -16,25 +16,24 @@ import {
 /**
  * Multistep-форма заявки на сервисное обслуживание.
  *
- * Архитектура — нативный React state без react-hook-form/zod, потому что
- * на main quiz-инфраструктуры пока нет (она в параллельной WIP-ветке
- * `feat/web-questionnaire-pumps`). Когда WIP-ветка сольётся, эту форму
- * можно будет либо оставить отдельной (service ≠ quiz по семантике),
- * либо мигрировать на общий QuizShell.
+ * Визуальный язык один-в-один с `/quiz/pumps` (на main quiz пока в WIP-ветке;
+ * стиль мы реплицируем в собственном самодостаточном компоненте, без
+ * react-hook-form/zod, чтобы не тащить зависимости в main):
+ *   • Тонкая полоса прогресса + маркеры-точки с акцентом активного шага.
+ *   • Live-проценты по доле заполненных полей в текущем шаге.
+ *   • Floating-label инпуты: только нижняя hairline, прозрачный фон.
+ *   • Sticky-навигация снизу: ghost-back и filled-next/submit.
+ *   • Секции (если их > 1 на шаге) разделяются hairline-top + заголовком.
  *
  * Поведение:
- *   - 9 шагов (0..8), последний — превью + submit. Заглушка отправки:
- *     сохраняем в storage, показываем success-state, спустя 1.6 сек —
- *     redirect на /service?submitted=1.
- *   - localStorage сохраняет values + текущий step на каждом изменении,
- *     восстанавливается при возврате (ключ — `anhel-service-request-v1`).
- *   - Валидация прогоняется при попытке «Далее» — выводит ошибки под
- *     полями. Для tel/email — regex; для problem_description — minLength 50.
- *   - Прогресс-бар сверху с номерами шагов; на md+ кликабелен только до
- *     уже пройденных шагов (как в quiz/pumps).
+ *   • localStorage хранит значения и текущий шаг (ключ `anhel-service-request-v1`).
+ *   • Валидация — на «Далее»: required + email/tel regex + min length для problem.
+ *   • Заглушка submit: 700 ms → success-стейт → через 1.6 с redirect на
+ *     `/service?submitted=1`.
  *
- * Темы — дизайн-токены через CSS-vars (как везде в проекте). Никакой
- * темы-специфичной логики тут нет.
+ * Когда WIP-ветка `feat/web-questionnaire-pumps` сольётся в main — эту форму
+ * можно либо оставить (semantically service ≠ quiz), либо рефакторнуть на
+ * общий QuizShell.
  */
 
 type Values = Record<string, string | boolean>;
@@ -45,11 +44,7 @@ const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 function emptyValues(): Values {
   const v: Values = {};
-  for (const name of ALL_FIELD_NAMES) {
-    // Чекбоксы — boolean, остальное — строка (включая date).
-    v[name] = false;
-  }
-  // Не-чекбоксы инициализируем пустой строкой
+  for (const name of ALL_FIELD_NAMES) v[name] = false;
   for (const step of FORM_STEPS) {
     for (const field of step.fields) {
       if (field.kind !== 'checkbox') v[field.name] = '';
@@ -58,7 +53,6 @@ function emptyValues(): Values {
   return v;
 }
 
-/** Валидация одного поля. Возвращает текст ошибки или undefined. */
 function validateField(field: FormField, value: string | boolean): string | undefined {
   if (field.kind === 'checkbox') {
     if (field.required && value !== true) return 'Необходимо согласие';
@@ -67,7 +61,6 @@ function validateField(field: FormField, value: string | boolean): string | unde
   const str = typeof value === 'string' ? value.trim() : '';
   if (field.required && !str) return 'Поле обязательно';
   if (!str) return undefined;
-
   if (field.kind === 'tel' && !TEL_REGEX.test(str)) return 'Похоже на некорректный номер';
   if (field.kind === 'email' && !EMAIL_REGEX.test(str)) return 'Некорректный e-mail';
   if (field.kind === 'textarea' && field.minLength && str.length < field.minLength) {
@@ -76,7 +69,6 @@ function validateField(field: FormField, value: string | boolean): string | unde
   return undefined;
 }
 
-/** Валидация целого шага. Возвращает map имя→ошибка. */
 function validateStep(step: FormStep, values: Values): Errors {
   const errs: Errors = {};
   for (const f of step.fields) {
@@ -84,6 +76,27 @@ function validateStep(step: FormStep, values: Values): Errors {
     if (e) errs[f.name] = e;
   }
   return errs;
+}
+
+/** Заполнено ли поле — для счётчика прогресса. */
+function isFilled(field: FormField, value: string | boolean): boolean {
+  if (field.kind === 'checkbox') return value === true;
+  return typeof value === 'string' && value.trim() !== '';
+}
+
+/** Live-прогресс: пройденные шаги + доля заполненности текущего шага. */
+function computeProgress(stepIdx: number, step: FormStep, values: Values): number {
+  const total = FORM_STEPS.length;
+  if (total === 0) return 0;
+  const stepWeight = 100 / total;
+  const base = stepIdx * stepWeight;
+  if (step.fields.length === 0) {
+    // Финальный шаг (review) — пройден сразу как зашли
+    return Math.round(base + stepWeight);
+  }
+  const filled = step.fields.filter((f) => isFilled(f, values[f.name])).length;
+  const fraction = filled / step.fields.length;
+  return Math.round(base + fraction * stepWeight);
 }
 
 export function ServiceRequestForm() {
@@ -95,7 +108,7 @@ export function ServiceRequestForm() {
   const [submitState, setSubmitState] = useState<'idle' | 'submitting' | 'done'>('idle');
   const restoredRef = useRef(false);
 
-  // === Restore from localStorage on mount ===
+  // === Restore from localStorage ===
   useEffect(() => {
     if (restoredRef.current) return;
     restoredRef.current = true;
@@ -106,12 +119,16 @@ export function ServiceRequestForm() {
       if (parsed.values && typeof parsed.values === 'object') {
         setValues((prev) => ({ ...prev, ...parsed.values }));
       }
-      if (typeof parsed.stepIdx === 'number' && parsed.stepIdx >= 0 && parsed.stepIdx < FORM_STEPS.length) {
+      if (
+        typeof parsed.stepIdx === 'number' &&
+        parsed.stepIdx >= 0 &&
+        parsed.stepIdx < FORM_STEPS.length
+      ) {
         setStepIdx(parsed.stepIdx);
         setVisited(new Set(Array.from({ length: parsed.stepIdx + 1 }, (_, i) => i)));
       }
     } catch {
-      // битый JSON — игнорируем
+      /* битый JSON — игнорируем */
     }
   }, []);
 
@@ -124,17 +141,16 @@ export function ServiceRequestForm() {
         JSON.stringify({ values, stepIdx }),
       );
     } catch {
-      // quota / private mode — игнорируем
+      /* quota / private mode */
     }
   }, [values, stepIdx]);
 
   const step = FORM_STEPS[stepIdx];
   const isLast = stepIdx === FORM_STEPS.length - 1;
+  const pct = computeProgress(stepIdx, step, values);
 
   const setFieldValue = useCallback((name: string, value: string | boolean) => {
     setValues((prev) => ({ ...prev, [name]: value }));
-    // Очищаем ошибку поля при изменении — пользователь не должен видеть
-    // красное, пока перепечатывает.
     setErrors((prev) => {
       if (!prev[name]) return prev;
       const next = { ...prev };
@@ -154,39 +170,26 @@ export function ServiceRequestForm() {
     if (nextIdx >= FORM_STEPS.length) return;
     setVisited((prev) => new Set(prev).add(nextIdx));
     setStepIdx(nextIdx);
-    // Скролл к началу секции — длинные шаги уезжают.
-    if (typeof window !== 'undefined') {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
+    if (typeof window !== 'undefined') window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [step, stepIdx, values]);
 
   const handlePrev = useCallback(() => {
     if (stepIdx === 0) return;
     setErrors({});
     setStepIdx(stepIdx - 1);
-    if (typeof window !== 'undefined') {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
+    if (typeof window !== 'undefined') window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [stepIdx]);
 
   const handleSubmit = useCallback(() => {
-    // Прогоним валидацию по всем шагам — на случай, если пользователь
-    // вернулся назад и что-то стёр.
     const allErrs: Errors = {};
-    for (const s of FORM_STEPS) {
-      Object.assign(allErrs, validateStep(s, values));
-    }
+    for (const s of FORM_STEPS) Object.assign(allErrs, validateStep(s, values));
     if (Object.keys(allErrs).length > 0) {
       setErrors(allErrs);
-      // Уведём на первый шаг с ошибкой
-      const firstErrStep = FORM_STEPS.find((s) =>
-        s.fields.some((f) => allErrs[f.name]),
-      );
+      const firstErrStep = FORM_STEPS.find((s) => s.fields.some((f) => allErrs[f.name]));
       if (firstErrStep) setStepIdx(firstErrStep.index);
       return;
     }
     setSubmitState('submitting');
-    // Заглушка — реальная отправка через Resend будет отдельной задачей.
     setTimeout(() => {
       setSubmitState('done');
       try {
@@ -194,70 +197,93 @@ export function ServiceRequestForm() {
       } catch {
         /* ignore */
       }
-      setTimeout(() => {
-        router.push('/service?submitted=1');
-      }, 1600);
+      setTimeout(() => router.push('/service?submitted=1'), 1600);
     }, 700);
   }, [values, router]);
 
   const goToStep = useCallback(
     (idx: number) => {
-      if (!visited.has(idx)) return;
+      if (!visited.has(idx) || idx === stepIdx) return;
       setErrors({});
       setStepIdx(idx);
     },
-    [visited],
+    [visited, stepIdx],
   );
 
-  const totalSteps = FORM_STEPS.length;
-
   return (
-    <div className="mx-auto w-full max-w-[920px] px-6 pb-24 pt-24 md:px-12 md:pt-28">
-      {/* Header */}
+    <div className="mx-auto w-full max-w-[840px] px-6 pb-32 pt-24 md:px-12 md:pt-28">
+      {/* === Header === */}
       <p className="mono-tag">Заявка на диагностику</p>
       <h1 className="mt-6 font-display text-4xl font-medium leading-[1.1] md:text-5xl">
         Сервисная заявка ANHEL®
       </h1>
-      <p className="mt-4 max-w-[640px] text-sm leading-relaxed text-[var(--color-secondary)]/65 md:mt-6 md:text-[15px]">
-        Заполните форму — мы согласуем выезд инженера. Решение о выезде
-        принимается после получения заполненной и пропечатанной заявки на
-        info@anhelspb.com.
+      <p className="mt-4 max-w-[600px] text-sm leading-relaxed text-[var(--color-secondary)]/65 md:mt-5 md:text-[15px]">
+        Заполните форму — мы согласуем выезд инженера. Решение принимается
+        после получения заполненной и пропечатанной заявки.
       </p>
 
-      {/* === Прогресс-бар === */}
-      <div className="mt-10 md:mt-12">
-        <div className="flex items-center justify-between gap-1">
+      {/* === Progress: тонкая линия + точки === */}
+      <div className="mt-12 md:mt-14">
+        {/* Тонкая полоса */}
+        <div className="relative h-px w-full bg-[var(--color-hairline)]">
+          <div
+            className="absolute left-0 top-0 h-full bg-[var(--color-secondary)] transition-[width] duration-500"
+            style={{ width: `${pct}%` }}
+          />
+        </div>
+
+        {/* Маркеры */}
+        <div className="mt-5 flex items-start justify-between gap-1">
           {FORM_STEPS.map((s, i) => {
-            const isActive = i === stepIdx;
+            const active = i === stepIdx;
             const isVisited = visited.has(i);
-            const isClickable = isVisited && i !== stepIdx;
+            const clickable = isVisited && !active;
             return (
               <button
-                type="button"
                 key={s.index}
-                onClick={() => isClickable && goToStep(i)}
-                disabled={!isClickable}
+                type="button"
+                disabled={!clickable}
+                onClick={() => clickable && goToStep(i)}
+                aria-current={active ? 'step' : undefined}
                 aria-label={`Шаг ${i + 1}: ${s.title}`}
-                aria-current={isActive ? 'step' : undefined}
                 className={
-                  'group relative h-8 flex-1 rounded-sm border-[0.5px] transition-colors ' +
-                  (isActive
-                    ? 'border-[var(--color-secondary)] bg-[var(--color-secondary)]'
-                    : isVisited
-                    ? 'cursor-pointer border-[var(--color-secondary)]/55 bg-[var(--color-secondary)]/15 hover:bg-[var(--color-secondary)]/25'
-                    : 'cursor-default border-[var(--color-hairline)] bg-transparent')
+                  'group relative flex flex-1 flex-col items-start text-left transition-colors ' +
+                  (clickable ? 'cursor-pointer' : 'cursor-default')
                 }
               >
-                <span className="sr-only">{s.title}</span>
+                <span
+                  aria-hidden="true"
+                  className={
+                    'mb-2 inline-block h-1.5 w-1.5 rounded-full transition-colors ' +
+                    (active
+                      ? 'bg-[var(--color-secondary)] shadow-[0_0_0_3px_color-mix(in_srgb,var(--color-secondary)_20%,transparent)]'
+                      : isVisited
+                      ? 'bg-[var(--color-secondary)]'
+                      : 'bg-[var(--color-hairline)]')
+                  }
+                />
+                <span
+                  className={
+                    'hidden text-[10px] font-medium uppercase tracking-[0.08em] sm:inline-block ' +
+                    (active
+                      ? 'text-[var(--color-secondary)]'
+                      : isVisited
+                      ? 'text-[var(--color-secondary)]/65'
+                      : 'text-[var(--color-secondary)]/30')
+                  }
+                >
+                  {String(i + 1).padStart(2, '0')}
+                </span>
               </button>
             );
           })}
         </div>
-        <div className="mt-3 flex items-center justify-between font-mono text-[11px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/65">
+
+        <div className="mt-3 flex items-center justify-between font-mono text-[11px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/55">
           <span>
-            Шаг {stepIdx + 1} / {totalSteps}
+            Шаг {stepIdx + 1} из {FORM_STEPS.length}
           </span>
-          <span className="text-[var(--color-secondary)]/85">{step.title}</span>
+          <span className="text-[var(--color-secondary)]/85">{pct}%</span>
         </div>
       </div>
 
@@ -269,19 +295,19 @@ export function ServiceRequestForm() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-            className="mt-12 rounded-md border-[0.5px] border-[var(--color-secondary)]/30 bg-[var(--color-hover-tint)] p-6 md:p-8"
+            className="mt-12 border-t border-[var(--color-hairline)] pt-8"
             role="status"
             aria-live="polite"
           >
             <div className="flex items-start gap-4">
-              <span className="mt-1 inline-flex h-9 w-9 items-center justify-center rounded-full bg-[var(--color-secondary)] text-[var(--color-primary)]">
-                <Check size={18} strokeWidth={2} aria-hidden="true" />
+              <span className="mt-1 inline-flex h-10 w-10 items-center justify-center rounded-full border border-[var(--color-secondary)]/40 text-[var(--color-secondary)]">
+                <Check size={18} strokeWidth={1.5} aria-hidden="true" />
               </span>
               <div>
-                <p className="font-display text-xl font-medium md:text-2xl">
+                <p className="font-display text-2xl font-medium">
                   Заявка отправлена
                 </p>
-                <p className="mt-2 text-sm leading-relaxed text-[var(--color-secondary)]/70 md:text-[15px]">
+                <p className="mt-3 max-w-[520px] text-sm leading-relaxed text-[var(--color-secondary)]/70 md:text-[15px]">
                   Мы свяжемся с вами в течение рабочего дня. Сейчас вернём
                   на главную страницу сервиса.
                 </p>
@@ -296,28 +322,30 @@ export function ServiceRequestForm() {
         <AnimatePresence mode="wait">
           <motion.section
             key={step.index}
-            initial={{ opacity: 0, y: 12 }}
+            initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
+            exit={{ opacity: 0, y: -6 }}
             transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
-            className="mt-12 md:mt-16"
+            className="mt-14 border-t border-[var(--color-hairline)] pt-10 md:mt-16 md:pt-12"
             aria-labelledby={`step-${step.index}-title`}
           >
+            <p className="mono-tag">
+              {`Шаг ${stepIdx + 1} / ${FORM_STEPS.length}`}
+            </p>
             <h2
               id={`step-${step.index}-title`}
-              className="font-display text-2xl font-medium leading-tight md:text-3xl"
+              className="mt-4 font-display text-3xl font-medium leading-tight md:text-4xl"
             >
               {step.title}
             </h2>
             {step.description && (
-              <p className="mt-3 max-w-[640px] text-sm leading-relaxed text-[var(--color-secondary)]/65 md:mt-4 md:text-[15px]">
+              <p className="mt-4 max-w-[640px] text-sm leading-relaxed text-[var(--color-secondary)]/65 md:mt-5 md:text-[15px]">
                 {step.description}
               </p>
             )}
 
-            {/* === Поля === */}
             {step.fields.length > 0 && (
-              <div className="mt-8 flex flex-col gap-5 md:mt-10 md:gap-6">
+              <div className="mt-10 grid grid-cols-1 gap-x-8 gap-y-2 sm:grid-cols-2 md:mt-12">
                 {step.fields.map((field) => (
                   <FieldRow
                     key={field.name}
@@ -330,41 +358,26 @@ export function ServiceRequestForm() {
               </div>
             )}
 
-            {/* === Превью на последнем шаге === */}
             {isLast && <ReviewSummary values={values} />}
           </motion.section>
         </AnimatePresence>
       )}
 
-      {/* === Памятка === */}
+      {/* === Sticky bottom navigation === */}
       {submitState !== 'done' && (
-        <details className="mt-12 rounded-md border-[0.5px] border-[var(--color-hairline)] bg-[var(--color-hover-tint)] p-5 md:p-6">
-          <summary className="cursor-pointer font-mono text-[11px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/65 hover:text-[var(--color-secondary)]/85">
-            Памятка по заполнению
-          </summary>
-          <ol className="mt-4 list-inside list-decimal space-y-2 text-sm leading-relaxed text-[var(--color-secondary)]/70 md:text-[15px]">
-            <li>Номер заявки — это серийный номер изделия.</li>
-            <li>Обязательно укажите номер и дату УПД.</li>
-            <li>
-              Пример серийного номера на шильде изделия — формат 24С574 (год и
-              индекс серии).
-            </li>
-          </ol>
-        </details>
-      )}
-
-      {/* === Кнопки навигации === */}
-      {submitState !== 'done' && (
-        <div className="mt-10 flex flex-col-reverse items-stretch gap-3 sm:flex-row sm:items-center sm:justify-between md:mt-12">
+        <div className="sticky bottom-0 z-20 -mx-6 mt-14 flex items-center justify-between gap-4 border-t border-[var(--color-hairline)] bg-[var(--color-primary)]/85 px-6 py-4 backdrop-blur md:-mx-12 md:px-12">
           <button
             type="button"
             onClick={handlePrev}
             disabled={stepIdx === 0}
-            className="inline-flex items-center justify-center gap-2 rounded-md border-[0.5px] border-[var(--color-secondary)]/40 bg-transparent px-5 py-3 text-sm font-medium text-[var(--color-secondary)]/85 transition-colors hover:border-[var(--color-secondary)] hover:text-[var(--color-secondary)] disabled:cursor-not-allowed disabled:opacity-40"
+            className={
+              'inline-flex items-center gap-2 px-3 py-2 text-sm transition-colors ' +
+              (stepIdx === 0
+                ? 'cursor-not-allowed text-[var(--color-secondary)]/30'
+                : 'text-[var(--color-secondary)]/75 hover:text-[var(--color-secondary)]')
+            }
           >
-            <span aria-hidden="true" className="font-mono">
-              ←
-            </span>
+            <ArrowLeft size={16} strokeWidth={1.5} aria-hidden="true" />
             Назад
           </button>
 
@@ -373,15 +386,10 @@ export function ServiceRequestForm() {
               type="button"
               onClick={handleNext}
               data-cursor="hover"
-              className="group inline-flex items-center justify-center gap-3 rounded-md bg-[var(--color-secondary)] px-6 py-3 text-sm font-medium text-[var(--color-primary)]"
+              className="group inline-flex items-center gap-2 border border-[var(--color-secondary)] bg-[var(--color-secondary)] px-5 py-2.5 text-sm font-medium text-[var(--color-primary)] transition-colors hover:bg-transparent hover:text-[var(--color-secondary)]"
             >
               Далее
-              <span
-                aria-hidden="true"
-                className="font-mono transition-transform duration-300 ease-out-expo group-hover:translate-x-1"
-              >
-                →
-              </span>
+              <ArrowRight size={16} strokeWidth={1.5} aria-hidden="true" />
             </button>
           ) : (
             <button
@@ -389,15 +397,10 @@ export function ServiceRequestForm() {
               onClick={handleSubmit}
               disabled={submitState === 'submitting'}
               data-cursor="hover"
-              className="group inline-flex items-center justify-center gap-3 rounded-md bg-[var(--color-secondary)] px-6 py-3 text-sm font-medium text-[var(--color-primary)] disabled:cursor-not-allowed disabled:opacity-60"
+              className="group inline-flex items-center gap-2 border border-[var(--color-secondary)] bg-[var(--color-secondary)] px-5 py-2.5 text-sm font-medium text-[var(--color-primary)] transition-colors hover:bg-transparent hover:text-[var(--color-secondary)] disabled:cursor-not-allowed disabled:opacity-50"
             >
-              {submitState === 'submitting' ? 'Отправляем…' : 'Отправить заявку'}
-              <span
-                aria-hidden="true"
-                className="font-mono transition-transform duration-300 ease-out-expo group-hover:translate-x-1"
-              >
-                →
-              </span>
+              {submitState === 'submitting' ? 'Отправка…' : 'Отправить заявку'}
+              <Send size={16} strokeWidth={1.5} aria-hidden="true" />
             </button>
           )}
         </div>
@@ -419,6 +422,11 @@ export function ServiceRequestForm() {
   );
 }
 
+/**
+ * Floating-label инпут / textarea / checkbox.
+ * Стиль повторяет TextField из quiz-ветки: только нижняя hairline,
+ * прозрачный фон, label всплывает наверх при focus/filled.
+ */
 function FieldRow({
   field,
   value,
@@ -435,12 +443,13 @@ function FieldRow({
   const hintId = field.hint ? `${id}-hint` : undefined;
   const describedBy = [errorId, hintId].filter(Boolean).join(' ') || undefined;
 
+  // === Checkbox ===
   if (field.kind === 'checkbox') {
     const checked = value === true;
     return (
       <label
         htmlFor={id}
-        className="group flex cursor-pointer items-start gap-3 rounded-md border-[0.5px] border-[var(--color-hairline)] bg-[var(--color-hover-tint)] p-4 transition-colors hover:border-[var(--color-secondary)]/40 md:p-5"
+        className="col-span-full flex cursor-pointer items-start gap-3 border-t border-[var(--color-hairline)] py-4 first:border-t-0"
       >
         <input
           id={id}
@@ -450,7 +459,7 @@ function FieldRow({
           aria-invalid={Boolean(error) || undefined}
           aria-describedby={describedBy}
           onChange={(e) => onChange(field.name, e.target.checked)}
-          className="mt-0.5 h-5 w-5 shrink-0 cursor-pointer accent-[var(--color-secondary)]"
+          className="mt-0.5 h-4 w-4 shrink-0 cursor-pointer accent-[var(--color-secondary)]"
         />
         <span className="text-sm leading-relaxed text-[var(--color-secondary)]/85 md:text-[15px]">
           {field.label}
@@ -460,100 +469,108 @@ function FieldRow({
             </span>
           )}
         </span>
-        {error && (
-          <FieldError id={errorId!} message={error} />
-        )}
+        {error && <FieldError id={errorId!} message={error} className="ml-auto" />}
       </label>
     );
   }
 
-  if (field.kind === 'textarea') {
-    return (
-      <div className="flex flex-col gap-2">
-        <label htmlFor={id} className="text-sm font-medium text-[var(--color-secondary)]/85">
-          {field.label}
-          {field.required && (
-            <span aria-hidden="true" className="ml-1 text-[var(--color-secondary)]/55">
-              *
-            </span>
-          )}
-        </label>
-        <textarea
-          id={id}
-          value={typeof value === 'string' ? value : ''}
-          required={field.required}
-          placeholder={field.placeholder}
-          aria-invalid={Boolean(error) || undefined}
-          aria-describedby={describedBy}
-          onChange={(e) => onChange(field.name, e.target.value)}
-          rows={6}
-          className="w-full rounded-md border-[0.5px] border-[var(--color-hairline)] bg-[var(--color-hover-tint)] px-4 py-3 text-sm leading-relaxed text-[var(--color-secondary)] placeholder:text-[var(--color-secondary)]/40 focus:border-[var(--color-secondary)]/60 focus:outline-none md:text-[15px]"
-        />
-        {field.hint && (
-          <p id={hintId} className="text-xs text-[var(--color-secondary)]/55 md:text-sm">
-            {field.hint}
-          </p>
-        )}
-        {error && <FieldError id={errorId!} message={error} />}
-      </div>
-    );
-  }
+  // === Textarea / Input ===
+  const isFilled = typeof value === 'string' && value !== '';
+  const isTextarea = field.kind === 'textarea';
+  const isFullWidth = isTextarea || field.kind === 'date';
+  const colClass = isFullWidth ? 'sm:col-span-2' : 'sm:col-span-1';
 
   return (
-    <div className="flex flex-col gap-2">
-      <label htmlFor={id} className="text-sm font-medium text-[var(--color-secondary)]/85">
-        {field.label}
-        {field.required && (
-          <span aria-hidden="true" className="ml-1 text-[var(--color-secondary)]/55">
-            *
-          </span>
-        )}
-      </label>
-      <input
-        id={id}
-        type={field.kind === 'tel' ? 'tel' : field.kind === 'email' ? 'email' : field.kind === 'date' ? 'date' : 'text'}
-        value={typeof value === 'string' ? value : ''}
-        required={field.required}
-        placeholder={field.placeholder}
-        autoComplete={
-          field.kind === 'email'
-            ? 'email'
-            : field.kind === 'tel'
-            ? 'tel'
-            : 'off'
+    <div className={`relative ${colClass} pt-7 pb-3`}>
+      <div
+        className={
+          'group relative border-b transition-colors ' +
+          (error
+            ? 'border-[var(--accent-fire)]'
+            : 'border-[var(--color-hairline)] focus-within:border-[var(--color-secondary)]')
         }
-        aria-invalid={Boolean(error) || undefined}
-        aria-describedby={describedBy}
-        onChange={(e) => onChange(field.name, e.target.value)}
-        className="w-full rounded-md border-[0.5px] border-[var(--color-hairline)] bg-[var(--color-hover-tint)] px-4 py-3 text-sm leading-relaxed text-[var(--color-secondary)] placeholder:text-[var(--color-secondary)]/40 focus:border-[var(--color-secondary)]/60 focus:outline-none md:text-[15px]"
-      />
+      >
+        {isTextarea ? (
+          <textarea
+            id={id}
+            value={typeof value === 'string' ? value : ''}
+            required={field.required}
+            placeholder=" "
+            aria-invalid={Boolean(error) || undefined}
+            aria-describedby={describedBy}
+            onChange={(e) => onChange(field.name, e.target.value)}
+            rows={4}
+            className="peer block min-h-[7rem] w-full resize-y bg-transparent pb-2 pt-2 text-sm leading-relaxed text-[var(--color-secondary)] outline-none placeholder:text-transparent md:text-[15px]"
+          />
+        ) : (
+          <input
+            id={id}
+            type={
+              field.kind === 'tel'
+                ? 'tel'
+                : field.kind === 'email'
+                ? 'email'
+                : field.kind === 'date'
+                ? 'date'
+                : 'text'
+            }
+            value={typeof value === 'string' ? value : ''}
+            required={field.required}
+            placeholder=" "
+            autoComplete={
+              field.kind === 'email' ? 'email' : field.kind === 'tel' ? 'tel' : 'off'
+            }
+            aria-invalid={Boolean(error) || undefined}
+            aria-describedby={describedBy}
+            onChange={(e) => onChange(field.name, e.target.value)}
+            className="peer block h-11 w-full bg-transparent pb-2 pt-2 text-sm text-[var(--color-secondary)] outline-none placeholder:text-transparent md:text-[15px]"
+          />
+        )}
+        <label
+          htmlFor={id}
+          className={
+            'pointer-events-none absolute left-0 transition-all duration-200 ease-out ' +
+            (isFilled
+              ? 'top-0 text-[11px] uppercase tracking-[0.08em] text-[var(--color-secondary)]/55'
+              : 'top-2 text-sm text-[var(--color-secondary)]/55 md:text-[15px]') +
+            ' peer-focus:top-0 peer-focus:text-[11px] peer-focus:uppercase peer-focus:tracking-[0.08em] peer-focus:text-[var(--color-secondary)]/85'
+          }
+        >
+          {field.label}
+          {field.required && <span aria-hidden="true" className="ml-1">*</span>}
+        </label>
+      </div>
       {field.hint && (
-        <p id={hintId} className="text-xs text-[var(--color-secondary)]/55 md:text-sm">
+        <p id={hintId} className="mt-2 text-xs text-[var(--color-secondary)]/55">
           {field.hint}
         </p>
       )}
-      {error && <FieldError id={errorId!} message={error} />}
+      {error && <FieldError id={errorId!} message={error} className="mt-2" />}
     </div>
   );
 }
 
-function FieldError({ id, message }: { id: string; message: string }) {
+function FieldError({
+  id,
+  message,
+  className,
+}: {
+  id: string;
+  message: string;
+  className?: string;
+}) {
   return (
     <p
       id={id}
       role="alert"
-      className="flex items-center gap-1.5 text-xs text-[var(--accent-fire)] md:text-sm"
+      className={`text-xs text-[var(--accent-fire)] ${className ?? ''}`}
     >
-      <AlertCircle size={14} strokeWidth={1.75} aria-hidden="true" />
       {message}
     </p>
   );
 }
 
-/**
- * Превью на последнем шаге — собираем все значения и показываем
- * сгруппированно по шагам, чтобы пользователь увидел, что отправляет.
- */
+/** Превью на последнем шаге — все шаги/поля списком. */
 function ReviewSummary({ values }: { values: Values }) {
   const grouped = useMemo(
     () =>
@@ -574,16 +591,13 @@ function ReviewSummary({ values }: { values: Values }) {
   );
 
   return (
-    <div className="mt-10 space-y-6 md:mt-12 md:space-y-8">
+    <div className="mt-10 space-y-10 md:mt-12">
       {grouped.map(({ step, rows }) => (
-        <div
-          key={step.index}
-          className="rounded-md border-[0.5px] border-[var(--color-hairline)] bg-[var(--color-hover-tint)] p-5 md:p-6"
-        >
+        <div key={step.index} className="border-t border-[var(--color-hairline)] pt-6">
           <p className="font-mono text-[11px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/55">
             Шаг {step.index + 1} · {step.title}
           </p>
-          <dl className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2 md:gap-x-6 md:gap-y-4">
+          <dl className="mt-4 grid grid-cols-1 gap-x-8 gap-y-4 md:grid-cols-2">
             {rows.map(({ field, display }) => (
               <div key={field.name}>
                 <dt className="text-xs text-[var(--color-secondary)]/55 md:text-sm">
