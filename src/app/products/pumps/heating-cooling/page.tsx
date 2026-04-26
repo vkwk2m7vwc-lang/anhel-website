@@ -32,7 +32,7 @@ export const metadata: Metadata = {
   description: heatingCoolingContent.metaDescription,
   openGraph: {
     type: "website",
-    title: heatingCoolingContent.metaTitle,
+    title: `${heatingCoolingContent.metaTitle} · ANHEL®`,
     description: heatingCoolingContent.metaDescription,
     url: `/products/pumps/heating-cooling`,
     images: [

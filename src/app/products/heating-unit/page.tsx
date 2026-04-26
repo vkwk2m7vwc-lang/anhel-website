@@ -4,6 +4,8 @@ import { ProductPageShell } from "@/components/product-page/ProductPageShell";
 import { BrandsStrip } from "@/components/product-page/BrandsStrip";
 import { AdvantagesGrid } from "@/components/product-page/AdvantagesGrid";
 import { GalleryRail } from "@/components/product-page/GalleryRail";
+import { CasesCarousel } from "@/components/product-page/CasesCarousel";
+import { QuizSection } from "@/components/product-page/quiz/QuizSection";
 import { DocumentsGrid } from "@/components/product-page/DocumentsGrid";
 import { ProductCtaFooter } from "@/components/product-page/ProductCtaFooter";
 import { HeatingModulesCatalog } from "@/components/products/heating-unit/HeatingModulesCatalog";
@@ -25,19 +27,16 @@ import {
  * (везде, где нужен тепловой ввод); важнее показать, какие
  * конфигурации есть.
  *
- * Section map:
+ * Section map (9 секций):
  *   01 Hero
  *   02 Линейка модулей         (8 модульных исполнений)
  *   03 Бренды                  (теплообменники, регуляторы, насосы)
- *   04 Преимущества
- *   05 Галерея (если есть фото — иначе скрыта)
- *   06 Документация            (раньше 08 — quiz/cases убраны для
- *                                согласованности с 5 насосными + ВПУ)
- *   07 Финальный CTA + соседние
- *
- * QuizSection и CasesCarousel удалены: квиз дублировал доступ к
- * опросному листу из блока документации, а кейсы остались
- * placeholder'ами. На дочерних [slug]-страницах модулей quiz сохранён.
+ *   04 Преимущества (9)
+ *   05 Галерея (skeletons)
+ *   06 Кейсы (placeholders)
+ *   07 Опросный лист (квиз)
+ *   08 Документация (4 PDF skeleton)
+ *   09 Финальный CTA + соседние
  *
  * ТТХ убраны с родительской страницы — каждый модуль ИТП имеет свои
  * параметры, поэтому аггрегированные диапазоны линейки на родителе
@@ -69,6 +68,8 @@ export default function HeatingUnitProductPage() {
     brands,
     advantages,
     gallery,
+    cases,
+    quiz,
     documents,
     footerCta,
   } = heatingUnitContent;
@@ -103,17 +104,10 @@ export default function HeatingUnitProductPage() {
       <BrandsStrip content={brands} />
       <AdvantagesGrid content={advantages} />
       <GalleryRail content={gallery} />
-      {/* Documents — override tag «06 · ДОКУМЕНТАЦИЯ» (раньше «08»),
-          чтобы нумерация на родительской странице ИТП не имела
-          разрывов после удаления Quiz/Cases. Дочерние [slug]-страницы
-          модулей используют свои tag-overrides — родителя не задевают. */}
-      <DocumentsGrid
-        content={{ ...documents, tag: "06 · ДОКУМЕНТАЦИЯ" }}
-      />
-      <ProductCtaFooter
-        content={{ ...footerCta, tag: "07 · ЗАПРОС КП" }}
-        currentSlug={slug}
-      />
+      <CasesCarousel content={cases} />
+      <QuizSection content={quiz} />
+      <DocumentsGrid content={documents} />
+      <ProductCtaFooter content={footerCta} currentSlug={slug} />
     </ProductPageShell>
   );
 }
