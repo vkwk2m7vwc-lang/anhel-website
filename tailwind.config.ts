@@ -9,6 +9,10 @@ import type { Config } from "tailwindcss";
  * follows the currently-focused product color on Stage 3).
  */
 const config: Config = {
+  // Class-based dark mode: `<html class="dark">` enables Tailwind `dark:`
+  // variants. next-themes выставляет класс на html — first-paint совпадает
+  // с пользовательской системой через `<script>` от ThemeProvider.
+  darkMode: "class",
   content: [
     "./src/app/**/*.{ts,tsx,mdx}",
     "./src/components/**/*.{ts,tsx,mdx}",
@@ -100,8 +104,11 @@ const config: Config = {
       backgroundImage: {
         "steel-gradient": "linear-gradient(135deg, #C0C8D0 0%, #8A94A0 100%)",
         "dark-gradient": "linear-gradient(180deg, #0A0A0A 0%, #1A1A1A 100%)",
+        // Grid hairline через --grid-line — сама переменная переопределяется
+        // в .dark, и одна и та же утилита bg-grid-hairline даёт правильный
+        // вид на обеих темах без дополнительных variant-комбинаций.
         "grid-hairline":
-          "linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px)",
+          "linear-gradient(var(--grid-line) 1px, transparent 1px), linear-gradient(90deg, var(--grid-line) 1px, transparent 1px)",
       },
       backgroundSize: {
         grid: "40px 40px",

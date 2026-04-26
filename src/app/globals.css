@@ -3,26 +3,43 @@
 @tailwind utilities;
 
 /*
- * ANHEL design tokens.
- * See _docs/BRAND.md — these are the single source of truth.
+ * ANHEL design tokens — light + dark.
+ *
+ * `:root` — light theme (default).
+ * `.dark` — dark theme (set by next-themes на <html>).
+ *
+ * Tailwind `darkMode: "class"` matches `.dark` selector. Tokens swap via
+ * CSS-vars так, что компоненты получают `var(--color-primary)` и не знают,
+ * какая тема активна.
+ *
+ * Single source of truth — `_docs/BRAND.md`. Add or rename tokens только
+ * через apply на оба блока, иначе одна тема визуально отстанет от другой.
  */
 :root {
-  /* Core palette */
-  --color-primary: #0a0a0a;
-  --color-secondary: #f5f5f3;
-  --color-steel-light: #c0c8d0;
-  --color-steel-dark: #8a94a0;
-  --color-hairline: rgba(255, 255, 255, 0.08);
-  --color-hairline-dark: rgba(10, 10, 10, 0.08);
+  /* Light palette — фон близок к white, текст — почти чёрный */
+  --color-primary: #fafafa;
+  --color-secondary: #0a0a0a;
+  --color-steel-light: #4a5560;
+  --color-steel-dark: #2a323a;
+  /* Hairline — полупрозрачный текст-цвет; работает как divider на любом фоне */
+  --color-hairline: rgba(10, 10, 10, 0.12);
+  --color-hairline-dark: rgba(255, 255, 255, 0.08);
 
-  /* Product accents */
+  /* Product accents — те же hex, в светлой теме держат контраст к белому
+     фону при тексте поверх (внутри карточек продукта используется dark
+     overlay). Если потребуется снизить насыщенность для светлого фона —
+     ввести `--accent-water-on-light` пары. */
   --accent-water: #1e6fd9;
   --accent-fire: #d72638;
-  --accent-treatment: #8a94a0;
-  --accent-heat: #e8873b;
+  --accent-treatment: #5c6670;
+  --accent-heat: #c7711e;
 
   /* Runtime tints (swapped per-section, e.g. current product color) */
   --accent-current: var(--accent-water);
+
+  /* Grid background — лёгкая сетка по фону. На светлом — тёмные линии,
+     на тёмном — светлые. Через переменную чтобы заменялось вместе с темой. */
+  --grid-line: rgba(10, 10, 10, 0.05);
 
   /* Motion */
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
@@ -33,6 +50,27 @@
   --duration-base: 500ms;
   --duration-slow: 800ms;
   --duration-cinematic: 1200ms;
+}
+
+/*
+ * Dark theme — текущая «фирменная» палитра ANHEL. Применяется через
+ * next-themes (`<html class="dark">`). Defaults в layout: `defaultTheme="dark"`,
+ * чтобы первый paint совпадал с production-привычкой пользователя.
+ */
+.dark {
+  --color-primary: #0a0a0a;
+  --color-secondary: #f5f5f3;
+  --color-steel-light: #c0c8d0;
+  --color-steel-dark: #8a94a0;
+  --color-hairline: rgba(255, 255, 255, 0.08);
+  --color-hairline-dark: rgba(10, 10, 10, 0.08);
+
+  --accent-water: #1e6fd9;
+  --accent-fire: #d72638;
+  --accent-treatment: #8a94a0;
+  --accent-heat: #e8873b;
+
+  --grid-line: rgba(255, 255, 255, 0.03);
 }
 
 @layer base {
@@ -46,10 +84,15 @@
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
 
+    /* Плавный transition между темами на body-уровне. 300ms совпадает
+       с --duration-fast и не задевает контент-анимации (Framer Motion
+       работает на transform/opacity, тема — на background/color). */
+    transition: background-color 300ms ease, color 300ms ease;
+
     /* Fixed header is 64px mobile / 80px desktop. 96px leaves a breathing
-       gap below the header when anchors (#quiz, #applications, etc.)
+       gap below the header when anchors (#docs, #applications, etc.)
        land the user on a new section. Works with Lenis smooth-scroll and
-       native scroll-into-view alike. Audit finding 2. */
+       native scroll-into-view alike. */
     scroll-padding-top: 96px;
   }
 
@@ -100,15 +143,16 @@
     text-wrap: pretty;
   }
 
-  /* Thin uppercase mono line — used for section tags like "01 / 04 · …"
-     WCAG AA: 0.65 alpha on #0A0A0A ≈ 5.9:1 contrast ratio (body-text
-     threshold is 4.5:1; 0.5 was ~4.4:1, borderline fail). */
+  /* Thin uppercase mono line — used for section tags like "01 / 04 · …".
+     Color через color-mix позволяет одной строкой держать .65 альфы
+     поверх color-secondary, что бы тот ни был — белый или почти-чёрный.
+     WCAG AA: 0.65 alpha → ~5.9:1 contrast на любом базовом фоне темы. */
   .mono-tag {
     font-family: var(--font-mono), "JetBrains Mono", ui-monospace, monospace;
     font-size: 11px;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: rgba(245, 245, 243, 0.65);
+    color: color-mix(in srgb, var(--color-secondary) 65%, transparent);
   }
 
   /* Hairline divider */
@@ -146,30 +190,19 @@
 }
 
 /* ---------------------------------------------------------------------
- * Lakhta scenario — section 3 "Как срабатывает" on
+ * Lakhta scenario — section 3 «Как срабатывает» on
  * /products/pumps/firefighting.
  *
  * All continuous loops live here so the component can gate them on/off
- * via inline `style={{ animation }}`. The browser runs these on the
- * compositor thread, which keeps the scroll-pinned section at 60fps
- * even when every element is animating simultaneously.
- *
- * Naming: `lakhta-*` — namespaced so they never collide with the
- * older `sa-*` (scenario-a) keyframes sitting above.
- *
- * All SVG elements that animate `transform` must have `transform-box:
- * fill-box` so the origin resolves to the element's own bounds, not
- * the viewport. The universal selector below handles that for every
- * `[style*="animation: lakhta-"]` element — one line, zero per-element
- * boilerplate in the TSX.
+ * via inline `style={{ animation }}`. Browser runs these on the compositor
+ * thread, scroll-pinned section stays at 60fps even when every element
+ * is animating.
  * --------------------------------------------------------------------- */
 
 [style*="animation: lakhta-"] {
   transform-box: fill-box;
 }
 
-/* Fire flame — gentle 1s breath. Scale only, no opacity dip, so the
-   flame reads as "alive" without turning into a strobe. */
 @keyframes lakhta-flame-pulse {
   0%,
   100% {
@@ -180,7 +213,6 @@
   }
 }
 
-/* Control-panel LED — fast blink when signal is live. */
 @keyframes lakhta-led-blink {
   0%,
   100% {
@@ -191,7 +223,6 @@
   }
 }
 
-/* Pump-station background glow — slow opacity pulse while pumps run. */
 @keyframes lakhta-pump-glow {
   0%,
   100% {
@@ -202,7 +233,6 @@
   }
 }
 
-/* Pump housing itself — tiny scale pulse to convey "running". */
 @keyframes lakhta-pump-pulse {
   0%,
   100% {
@@ -213,7 +243,6 @@
   }
 }
 
-/* Impeller cross — full revolution every 2s, linear so it stays smooth. */
 @keyframes lakhta-impeller-rotate {
   from {
     transform: rotate(0deg);
@@ -223,9 +252,6 @@
   }
 }
 
-/* Water particles in the LEFT riser. The particle slides up ~80 units
-   (about one inter-particle gap) and fades at both ends so the loop is
-   seamless and no "snap-back" is visible. */
 @keyframes lakhta-riser-rise {
   0% {
     transform: translateY(40px);
@@ -243,8 +269,6 @@
   }
 }
 
-/* Same mechanic for the right riser — separate name so future tweaks
-   (e.g. asymmetric pressure) don't require re-splitting a shared rule. */
 @keyframes lakhta-riser-rise-right {
   0% {
     transform: translateY(40px);
@@ -262,8 +286,6 @@
   }
 }
 
-/* Horizontal pipe to fire floor — particles drift right-to-end, fade.
-   Short cycle (2.4s) to match the urgency of the narrative beat. */
 @keyframes lakhta-horizontal-flow {
   0% {
     transform: translateX(-18px);
@@ -281,8 +303,6 @@
   }
 }
 
-/* Smoke plume — a 5s swaying drift of a few degrees, anchored at the
-   fire point (transform-origin is set on the element in the TSX). */
 @keyframes lakhta-smoke-sway {
   0%,
   100% {
@@ -293,7 +313,6 @@
   }
 }
 
-/* Droplets falling from the active sprinkler — short arc, gravity-feel. */
 @keyframes lakhta-droplet-fall {
   0% {
     transform: translateY(0);
@@ -308,8 +327,8 @@
   }
 }
 
-/* Global respect for prefers-reduced-motion — we still do JS-level checks
- * in components, but this kills any baseline CSS transitions/animations too. */
+/* Global respect for prefers-reduced-motion — JS-level checks остаются в
+ * компонентах, эта блок убивает baseline CSS transitions/animations и темы. */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
