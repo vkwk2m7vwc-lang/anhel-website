@@ -1,6 +1,5 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { Phone, Mail, MapPin } from 'lucide-react';
 import { Breadcrumbs } from '@/components/product-page/Breadcrumbs';
 import {
   SERVICE_CARDS,
@@ -105,6 +104,30 @@ export default function ServicePage() {
                 info@anhelspb.com.
               </p>
             </div>
+
+            {/* Right column: stats plate — заполняет визуальную пустоту в
+                Hero и одновременно даёт scan-credibility перед кликом по
+                CTA. Стат-блоки факт. характеристики процесса (НЕ цены —
+                цены подвижны), вертикальная hairline-разделённая стопка. */}
+            <div className="md:col-span-5">
+              <dl className="grid grid-cols-1 divide-y divide-[var(--color-hairline)] border-y border-[var(--color-hairline)] md:mt-2">
+                {[
+                  { k: 'Реакция', v: '1 рабочий день' },
+                  { k: 'География', v: 'СПб + регионы' },
+                  { k: 'Документы', v: 'Сервисный протокол + Акт' },
+                  { k: 'Гарантия', v: 'на оборудование и работы' },
+                ].map(({ k, v }) => (
+                  <div key={k} className="flex flex-col gap-2 py-5 md:flex-row md:items-baseline md:justify-between md:gap-6 md:py-6">
+                    <dt className="font-mono text-[11px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/55">
+                      {k}
+                    </dt>
+                    <dd className="font-display text-base text-[var(--color-secondary)]/90 md:text-lg">
+                      {v}
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+            </div>
           </div>
         </div>
       </section>
@@ -175,74 +198,6 @@ export default function ServicePage() {
         </div>
       </section>
 
-      {/* === 04 Контакты === */}
-      <section>
-        <div className="mx-auto w-full max-w-[1440px] px-6 py-14 md:px-12 md:py-20">
-          <p className="mono-tag">04 · Контакты сервиса</p>
-          <div className="mt-8 grid grid-cols-1 gap-6 md:mt-10 md:grid-cols-3 md:gap-8">
-            <a
-              href="tel:+78124164500"
-              data-cursor="hover"
-              className="group flex items-start gap-4"
-            >
-              <span
-                aria-hidden="true"
-                className="mt-1 inline-flex h-9 w-9 items-center justify-center text-[var(--color-secondary)]/85"
-              >
-                <Phone size={18} strokeWidth={1.5} />
-              </span>
-              <div>
-                <p className="font-mono text-[11px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/55">
-                  Телефон
-                </p>
-                <p className="mt-1 font-display text-lg text-[var(--color-secondary)] transition-opacity group-hover:opacity-80">
-                  +7 (812) 416-4500
-                </p>
-              </div>
-            </a>
-
-            <a
-              href="mailto:info@anhelspb.com"
-              data-cursor="hover"
-              className="group flex items-start gap-4"
-            >
-              <span
-                aria-hidden="true"
-                className="mt-1 inline-flex h-9 w-9 items-center justify-center text-[var(--color-secondary)]/85"
-              >
-                <Mail size={18} strokeWidth={1.5} />
-              </span>
-              <div>
-                <p className="font-mono text-[11px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/55">
-                  E-mail
-                </p>
-                <p className="mt-1 font-display text-lg text-[var(--color-secondary)] transition-opacity group-hover:opacity-80">
-                  info@anhelspb.com
-                </p>
-              </div>
-            </a>
-
-            <div className="flex items-start gap-4">
-              <span
-                aria-hidden="true"
-                className="mt-1 inline-flex h-9 w-9 items-center justify-center text-[var(--color-secondary)]/85"
-              >
-                <MapPin size={18} strokeWidth={1.5} />
-              </span>
-              <div>
-                <p className="font-mono text-[11px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/55">
-                  Адрес
-                </p>
-                <p className="mt-1 text-sm leading-relaxed text-[var(--color-secondary)]/85 md:text-[15px]">
-                  ООО «Профит», г. Санкт-Петербург,
-                  <br />
-                  Политехническая ул., д. 6, стр. 1, пом. 1-Н
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
     </div>
   );
 }

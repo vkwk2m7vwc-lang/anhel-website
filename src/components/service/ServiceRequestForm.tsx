@@ -423,9 +423,12 @@ export function ServiceRequestForm() {
 }
 
 /**
- * Floating-label инпут / textarea / checkbox.
- * Стиль повторяет TextField из quiz-ветки: только нижняя hairline,
- * прозрачный фон, label всплывает наверх при focus/filled.
+ * Поле формы: статичный mono-cap label сверху + input/textarea с серым
+ * placeholder в строке. Подсказка-пример видна сразу как plain placeholder
+ * (в духе обычных B2B-форм). Hint (если есть) — мелким текстом ниже.
+ *
+ * Стиль самого input повторяет TextField из quiz-ветки: только нижняя
+ * hairline, прозрачный фон, фокус усиливает линию.
  */
 function FieldRow({
   field,
@@ -443,7 +446,7 @@ function FieldRow({
   const hintId = field.hint ? `${id}-hint` : undefined;
   const describedBy = [errorId, hintId].filter(Boolean).join(' ') || undefined;
 
-  // === Checkbox ===
+  // === Checkbox — отдельный layout, всегда full-width ===
   if (field.kind === 'checkbox') {
     const checked = value === true;
     return (
@@ -475,16 +478,28 @@ function FieldRow({
   }
 
   // === Textarea / Input ===
-  const isFilled = typeof value === 'string' && value !== '';
+  const colClass = field.width === 'full' ? 'sm:col-span-2' : 'sm:col-span-1';
   const isTextarea = field.kind === 'textarea';
-  const isFullWidth = isTextarea || field.kind === 'date';
-  const colClass = isFullWidth ? 'sm:col-span-2' : 'sm:col-span-1';
+
+  const inputClass =
+    'block w-full bg-transparent pb-2 pt-1 text-sm text-[var(--color-secondary)] outline-none placeholder:text-[var(--color-secondary)]/30 md:text-[15px]';
 
   return (
-    <div className={`relative ${colClass} pt-7 pb-3`}>
+    <div className={`${colClass} pt-3 pb-4`}>
+      <label
+        htmlFor={id}
+        className="mb-3 block font-mono text-[11px] uppercase tracking-[0.08em] text-[var(--color-secondary)]/65"
+      >
+        {field.label}
+        {field.required && (
+          <span aria-hidden="true" className="ml-1 text-[var(--color-secondary)]/45">
+            *
+          </span>
+        )}
+      </label>
       <div
         className={
-          'group relative border-b transition-colors ' +
+          'border-b transition-colors ' +
           (error
             ? 'border-[var(--accent-fire)]'
             : 'border-[var(--color-hairline)] focus-within:border-[var(--color-secondary)]')
@@ -495,12 +510,12 @@ function FieldRow({
             id={id}
             value={typeof value === 'string' ? value : ''}
             required={field.required}
-            placeholder=" "
+            placeholder={field.placeholder}
             aria-invalid={Boolean(error) || undefined}
             aria-describedby={describedBy}
             onChange={(e) => onChange(field.name, e.target.value)}
             rows={4}
-            className="peer block min-h-[7rem] w-full resize-y bg-transparent pb-2 pt-2 text-sm leading-relaxed text-[var(--color-secondary)] outline-none placeholder:text-transparent md:text-[15px]"
+            className={`${inputClass} min-h-[7rem] resize-y leading-relaxed`}
           />
         ) : (
           <input
@@ -516,29 +531,16 @@ function FieldRow({
             }
             value={typeof value === 'string' ? value : ''}
             required={field.required}
-            placeholder=" "
+            placeholder={field.placeholder}
             autoComplete={
               field.kind === 'email' ? 'email' : field.kind === 'tel' ? 'tel' : 'off'
             }
             aria-invalid={Boolean(error) || undefined}
             aria-describedby={describedBy}
             onChange={(e) => onChange(field.name, e.target.value)}
-            className="peer block h-11 w-full bg-transparent pb-2 pt-2 text-sm text-[var(--color-secondary)] outline-none placeholder:text-transparent md:text-[15px]"
+            className={`${inputClass} h-11`}
           />
         )}
-        <label
-          htmlFor={id}
-          className={
-            'pointer-events-none absolute left-0 transition-all duration-200 ease-out ' +
-            (isFilled
-              ? 'top-0 text-[11px] uppercase tracking-[0.08em] text-[var(--color-secondary)]/55'
-              : 'top-2 text-sm text-[var(--color-secondary)]/55 md:text-[15px]') +
-            ' peer-focus:top-0 peer-focus:text-[11px] peer-focus:uppercase peer-focus:tracking-[0.08em] peer-focus:text-[var(--color-secondary)]/85'
-          }
-        >
-          {field.label}
-          {field.required && <span aria-hidden="true" className="ml-1">*</span>}
-        </label>
       </div>
       {field.hint && (
         <p id={hintId} className="mt-2 text-xs text-[var(--color-secondary)]/55">
