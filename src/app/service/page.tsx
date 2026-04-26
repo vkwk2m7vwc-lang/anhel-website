@@ -105,29 +105,6 @@ export default function ServicePage() {
               </p>
             </div>
 
-            {/* Right column: stats plate — заполняет визуальную пустоту в
-                Hero и одновременно даёт scan-credibility перед кликом по
-                CTA. Стат-блоки факт. характеристики процесса (НЕ цены —
-                цены подвижны), вертикальная hairline-разделённая стопка. */}
-            <div className="md:col-span-5">
-              <dl className="grid grid-cols-1 divide-y divide-[var(--color-hairline)] border-y border-[var(--color-hairline)] md:mt-2">
-                {[
-                  { k: 'Реакция', v: '1 рабочий день' },
-                  { k: 'География', v: 'СПб + регионы' },
-                  { k: 'Документы', v: 'Сервисный протокол + Акт' },
-                  { k: 'Гарантия', v: 'на оборудование и работы' },
-                ].map(({ k, v }) => (
-                  <div key={k} className="flex flex-col gap-2 py-5 md:flex-row md:items-baseline md:justify-between md:gap-6 md:py-6">
-                    <dt className="font-mono text-[11px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/55">
-                      {k}
-                    </dt>
-                    <dd className="font-display text-base text-[var(--color-secondary)]/90 md:text-lg">
-                      {v}
-                    </dd>
-                  </div>
-                ))}
-              </dl>
-            </div>
           </div>
         </div>
       </section>
