@@ -227,3 +227,87 @@ PR смерджен через `gh pr merge --squash` в `main`. Production prev
 - 301 со старых URL `/products/pumps/water-treatment` → `/products/water-treatment`
 - `/projects` — фильтр по категориям, без признаков заказчика
 - Документация на каждом продукте — опросник + декларация
+
+---
+
+## Сессия 2026-04-25 / 23:55 — Light/Dark + унификация product-карточек
+
+### Что сделано
+
+**Light/Dark тема через next-themes + Tailwind class-mode:**
+- `src/app/globals.css` переразделён на `:root` (light) + `.dark` (текущая фирменная палитра).
+  Токены: `--color-primary`, `--color-secondary`, `--color-steel-light/-dark`,
+  `--color-hairline`, `--accent-fire/-water/-treatment/-heat`, `--grid-line`,
+  `--color-hover-tint`, `--color-image-placeholder`.
+- `mono-tag` использует `color-mix()` для одной утилиты на обе темы.
+- `tailwind.config.ts`: `darkMode: "class"`, `bg-grid-hairline` через `--grid-line`.
+- `next-themes` ThemeProvider в layout (defaultTheme=`dark`, enableSystem,
+  disableTransitionOnChange + suppressHydrationWarning на html).
+- `ThemeToggle` (солнце/луна) в правой группе Header — рядом с phone-link и
+  mobile-menu trigger.
+- Hardcoded `bg-[#111]` (hover) → `bg-[var(--color-hover-tint)]` на 9 grid-карточках.
+- Hardcoded `bg-[#0F0F0F]` (image placeholders) → `bg-[var(--color-image-placeholder)]`.
+
+**Унификация 6 product-страниц** (5 насосных + ВПУ; ИТП-родителя и 8 модулей не трогал):
+- Новое поле `description` в `ProductContent` (optional `DescriptionContent`
+  с tag/title/paragraphs).
+- 6 content-файлов получили блок «03 · ОПИСАНИЕ — Назначение и принцип работы»
+  (2 параграфа на каждый продукт).
+- Новый компонент `DescriptionSection` — left rail + right paragraphs (как у
+  ИТП-модулей).
+- Новый компонент `RelatedProjectsSection` — до 3 объектов из `/projects`,
+  отфильтрованных по категории продукта.
+- `src/lib/related-projects.ts` — `getRelatedProjects(slug, limit)` маппинг
+  slug → допустимые категории объектов (pumps→pumps+mixed,
+  water-treatment→water-treatment+mixed).
+- Удалена `QuizSection` из 6 страниц (дублирование: опросный лист уже
+  доступен через hero CTA и блок «Документация»).
+- Удалена `CasesCarousel` из 6 страниц — заменена на `RelatedProjectsSection`
+  с реальными 13 объектами вместо placeholder-кейсов.
+- Все `#quiz` ссылки → `#documents` (id блока DocumentsGrid).
+
+**Финальный порядок секций (6 страниц):**
+01 Hero → 02 Параметры → 03 Описание → 04 Применение → 05 Бренды →
+06 Преимущества → 07 Галерея → 08 Объекты-референс → 09 Документы → 10 Запрос КП
+
+**`/projects?category=` фильтр через URL:**
+- `ProjectsFilter` читает query-param на mount (useSearchParams), при клике
+  обновляет URL через `router.replace`.
+- `<Suspense>` boundary в page.tsx — обязательный для Next 14 при использовании
+  useSearchParams в client-children.
+- Кнопка «Смотреть все объекты» на `RelatedProjectsSection` ведёт на
+  `/projects?category=pumps` (для насосных) или `?category=water-treatment`.
+
+### Какие токены изменены
+
+CSS-переменные удвоены — все темо-зависимые цвета теперь имеют по две версии в
+`:root` (light) и `.dark`. Всего 9 переменных свапается между темами.
+
+### Какие страницы унифицированы
+
+5 насосных (water-supply, firefighting, heating-cooling, pressure-boost, special)
+и водоподготовка (water-treatment) — теперь имеют идентичную 10-секционную
+структуру.
+
+ИТП-родитель `/products/heating-unit` и 8 модулей не задеты.
+
+### Проверка
+
+- `npx tsc --noEmit` clean
+- `npm run build` 43 страницы / 0 ошибок
+  - `/projects` (3.67 kB) с Suspense + URL filter
+  - 5 насосных страниц по 155 B (полностью single render через ProductPageShell)
+  - `/products/water-treatment` 155 B
+  - 13 детальных объектов через `[slug]`
+- 301-редиректы со старых URL `/products/pumps/{water-treatment, heating-unit/*}`
+
+### Коммиты
+
+1. `feat: setup theme tokens for light/dark + Header toggle`
+2. `feat: light theme tokens for hover and image placeholders`
+3. `refactor: unify product cards — description + related projects, drop quiz`
+
+### Vercel
+
+PR через `gh pr create + gh pr merge --squash` в `main`. Production:
+**https://anhel-website.vercel.app**

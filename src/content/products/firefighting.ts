@@ -42,12 +42,12 @@ export const firefightingContent: ProductContent = {
     // which is the cleanest stub: no error, no misleading navigation.
     primaryCta: {
       label: "Быстрый запрос",
-      href: "#quiz",
+      href: "#documents",
       variant: "primary",
     },
     secondaryCta: {
       label: "Опросный лист",
-      href: "#quiz",
+      href: "#documents",
       variant: "ghost",
       hint: "6 шагов",
     },
@@ -71,6 +71,15 @@ export const firefightingContent: ProductContent = {
     { label: "Частота вращения", value: "2900 / 1450", unit: "об/мин" },
     { label: "Срок службы", value: "не менее 10", unit: "лет" },
   ],
+
+  description: {
+    tag: "03 · ОПИСАНИЕ",
+    title: "Назначение и принцип работы",
+    paragraphs: [
+      "Насосные станции пожаротушения ANHEL поддерживают необходимое давление и расход воды в системах АПТ, ВПВ и совмещённых решениях. Автоматический запуск по сигналу пожарной автоматики или падению давления в системе, горячее резервирование и контроль состояния каждого насоса.",
+      "Установка собирается на единой раме с шкафом управления и комплектом запорной арматуры. Конфигурация — количество насосов, рабочее давление, режимы регулирования — подбирается под проектные параметры объекта.",
+    ],
+  },
 
   // Section 5 «Применение». Six object types the fire-fighting station
   // is installed on. Examples use real object names where confirmed
@@ -336,7 +345,7 @@ export const firefightingContent: ProductContent = {
     tag: "11 · ЗАПРОС КП",
     title: "Соберите свою станцию под проект",
     subtitle: "Ответим в течение рабочего дня. Расчёт подбора бесплатный.",
-    cta: { label: "Заполнить опросный лист", href: "#quiz" },
+    cta: { label: "Заполнить опросный лист", href: "#documents" },
     neighboursCaption: "Остальные продукты",
   },
 };

@@ -153,7 +153,7 @@ export default async function HeatingModulePage({ params }: RouteParams) {
               </p>
               <div className="mt-10 flex flex-wrap items-center gap-4 md:mt-12 md:gap-5">
                 <Link
-                  href="#quiz"
+                  href="#documents"
                   data-cursor="hover"
                   className="group inline-flex items-center gap-3 rounded-md bg-[var(--color-secondary)] px-[22px] py-[14px] text-sm font-medium text-[var(--color-primary)]"
                 >

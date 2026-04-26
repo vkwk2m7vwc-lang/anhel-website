@@ -260,6 +260,20 @@ export type CasesContent = {
  * `hero` and `techSpecs`; the firefighting commit sequence for sections
  * 5-12 adds the remaining fields one commit at a time.
  */
+/**
+ * Description section — короткий блок «назначение и принцип работы»,
+ * как у ИТП-модулей. Шаблон: mono-tag → заголовок → 1-3 параграфа.
+ * Optional на ProductContent: если поле не задано, секция не рендерится.
+ */
+export type DescriptionContent = {
+  /** Mono tag, e.g. «03 · ОПИСАНИЕ». */
+  tag: string;
+  /** Section h2, e.g. «Назначение и принцип работы». */
+  title: string;
+  /** Один или несколько абзацев. Каждая строка массива = отдельный <p>. */
+  paragraphs: string[];
+};
+
 export type ProductContent = {
   /** URL slug — the last segment of the route. */
   slug: string;
@@ -269,6 +283,12 @@ export type ProductContent = {
   metaDescription: string;
   hero: ProductHeroContent;
   techSpecs: TechSpecTile[];
+  /**
+   * «Описание» — назначение и принцип работы. Optional: если поле
+   * не задано, секция не рендерится. Заполняется для 6 product-страниц
+   * (5 насосных + ВПУ); для ИТП-родителя текст лежит на подстраницах.
+   */
+  description?: DescriptionContent;
   /** Section 5 — «Применение». */
   applications: ApplicationsContent;
   /** Section 6 — «Бренды». */

@@ -1,11 +1,14 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useEffect, useState, useMemo } from "react";
+import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { ProjectCard } from "./ProjectCard";
 import type { ProjectItem } from "@/content/projects/types";
 
 type FilterKey = "all" | "pumps" | "water-treatment";
+
+const VALID_KEYS: readonly FilterKey[] = ["all", "pumps", "water-treatment"];
 
 const FILTERS: { key: FilterKey; label: string; count?: (items: ProjectItem[]) => number }[] = [
   {
@@ -30,16 +33,59 @@ const FILTERS: { key: FilterKey; label: string; count?: (items: ProjectItem[]) =
 ];
 
 /**
- * Client-side projects grid with category filter — no URL state, чтобы
- * не плодить редандантные роуты (/projects?category=pumps был бы лишний
- * SEO-шум при 13 карточках). Filter сидит на pill-row, по-умолчанию
- * «Все».
+ * Client-side projects grid with category filter.
+ *
+ * URL-sync: при заходе с `/projects?category=pumps` (или
+ * `?category=water-treatment`) preselect соответствующий фильтр; при
+ * клике пользователь меняет URL через `router.replace`, чтобы share-link
+ * был стабилен. Хеш и scroll не трогаем.
+ *
+ * Это позволяет ссылке «Смотреть все объекты» с product-страницы
+ * (`<RelatedProjectsSection>`) предустанавливать релевантную категорию.
  *
  * Сама сетка — 1 / 2 / 3 col; промежуток на десктопе hairline-border-grid
  * как в DocumentsGrid и ApplicationsGrid (визуальная согласованность).
  */
 export function ProjectsFilter({ projects }: { projects: ProjectItem[] }) {
-  const [filter, setFilter] = useState<FilterKey>("all");
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
+
+  // Initial value читается из URL: ?category=pumps|water-treatment|all.
+  // Невалидное значение → fallback "all".
+  const initialFromUrl = (() => {
+    const raw = searchParams.get("category");
+    return (VALID_KEYS as readonly string[]).includes(raw ?? "")
+      ? (raw as FilterKey)
+      : "all";
+  })();
+  const [filter, setFilter] = useState<FilterKey>(initialFromUrl);
+
+  // Если URL меняется снаружи (back/forward, deep-link) — синхронизируем
+  // локальный state. Reverse-направление обрабатывается onSetFilter ниже.
+  useEffect(() => {
+    const raw = searchParams.get("category");
+    const next: FilterKey = (VALID_KEYS as readonly string[]).includes(
+      raw ?? "",
+    )
+      ? (raw as FilterKey)
+      : "all";
+    setFilter((prev) => (prev === next ? prev : next));
+  }, [searchParams]);
+
+  const onSetFilter = (key: FilterKey) => {
+    setFilter(key);
+    // `replace` чтобы клик по фильтру не плодил истории back; параметр
+    // сохраняется в URL для shareable-ссылок и SEO.
+    const params = new URLSearchParams(searchParams.toString());
+    if (key === "all") {
+      params.delete("category");
+    } else {
+      params.set("category", key);
+    }
+    const qs = params.toString();
+    router.replace(qs ? `${pathname}?${qs}` : pathname, { scroll: false });
+  };
 
   const filtered = useMemo(() => {
     if (filter === "all") return projects;
@@ -62,7 +108,7 @@ export function ProjectsFilter({ projects }: { projects: ProjectItem[] }) {
             <button
               key={f.key}
               type="button"
-              onClick={() => setFilter(f.key)}
+              onClick={() => onSetFilter(f.key)}
               data-cursor="hover"
               aria-pressed={active}
               className={[
