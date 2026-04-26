@@ -56,9 +56,12 @@ export const heatingUnitContent: ProductContent = {
       src: "/assets/products/bitp.png",
       alt: "ANHEL® — блочный индивидуальный тепловой пункт, модульное исполнение",
     },
+    // Pair of hero CTAs:
+    //   primary  — online questionnaire (7-step web form, mirror of PDF)
+    //   secondary — direct PDF download for those preferring offline workflow
     primaryCta: {
-      label: "Быстрый запрос",
-      href: "#documents",
+      label: "Заполнить онлайн",
+      href: "/quiz/itp",
       variant: "primary",
     },
     secondaryCta: {

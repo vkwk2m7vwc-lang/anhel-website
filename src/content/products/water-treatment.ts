@@ -47,9 +47,12 @@ export const waterTreatmentContent: ProductContent = {
       src: "/assets/products/vpu.png",
       alt: "ANHEL — установка водоподготовки со стальными фильтрами",
     },
+    // Pair of hero CTAs:
+    //   primary  — online questionnaire (5-step web form, mirror of PDF)
+    //   secondary — direct PDF download for those preferring offline workflow
     primaryCta: {
-      label: "Быстрый запрос",
-      href: "#documents",
+      label: "Заполнить онлайн",
+      href: "/quiz/vpu",
       variant: "primary",
     },
     secondaryCta: {

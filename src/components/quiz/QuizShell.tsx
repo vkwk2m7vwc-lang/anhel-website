@@ -11,7 +11,6 @@ import {
 import { zodResolver } from '@hookform/resolvers/zod';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  pumpsSteps,
   QUIZ_INTRO_PARA_1,
   QUIZ_INTRO_PARA_2,
   QUIZ_DISCLAIMER_TITLE,
@@ -19,28 +18,21 @@ import {
   QUIZ_CONSENT_LABEL,
   type QuizStep,
 } from '@/content/quiz/pumps-fields';
-import {
-  pumpsQuizSchema,
-  pumpsDefaults,
-  stepFieldNames,
-  type PumpsQuizValues,
-} from '@/content/quiz/pumps-schema';
+import type { QuizConfig } from '@/content/quiz/quiz-config';
 import { QuizProgress } from './QuizProgress';
 import { QuizNavigation } from './QuizNavigation';
 import { QuizSection } from './QuizSection';
 import { CheckboxField } from './fields/CheckboxField';
 import { IntakeChooser } from './IntakeChooser';
 
-const STORAGE_KEY = 'anhel-quiz-pumps-v1';
-
-const INTAKE_FIELD_NAMES = ['intake_pond', 'intake_under', 'intake_semi', 'intake_above'] as const;
-
 type Props = {
+  /** Конфиг опросника (pumps / vpu / itp / aupd) */
+  config: QuizConfig;
   /** initial pre-fill values from URL query */
-  prefill?: Partial<PumpsQuizValues>;
+  prefill?: Record<string, unknown>;
 };
 
-export function QuizShell({ prefill }: Props) {
+export function QuizShell({ config, prefill }: Props) {
   const [stepIdx, setStepIdx] = useState(0);
   const [visited, setVisited] = useState<Set<number>>(new Set([0]));
   const [submitted, setSubmitted] = useState<null | { ok: true } | { ok: false; message: string }>(
@@ -50,19 +42,19 @@ export function QuizShell({ prefill }: Props) {
 
   // Initial values: defaults + prefill
   const initialValues = useMemo(
-    () => ({ ...pumpsDefaults, ...(prefill || {}) }) as PumpsQuizValues,
-    [prefill],
+    () => ({ ...config.defaults, ...(prefill || {}) }) as Record<string, unknown>,
+    [config.defaults, prefill],
   );
 
-  const methods = useForm<PumpsQuizValues>({
-    resolver: zodResolver(pumpsQuizSchema),
+  const methods = useForm<Record<string, unknown>>({
+    resolver: zodResolver(config.schema),
     defaultValues: initialValues,
     mode: 'onBlur',
   });
 
   const { handleSubmit, trigger, reset, watch } = methods;
-  const stepCount = pumpsSteps.length;
-  const step: QuizStep = pumpsSteps[stepIdx];
+  const stepCount = config.steps.length;
+  const step: QuizStep = config.steps[stepIdx];
 
   // === Restore from localStorage on mount ===
   const didRestore = useRef(false);
@@ -70,9 +62,9 @@ export function QuizShell({ prefill }: Props) {
     if (didRestore.current) return;
     didRestore.current = true;
     try {
-      const raw = localStorage.getItem(STORAGE_KEY);
+      const raw = localStorage.getItem(config.storageKey);
       if (!raw) return;
-      const parsed = JSON.parse(raw) as { values?: PumpsQuizValues; stepIdx?: number };
+      const parsed = JSON.parse(raw) as { values?: Record<string, unknown>; stepIdx?: number };
       if (parsed && parsed.values) {
         const merged = { ...initialValues, ...parsed.values };
         reset(merged);
@@ -87,14 +79,14 @@ export function QuizShell({ prefill }: Props) {
     } catch {
       // ignore
     }
-  }, [initialValues, reset, stepCount]);
+  }, [initialValues, reset, stepCount, config.storageKey]);
 
   // === Save to localStorage on every change ===
   useEffect(() => {
     const sub = watch((values) => {
       try {
         localStorage.setItem(
-          STORAGE_KEY,
+          config.storageKey,
           JSON.stringify({ values, stepIdx, savedAt: Date.now() }),
         );
       } catch {
@@ -102,7 +94,7 @@ export function QuizShell({ prefill }: Props) {
       }
     });
     return () => sub.unsubscribe();
-  }, [watch, stepIdx]);
+  }, [watch, stepIdx, config.storageKey]);
 
   const goTo = useCallback(
     (idx: number) => {
@@ -122,15 +114,15 @@ export function QuizShell({ prefill }: Props) {
   );
 
   const handleNext = useCallback(async () => {
-    const fieldsToValidate = stepFieldNames[stepIdx] || [];
+    const fieldsToValidate = config.stepFieldNames[stepIdx] || [];
     if (fieldsToValidate.length > 0) {
-      const ok = await trigger(fieldsToValidate as Array<keyof PumpsQuizValues>, {
+      const ok = await trigger(fieldsToValidate, {
         shouldFocus: true,
       });
       if (!ok) return;
     }
     goTo(stepIdx + 1);
-  }, [stepIdx, trigger, goTo]);
+  }, [stepIdx, trigger, goTo, config.stepFieldNames]);
 
   const handleBack = useCallback(() => {
     goTo(stepIdx - 1);
@@ -144,7 +136,7 @@ export function QuizShell({ prefill }: Props) {
       const res = await fetch('/api/questionnaire', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ kind: 'pumps', values }),
+        body: JSON.stringify({ kind: config.kind, values }),
       });
       const data = (await res.json().catch(() => ({}))) as {
         success?: boolean;
@@ -152,7 +144,7 @@ export function QuizShell({ prefill }: Props) {
       };
       if (res.ok && data.success) {
         try {
-          localStorage.removeItem(STORAGE_KEY);
+          localStorage.removeItem(config.storageKey);
         } catch {}
         setSubmitted({ ok: true });
       } else {
@@ -174,7 +166,7 @@ export function QuizShell({ prefill }: Props) {
 
   // === Success/Error screens ===
   if (submitted?.ok) {
-    return <SuccessScreen />;
+    return <SuccessScreen catalogHref={config.catalogHref} catalogLabel={config.catalogLabel} />;
   }
 
   return (
@@ -186,14 +178,17 @@ export function QuizShell({ prefill }: Props) {
             Опросный лист
           </p>
           <h1 className="mt-2 text-2xl sm:text-3xl font-medium tracking-tight text-secondary">
-            Подбор насосной установки
+            {config.title}
           </h1>
+          {config.description && (
+            <p className="mt-2 text-sm leading-relaxed text-secondary/70">{config.description}</p>
+          )}
           <p className="mt-3 text-sm leading-relaxed text-secondary/70">{QUIZ_INTRO_PARA_1}</p>
           <p className="mt-3 text-sm leading-relaxed text-secondary/70">{QUIZ_INTRO_PARA_2}</p>
         </header>
 
         <QuizProgress
-          steps={pumpsSteps}
+          steps={config.steps}
           current={stepIdx}
           visited={visited}
           onStepClick={goTo}
@@ -228,17 +223,14 @@ export function QuizShell({ prefill }: Props) {
               {step.id !== 'review' ? (
                 <div className="space-y-8">
                   {step.sections.map((section) => {
-                    // Спецкейс: секция «Напор» — четыре поля intake_* рендерим
-                    // как интерактивный chooser-grid с SVG-иконками вместо
-                    // обычных чекбоксов + плоской PDF-диаграммы. Так понятнее
-                    // и куда кликать, и какой тип резервуара ты выбираешь.
-                    if (section.id === 'head') {
+                    const custom = config.customSections?.[section.id];
+                    if (custom?.component === 'intake-chooser') {
                       return (
                         <QuizSection
                           key={section.id}
                           section={section}
                           beforeFields={<IntakeChooser />}
-                          excludeFields={INTAKE_FIELD_NAMES}
+                          excludeFields={custom.excludeFieldNames}
                         />
                       );
                     }
@@ -246,7 +238,7 @@ export function QuizShell({ prefill }: Props) {
                   })}
                 </div>
               ) : (
-                <ReviewStep onJump={goTo} />
+                <ReviewStep onJump={goTo} steps={config.steps} />
               )}
             </motion.div>
           </AnimatePresence>
@@ -272,7 +264,13 @@ export function QuizShell({ prefill }: Props) {
 
 // === Helpers ===
 
-function SuccessScreen() {
+function SuccessScreen({
+  catalogHref,
+  catalogLabel,
+}: {
+  catalogHref: string;
+  catalogLabel: string;
+}) {
   return (
     <div className="mx-auto flex min-h-[70vh] max-w-2xl flex-col items-start justify-center px-5 py-16">
       <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-secondary/55">
@@ -309,23 +307,29 @@ function SuccessScreen() {
           На главную
         </a>
         <a
-          href="/products/pumps"
+          href={catalogHref}
           className="border border-[color:var(--color-hairline)] px-5 py-2.5 text-sm hover:bg-[color:var(--color-hover-tint)]"
         >
-          В каталог насосных
+          {catalogLabel}
         </a>
       </div>
     </div>
   );
 }
 
-function ReviewStep({ onJump }: { onJump: (idx: number) => void }) {
+function ReviewStep({
+  onJump,
+  steps,
+}: {
+  onJump: (idx: number) => void;
+  steps: QuizStep[];
+}) {
   const { control } = useFormContext();
   const watched = useWatch({ control });
   const values = (watched ?? {}) as Record<string, unknown>;
   return (
     <div className="space-y-8">
-      {pumpsSteps
+      {steps
         .filter((s) => s.id !== 'review')
         .map((s, idx) => {
           const filled = collectFilled(s, values);

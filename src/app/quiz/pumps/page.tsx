@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import type { CSSProperties } from 'react';
 import { QuizShell } from '@/components/quiz/QuizShell';
 import { pumpsPrefillMap, pumpsAccentMap } from '@/content/quiz/pumps-fields';
-import type { PumpsQuizValues } from '@/content/quiz/pumps-schema';
+import { pumpsQuizConfig } from '@/content/quiz/pumps-config';
 
 export const metadata: Metadata = {
   title: 'Опросный лист — подбор насосной установки | ANHEL®',
@@ -25,18 +25,16 @@ type Props = {
  */
 export default function PumpsQuizPage({ searchParams }: Props) {
   const from = (searchParams?.from || '').trim();
-  const prefill = (pumpsPrefillMap[from] || {}) as Partial<PumpsQuizValues>;
+  const prefill = pumpsPrefillMap[from] || {};
   const accent = pumpsAccentMap[from];
 
-  // Override --accent-current так чтобы он применялся ко всем дочерним
-  // компонентам формы — точкам прогресса, проценту, hover-states карточек.
   const accentStyle: CSSProperties | undefined = accent
     ? ({ '--accent-current': accent } as CSSProperties)
     : undefined;
 
   return (
     <main className="min-h-screen bg-primary text-secondary" style={accentStyle}>
-      <QuizShell prefill={prefill} />
+      <QuizShell config={pumpsQuizConfig} prefill={prefill} />
     </main>
   );
 }
