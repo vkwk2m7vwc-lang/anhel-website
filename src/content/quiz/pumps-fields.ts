@@ -554,3 +554,20 @@ export const pumpsPrefillMap: Record<string, Partial<Record<string, boolean>>> =
   'heating-cooling': { sys_heating: true, sys_cooling: true },
   special: {},
 };
+
+/**
+ * Акцент-цвет на странице quiz по подкатегории.
+ * Совпадает с palette на /products/pumps/* для визуальной преемственности
+ * (если пришли с пожарной — на форме акцент тоже красный).
+ *
+ * Значения — имена CSS-переменных из globals.css (--accent-fire / -water /
+ * -heat / -treatment). Применяются как override `--accent-current` на
+ * корне страницы.
+ */
+export const pumpsAccentMap: Record<string, string> = {
+  firefighting: 'var(--accent-fire)',
+  'water-supply': 'var(--accent-water)',
+  'pressure-boost': 'var(--accent-water)',
+  'heating-cooling': 'var(--accent-heat)',
+  special: 'var(--accent-treatment)',
+};

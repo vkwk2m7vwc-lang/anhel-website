@@ -29,9 +29,11 @@ import { QuizProgress } from './QuizProgress';
 import { QuizNavigation } from './QuizNavigation';
 import { QuizSection } from './QuizSection';
 import { CheckboxField } from './fields/CheckboxField';
-import Image from 'next/image';
+import { IntakeChooser } from './IntakeChooser';
 
 const STORAGE_KEY = 'anhel-quiz-pumps-v1';
+
+const INTAKE_FIELD_NAMES = ['intake_pond', 'intake_under', 'intake_semi', 'intake_above'] as const;
 
 type Props = {
   /** initial pre-fill values from URL query */
@@ -226,16 +228,21 @@ export function QuizShell({ prefill }: Props) {
               {step.id !== 'review' ? (
                 <div className="space-y-8">
                   {step.sections.map((section) => {
-                    // Спецкейс: в шаге flow-head под полями забора показать диаграмму
-                    const afterFields =
-                      section.id === 'head' ? <IntakeDiagramHint /> : undefined;
-                    return (
-                      <QuizSection
-                        key={section.id}
-                        section={section}
-                        afterFields={afterFields}
-                      />
-                    );
+                    // Спецкейс: секция «Напор» — четыре поля intake_* рендерим
+                    // как интерактивный chooser-grid с SVG-иконками вместо
+                    // обычных чекбоксов + плоской PDF-диаграммы. Так понятнее
+                    // и куда кликать, и какой тип резервуара ты выбираешь.
+                    if (section.id === 'head') {
+                      return (
+                        <QuizSection
+                          key={section.id}
+                          section={section}
+                          beforeFields={<IntakeChooser />}
+                          excludeFields={INTAKE_FIELD_NAMES}
+                        />
+                      );
+                    }
+                    return <QuizSection key={section.id} section={section} />;
                   })}
                 </div>
               ) : (
@@ -264,26 +271,6 @@ export function QuizShell({ prefill }: Props) {
 }
 
 // === Helpers ===
-
-function IntakeDiagramHint() {
-  return (
-    <div className="mt-6 border border-[color:var(--color-hairline)] bg-[color:var(--color-hover-tint)] p-4">
-      <p className="mb-3 text-xs text-secondary/65">
-        Схема расположения резервуаров — выберите тип, соответствующий вашему объекту.
-      </p>
-      <div className="relative aspect-[1042/210] w-full">
-        <Image
-          src="/assets/products/intake-diagram.png"
-          alt="Типы забора воды: водоём, подземный, полузаглублённый, наземный"
-          fill
-          sizes="(min-width: 768px) 700px, 100vw"
-          className="object-contain"
-          priority={false}
-        />
-      </div>
-    </div>
-  );
-}
 
 function SuccessScreen() {
   return (
