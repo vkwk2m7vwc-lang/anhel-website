@@ -208,22 +208,35 @@ export const waterSupplyContent: ProductContent = {
     ],
   },
 
-  // Галерея — 8 skeleton-тайлов как у firefighting. Реальные фото
-  // появятся после shooting-session, drop в /public/assets/gallery/
-  // water-supply/ и fill `src`.
+  // Section «Галерея». 3 фото станций водоснабжения ANHEL® из цеха
+  // (отретушированные пользователем версии — без МФМК-брендинга).
+  // Файлы под /public/assets/production/water-supply/.
   gallery: {
     tag: "06 · ГАЛЕРЕЯ",
     title: "Производство и монтаж",
-    lede: "Цех сборки, испытательный стенд, установки на объектах.",
+    lede: "Насосные станции водоснабжения ANHEL® в цехе сборки.",
     photos: [
-      { id: "shop-01", alt: "Сборочный цех ANHEL®, общий вид", caption: "Цех, Москва", aspect: "4/5" },
-      { id: "shop-02", alt: "Насосные агрегаты ХВС на сборке", caption: "Монтаж насосной группы", aspect: "4/5" },
-      { id: "shop-03", alt: "Шкаф управления, крупный план", caption: "Шкаф управления с ПЛК", aspect: "4/5" },
-      { id: "test-01", alt: "Гидравлические испытания установки", caption: "Испытательный стенд", aspect: "4/5" },
-      { id: "site-01", alt: "Готовая станция перед отгрузкой", caption: "Приёмка ОТК", aspect: "4/5" },
-      { id: "site-02", alt: "Смонтированная станция на объекте", caption: "Объект — Москва", aspect: "4/5" },
-      { id: "detail-01", alt: "Коллектор и обратные клапаны", caption: "Коллектор с запорной арматурой", aspect: "4/5" },
-      { id: "detail-02", alt: "Крупный план рабочего колеса", caption: "Рабочее колесо насоса", aspect: "4/5" },
+      {
+        id: "shop-01",
+        src: "/assets/production/water-supply/shop-01.jpg",
+        alt: "Насосная станция водоснабжения ANHEL® со шкафом управления — общий вид",
+        caption: "Готовая станция, цех Москва",
+        aspect: "4/5",
+      },
+      {
+        id: "shop-02",
+        src: "/assets/production/water-supply/shop-02.jpg",
+        alt: "Насосные агрегаты ANHEL® — компактная сборка",
+        caption: "Сборка насосной группы",
+        aspect: "4/5",
+      },
+      {
+        id: "shop-03",
+        src: "/assets/production/water-supply/shop-03.jpg",
+        alt: "Насосная станция ANHEL® — обвязка коллектора",
+        caption: "Обвязка и пуско-наладка",
+        aspect: "4/5",
+      },
     ],
   },
 

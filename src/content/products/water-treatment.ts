@@ -202,14 +202,13 @@ export const waterTreatmentContent: ProductContent = {
     ],
   },
 
-  // Section «Галерея». Реальные фото производства водоподготовки ANHEL®:
-  // - 8 фото установки обратного осмоса для ГОК Удокан (масштабная RO-серия)
-  // - выборочно — крупные планы линейки «Дельта ВПУ Aqua» для жилых объектов
-  // Файлы под /public/assets/production/water-treatment/.
+  // Section «Галерея». 8 фото установки обратного осмоса ANHEL® на
+  // объекте «ГОК Удокан» (крупнейшее месторождение меди в России).
+  // Все файлы под /public/assets/production/water-treatment/.
   gallery: {
     tag: "06 · ГАЛЕРЕЯ",
     title: "Производство и монтаж",
-    lede: "Установки на объектах и крупные планы оборудования.",
+    lede: "Установка обратного осмоса ANHEL® для ГОК Удокан.",
     photos: [
       {
         id: "udokan-01",
@@ -247,6 +246,13 @@ export const waterTreatmentContent: ProductContent = {
         aspect: "4/5",
       },
       {
+        id: "udokan-06",
+        src: "/assets/production/water-treatment/udokan-06.jpg",
+        alt: "Установка обратного осмоса ANHEL® — ракурс с торца",
+        caption: "ГОК Удокан — торцевой ракурс",
+        aspect: "4/5",
+      },
+      {
         id: "udokan-07",
         src: "/assets/production/water-treatment/udokan-07.jpg",
         alt: "Стальная рама установки обратного осмоса ANHEL®",
@@ -254,17 +260,10 @@ export const waterTreatmentContent: ProductContent = {
         aspect: "4/5",
       },
       {
-        id: "delta-aqua-02",
-        src: "/assets/production/water-treatment/delta-aqua-02.jpg",
-        alt: "Установка водоподготовки ANHEL® серии Дельта ВПУ Aqua",
-        caption: "Серия Дельта ВПУ Aqua — общий вид",
-        aspect: "4/5",
-      },
-      {
-        id: "delta-aqua-04",
-        src: "/assets/production/water-treatment/delta-aqua-04.jpg",
-        alt: "Фильтры умягчения с автоматическими клапанами ANHEL®",
-        caption: "Дельта ВПУ Aqua — фильтрационный модуль",
+        id: "udokan-08",
+        src: "/assets/production/water-treatment/udokan-08.jpg",
+        alt: "Установка обратного осмоса ANHEL® на объекте — общий вид",
+        caption: "ГОК Удокан — финальная сборка",
         aspect: "4/5",
       },
     ],
