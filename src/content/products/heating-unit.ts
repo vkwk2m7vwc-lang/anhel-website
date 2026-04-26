@@ -63,9 +63,8 @@ export const heatingUnitContent: ProductContent = {
     },
     secondaryCta: {
       label: "Опросный лист",
-      href: "#documents",
+      href: "/docs/heating-unit/oprosnyi-list.pdf",
       variant: "ghost",
-      hint: "6 шагов",
     },
   },
 

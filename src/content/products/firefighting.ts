@@ -47,9 +47,8 @@ export const firefightingContent: ProductContent = {
     },
     secondaryCta: {
       label: "Опросный лист",
-      href: "#documents",
+      href: "/docs/firefighting/oprosnyi-list.pdf",
       variant: "ghost",
-      hint: "6 шагов",
     },
   },
 

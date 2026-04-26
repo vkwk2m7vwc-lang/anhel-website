@@ -52,9 +52,8 @@ export const waterSupplyContent: ProductContent = {
     },
     secondaryCta: {
       label: "Опросный лист",
-      href: "#documents",
+      href: "/docs/water-supply/oprosnyi-list.pdf",
       variant: "ghost",
-      hint: "6 шагов",
     },
   },
 

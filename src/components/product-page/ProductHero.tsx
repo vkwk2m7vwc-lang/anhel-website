@@ -233,6 +233,32 @@ function ProductCtaButton({ cta }: { cta: ProductCTA }) {
     );
   }
 
+  // Прямые ссылки на PDF-файлы рендерим как <a download>, чтобы браузер
+  // сразу скачивал документ, а не уводил пользователя на отдельную
+  // страницу со списком файлов. Все остальные ссылки (anchor #documents,
+  // внешние URL) идут через Next/Link.
+  const isPdfDownload = /\.pdf(?:[?#]|$)/i.test(cta.href);
+
+  if (isPdfDownload) {
+    return (
+      <a
+        ref={ref}
+        href={cta.href}
+        download
+        data-cursor="hover"
+        className="inline-flex items-center gap-3 rounded-md border-[0.5px] border-[var(--color-secondary)]/40 bg-transparent px-[22px] py-[14px] text-sm font-medium text-[var(--color-secondary)]/80 transition-colors hover:border-[var(--color-secondary)] hover:text-[var(--color-secondary)]"
+      >
+        {cta.label}
+        <span
+          aria-hidden="true"
+          className="inline-block font-mono text-[var(--color-secondary)]/65"
+        >
+          ↓
+        </span>
+      </a>
+    );
+  }
+
   return (
     <Link
       ref={ref}

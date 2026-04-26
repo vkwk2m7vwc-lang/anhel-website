@@ -49,9 +49,8 @@ export const specialContent: ProductContent = {
     },
     secondaryCta: {
       label: "Опросный лист",
-      href: "#documents",
+      href: "/docs/special/oprosnyi-list.pdf",
       variant: "ghost",
-      hint: "6 шагов",
     },
   },
 
