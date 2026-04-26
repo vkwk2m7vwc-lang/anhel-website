@@ -41,6 +41,12 @@ next-env.d.ts
 .tmp_preserve/
 .trash/
 
+# Cowork-sandbox draft / scrape outputs (not for production)
+tmp/
+
+# Backup files from sed/text-edit operations in the sandbox
+*.bak
+
 # IDE
 .idea
 .vscode

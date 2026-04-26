@@ -26,6 +26,18 @@ const PRODUCT_TO_PROJECT_CATEGORIES: Record<string, ProjectItem["category"][]> =
 
     // Water treatment.
     "water-treatment": ["water-treatment", "mixed"],
+
+    // Control systems (5 серий шкафов). Шкафы устанавливаются на
+    // объекты с насосами, водоподготовкой и комбинированных — поэтому
+    // показываем все 3 категории. По мере появления специализированных
+    // объектов (например, чисто КНС или чисто противодымные) можно
+    // разнести.
+    "control-systems": ["pumps", "water-treatment", "mixed"],
+    "variable-frequency": ["pumps", "mixed"],
+    "fire-suppression": ["pumps", "mixed"],
+    "smoke-control": ["pumps", "mixed"],
+    "sewage-pumping": ["pumps", "water-treatment", "mixed"],
+    "electric-actuators": ["pumps", "water-treatment", "mixed"],
   };
 
 /**

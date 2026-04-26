@@ -1,6 +1,21 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   /**
+   * Image optimization config.
+   *
+   * `dangerouslyAllowSVG: true` — нужно потому что мы используем
+   * собственные SVG-плейсхолдеры (для control-systems пока нет
+   * фоторендеров, ставим isometric line-art SVG). Источник — только
+   * наш /public, не пользовательские загрузки, поэтому безопасно.
+   * `contentDispositionType: "attachment"` — стандартная защитная мера
+   * на случай если SVG открывают по прямой ссылке.
+   */
+  images: {
+    dangerouslyAllowSVG: true,
+    contentDispositionType: "attachment",
+    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
+  },
+  /**
    * 301 redirects для перенесённых разделов после реструктуризации
    * каталога (feat/3-tier-catalog).
    *
