@@ -1,15 +1,10 @@
 import type { Metadata } from "next";
-import { ProductHero } from "@/components/product-page/ProductHero";
 import { ProductPageShell } from "@/components/product-page/ProductPageShell";
-import { TechSpecsGrid } from "@/components/product-page/TechSpecsGrid";
-import { ApplicationsGrid } from "@/components/product-page/ApplicationsGrid";
 import { BrandsStrip } from "@/components/product-page/BrandsStrip";
-import { AdvantagesGrid } from "@/components/product-page/AdvantagesGrid";
 import { GalleryRail } from "@/components/product-page/GalleryRail";
 import { CasesCarousel } from "@/components/product-page/CasesCarousel";
 import { QuizSection } from "@/components/product-page/quiz/QuizSection";
 import { DocumentsGrid } from "@/components/product-page/DocumentsGrid";
-import { ProductCtaFooter } from "@/components/product-page/ProductCtaFooter";
 import { HowItWorksSection } from "@/components/products/firefighting/lakhta/HowItWorksSection";
 import { firefightingContent } from "@/content/products/firefighting";
 import {
@@ -18,30 +13,51 @@ import {
   productLd,
 } from "@/lib/schema-org";
 
+// Cinematic product-page sections — replace the legacy components
+import { CinematicProductHero } from "@/components/cinematic/product/CinematicProductHero";
+import { MomentOfTruth } from "@/components/cinematic/product/MomentOfTruth";
+import { NumbersAsTypography } from "@/components/cinematic/product/NumbersAsTypography";
+import { ApplicationsCinema } from "@/components/cinematic/product/ApplicationsCinema";
+import { CinematicCtaFooter } from "@/components/cinematic/product/CinematicCtaFooter";
+
 /**
- * /products/pumps/firefighting
+ * /products/pumps/firefighting — VARIANT 5 «Cinematic».
  *
- * Reference product page for the site — everything we build here
- * becomes the template for water-supply, heating-unit, and
- * water-treatment. Content lives in
- * `src/content/products/firefighting.ts`; this file is only the
- * assembly.
+ * The reference product page is rebuilt around the same narrative
+ * language as the cinematic home: monumental typography, sticky
+ * scroll dramaturgy, full-bleed editorial pacing instead of card
+ * grids.
  *
- * Section map (renumbered in audit round-1 to remove the 04 gap
- * left behind by merging the old «Как работает» into section 3):
- *   01 Hero                           ✓  ProductHero
- *   02 Тех. характеристики             ✓  TechSpecsGrid
- *   03 Как срабатывает (+ 4 системы)   ✓  HowItWorksSection
- *   04 Применение                      ✓  ApplicationsGrid
- *   05 Бренды насосов + комплектующие  ✓  BrandsStrip
- *   06 Преимущества (9 пунктов)        ✓  AdvantagesGrid
- *   07 Галерея                         ✓  GalleryRail (skeletons)
- *   08 Кейсы                           ✓  CasesCarousel (skeletons)
- *   09 Опросный лист (квиз)            ✓  QuizSection (UI only)
- *   10 Документация                    ✓  DocumentsGrid
- *   11 Финальный CTA + соседние        ✓  ProductCtaFooter
+ * Section map (cinematic):
+ *   01 Hero                  ✓ CinematicProductHero (full-bleed,
+ *                                title-as-canvas, no breadcrumb /
+ *                                CTA pills / subtitle)
+ *   02 Moment of truth       ✓ MomentOfTruth (sticky 200vh, three
+ *                                urgency words cross-fading on
+ *                                scroll, accent radial breathing)
+ *   03 Цифры                  ✓ NumbersAsTypography (each spec is a
+ *                                viewport with a giant number)
+ *   04 Как срабатывает         ✓ HowItWorksSection (kept — Lakhta
+ *                                scene is unique and earns its
+ *                                viewport already)
+ *   05 Где это работает        ✓ ApplicationsCinema (full-bleed
+ *                                stack, monumental type, no grid)
+ *   06 Бренды                  ✓ BrandsStrip (kept — the brand row
+ *                                is content-led, doesn't fight the
+ *                                cinematic posture)
+ *   07 Галерея                 ✓ GalleryRail (kept)
+ *   08 Кейсы                   ✓ CasesCarousel (kept)
+ *   09 Опросный лист           ✓ QuizSection (kept — interactive)
+ *   10 Документация            ✓ DocumentsGrid (kept)
+ *   11 Финальный CTA           ✓ CinematicCtaFooter (single
+ *                                monumental link, neighbours as
+ *                                quiet typographic row)
  *
- * The `#quiz` anchor referenced by the hero CTAs lands with section 09.
+ * Sections kept (BrandsStrip, GalleryRail, CasesCarousel,
+ * QuizSection, DocumentsGrid) read fine inside the cinematic
+ * pacing because they are content-driven blocks, not catalogue
+ * card grids. Replacing them is a polish round, not a
+ * structural one.
  */
 export const metadata: Metadata = {
   title: firefightingContent.metaTitle,
@@ -60,25 +76,28 @@ export const metadata: Metadata = {
   },
 };
 
+// Hex string for the firefighting accent — duplicated here from
+// globals.css so the cinematic sections (which take an `accent` hex)
+// don't have to read CSS variables.
+const FIRE_ACCENT = "#D72638";
+
 export default function FirefightingProductPage() {
   const {
     slug,
     hero,
-    techSpecs,
     accent,
     applications,
     brands,
-    advantages,
     gallery,
     cases,
     quiz,
     documents,
-    footerCta,
   } = firefightingContent;
+  // techSpecs from the content file is intentionally unused on this
+  // variant — NumbersAsTypography curates a smaller, more cinematic
+  // selection of 5 numbers below. The full 8-spec table can come back
+  // if a comparison view is added later.
 
-  // Schema.org Product + Breadcrumb. Model `HVS-NU` — working draft
-  // (см. _docs/water_supply_report.md, замена одной строкой когда
-  // заказчик финализирует серийное обозначение).
   const productJsonLd = productLd({
     slug,
     name: "Насосные станции пожаротушения ANHEL®",
@@ -93,25 +112,97 @@ export default function FirefightingProductPage() {
     { name: "Пожаротушение", url: `/products/pumps/${slug}` },
   ]);
 
+  // Cherry-pick 5 most-cinema-worthy specs out of the 8 in the
+  // content file. The dropped ones (regulation type variants 1+2,
+  // network voltage) are still in the content file for any future
+  // table view — the cinematic page just doesn't show every row.
+  const numberBeats = [
+    {
+      big: "10",
+      unit: "лет",
+      caption: "Срок службы установки.",
+      context: "Минимум до планового капитального обслуживания. На реальных объектах — больше.",
+    },
+    {
+      big: "от 2 до 6",
+      caption: "Насосов в одной станции.",
+      context: "Холодное резервирование. Один встал — соседи добирают давление до полной нормы.",
+    },
+    {
+      big: "70",
+      unit: "°C",
+      caption: "Максимальная температура жидкости.",
+      context: "Для совмещённых систем теплоснабжения и пожаротушения.",
+    },
+    {
+      big: "0.37 – 250",
+      unit: "кВт",
+      caption: "Мощность одного насоса.",
+      context: "Линейка покрывает от подъёмов в трёхэтажных домах до магистральных подач промышленных объектов.",
+    },
+    {
+      big: "3 × 380",
+      unit: "В",
+      caption: "Сетевое напряжение.",
+      context: "Стандарт российских объектов, никаких преобразователей на вводе.",
+    },
+  ];
+
+  // Map content applications into the cinematic shape — same data,
+  // just with mono index uppercased and title set in caps.
+  const appBeats = applications.items.map((item) => ({
+    mono: item.mono,
+    title: item.title.toUpperCase(),
+    example: item.example,
+  }));
+
   return (
     <ProductPageShell accent={accent}>
       <script {...ldScriptProps(productJsonLd)} />
       <script {...ldScriptProps(breadcrumbJsonLd)} />
 
-      <ProductHero content={hero} accent={accent} />
-      <TechSpecsGrid specs={techSpecs} />
+      <CinematicProductHero
+        index="02"
+        line="НАСОСНЫЕ СТАНЦИИ · ПОЖАРОТУШЕНИЕ"
+        title="Когда становится поздно слушать."
+        meta="АПТ · ВПВ · Совмещённые системы · Сертификация ТР ТС · Заводская приёмка"
+        imageSrc={hero.image.src}
+        imageAlt={hero.image.alt}
+        accent={FIRE_ACCENT}
+      />
+
+      <MomentOfTruth
+        beats={["ДЫМ", "СИГНАЛ", "ДАВЛЕНИЕ", "ОГОНЬ"]}
+        accent={FIRE_ACCENT}
+      />
+
+      <NumbersAsTypography beats={numberBeats} accent={FIRE_ACCENT} />
+
       <HowItWorksSection />
-      <ApplicationsGrid content={applications} />
+
+      <ApplicationsCinema beats={appBeats} accent={FIRE_ACCENT} />
+
       <BrandsStrip content={brands} />
-      <AdvantagesGrid content={advantages} />
       <GalleryRail content={gallery} />
       <CasesCarousel content={cases} />
       <QuizSection content={quiz} />
       <DocumentsGrid content={documents} />
-      <ProductCtaFooter content={footerCta} currentSlug={slug} />
-      {/*
-        Deferred: quiz email / Telegram / Turnstile backend.
-      */}
+
+      <CinematicCtaFooter
+        primaryHref="#quiz"
+        primaryLabel="ЗАПРОС КП"
+        accent={FIRE_ACCENT}
+        neighbours={[
+          {
+            label: "Водоснабжение",
+            href: "/products/pumps/water-supply",
+          },
+          {
+            label: "Тепловые пункты",
+            href: "/products/heating-unit",
+          },
+        ]}
+      />
     </ProductPageShell>
   );
 }
