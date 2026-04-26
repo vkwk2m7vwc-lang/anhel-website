@@ -3,92 +3,102 @@
 @tailwind utilities;
 
 /*
- * ANHEL design tokens.
- * See _docs/BRAND.md — these are the single source of truth.
+ * ANHEL design tokens — VARIANT 4 «iOS 26 Liquid Glass».
+ *
+ * Concept: Apple iOS 26 Liquid Glass + visionOS spatial computing.
+ *   - Translucent layered surfaces with heavy backdrop-blur
+ *   - Specular highlights at top edges of glass
+ *   - Soft multi-stop shadows (depth, not weight)
+ *   - Generous radii (16–24px)
+ *   - System colours: vibrant on dark, soft on light
+ *   - SF-Pro feel via tighter tracking + opener line-heights
  *
  * Theming model:
- *   :root          → fallback (matches dark — preserves legacy first-paint)
- *   :root.dark     → explicit dark theme (next-themes adds class="dark")
- *   :root.light    → explicit light theme (next-themes adds class="light")
- *
- * Semantic vars (--color-primary / --color-secondary etc.) keep their old
- * meaning: --color-primary = canvas background, --color-secondary = primary
- * fg / text. Only the values flip between themes.
- *
- * Rich SVG illustrations (Lakhta, Skyscraper, scenarios) hard-code white
- * strokes — they are wrapped in `.graphic-surface` so they keep a dark
- * inner canvas in light mode and stay legible.
+ *   :root          → fallback (light — iOS UI is light-first by default)
+ *   :root.dark     → explicit dark theme
+ *   :root.light    → explicit light theme
  */
 :root,
-:root.dark {
-  /* Core palette — DARK */
-  --color-primary: #0a0a0a;
-  --color-secondary: #f5f5f3;
-  --color-steel-light: #c0c8d0;
-  --color-steel-dark: #8a94a0;
-  --color-hairline: rgba(255, 255, 255, 0.08);
-  --color-hairline-dark: rgba(10, 10, 10, 0.08);
+:root.light {
+  /* Core palette — LIGHT (iOS default) */
+  --color-primary: #f5f5f7; /* Apple's signature off-white */
+  --color-secondary: #1d1d1f; /* Apple's near-black */
+  --color-steel-light: #6e6e73;
+  --color-steel-dark: #424245;
+  --color-hairline: rgba(29, 29, 31, 0.10);
+  --color-hairline-dark: rgba(255, 255, 255, 0.08);
 
-  /* Semantic muted-fg — used by .mono-tag and other tertiary text */
-  --color-fg-muted: rgba(245, 245, 243, 0.65);
-  --color-fg-faint: rgba(245, 245, 243, 0.45);
+  --color-fg-muted: rgba(29, 29, 31, 0.65);
+  --color-fg-faint: rgba(29, 29, 31, 0.40);
 
-  /* Surface tokens — used by cards, panels, scrim overlays */
-  --color-surface-1: #111111;
-  --color-surface-2: #181818;
-  --color-scrim: rgba(0, 0, 0, 0.55);
+  --color-surface-1: rgba(255, 255, 255, 0.72); /* glass on light */
+  --color-surface-2: rgba(255, 255, 255, 0.55);
+  --color-scrim: rgba(245, 245, 247, 0.65);
 
-  /* Product accents */
-  --accent-water: #1e6fd9;
-  --accent-fire: #d72638;
-  --accent-treatment: #8a94a0;
-  --accent-heat: #e8873b;
+  /* Glass tint — what backdrop-blur sits on top of */
+  --glass-tint: rgba(255, 255, 255, 0.55);
+  --glass-tint-strong: rgba(255, 255, 255, 0.78);
+  --glass-border: rgba(255, 255, 255, 0.85);
+  --glass-stroke: rgba(0, 0, 0, 0.06);
+  --glass-specular: rgba(255, 255, 255, 0.95);
+  --glass-shadow: 0 1px 0 rgba(255, 255, 255, 0.95) inset,
+    0 1px 2px rgba(0, 0, 0, 0.04),
+    0 8px 24px -8px rgba(0, 0, 0, 0.12),
+    0 24px 64px -16px rgba(0, 0, 0, 0.16);
 
-  /* Runtime tints (swapped per-section, e.g. current product color) */
+  /* iOS system accents — vibrant on the soft canvas */
+  --accent-water: #007aff; /* iOS system blue */
+  --accent-fire: #ff3b30;  /* iOS system red */
+  --accent-treatment: #5856d6; /* iOS system purple */
+  --accent-heat: #ff9500;  /* iOS system orange */
+
   --accent-current: var(--accent-water);
 
-  /* Motion */
-  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  /* Motion — iOS-style soft springs */
+  --ease-out: cubic-bezier(0.32, 0.72, 0, 1);
   --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
-  --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  --duration-instant: 150ms;
-  --duration-fast: 300ms;
-  --duration-base: 500ms;
+  --ease-spring: cubic-bezier(0.34, 1.4, 0.64, 1);
+  --duration-instant: 180ms;
+  --duration-fast: 320ms;
+  --duration-base: 520ms;
   --duration-slow: 800ms;
   --duration-cinematic: 1200ms;
 }
 
 /*
- * LIGHT THEME OVERRIDES.
- *
- * - bg #fafafa, fg #0a0a0a (full inversion of the dark canvas)
- * - steel tokens darken proportionally so they remain readable as
- *   secondary text on a light surface
- * - hairlines flip color (dark line on light bg) but keep the same
- *   alpha so the perceived weight is consistent between themes
- * - product accents are slightly darkened to clear WCAG AA on white;
- *   the hue stays close so brand recognition holds
+ * DARK THEME — iOS Pro Black canvas with the same glass language.
+ * Glass tints flip to dark; specular gets brighter so the glass edge
+ * still glints. System accents promote to their bright equivalents.
  */
-:root.light {
-  --color-primary: #fafafa;
-  --color-secondary: #0a0a0a;
-  --color-steel-light: #4a5258;
-  --color-steel-dark: #2a3138;
-  --color-hairline: rgba(10, 10, 10, 0.10);
-  --color-hairline-dark: rgba(255, 255, 255, 0.08);
+:root.dark {
+  --color-primary: #000000;
+  --color-secondary: #f5f5f7;
+  --color-steel-light: #aeaeb2;
+  --color-steel-dark: #6e6e73;
+  --color-hairline: rgba(245, 245, 247, 0.10);
+  --color-hairline-dark: rgba(0, 0, 0, 0.20);
 
-  --color-fg-muted: rgba(10, 10, 10, 0.65);
-  --color-fg-faint: rgba(10, 10, 10, 0.45);
+  --color-fg-muted: rgba(245, 245, 247, 0.65);
+  --color-fg-faint: rgba(245, 245, 247, 0.40);
 
-  --color-surface-1: #ffffff;
-  --color-surface-2: #f0f0ee;
-  --color-scrim: rgba(255, 255, 255, 0.65);
+  --color-surface-1: rgba(28, 28, 30, 0.72);
+  --color-surface-2: rgba(44, 44, 46, 0.55);
+  --color-scrim: rgba(0, 0, 0, 0.65);
 
-  /* Slightly darkened/desaturated brand accents for AA on light bg */
-  --accent-water: #1857b8;
-  --accent-fire: #b81e2c;
-  --accent-treatment: #4a5258;
-  --accent-heat: #c46c1e;
+  --glass-tint: rgba(28, 28, 30, 0.55);
+  --glass-tint-strong: rgba(28, 28, 30, 0.78);
+  --glass-border: rgba(255, 255, 255, 0.10);
+  --glass-stroke: rgba(255, 255, 255, 0.08);
+  --glass-specular: rgba(255, 255, 255, 0.18);
+  --glass-shadow: 0 1px 0 rgba(255, 255, 255, 0.08) inset,
+    0 1px 2px rgba(0, 0, 0, 0.30),
+    0 8px 24px -8px rgba(0, 0, 0, 0.55),
+    0 24px 64px -16px rgba(0, 0, 0, 0.65);
+
+  --accent-water: #0a84ff; /* iOS system blue (dark) */
+  --accent-fire: #ff453a;  /* iOS system red (dark) */
+  --accent-treatment: #5e5ce6;
+  --accent-heat: #ff9f0a;
 }
 
 @layer base {
@@ -224,6 +234,124 @@
     --color-surface-2: #181818;
     background: #0a0a0a;
     color: #f5f5f3;
+  }
+
+  /*
+   * iOS 26 Liquid Glass — translucent layered surfaces with backdrop
+   * blur, glass-tint, top-edge specular and a multi-stop depth shadow.
+   * Use as a wrapper around any panel that should read as «floating
+   * glass» — nav, cards, hero scene-stage, modal sheets.
+   */
+  .glass {
+    position: relative;
+    background: var(--glass-tint);
+    -webkit-backdrop-filter: blur(40px) saturate(180%);
+    backdrop-filter: blur(40px) saturate(180%);
+    border: 0.5px solid var(--glass-stroke);
+    border-radius: 24px;
+    box-shadow: var(--glass-shadow);
+  }
+  .glass-strong {
+    background: var(--glass-tint-strong);
+  }
+  /* Top-edge specular highlight — the glint that gives Liquid Glass
+     its characteristic "wet" look. We use a 1px gradient pseudo-line
+     anchored to the top inside edge. */
+  .glass::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    background: linear-gradient(
+      180deg,
+      var(--glass-specular) 0%,
+      transparent 35%
+    );
+    opacity: 0.45;
+    mix-blend-mode: overlay;
+  }
+
+  /*
+   * Spatial scene — a 3D stage for products. Layered:
+   *   1. Soft accent halo (radial behind product)
+   *   2. Floor reflection / depth shadow under product
+   *   3. Subtle perspective transform (slight 3D rotation feels
+   *      like the product floats in front of the page)
+   *   4. Glass container (optional — wrap the whole stage)
+   * The product image goes inside `.spatial-scene__product`.
+   */
+  .spatial-scene {
+    position: relative;
+    perspective: 1600px;
+    transform-style: preserve-3d;
+  }
+  .spatial-scene__halo {
+    position: absolute;
+    inset: -10% -10% 0 -10%;
+    pointer-events: none;
+    border-radius: 9999px;
+    background: radial-gradient(
+      ellipse 60% 50% at 50% 50%,
+      var(--accent-current) 0%,
+      transparent 70%
+    );
+    opacity: 0.35;
+    filter: blur(40px);
+    z-index: 0;
+  }
+  .spatial-scene__floor {
+    position: absolute;
+    bottom: 6%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 70%;
+    height: 12%;
+    pointer-events: none;
+    background: radial-gradient(
+      ellipse at center,
+      rgba(0, 0, 0, 0.45) 0%,
+      transparent 70%
+    );
+    filter: blur(20px);
+    z-index: 0;
+  }
+  :root.light .spatial-scene__floor {
+    background: radial-gradient(
+      ellipse at center,
+      rgba(0, 0, 0, 0.18) 0%,
+      transparent 70%
+    );
+  }
+  .spatial-scene__product {
+    position: relative;
+    z-index: 2;
+    transform: translateZ(40px);
+    transition:
+      transform var(--duration-base, 520ms) var(--ease-out),
+      filter var(--duration-base, 520ms) var(--ease-out);
+    filter: drop-shadow(0 30px 50px rgba(0, 0, 0, 0.35));
+  }
+  :root.light .spatial-scene__product {
+    filter: drop-shadow(0 30px 50px rgba(0, 0, 0, 0.18));
+  }
+  /* On hover, lift product slightly forward — adds parallax depth */
+  .spatial-scene:hover .spatial-scene__product {
+    transform: translateZ(60px) translateY(-6px);
+  }
+  /* Decorative orbital ring — sits behind product like a halo arc.
+     Pure CSS, no extra DOM. Positioned with `--ring-rotate` so it
+     can be tilted per-product if needed. */
+  .spatial-scene__ring {
+    position: absolute;
+    inset: 5% 5% auto 5%;
+    aspect-ratio: 4 / 1;
+    pointer-events: none;
+    border-radius: 9999px;
+    border: 1px solid var(--accent-current);
+    opacity: 0.25;
+    transform: rotateX(70deg);
+    z-index: 1;
   }
 
   /*

@@ -62,31 +62,39 @@ const config: Config = {
         body: ["var(--font-body)", "Inter", "system-ui", "sans-serif"],
         mono: ["var(--font-mono)", "JetBrains Mono", "ui-monospace", "monospace"],
       },
+      // Variant 4 — iOS 26: SF-Pro feel. Tighter hero tracking
+      // (-0.04em) for the bold display moment; opener line-heights
+      // (1.05+) for readable density. Body bumps to 18-20 for a
+      // more «iPad reading» cadence.
       fontSize: {
         hero: [
-          "clamp(56px, 8vw, 180px)",
-          { lineHeight: "0.95", letterSpacing: "-0.025em" },
+          "clamp(56px, 8vw, 160px)",
+          { lineHeight: "1.0", letterSpacing: "-0.04em" },
         ],
         section: [
           "clamp(40px, 5vw, 88px)",
-          { lineHeight: "1.05", letterSpacing: "-0.02em" },
+          { lineHeight: "1.05", letterSpacing: "-0.03em" },
         ],
         h2: [
           "clamp(28px, 3vw, 48px)",
-          { lineHeight: "1.1", letterSpacing: "-0.015em" },
+          { lineHeight: "1.1", letterSpacing: "-0.025em" },
         ],
-        h3: ["clamp(20px, 2vw, 28px)", { lineHeight: "1.25" }],
-        body: ["clamp(16px, 1.2vw, 18px)", { lineHeight: "1.5" }],
+        h3: ["clamp(20px, 2vw, 28px)", { lineHeight: "1.3", letterSpacing: "-0.015em" }],
+        body: ["clamp(17px, 1.2vw, 20px)", { lineHeight: "1.55" }],
         mono: ["11px", { lineHeight: "1.2", letterSpacing: "0.08em" }],
       },
       letterSpacing: {
         mono: "0.08em",
         hero: "-0.025em",
       },
+      // Variant 4 — iOS 26: generous radii. Apple UI rounds heavily;
+      // the system itself uses 28px on home-screen icons, 16-20px on
+      // cards, 12px on inputs. We mirror that ladder.
       borderRadius: {
-        sm: "4px",
-        md: "8px",
-        lg: "16px",
+        sm: "10px",
+        md: "16px",
+        lg: "24px",
+        xl: "32px",
         pill: "9999px",
       },
       transitionTimingFunction: {

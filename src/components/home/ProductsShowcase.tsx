@@ -104,7 +104,9 @@ export function ProductsShowcase({
             висящая карточка; принимаем такую асимметрию, чтобы каждая
             карточка имела достаточную ширину под продуктовый рендер.
             Если каталог станет 8+ — рассмотреть lg:grid-cols-3. */}
-        <ul className="mt-12 grid grid-cols-1 gap-px bg-[var(--color-hairline)] md:mt-16 md:grid-cols-2">
+        {/* iOS 26: cards float as glass tiles with real gap, not the
+            hairline-separator trick used in other variants. */}
+        <ul className="mt-12 grid grid-cols-1 gap-4 md:mt-16 md:grid-cols-2 md:gap-6">
           {cards.map((product, i) => {
             const accentVar = ACCENT_VAR[product.accent];
             const isComingSoon = Boolean(product.comingSoon);
@@ -175,9 +177,17 @@ function ProductCard({
         }}
       />
 
-      {/* Product image — relative ratio, центрировано. */}
-      <div className="relative z-10 flex h-[180px] items-center justify-center md:h-[220px] lg:h-[260px]">
-        <div className="relative h-full w-[60%]">
+      {/* iOS 26 spatial scene — product floats inside a halo + ring +
+          floor backdrop, with hover-lift. Halo + ring tint follow the
+          product's accent token. */}
+      <div
+        className="spatial-scene relative z-10 flex h-[180px] items-center justify-center md:h-[220px] lg:h-[260px]"
+        style={{ ["--accent-current" as string]: accentVar }}
+      >
+        <div aria-hidden="true" className="spatial-scene__halo" />
+        <div aria-hidden="true" className="spatial-scene__ring" />
+        <div aria-hidden="true" className="spatial-scene__floor" />
+        <div className="spatial-scene__product relative h-full w-[60%]">
           <Image
             src={imageSrc}
             alt={imageAlt}
@@ -217,12 +227,12 @@ function ProductCard({
     </>
   );
 
-  // Hover bg flows through --color-surface-1 instead of a hard-coded
-  // #111 so the card hover state stays correct in both themes (dark:
-  // #111 ≈ a hair brighter than the canvas; light: #fff over the
-  // #fafafa canvas).
+  // iOS 26 — cards are Liquid Glass tiles. The `.glass` class supplies
+  // backdrop-blur + tint + specular highlight + multi-stop depth shadow.
+  // Hover layers on a slight lift (-translate-y-1) for the system-card
+  // feel; bg uses surface-1 (the strong-tint glass) for hover emphasis.
   const containerClass =
-    "group relative flex min-h-[360px] flex-col bg-[var(--color-primary)] p-6 transition-colors duration-300 [@media(hover:hover)]:hover:bg-[var(--color-surface-1)] md:min-h-[440px] md:p-10";
+    "glass group relative flex min-h-[360px] flex-col p-6 transition-all duration-300 [@media(hover:hover)]:hover:-translate-y-1 [@media(hover:hover)]:hover:bg-[var(--color-surface-1)] md:min-h-[440px] md:p-10";
 
   return (
     <motion.li

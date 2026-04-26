@@ -106,13 +106,31 @@ export function HeroBgCarousel({
           The union gives us uniform pause-on-interact behaviour across
           every input type we actually care about. */}
       <div
-        className="pointer-events-auto absolute inset-y-0 right-0 hidden w-[45%] flex-col items-center justify-center md:flex"
-        style={{ perspective: "1200px" }}
+        // iOS 26 spatial scene wrapper — the product floats inside
+        // a glass cell with a halo behind it and a soft floor below.
+        // `.spatial-scene` provides perspective + the two
+        // pseudo-element backdrop layers via CSS.
+        className="spatial-scene pointer-events-auto absolute inset-y-0 right-0 hidden w-[45%] flex-col items-center justify-center md:flex"
         onMouseEnter={pause}
         onMouseLeave={resume}
         onPointerEnter={pause}
         onPointerLeave={resume}
       >
+        {/* Halo glow behind product — accent-tinted radial that picks
+            up the active product's colour token. */}
+        <div
+          aria-hidden="true"
+          className="spatial-scene__halo"
+          style={{ ["--accent-current" as string]: product.accent }}
+        />
+        {/* Orbital ring — adds depth without distracting */}
+        <div
+          aria-hidden="true"
+          className="spatial-scene__ring"
+          style={{ ["--accent-current" as string]: product.accent }}
+        />
+        {/* Floor reflection / soft drop shadow */}
+        <div aria-hidden="true" className="spatial-scene__floor" />
         {/* The tilt + float wrapper is stable — only the <img> inside swaps,
             so the spring-smoothed tilt never stutters on slide change.
 
@@ -155,7 +173,10 @@ export function HeroBgCarousel({
                   },
                 }
           }
-          className="relative flex h-[70%] w-[85%] items-center justify-center"
+          // spatial-scene__product — adds the depth-translateZ + drop
+          // shadow that makes the product feel suspended in front of
+          // the halo / ring / floor backdrop layers.
+          className="spatial-scene__product relative flex h-[70%] w-[85%] items-center justify-center"
         >
           {/* Pedestal glow — sits behind the product as a soft elliptical
               light pool. Size ≈ 80%×40% of the tilt wrapper, horizontally

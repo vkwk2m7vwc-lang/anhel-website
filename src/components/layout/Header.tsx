@@ -60,9 +60,12 @@ export function Header() {
         animate={{ y: hidden ? "-100%" : 0 }}
         transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
         className={cn(
-          "fixed inset-x-0 top-0 z-50 transition-colors duration-300",
+          "fixed inset-x-0 top-0 z-50 transition-all duration-300",
+          // iOS 26 Liquid Glass nav — translucent panel with stronger
+          // backdrop-blur + saturate. On scroll, the chrome thickens
+          // to keep nav legible over any hero content underneath.
           scrolled
-            ? "bg-[var(--color-primary)]/80 backdrop-blur-md"
+            ? "border-b border-[var(--glass-stroke)] bg-[var(--glass-tint)] backdrop-blur-2xl backdrop-saturate-150"
             : "bg-transparent",
         )}
       >
