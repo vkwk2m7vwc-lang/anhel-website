@@ -86,7 +86,7 @@ export const waterSupplyContent: ProductContent = {
   // в шесть тайлов под UI грид (3×2 на desktop). Базовые формулировки
   // mfmc-research/water-supply-mfmc.json.applications_raw.
   applications: {
-    tag: "04 · ПРИМЕНЕНИЕ",
+    tag: "03 · ПРИМЕНЕНИЕ",
     title: "Где ставится",
     lede: "Хозяйственно-питьевое водоснабжение, промышленность, спецобъекты и системы циркуляции. Каждая установка собирается под параметры объекта.",
     items: [
@@ -136,7 +136,7 @@ export const waterSupplyContent: ProductContent = {
   // дополнительные опции по запросу заказчика, в линейке HVS-NU
   // встречаются в премиум-комплектациях.
   brands: {
-    tag: "05 · БРЕНДЫ",
+    tag: "04 · БРЕНДЫ",
     title: "Собираем из оборудования ведущих производителей",
     lede: "Насосы — RVP, CDM, LVR, Boosta. Автоматика и комплектующие — европейские и российские.",
     rowPumps: [
@@ -165,7 +165,7 @@ export const waterSupplyContent: ProductContent = {
   // формулировку (источник содержит лаконичные тезисы, развёрнуты
   // в одно предложение под B2B-аудиторию).
   advantages: {
-    tag: "06 · ПРЕИМУЩЕСТВА",
+    tag: "05 · ПРЕИМУЩЕСТВА",
     title: "Почему ANHEL",
     lede: "Серийное производство, многообразие режимов управления и полный комплект разрешительной документации.",
     items: [
@@ -212,7 +212,7 @@ export const waterSupplyContent: ProductContent = {
   // появятся после shooting-session, drop в /public/assets/gallery/
   // water-supply/ и fill `src`.
   gallery: {
-    tag: "07 · ГАЛЕРЕЯ",
+    tag: "06 · ГАЛЕРЕЯ",
     title: "Производство и монтаж",
     lede: "Цех сборки, испытательный стенд, установки на объектах.",
     photos: [
