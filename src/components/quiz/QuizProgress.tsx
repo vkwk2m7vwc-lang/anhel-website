@@ -1,7 +1,8 @@
 'use client';
 
+import { useFormContext, useWatch } from 'react-hook-form';
 import { cn } from '@/lib/utils';
-import type { QuizStep } from '@/content/quiz/pumps-fields';
+import type { QuizField, QuizStep, ShowIf } from '@/content/quiz/pumps-fields';
 
 type Props = {
   steps: QuizStep[];
@@ -10,6 +11,56 @@ type Props = {
   visited: Set<number>;
   onStepClick?: (index: number) => void;
 };
+
+/** Поле учитывается, если оно сейчас видно (showIf-условие выполнено). */
+function isFieldVisible(field: QuizField, values: Record<string, unknown>): boolean {
+  const cond: ShowIf | undefined = field.showIf;
+  if (!cond) return true;
+  const v = values[cond.field];
+  const op = cond.op ?? 'eq';
+  if (op === 'truthy') return Boolean(v);
+  if (op === 'neq') return v !== cond.value;
+  return v === cond.value;
+}
+
+/** Заполнено ли поле — checkbox=true | text непустой | radio выбран. */
+function isFieldFilled(field: QuizField, values: Record<string, unknown>): boolean {
+  const v = values[field.name];
+  if (field.type === 'checkbox') return !!v;
+  if (field.type === 'radio') return v !== undefined && v !== '' && v !== null;
+  if (v === undefined || v === null) return false;
+  return String(v).trim() !== '';
+}
+
+/**
+ * «Живой» прогресс: пройденные шаги + доля заполненных полей текущего шага.
+ *  base = (current / total) * 100  — какие шаги пройдены целиком
+ *  step-bonus = (filled / visible) * (100 / total)  — заполненность текущего
+ *
+ * Так на 1-м шаге без ввода видишь 0 %, набрал контакты — 18 %, на полпути
+ * по 3-му шагу — где-то 47 %.
+ */
+function computeLiveProgress(
+  steps: QuizStep[],
+  current: number,
+  values: Record<string, unknown>,
+): number {
+  if (steps.length === 0) return 0;
+  const stepWeight = 100 / steps.length;
+  const baseProgress = current * stepWeight;
+  const currentStep = steps[current];
+  const visibleFields = currentStep.sections
+    .flatMap((s) => s.fields)
+    .filter((f) => isFieldVisible(f, values));
+  if (visibleFields.length === 0) {
+    // финальный шаг сводки — пройден сразу как только зашёл, но 100% дадим
+    // только при submit success (это уже не наш экран)
+    return Math.round(baseProgress + stepWeight);
+  }
+  const filledCount = visibleFields.filter((f) => isFieldFilled(f, values)).length;
+  const stepFraction = filledCount / visibleFields.length;
+  return Math.round(baseProgress + stepFraction * stepWeight);
+}
 
 /**
  * Прогресс-бар: тонкая горизонтальная полоса + точки 01..05.
@@ -22,7 +73,10 @@ type Props = {
  *  — будущие сильно приглушены, чтобы взгляд не цеплялся
  */
 export function QuizProgress({ steps, current, visited, onStepClick }: Props) {
-  const pct = steps.length > 0 ? Math.round(((current + 1) / steps.length) * 100) : 0;
+  const { control } = useFormContext();
+  const watched = useWatch({ control });
+  const values = (watched ?? {}) as Record<string, unknown>;
+  const pct = computeLiveProgress(steps, current, values);
 
   return (
     <div className="w-full">
