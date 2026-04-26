@@ -94,7 +94,7 @@ export const pressureBoostContent: ProductContent = {
   // требуется поддержание давления, деаэрация и компенсация
   // расширений. Шесть тайлов под UI-грид.
   applications: {
-    tag: "04 · ПРИМЕНЕНИЕ",
+    tag: "03 · ПРИМЕНЕНИЕ",
     title: "Где ставится",
     lede: "Закрытые сети теплоснабжения и охлаждения жилых, коммерческих и промышленных зданий, ЦТП, котельные и системы вентиляции.",
     items: [
@@ -140,7 +140,7 @@ export const pressureBoostContent: ProductContent = {
   // Бренды — насосы CRV/CDM/LVR/Boosta/RVP. Тот же пул что у water-supply
   // (общая платформа сборки), плюс Vandjord (CRV) — типичная серия для АУПД.
   brands: {
-    tag: "05 · БРЕНДЫ",
+    tag: "04 · БРЕНДЫ",
     title: "Собираем из оборудования ведущих производителей",
     lede: "Насосы — CRV, CDM, LVR, Boosta, RVP. Автоматика и комплектующие — европейские и российские.",
     rowPumps: [
@@ -181,7 +181,7 @@ export const pressureBoostContent: ProductContent = {
   // мембраны, автокалибровка тензодатчика, Modbus/Ethernet,
   // импульсный водомер, рама 4 мм, коллектор AISI 304.
   advantages: {
-    tag: "06 · ПРЕИМУЩЕСТВА",
+    tag: "05 · ПРЕИМУЩЕСТВА",
     title: "Почему ANHEL",
     lede: "Высокоточная автоматика, надёжная гидравлика и полное резервирование систем управления.",
     items: [
@@ -225,7 +225,7 @@ export const pressureBoostContent: ProductContent = {
   },
 
   gallery: {
-    tag: "07 · ГАЛЕРЕЯ",
+    tag: "06 · ГАЛЕРЕЯ",
     title: "Производство и монтаж",
     lede: "Цех сборки, испытательный стенд, установки на объектах.",
     photos: [
