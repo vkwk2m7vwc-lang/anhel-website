@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { PROJECTS } from "@/content/projects/data";
 import { ProjectsFilter } from "@/components/projects/ProjectsFilter";
 
@@ -46,7 +47,16 @@ export default function ProjectsPage() {
             поставленного оборудования по каждому проекту.
           </p>
 
-          <ProjectsFilter projects={PROJECTS} />
+          {/* Suspense boundary required by Next 14 для useSearchParams
+              в client-children при static prerender. fallback повторяет
+              минимальный скелетон filter-row, чтобы не было layout shift. */}
+          <Suspense
+            fallback={
+              <div className="mt-10 h-[44px] md:mt-14" aria-hidden="true" />
+            }
+          >
+            <ProjectsFilter projects={PROJECTS} />
+          </Suspense>
         </div>
       </section>
 

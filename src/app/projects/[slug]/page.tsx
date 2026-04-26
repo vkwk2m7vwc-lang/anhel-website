@@ -78,7 +78,7 @@ export default function ProjectDetailPage({ params }: { params: Params }) {
           {project.title}
         </h1>
 
-        <div className="relative mt-12 aspect-[16/9] w-full overflow-hidden bg-[#0F0F0F] md:mt-16">
+        <div className="relative mt-12 aspect-[16/9] w-full overflow-hidden bg-[var(--color-image-placeholder)] md:mt-16">
           <Image
             src={project.cover}
             alt={project.coverAlt}
@@ -164,7 +164,7 @@ export default function ProjectDetailPage({ params }: { params: Params }) {
                   data-cursor="hover"
                   className="group flex h-full flex-col"
                 >
-                  <div className="relative aspect-[4/3] w-full overflow-hidden bg-[#0F0F0F]">
+                  <div className="relative aspect-[4/3] w-full overflow-hidden bg-[var(--color-image-placeholder)]">
                     <Image
                       src={p.cover}
                       alt={p.coverAlt}

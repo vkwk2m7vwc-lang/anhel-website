@@ -58,12 +58,12 @@ export const heatingUnitContent: ProductContent = {
     },
     primaryCta: {
       label: "Быстрый запрос",
-      href: "#quiz",
+      href: "#documents",
       variant: "primary",
     },
     secondaryCta: {
       label: "Опросный лист",
-      href: "#quiz",
+      href: "#documents",
       variant: "ghost",
       hint: "6 шагов",
     },
@@ -293,7 +293,7 @@ export const heatingUnitContent: ProductContent = {
     tag: "09 · ЗАПРОС КП",
     title: "Соберите свой ИТП под проект",
     subtitle: "Ответим в течение рабочего дня. Расчёт подбора бесплатный.",
-    cta: { label: "Заполнить опросный лист", href: "#quiz" },
+    cta: { label: "Заполнить опросный лист", href: "#documents" },
     neighboursCaption: "Остальные продукты",
   },
 };

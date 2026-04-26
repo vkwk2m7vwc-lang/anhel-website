@@ -84,7 +84,7 @@ function DocCard({ doc, index }: { doc: DocumentItem; index: number }) {
           "min-h-[64px] flex-row items-center gap-3 px-4 py-3",
           // Tablet+ : block-card (PDF/size сверху, title+CTA снизу).
           "sm:min-h-[220px] sm:flex-col sm:items-stretch sm:justify-between sm:gap-0 sm:p-6 md:min-h-[260px] md:p-8",
-          "[@media(hover:hover)]:hover:bg-[#111]",
+          "[@media(hover:hover)]:hover:bg-[var(--color-hover-tint)]",
           "active:ring-1 active:ring-[var(--accent-current)]",
         ].join(" ")}
       >

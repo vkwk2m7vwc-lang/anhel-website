@@ -190,7 +190,7 @@ function NeighbourCard({
           data-cursor="hover"
           style={{ ["--neighbour-accent" as string]: neighbourAccent }}
           className={cn(
-            "group relative flex flex-col gap-2 bg-[var(--color-primary)] p-5 transition-colors duration-300 hover:bg-[#111] md:p-6"
+            "group relative flex flex-col gap-2 bg-[var(--color-primary)] p-5 transition-colors duration-300 hover:bg-[var(--color-hover-tint)] md:p-6"
           )}
         >
           {body}

@@ -153,7 +153,7 @@ export default async function HeatingModulePage({ params }: RouteParams) {
               </p>
               <div className="mt-10 flex flex-wrap items-center gap-4 md:mt-12 md:gap-5">
                 <Link
-                  href="#quiz"
+                  href="#documents"
                   data-cursor="hover"
                   className="group inline-flex items-center gap-3 rounded-md bg-[var(--color-secondary)] px-[22px] py-[14px] text-sm font-medium text-[var(--color-primary)]"
                 >
@@ -267,7 +267,7 @@ export default async function HeatingModulePage({ params }: RouteParams) {
                 <Link
                   href={`/products/heating-unit/${n.slug}`}
                   data-cursor="hover"
-                  className="group flex h-full flex-col justify-between bg-[var(--color-primary)] p-6 transition-colors duration-300 [@media(hover:hover)]:hover:bg-[#111] sm:p-8"
+                  className="group flex h-full flex-col justify-between bg-[var(--color-primary)] p-6 transition-colors duration-300 [@media(hover:hover)]:hover:bg-[var(--color-hover-tint)] sm:p-8"
                 >
                   <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/65 [@media(hover:hover)]:group-hover:text-[var(--accent-current)]">
                     {n.mono}

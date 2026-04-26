@@ -84,7 +84,7 @@ function ModuleCard({
       <Link
         href={`/products/heating-unit/${m.slug}`}
         data-cursor="hover"
-        className="group relative flex h-full min-h-[220px] flex-col justify-between bg-[var(--color-primary)] p-4 transition-colors duration-300 [@media(hover:hover)]:hover:bg-[#111] sm:min-h-[260px] sm:p-6 md:min-h-[300px] md:p-8"
+        className="group relative flex h-full min-h-[220px] flex-col justify-between bg-[var(--color-primary)] p-4 transition-colors duration-300 [@media(hover:hover)]:hover:bg-[var(--color-hover-tint)] sm:min-h-[260px] sm:p-6 md:min-h-[300px] md:p-8"
       >
         {/* Accent ring — transparent by default, lights up on hover.
             Gated to (hover: hover) so iOS doesn't leave a tile stuck

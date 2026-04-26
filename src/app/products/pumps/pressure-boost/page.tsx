@@ -6,8 +6,8 @@ import { ApplicationsGrid } from "@/components/product-page/ApplicationsGrid";
 import { BrandsStrip } from "@/components/product-page/BrandsStrip";
 import { AdvantagesGrid } from "@/components/product-page/AdvantagesGrid";
 import { GalleryRail } from "@/components/product-page/GalleryRail";
-import { CasesCarousel } from "@/components/product-page/CasesCarousel";
-import { QuizSection } from "@/components/product-page/quiz/QuizSection";
+import { DescriptionSection } from "@/components/product-page/DescriptionSection";
+import { RelatedProjectsSection } from "@/components/product-page/RelatedProjectsSection";
 import { DocumentsGrid } from "@/components/product-page/DocumentsGrid";
 import { ProductCtaFooter } from "@/components/product-page/ProductCtaFooter";
 import { pressureBoostContent } from "@/content/products/pressure-boost";
@@ -50,13 +50,12 @@ export default function PressureBoostProductPage() {
     slug,
     hero,
     techSpecs,
+    description,
     accent,
     applications,
     brands,
     advantages,
     gallery,
-    cases,
-    quiz,
     documents,
     footerCta,
   } = pressureBoostContent;
@@ -81,12 +80,12 @@ export default function PressureBoostProductPage() {
 
       <ProductHero content={hero} accent={accent} />
       <TechSpecsGrid specs={techSpecs} />
+      {description ? <DescriptionSection content={description} /> : null}
       <ApplicationsGrid content={applications} />
       <BrandsStrip content={brands} />
       <AdvantagesGrid content={advantages} />
       <GalleryRail content={gallery} />
-      <CasesCarousel content={cases} />
-      <QuizSection content={quiz} />
+      <RelatedProjectsSection productSlug={slug} tag="08 · ОБЪЕКТЫ" />
       <DocumentsGrid content={documents} />
       <ProductCtaFooter content={footerCta} currentSlug={slug} />
     </ProductPageShell>
