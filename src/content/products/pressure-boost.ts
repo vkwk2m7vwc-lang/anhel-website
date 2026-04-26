@@ -42,13 +42,16 @@ export const pressureBoostContent: ProductContent = {
       src: "/assets/products/pressure-boost.png",
       alt: "ANHEL — установка поддержания давления (АУПД): шкаф управления, насосная группа и мембранный бак-расширитель",
     },
+    // Pair of hero CTAs:
+    //   primary  — online questionnaire (5-step web form, mirror of PDF)
+    //   secondary — direct PDF download for those preferring offline workflow
     primaryCta: {
-      label: "Быстрый запрос",
-      href: "#documents",
+      label: "Заполнить онлайн",
+      href: "/quiz/pumps?from=pressure-boost",
       variant: "primary",
     },
     secondaryCta: {
-      label: "Опросный лист",
+      label: "Скачать PDF",
       href: "/docs/pressure-boost/oprosnyi-list.pdf",
       variant: "ghost",
     },

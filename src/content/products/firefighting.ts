@@ -37,16 +37,16 @@ export const firefightingContent: ProductContent = {
       src: "/assets/products/hvs-nu-red2.png",
       alt: "ANHEL® — насосная станция пожаротушения в красном шкафу, серия HVS-NU",
     },
-    // Both CTAs point at the quiz anchor — section 10 is built in commits 5-6.
-    // Until then, clicking the anchor is a no-op (target doesn't exist yet),
-    // which is the cleanest stub: no error, no misleading navigation.
+    // Pair of hero CTAs:
+    //   primary  — online questionnaire (5-step web form, mirror of PDF)
+    //   secondary — direct PDF download for those preferring offline workflow
     primaryCta: {
-      label: "Быстрый запрос",
-      href: "#documents",
+      label: "Заполнить онлайн",
+      href: "/quiz/pumps?from=firefighting",
       variant: "primary",
     },
     secondaryCta: {
-      label: "Опросный лист",
+      label: "Скачать PDF",
       href: "/docs/firefighting/oprosnyi-list.pdf",
       variant: "ghost",
     },

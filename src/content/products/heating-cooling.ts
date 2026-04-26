@@ -44,13 +44,16 @@ export const heatingCoolingContent: ProductContent = {
       src: "/assets/products/heating-cooling.png",
       alt: "ANHEL — насосная станция для систем отопления и кондиционирования: бак-расширитель, насосная группа и шкаф управления",
     },
+    // Pair of hero CTAs:
+    //   primary  — online questionnaire (5-step web form, mirror of PDF)
+    //   secondary — direct PDF download for those preferring offline workflow
     primaryCta: {
-      label: "Быстрый запрос",
-      href: "#documents",
+      label: "Заполнить онлайн",
+      href: "/quiz/pumps?from=heating-cooling",
       variant: "primary",
     },
     secondaryCta: {
-      label: "Опросный лист",
+      label: "Скачать PDF",
       href: "/docs/heating-cooling/oprosnyi-list.pdf",
       variant: "ghost",
     },

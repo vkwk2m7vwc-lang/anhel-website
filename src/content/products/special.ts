@@ -42,13 +42,17 @@ export const specialContent: ProductContent = {
       src: "/assets/products/special.png",
       alt: "ANHEL — насосная станция специального исполнения: модульная сборка коллекторов и насосной группы",
     },
+    // Pair of hero CTAs:
+    //   primary  — online questionnaire (5-step web form, mirror of PDF;
+    //   no system pre-fill for special — let the user pick it manually)
+    //   secondary — direct PDF download for those preferring offline workflow
     primaryCta: {
-      label: "Быстрый запрос",
-      href: "#documents",
+      label: "Заполнить онлайн",
+      href: "/quiz/pumps?from=special",
       variant: "primary",
     },
     secondaryCta: {
-      label: "Опросный лист",
+      label: "Скачать PDF",
       href: "/docs/special/oprosnyi-list.pdf",
       variant: "ghost",
     },

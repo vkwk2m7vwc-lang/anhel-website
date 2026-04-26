@@ -159,7 +159,7 @@ export function QuizShell({ prefill }: Props) {
           message: data.message || 'Не удалось отправить заявку. Попробуйте позже.',
         });
       }
-    } catch (e) {
+    } catch {
       setSubmitted({
         ok: false,
         message:

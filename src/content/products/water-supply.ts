@@ -45,13 +45,16 @@ export const waterSupplyContent: ProductContent = {
       src: "/assets/products/hvs-nu.png",
       alt: "ANHEL® — насосная станция холодного водоснабжения, серия HVS-NU",
     },
+    // Pair of hero CTAs:
+    //   primary  — online questionnaire (5-step web form, mirror of PDF)
+    //   secondary — direct PDF download for those preferring offline workflow
     primaryCta: {
-      label: "Быстрый запрос",
-      href: "#documents",
+      label: "Заполнить онлайн",
+      href: "/quiz/pumps?from=water-supply",
       variant: "primary",
     },
     secondaryCta: {
-      label: "Опросный лист",
+      label: "Скачать PDF",
       href: "/docs/water-supply/oprosnyi-list.pdf",
       variant: "ghost",
     },
