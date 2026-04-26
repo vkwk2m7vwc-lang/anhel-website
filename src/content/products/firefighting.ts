@@ -247,23 +247,69 @@ export const firefightingContent: ProductContent = {
     ],
   },
 
-  // Section 8 «Галерея». No real photos yet — eight aspect-locked
-  // placeholders. When the shooting deck lands we drop files into
-  // /public/assets/gallery/firefighting/ and fill in `src` here; the
-  // layout keeps working unchanged.
+  // Section 8 «Галерея». Реальные фото производства пожарных НС ANHEL®
+  // в красном корпусе. Файлы под /public/assets/production/firefighting/.
   gallery: {
     tag: "07 · ГАЛЕРЕЯ",
     title: "Производство и монтаж",
     lede: "Цех сборки, испытательный стенд, установки на объектах.",
     photos: [
-      { id: "shop-01", alt: "Сборочный цех ANHEL®, общий вид", caption: "Цех, Москва", aspect: "4/5" },
-      { id: "shop-02", alt: "Насосные агрегаты на сборке", caption: "Монтаж насосной группы", aspect: "4/5" },
-      { id: "shop-03", alt: "Шкаф управления, крупный план", caption: "Шкаф управления с ПЛК", aspect: "4/5" },
-      { id: "test-01", alt: "Гидравлические испытания установки", caption: "Испытательный стенд", aspect: "4/5" },
-      { id: "site-01", alt: "Готовая станция перед отгрузкой", caption: "Приёмка ОТК", aspect: "4/5" },
-      { id: "site-02", alt: "Смонтированная станция на объекте", caption: "Объект — Москва", aspect: "4/5" },
-      { id: "detail-01", alt: "Коллектор и обратные клапаны", caption: "Коллектор с запорной арматурой", aspect: "4/5" },
-      { id: "detail-02", alt: "Крупный план рабочего колеса", caption: "Рабочее колесо насоса", aspect: "4/5" },
+      {
+        id: "shop-01",
+        src: "/assets/production/firefighting/shop-01.jpg",
+        alt: "Насосная установка пожаротушения ANHEL® в красном корпусе со шкафом управления",
+        caption: "Готовая станция, цех Москва",
+        aspect: "4/5",
+      },
+      {
+        id: "shop-02",
+        src: "/assets/production/firefighting/shop-02.jpg",
+        alt: "Насосная установка ANHEL® — ракурс с торца",
+        caption: "Гидравлика и обвязка коллектора",
+        aspect: "4/5",
+      },
+      {
+        id: "shop-03",
+        src: "/assets/production/firefighting/shop-03.jpg",
+        alt: "Шкаф управления пожарной насосной установки ANHEL®",
+        caption: "Шкаф управления с ПЛК",
+        aspect: "4/5",
+      },
+      {
+        id: "shop-04",
+        src: "/assets/production/firefighting/shop-04.jpg",
+        alt: "Насосная установка ANHEL® на испытательном стенде",
+        caption: "Гидравлические испытания",
+        aspect: "4/5",
+      },
+      {
+        id: "shop-05",
+        src: "/assets/production/firefighting/shop-05.jpg",
+        alt: "Сборочный цех — линия пожарных насосных установок ANHEL®",
+        caption: "Линия сборки",
+        aspect: "4/5",
+      },
+      {
+        id: "shop-06",
+        src: "/assets/production/firefighting/shop-06.jpg",
+        alt: "Насосный агрегат ANHEL® — крупный план",
+        caption: "Насосный агрегат, обвязка",
+        aspect: "4/5",
+      },
+      {
+        id: "shop-07",
+        src: "/assets/production/firefighting/shop-07.jpg",
+        alt: "Коллектор и запорная арматура установки ANHEL®",
+        caption: "Коллектор с запорной арматурой",
+        aspect: "4/5",
+      },
+      {
+        id: "shop-08",
+        src: "/assets/production/firefighting/shop-08.jpg",
+        alt: "Готовая станция пожаротушения ANHEL® перед отгрузкой",
+        caption: "Приёмка ОТК",
+        aspect: "4/5",
+      },
     ],
   },
 
