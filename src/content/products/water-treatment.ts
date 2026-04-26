@@ -202,19 +202,71 @@ export const waterTreatmentContent: ProductContent = {
     ],
   },
 
+  // Section «Галерея». Реальные фото производства водоподготовки ANHEL®:
+  // - 8 фото установки обратного осмоса для ГОК Удокан (масштабная RO-серия)
+  // - выборочно — крупные планы линейки «Дельта ВПУ Aqua» для жилых объектов
+  // Файлы под /public/assets/production/water-treatment/.
   gallery: {
     tag: "06 · ГАЛЕРЕЯ",
     title: "Производство и монтаж",
-    lede: "Цех сборки, испытательный стенд, установки на объектах.",
+    lede: "Установки на объектах и крупные планы оборудования.",
     photos: [
-      { id: "shop-01", alt: "Сборочный цех ANHEL®, установки водоподготовки", caption: "Цех, Москва", aspect: "4/5" },
-      { id: "shop-02", alt: "Фильтры с автоматическими клапанами", caption: "Сборка фильтрационной группы", aspect: "4/5" },
-      { id: "shop-03", alt: "Установка обратного осмоса", caption: "Модуль RO", aspect: "4/5" },
-      { id: "test-01", alt: "Гидравлические испытания установки", caption: "Испытательный стенд", aspect: "4/5" },
-      { id: "site-01", alt: "Готовая установка перед отгрузкой", caption: "Приёмка ОТК", aspect: "4/5" },
-      { id: "site-02", alt: "Смонтированная установка на объекте", caption: "Объект — Москва", aspect: "4/5" },
-      { id: "detail-01", alt: "Клапаны Clack на фильтрах", caption: "Автоматика регенерации", aspect: "4/5" },
-      { id: "detail-02", alt: "Мембранные элементы RO", caption: "Мембраны обратного осмоса", aspect: "4/5" },
+      {
+        id: "udokan-01",
+        src: "/assets/production/water-treatment/udokan-01.jpg",
+        alt: "Установка обратного осмоса ANHEL® на стальной раме — общий вид",
+        caption: "ГОК Удокан — установка RO, общий вид",
+        aspect: "4/5",
+      },
+      {
+        id: "udokan-02",
+        src: "/assets/production/water-treatment/udokan-02.jpg",
+        alt: "Мембранные модули установки обратного осмоса ANHEL®",
+        caption: "ГОК Удокан — мембранные модули",
+        aspect: "4/5",
+      },
+      {
+        id: "udokan-03",
+        src: "/assets/production/water-treatment/udokan-03.jpg",
+        alt: "Трубопровод и арматура установки RO ANHEL®",
+        caption: "ГОК Удокан — обвязка трубопроводов",
+        aspect: "4/5",
+      },
+      {
+        id: "udokan-04",
+        src: "/assets/production/water-treatment/udokan-04.jpg",
+        alt: "Крупный план мембранных элементов ANHEL®",
+        caption: "ГОК Удокан — крупный план модулей",
+        aspect: "4/5",
+      },
+      {
+        id: "udokan-05",
+        src: "/assets/production/water-treatment/udokan-05.jpg",
+        alt: "Контрольно-измерительная арматура установки",
+        caption: "ГОК Удокан — КИП",
+        aspect: "4/5",
+      },
+      {
+        id: "udokan-07",
+        src: "/assets/production/water-treatment/udokan-07.jpg",
+        alt: "Стальная рама установки обратного осмоса ANHEL®",
+        caption: "ГОК Удокан — рама и обвязка",
+        aspect: "4/5",
+      },
+      {
+        id: "delta-aqua-02",
+        src: "/assets/production/water-treatment/delta-aqua-02.jpg",
+        alt: "Установка водоподготовки ANHEL® серии Дельта ВПУ Aqua",
+        caption: "Серия Дельта ВПУ Aqua — общий вид",
+        aspect: "4/5",
+      },
+      {
+        id: "delta-aqua-04",
+        src: "/assets/production/water-treatment/delta-aqua-04.jpg",
+        alt: "Фильтры умягчения с автоматическими клапанами ANHEL®",
+        caption: "Дельта ВПУ Aqua — фильтрационный модуль",
+        aspect: "4/5",
+      },
     ],
   },
 
