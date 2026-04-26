@@ -54,7 +54,7 @@ export const waterSupplyContent: ProductContent = {
       variant: "primary",
     },
     secondaryCta: {
-      label: "Скачать PDF",
+      label: "Опросный лист",
       href: "/docs/water-supply/oprosnyi-list.pdf",
       variant: "ghost",
     },

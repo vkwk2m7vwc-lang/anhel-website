@@ -51,7 +51,7 @@ export const pressureBoostContent: ProductContent = {
       variant: "primary",
     },
     secondaryCta: {
-      label: "Скачать PDF",
+      label: "Опросный лист",
       href: "/docs/pressure-boost/oprosnyi-list.pdf",
       variant: "ghost",
     },

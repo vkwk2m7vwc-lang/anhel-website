@@ -53,7 +53,7 @@ export const heatingCoolingContent: ProductContent = {
       variant: "primary",
     },
     secondaryCta: {
-      label: "Скачать PDF",
+      label: "Опросный лист",
       href: "/docs/heating-cooling/oprosnyi-list.pdf",
       variant: "ghost",
     },

@@ -46,7 +46,7 @@ export const firefightingContent: ProductContent = {
       variant: "primary",
     },
     secondaryCta: {
-      label: "Скачать PDF",
+      label: "Опросный лист",
       href: "/docs/firefighting/oprosnyi-list.pdf",
       variant: "ghost",
     },

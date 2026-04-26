@@ -52,7 +52,7 @@ export const specialContent: ProductContent = {
       variant: "primary",
     },
     secondaryCta: {
-      label: "Скачать PDF",
+      label: "Опросный лист",
       href: "/docs/special/oprosnyi-list.pdf",
       variant: "ghost",
     },
