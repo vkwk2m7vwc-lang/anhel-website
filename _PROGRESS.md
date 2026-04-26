@@ -15,6 +15,7 @@
 | 3 | Сертификаты в существующий блок | `feat/certificates` | ✅ merged (через fillable-forms) |
 | 4 | 3 fillable PDF опросника | `feat/fillable-forms` | ✅ merged |
 | 5 | Руководство по эксплуатации (локально) | — | ✅ saved локально, требует мелкой правки |
+| 6 | Раздел /service + веб-форма заявки на диагностику | `feat/service-section` | 🟡 готово, ждёт PR/merge |
 
 ---
 
@@ -375,3 +376,36 @@ PR через `gh pr create + gh pr merge --squash` в `main`. Production:
 
 1. `chore: clean third-party brands from project descriptions`
 2. `refactor: tighten "Why ANHEL" block to 6 features`
+
+### Задача 6 — Раздел /service + форма заявки — 🟡 готово, ждёт PR
+
+**Ветка:** `feat/service-section` (от свежего main).
+
+**Контекст:** ТЗ — `uploads/cowork_prompt_service.md`. Замечание про
+параллельную ветку `feat/web-questionnaire-pumps` (там QuizShell
+архитектура): на момент работы её ещё не было в main, поэтому форма
+`/service/request` сделана автономной (нативный React state +
+localStorage, без `react-hook-form`/`zod`). Когда WIP-ветка сольётся —
+можно будет либо оставить как есть (service ≠ quiz), либо унифицировать.
+
+**Изменения (3 коммита):**
+
+- `feat(nav)`: пункт «Сервис» в Header / MobileMenu / Footer.
+- `feat(service)`: страница `/service` — 5 секций (Hero без 3D,
+  4 карточки услуг, CTA-блок с PDF + онлайн, тарифы, памятка, контакты).
+  PDF-заявка положена в `public/documents/service-request-anhel.pdf`.
+- `feat(service)`: страница `/service/request` — multistep форма (9
+  шагов, валидация, localStorage, ReviewStep, заглушка отправки).
+  `noindex` для поисковиков.
+
+**Build:** `npx tsc --noEmit` — clean. `npm run build` — 45 страниц,
+`/service` 174 B / 96 kB, `/service/request` 7.43 kB / 141 kB.
+
+**Что НЕ сделано (по ТЗ §7):**
+
+- Реальная отправка через Resend — отдельная задача.
+- Отдельные страницы для каждой услуги — карточки без ссылок (не нужны).
+- EN-версия.
+
+**Stash:** WIP `feat/web-questionnaire-pumps` сохранён через
+`git stash push -u`, ждёт возврата автора (Алексей).
