@@ -163,6 +163,12 @@ export const pressureBoostContent: ProductContent = {
         series: "RVP",
         href: "https://aquadeus.ru/",
       },
+      {
+        id: "kq",
+        name: "KQ Pumps",
+        series: "KQDP, KQDS",
+        href: "https://kq.com.ru/",
+      },
     ],
     rowComponents: [
       { id: "dekraft", name: "DEKraft", href: "https://dekraft.ru/" },
@@ -299,8 +305,8 @@ export const pressureBoostContent: ProductContent = {
       },
       {
         id: "manual",
-        title: "Руководство по эксплуатации АУПД ANHEL",
-        size: "0.81 МБ",
+        title: "Руководство по эксплуатации насосных установок ANHEL® типа СПД",
+        size: "1.41 МБ",
         href: "/docs/pressure-boost/manual.pdf",
       },
     ],
