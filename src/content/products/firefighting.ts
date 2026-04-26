@@ -247,67 +247,58 @@ export const firefightingContent: ProductContent = {
     ],
   },
 
-  // Section 8 «Галерея». Реальные фото производства пожарных НС ANHEL®
-  // в красном корпусе. Файлы под /public/assets/production/firefighting/.
+  // Section 8 «Галерея». Реальные фото пожарных НС ANHEL® из цеха.
+  // Файлы под /public/assets/production/firefighting/.
   gallery: {
     tag: "07 · ГАЛЕРЕЯ",
-    title: "Производство и монтаж",
-    lede: "Цех сборки, испытательный стенд, установки на объектах.",
+    title: "С производства",
     photos: [
       {
         id: "shop-01",
         src: "/assets/production/firefighting/shop-01.jpg",
         alt: "Насосная установка пожаротушения ANHEL® в красном корпусе со шкафом управления",
-        caption: "Готовая станция, цех Москва",
         aspect: "4/5",
       },
       {
         id: "shop-02",
         src: "/assets/production/firefighting/shop-02.jpg",
         alt: "Насосная установка ANHEL® — ракурс с торца",
-        caption: "Гидравлика и обвязка коллектора",
         aspect: "4/5",
       },
       {
         id: "shop-03",
         src: "/assets/production/firefighting/shop-03.jpg",
         alt: "Шкаф управления пожарной насосной установки ANHEL®",
-        caption: "Шкаф управления с ПЛК",
         aspect: "4/5",
       },
       {
         id: "shop-04",
         src: "/assets/production/firefighting/shop-04.jpg",
-        alt: "Насосная установка ANHEL® на испытательном стенде",
-        caption: "Гидравлические испытания",
+        alt: "Насосная установка ANHEL® — общий вид",
         aspect: "4/5",
       },
       {
         id: "shop-05",
         src: "/assets/production/firefighting/shop-05.jpg",
-        alt: "Сборочный цех — линия пожарных насосных установок ANHEL®",
-        caption: "Линия сборки",
+        alt: "Пожарная насосная установка ANHEL® — общий план",
         aspect: "4/5",
       },
       {
         id: "shop-06",
         src: "/assets/production/firefighting/shop-06.jpg",
-        alt: "Насосный агрегат ANHEL® — крупный план",
-        caption: "Насосный агрегат, обвязка",
+        alt: "Насосная установка ANHEL® — крупный план",
         aspect: "4/5",
       },
       {
         id: "shop-07",
         src: "/assets/production/firefighting/shop-07.jpg",
-        alt: "Коллектор и запорная арматура установки ANHEL®",
-        caption: "Коллектор с запорной арматурой",
+        alt: "Коллектор и арматура пожарной установки ANHEL®",
         aspect: "4/5",
       },
       {
         id: "shop-08",
         src: "/assets/production/firefighting/shop-08.jpg",
-        alt: "Готовая станция пожаротушения ANHEL® перед отгрузкой",
-        caption: "Приёмка ОТК",
+        alt: "Готовая пожарная насосная станция ANHEL®",
         aspect: "4/5",
       },
     ],

@@ -208,33 +208,28 @@ export const waterSupplyContent: ProductContent = {
     ],
   },
 
-  // Section «Галерея». 3 фото станций водоснабжения ANHEL® из цеха
-  // (отретушированные пользователем версии — без МФМК-брендинга).
+  // Section «Галерея». Фото станций водоснабжения ANHEL® из цеха.
   // Файлы под /public/assets/production/water-supply/.
   gallery: {
     tag: "06 · ГАЛЕРЕЯ",
-    title: "Производство и монтаж",
-    lede: "Насосные станции водоснабжения ANHEL® в цехе сборки.",
+    title: "С производства",
     photos: [
       {
         id: "shop-01",
         src: "/assets/production/water-supply/shop-01.jpg",
-        alt: "Насосная станция водоснабжения ANHEL® со шкафом управления — общий вид",
-        caption: "Готовая станция, цех Москва",
+        alt: "Насосная станция водоснабжения ANHEL® со шкафом управления",
         aspect: "4/5",
       },
       {
         id: "shop-02",
         src: "/assets/production/water-supply/shop-02.jpg",
         alt: "Насосные агрегаты ANHEL® — компактная сборка",
-        caption: "Сборка насосной группы",
         aspect: "4/5",
       },
       {
         id: "shop-03",
         src: "/assets/production/water-supply/shop-03.jpg",
         alt: "Насосная станция ANHEL® — обвязка коллектора",
-        caption: "Обвязка и пуско-наладка",
         aspect: "4/5",
       },
     ],

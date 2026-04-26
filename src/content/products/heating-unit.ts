@@ -206,70 +206,58 @@ export const heatingUnitContent: ProductContent = {
     ],
   },
 
-  // Section «Галерея». Реальные фото ИТП ANHEL® на объектах:
-  //   - 2 фото из цеха (общий вид готового модуля)
-  //   - 4 фото с образовательного центра «Таврида»
-  //   - 2 фото с жилого комплекса
+  // Section «Галерея». Реальные фото ИТП ANHEL® из цеха и с объектов.
   // Файлы под /public/assets/production/heating-unit/.
   gallery: {
     tag: "05 · ГАЛЕРЕЯ",
-    title: "Производство и монтаж",
-    lede: "Блочные тепловые пункты ANHEL® на объектах и в цехе.",
+    title: "С производства",
     photos: [
       {
         id: "shop-845",
         src: "/assets/production/heating-unit/shop-845.jpg",
-        alt: "Блочный индивидуальный тепловой пункт ANHEL® в цехе — общий вид",
-        caption: "Готовый модуль БИТП, цех сборки",
+        alt: "Блочный индивидуальный тепловой пункт ANHEL® — общий вид",
         aspect: "4/5",
       },
       {
         id: "shop-847",
         src: "/assets/production/heating-unit/shop-847.jpg",
         alt: "БИТП ANHEL® — крупный план обвязки",
-        caption: "Обвязка теплообменной группы",
         aspect: "4/5",
       },
       {
         id: "tavrida-01",
         src: "/assets/production/heating-unit/tavrida-01.jpg",
-        alt: "БИТП ANHEL® на объекте «Образовательный центр Таврида»",
-        caption: "Образовательный центр «Таврида»",
+        alt: "Тепловой пункт ANHEL® — общий вид",
         aspect: "4/5",
       },
       {
         id: "tavrida-04",
         src: "/assets/production/heating-unit/tavrida-04.jpg",
         alt: "Пластинчатые теплообменники ИТП ANHEL®",
-        caption: "Таврида — теплообменная группа",
         aspect: "4/5",
       },
       {
         id: "tavrida-10",
         src: "/assets/production/heating-unit/tavrida-10.jpg",
         alt: "ИТП ANHEL® — циркуляционные насосы и обвязка",
-        caption: "Таврида — циркуляционные насосы",
         aspect: "4/5",
       },
       {
         id: "tavrida-16",
         src: "/assets/production/heating-unit/tavrida-16.jpg",
         alt: "Узел регулирования и КИП тепловой пункт ANHEL®",
-        caption: "Таврида — узел регулирования",
         aspect: "4/5",
       },
       {
         id: "residential-02",
         src: "/assets/production/heating-unit/residential-02.jpg",
-        alt: "ИТП ANHEL® на объекте — жилой комплекс",
-        caption: "Жилой комплекс — ИТП на объекте",
+        alt: "ИТП ANHEL® — общий вид установки",
         aspect: "4/5",
       },
       {
         id: "residential-08",
         src: "/assets/production/heating-unit/residential-08.jpg",
-        alt: "Тепловой пункт ANHEL® — общий вид установки",
-        caption: "Жилой комплекс — общий вид",
+        alt: "Тепловой пункт ANHEL® — общий план",
         aspect: "4/5",
       },
     ],

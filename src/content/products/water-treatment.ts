@@ -202,68 +202,58 @@ export const waterTreatmentContent: ProductContent = {
     ],
   },
 
-  // Section «Галерея». 8 фото установки обратного осмоса ANHEL® на
-  // объекте «ГОК Удокан» (крупнейшее месторождение меди в России).
+  // Section «Галерея». Установка обратного осмоса ANHEL® для ГОК Удокан.
   // Все файлы под /public/assets/production/water-treatment/.
   gallery: {
     tag: "06 · ГАЛЕРЕЯ",
-    title: "Производство и монтаж",
-    lede: "Установка обратного осмоса ANHEL® для ГОК Удокан.",
+    title: "С производства",
     photos: [
       {
         id: "udokan-01",
         src: "/assets/production/water-treatment/udokan-01.jpg",
-        alt: "Установка обратного осмоса ANHEL® на стальной раме — общий вид",
-        caption: "ГОК Удокан — установка RO, общий вид",
+        alt: "Установка обратного осмоса ANHEL® на стальной раме",
         aspect: "4/5",
       },
       {
         id: "udokan-02",
         src: "/assets/production/water-treatment/udokan-02.jpg",
         alt: "Мембранные модули установки обратного осмоса ANHEL®",
-        caption: "ГОК Удокан — мембранные модули",
         aspect: "4/5",
       },
       {
         id: "udokan-03",
         src: "/assets/production/water-treatment/udokan-03.jpg",
-        alt: "Трубопровод и арматура установки RO ANHEL®",
-        caption: "ГОК Удокан — обвязка трубопроводов",
+        alt: "Трубопровод и арматура установки ANHEL®",
         aspect: "4/5",
       },
       {
         id: "udokan-04",
         src: "/assets/production/water-treatment/udokan-04.jpg",
         alt: "Крупный план мембранных элементов ANHEL®",
-        caption: "ГОК Удокан — крупный план модулей",
         aspect: "4/5",
       },
       {
         id: "udokan-05",
         src: "/assets/production/water-treatment/udokan-05.jpg",
-        alt: "Контрольно-измерительная арматура установки",
-        caption: "ГОК Удокан — КИП",
+        alt: "Контрольно-измерительная арматура установки ANHEL®",
         aspect: "4/5",
       },
       {
         id: "udokan-06",
         src: "/assets/production/water-treatment/udokan-06.jpg",
-        alt: "Установка обратного осмоса ANHEL® — ракурс с торца",
-        caption: "ГОК Удокан — торцевой ракурс",
+        alt: "Установка ANHEL® — ракурс с торца",
         aspect: "4/5",
       },
       {
         id: "udokan-07",
         src: "/assets/production/water-treatment/udokan-07.jpg",
-        alt: "Стальная рама установки обратного осмоса ANHEL®",
-        caption: "ГОК Удокан — рама и обвязка",
+        alt: "Стальная рама и обвязка установки ANHEL®",
         aspect: "4/5",
       },
       {
         id: "udokan-08",
         src: "/assets/production/water-treatment/udokan-08.jpg",
-        alt: "Установка обратного осмоса ANHEL® на объекте — общий вид",
-        caption: "ГОК Удокан — финальная сборка",
+        alt: "Установка ANHEL® — общий вид",
         aspect: "4/5",
       },
     ],
