@@ -116,7 +116,7 @@ function TechSpecCard({ spec, index }: { spec: TechSpecTile; index: number }) {
         "sm:min-h-[140px] sm:flex-col sm:items-stretch sm:justify-between sm:gap-0 sm:p-4",
         // Desktop:
         "md:min-h-[180px] md:p-6 lg:min-h-[220px] lg:p-8",
-        "[@media(hover:hover)]:hover:bg-[#111]",
+        "[@media(hover:hover)]:hover:bg-[var(--color-hover-tint)]",
         "active:ring-1 active:ring-[var(--accent-current)]",
         "focus-visible:ring-1 focus-visible:ring-[var(--accent-current)]/70",
       ].join(" ")}

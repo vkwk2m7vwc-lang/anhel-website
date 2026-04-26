@@ -88,7 +88,7 @@ function AdvantageCard({
         "min-h-[64px] flex-row items-baseline gap-3 px-4 py-3",
         // Tablet+ card.
         "sm:min-h-[240px] sm:flex-col sm:justify-between sm:gap-0 sm:p-6 md:min-h-[280px] md:p-8",
-        "[@media(hover:hover)]:hover:bg-[#111]",
+        "[@media(hover:hover)]:hover:bg-[var(--color-hover-tint)]",
         "active:ring-1 active:ring-[var(--accent-current)]",
         "focus-visible:ring-1 focus-visible:ring-[var(--accent-current)]/70",
       ].join(" ")}

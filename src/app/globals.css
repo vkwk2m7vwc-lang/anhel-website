@@ -41,6 +41,15 @@
      на тёмном — светлые. Через переменную чтобы заменялось вместе с темой. */
   --grid-line: rgba(10, 10, 10, 0.05);
 
+  /* Hover-tint для карточек grid — едва заметный сдвиг фона на hover.
+     Light: тёмная плёнка 4% поверх белого. Dark: светлая плёнка 6% поверх
+     #0a0a0a (внизу = #111 ≈ rgba(255,255,255,0.06) over #0a0a0a). */
+  --color-hover-tint: rgba(10, 10, 10, 0.04);
+
+  /* Image placeholder фон — для cover-картинок проектов и т.п., чтобы
+     до загрузки контейнер не выглядел как рваная дыра в теме. */
+  --color-image-placeholder: rgba(10, 10, 10, 0.06);
+
   /* Motion */
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
@@ -71,6 +80,8 @@
   --accent-heat: #e8873b;
 
   --grid-line: rgba(255, 255, 255, 0.03);
+  --color-hover-tint: rgba(255, 255, 255, 0.06);
+  --color-image-placeholder: rgba(255, 255, 255, 0.04);
 }
 
 @layer base {

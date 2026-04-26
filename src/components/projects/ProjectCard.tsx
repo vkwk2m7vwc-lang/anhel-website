@@ -27,7 +27,7 @@ export function ProjectCard({ project }: { project: ProjectItem }) {
       data-cursor="hover"
       className="group relative flex flex-col overflow-hidden border border-[var(--color-hairline)] bg-[var(--color-primary)] transition-colors duration-300 hover:border-[var(--color-secondary)]/30"
     >
-      <div className="relative aspect-[4/3] w-full overflow-hidden bg-[#0F0F0F]">
+      <div className="relative aspect-[4/3] w-full overflow-hidden bg-[var(--color-image-placeholder)]">
         <Image
           src={project.cover}
           alt={project.coverAlt}

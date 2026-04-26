@@ -218,7 +218,7 @@ function ProductCard({
   );
 
   const containerClass =
-    "group relative flex min-h-[360px] flex-col bg-[var(--color-primary)] p-6 transition-colors duration-300 [@media(hover:hover)]:hover:bg-[#111] md:min-h-[440px] md:p-10";
+    "group relative flex min-h-[360px] flex-col bg-[var(--color-primary)] p-6 transition-colors duration-300 [@media(hover:hover)]:hover:bg-[var(--color-hover-tint)] md:min-h-[440px] md:p-10";
 
   return (
     <motion.li
