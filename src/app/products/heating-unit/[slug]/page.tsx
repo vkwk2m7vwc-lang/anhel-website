@@ -245,8 +245,12 @@ export default async function HeatingModulePage({ params }: RouteParams) {
         </div>
       </section>
 
-      {/* 05 Опросный лист */}
-      <QuizSection content={heatingUnitContent.quiz} />
+      {/* 05 Опросный лист — overrride tag, чтобы на подстранице модуля
+          номер совпадал с локальной нумерацией секций (родитель ИТП
+          использует тот же quiz объект, но там его уберут совсем). */}
+      <QuizSection
+        content={{ ...heatingUnitContent.quiz, tag: "05 · ОПРОСНЫЙ ЛИСТ" }}
+      />
 
       {/* 06 Соседние модули — навигация без возврата на каталог */}
       <section
@@ -297,7 +301,10 @@ export default async function HeatingModulePage({ params }: RouteParams) {
       </section>
 
       <ProductCtaFooter
-        content={heatingUnitContent.footerCta}
+        content={{
+          ...heatingUnitContent.footerCta,
+          tag: "07 · ЗАПРОС КП",
+        }}
         currentSlug={"heating-unit"}
       />
     </ProductPageShell>
