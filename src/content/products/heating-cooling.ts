@@ -293,7 +293,7 @@ export const heatingCoolingContent: ProductContent = {
       {
         id: "oprosnik",
         title: "Опросный лист для подбора насосных установок",
-        size: "2.28 МБ",
+        size: "1.49 МБ",
         href: "/docs/heating-cooling/oprosnyi-list.pdf",
       },
       {

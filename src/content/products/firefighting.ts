@@ -347,7 +347,7 @@ export const firefightingContent: ProductContent = {
       {
         id: "oprosnik",
         title: "Опросный лист для подбора насосных установок",
-        size: "1.85 МБ",
+        size: "1.49 МБ",
         href: "/docs/firefighting/oprosnyi-list.pdf",
       },
       {

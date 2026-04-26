@@ -283,7 +283,7 @@ export const pressureBoostContent: ProductContent = {
       {
         id: "oprosnik",
         title: "Опросный лист для подбора АУПД",
-        size: "2.28 МБ",
+        size: "0.29 МБ",
         href: "/docs/pressure-boost/oprosnyi-list.pdf",
       },
       {

@@ -306,7 +306,7 @@ export const heatingUnitContent: ProductContent = {
       {
         id: "oprosnik",
         title: "Опросный лист для подбора ИТП",
-        size: "7.20 МБ",
+        size: "0.54 МБ",
         href: "/docs/heating-unit/oprosnyi-list.pdf",
       },
     ],

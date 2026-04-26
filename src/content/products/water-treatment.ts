@@ -302,7 +302,7 @@ export const waterTreatmentContent: ProductContent = {
       {
         id: "oprosnik",
         title: "Опросный лист для подбора установки водоподготовки",
-        size: "1.95 МБ",
+        size: "2.23 МБ",
         href: "/docs/water-treatment/oprosnyi-list.pdf",
       },
       {

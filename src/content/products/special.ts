@@ -297,7 +297,7 @@ export const specialContent: ProductContent = {
       {
         id: "oprosnik",
         title: "Опросный лист для подбора специсполнения",
-        size: "2.28 МБ",
+        size: "1.49 МБ",
         href: "/docs/special/oprosnyi-list.pdf",
       },
       {
