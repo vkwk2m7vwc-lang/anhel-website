@@ -4,14 +4,13 @@
  * который передаётся в <QuizShell />.
  */
 import { pumpsSteps } from './pumps-fields';
-import { pumpsQuizSchema, pumpsDefaults, stepFieldNames as pumpsStepFieldNames } from './pumps-schema';
+import { pumpsDefaults, stepFieldNames as pumpsStepFieldNames } from './pumps-schema';
 import type { QuizConfig } from './quiz-config';
 
 export const pumpsQuizConfig: QuizConfig = {
   kind: 'pumps',
   title: 'Подбор насосной установки',
   steps: pumpsSteps,
-  schema: pumpsQuizSchema,
   defaults: pumpsDefaults,
   stepFieldNames: pumpsStepFieldNames,
   storageKey: 'anhel-quiz-pumps-v1',

@@ -3,6 +3,8 @@ import type { CSSProperties } from 'react';
 import { QuizShell } from '@/components/quiz/QuizShell';
 import { itpQuizConfig } from '@/content/quiz/itp-config';
 
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = {
   title: 'Опросный лист — БИТП | ANHEL®',
   description:

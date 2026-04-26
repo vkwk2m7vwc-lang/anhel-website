@@ -3,6 +3,8 @@ import type { CSSProperties } from 'react';
 import { QuizShell } from '@/components/quiz/QuizShell';
 import { vpuQuizConfig } from '@/content/quiz/vpu-config';
 
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = {
   title: 'Опросный лист — установки водоподготовки | ANHEL®',
   description:

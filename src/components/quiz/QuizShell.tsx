@@ -10,6 +10,7 @@ import {
 } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { motion, AnimatePresence } from 'framer-motion';
+import type { ZodTypeAny } from 'zod';
 import {
   QUIZ_INTRO_PARA_1,
   QUIZ_INTRO_PARA_2,
@@ -18,7 +19,23 @@ import {
   QUIZ_CONSENT_LABEL,
   type QuizStep,
 } from '@/content/quiz/pumps-fields';
-import type { QuizConfig } from '@/content/quiz/quiz-config';
+import { pumpsQuizSchema } from '@/content/quiz/pumps-schema';
+import { vpuQuizSchema } from '@/content/quiz/vpu-schema';
+import { itpQuizSchema } from '@/content/quiz/itp-schema';
+import { aupdQuizSchema } from '@/content/quiz/aupd-schema';
+import type { QuizConfig, QuizKind } from '@/content/quiz/quiz-config';
+
+/**
+ * Map kind→schema. Resolved here in the client component, not passed via
+ * config props. Zod schemas are class instances and cannot be serialized
+ * across the server↔client boundary.
+ */
+const SCHEMAS: Record<QuizKind, ZodTypeAny> = {
+  pumps: pumpsQuizSchema,
+  vpu: vpuQuizSchema,
+  itp: itpQuizSchema,
+  aupd: aupdQuizSchema,
+};
 import { QuizProgress } from './QuizProgress';
 import { QuizNavigation } from './QuizNavigation';
 import { QuizSection } from './QuizSection';
@@ -47,7 +64,7 @@ export function QuizShell({ config, prefill }: Props) {
   );
 
   const methods = useForm<Record<string, unknown>>({
-    resolver: zodResolver(config.schema),
+    resolver: zodResolver(SCHEMAS[config.kind]),
     defaultValues: initialValues,
     mode: 'onBlur',
   });

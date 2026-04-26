@@ -4,6 +4,10 @@ import { QuizShell } from '@/components/quiz/QuizShell';
 import { pumpsPrefillMap, pumpsAccentMap } from '@/content/quiz/pumps-fields';
 import { pumpsQuizConfig } from '@/content/quiz/pumps-config';
 
+// Render at request-time, не во время build. Quiz-форма большая и состоит
+// из client-component, статическая генерация для неё не имеет смысла.
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = {
   title: 'Опросный лист — подбор насосной установки | ANHEL®',
   description:

@@ -3,11 +3,17 @@
  * передают такой объект в `<QuizShell />`. Это позволяет:
  *   — переиспользовать всю UX-обвязку (steps, progress, localStorage, slide,
  *     ReviewStep, success/error экраны)
- *   — иметь свои поля, схему, акценты у каждого типа
+ *   — иметь свои поля, акценты у каждого типа
  *   — добавлять новые опросники в одно место без правок UI
+ *
+ * ВАЖНО: zod-схема НЕ передаётся через config — она содержит классы (ZodObject),
+ * которые не сериализуются при server→client передаче props. Вместо этого
+ * QuizShell резолвит схему по `kind` через внутренний map. То же про
+ * `stepFieldNames` (хотя они plain — оставляем в config для удобства).
  */
-import type { ZodTypeAny } from 'zod';
 import type { QuizStep } from './pumps-fields';
+
+export type QuizKind = 'pumps' | 'vpu' | 'itp' | 'aupd';
 
 export type QuizCustomSection = {
   /** Какой кастомный рендер вставить ВМЕСТО списка чекбоксов внутри секции */
@@ -18,16 +24,14 @@ export type QuizCustomSection = {
 
 export type QuizConfig = {
   /** Машинный идентификатор опросника — отправляется на бэкенд как `kind`. */
-  kind: 'pumps' | 'vpu' | 'itp' | 'aupd';
+  kind: QuizKind;
   /** Заголовок страницы (под mono-tag «Опросный лист») */
   title: string;
   /** Описание в hero (1 предложение) */
   description?: string;
   /** Шаги формы */
   steps: QuizStep[];
-  /** Серверная zod-схема (та же используется и на клиенте) */
-  schema: ZodTypeAny;
-  /** Дефолтные значения формы */
+  /** Дефолтные значения формы (plain values: '', false, undefined). */
   defaults: Record<string, unknown>;
   /** Поля, валидируемые на конкретном шаге (для блокировки «Далее») */
   stepFieldNames: Record<number, string[]>;
