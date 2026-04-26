@@ -21,6 +21,13 @@ import type { GalleryContent, GalleryPhoto } from "@/content/products/types";
  * drag + native scroll-snap carry the weight.
  */
 export function GalleryRail({ content }: { content: GalleryContent }) {
+  // Реальные фото с filename. Skeleton-плейсхолдеры (без `src`) больше
+  // не показываются — заказчик попросил убрать заглушки до появления
+  // реальных снимков. Если у продукта вообще нет фото — секция
+  // скрывается целиком.
+  const photos = content.photos.filter((p) => p.src);
+  if (photos.length === 0) return null;
+
   return (
     <section
       id="gallery"
@@ -52,7 +59,7 @@ export function GalleryRail({ content }: { content: GalleryContent }) {
           left-alignment at rest. */}
       <div className="relative">
         <ul className="flex snap-x snap-mandatory gap-6 overflow-x-auto px-6 pb-16 pt-4 md:gap-8 md:px-12">
-          {content.photos.map((photo, i) => (
+          {photos.map((photo, i) => (
             <GalleryTile key={photo.id} photo={photo} index={i} />
           ))}
           {/* Trailing spacer so the last tile can fully snap to the left
