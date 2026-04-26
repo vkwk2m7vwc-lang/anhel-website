@@ -62,31 +62,27 @@ const config: Config = {
         body: ["var(--font-body)", "Inter", "system-ui", "sans-serif"],
         mono: ["var(--font-mono)", "JetBrains Mono", "ui-monospace", "monospace"],
       },
+      // Variant 6 — Datasheet: fixed type ladder, no clamp gymnastics.
+      // The engineer cares about scannability, not editorial presence.
+      // Hero shrinks to a sane card; section headers stop at 24px.
       fontSize: {
-        hero: [
-          "clamp(56px, 8vw, 180px)",
-          { lineHeight: "0.95", letterSpacing: "-0.025em" },
-        ],
-        section: [
-          "clamp(40px, 5vw, 88px)",
-          { lineHeight: "1.05", letterSpacing: "-0.02em" },
-        ],
-        h2: [
-          "clamp(28px, 3vw, 48px)",
-          { lineHeight: "1.1", letterSpacing: "-0.015em" },
-        ],
-        h3: ["clamp(20px, 2vw, 28px)", { lineHeight: "1.25" }],
-        body: ["clamp(16px, 1.2vw, 18px)", { lineHeight: "1.5" }],
-        mono: ["11px", { lineHeight: "1.2", letterSpacing: "0.08em" }],
+        hero: ["28px", { lineHeight: "1.2", letterSpacing: "-0.015em" }],
+        section: ["20px", { lineHeight: "1.3", letterSpacing: "-0.005em" }],
+        h2: ["18px", { lineHeight: "1.35", letterSpacing: "0" }],
+        h3: ["16px", { lineHeight: "1.4" }],
+        body: ["14px", { lineHeight: "1.6" }],
+        mono: ["11px", { lineHeight: "1.3", letterSpacing: "0.06em" }],
       },
       letterSpacing: {
         mono: "0.08em",
         hero: "-0.025em",
       },
+      // Variant 6 — Datasheet: rectangular by default. Cards are
+      // tabular blocks, not pebbles. Forms have 2-px corners only.
       borderRadius: {
-        sm: "4px",
-        md: "8px",
-        lg: "16px",
+        sm: "0px",
+        md: "2px",
+        lg: "4px",
         pill: "9999px",
       },
       transitionTimingFunction: {
