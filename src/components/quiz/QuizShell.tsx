@@ -286,8 +286,11 @@ function SuccessScreen() {
       </p>
       <p className="mt-3 text-sm leading-relaxed text-secondary/65">
         Срочный вопрос — звоните{' '}
-        <a href="tel:+78124164500" className="border-b border-secondary/40 hover:border-secondary">
-          +7 (812) 416-4500
+        <a
+          href="tel:+78124164500"
+          className="border-b border-secondary/40 hover:border-secondary"
+        >
+          +7 (812) 416-45-00
         </a>{' '}
         или пишите на{' '}
         <a
