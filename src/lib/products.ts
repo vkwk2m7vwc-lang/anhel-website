@@ -44,7 +44,8 @@ export type ProductSummary = {
 };
 
 /**
- * Top-level каталог `/products` — 3 раздела сейчас, 4-й добавится позже.
+ * Top-level каталог `/products` — 4 раздела:
+ *   pumps, water-treatment, heating-unit, control-systems.
  * Каждый раздел — точка входа в подкаталог либо в одну продуктовую
  * страницу.
  */
@@ -81,6 +82,21 @@ export const TOP_LEVEL_PRODUCTS: readonly ProductSummary[] = [
     image: "/assets/products/bitp.png",
     imageAlt: "ANHEL — блочный индивидуальный тепловой пункт (БИТП)",
     accentHex: "#E8873B",
+  },
+  {
+    slug: "control-systems",
+    href: "/products/control-systems",
+    title: "Шкафы управления",
+    tagline:
+      "Пять серий — частотные, для пожаротушения, дымоудаления, КНС и электрифицированной арматуры.",
+    accent: "fire",
+    // Placeholder render — пока используется fire-render
+    // (pump-station hvs-nu-red2 имеет красный корпус, ассоциация
+    // с шкафом управления). Реальный фото-render шкафа добавит
+    // Алексей; путь резервируется под будущий ассет.
+    image: "/assets/products/control-systems-placeholder.svg",
+    imageAlt: "ANHEL — шкаф управления ОМЕГА",
+    accentHex: "#1E6FD9",
   },
 ] as const;
 
@@ -141,15 +157,80 @@ export const PUMPS_PRODUCTS: readonly ProductSummary[] = [
 ] as const;
 
 /**
- * Полный плоский массив всех 7 продуктов — для совместимости с
+ * Подкаталог `/products/control-systems` — 5 серий шкафов управления
+ * ОМЕГА (наш OEM-партнёр МФМК; в публикации — ANHEL®). Серии:
+ * частотный, пожаротушение, дымоудаление, КНС, электрифицированная
+ * арматура.
+ */
+export const CONTROL_SYSTEMS_PRODUCTS: readonly ProductSummary[] = [
+  {
+    slug: "variable-frequency",
+    href: "/products/control-systems/variable-frequency",
+    title: "С частотным регулированием",
+    tagline:
+      "Для повысительных насосов в системах ХВС, ГВС, отопления и кондиционирования. ПИД-регулирование, плавный пуск, каскадное управление до 6 насосов.",
+    accent: "water",
+    image: "/assets/products/control-systems-placeholder.svg",
+    imageAlt: "ANHEL — шкаф управления с частотным регулированием",
+    accentHex: "#1E6FD9",
+  },
+  {
+    slug: "fire-suppression",
+    href: "/products/control-systems/fire-suppression",
+    title: "Для систем пожаротушения",
+    tagline:
+      "Управление пожарными насосами в дренчерных и спринклерных системах, пенном пожаротушении класса B. АВР, приоритет подачи, контроль ППКП.",
+    accent: "fire",
+    image: "/assets/products/control-systems-placeholder.svg",
+    imageAlt: "ANHEL — шкаф управления для систем пожаротушения",
+    accentHex: "#D72638",
+  },
+  {
+    slug: "smoke-control",
+    href: "/products/control-systems/smoke-control",
+    title: "Для дымоудаления и подпора",
+    tagline:
+      "Управление противодымной вентиляцией. Пожарный сертификат ФЗ-123, IP54+, индикация «Пожар», устойчивость к высоким температурам.",
+    accent: "fire",
+    image: "/assets/products/control-systems-placeholder.svg",
+    imageAlt: "ANHEL — шкаф управления противодымной вентиляцией",
+    accentHex: "#D72638",
+  },
+  {
+    slug: "sewage-pumping",
+    href: "/products/control-systems/sewage-pumping",
+    title: "Для КНС",
+    tagline:
+      "Управление дренажными и канализационными насосами, ливневыми стоками. Поплавки и уровнемеры, ручной/автоматический режим, до 4 насосов.",
+    accent: "water",
+    image: "/assets/products/control-systems-placeholder.svg",
+    imageAlt: "ANHEL — шкаф управления канализационных насосных станций",
+    accentHex: "#1E6FD9",
+  },
+  {
+    slug: "electric-actuators",
+    href: "/products/control-systems/electric-actuators",
+    title: "Для электрифицированной арматуры",
+    tagline:
+      "Управление электроприводами запорных и регулирующих задвижек. До 5 задвижек, прямой пуск, ручной/автоматический режим.",
+    accent: "treatment",
+    image: "/assets/products/control-systems-placeholder.svg",
+    imageAlt: "ANHEL — шкаф управления электрифицированной арматурой",
+    accentHex: "#8A94A0",
+  },
+] as const;
+
+/**
+ * Полный плоский массив всех 12 продуктов — для совместимости с
  * консумерами, которые работают по slug без знания иерархии:
  *   - `ProductCtaFooter` (соседние продукты на странице товара)
  *   - `MobileMenu` (плоский список всех продуктов)
  *   - старые потребители по slug
  *
- * Order: насосные → водоподготовка → ИТП. Маркетинговый порядок.
+ * Order: насосные → водоподготовка → ИТП → шкафы. Маркетинговый порядок.
  */
 export const PRODUCTS: readonly ProductSummary[] = [
   ...PUMPS_PRODUCTS,
-  ...TOP_LEVEL_PRODUCTS.filter((p) => p.slug !== "pumps"),
+  ...TOP_LEVEL_PRODUCTS.filter((p) => p.slug !== "pumps" && p.slug !== "control-systems"),
+  ...CONTROL_SYSTEMS_PRODUCTS,
 ] as const;

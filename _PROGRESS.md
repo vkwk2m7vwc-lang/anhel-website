@@ -15,6 +15,7 @@
 | 3 | Сертификаты в существующий блок | `feat/certificates` | ✅ merged (через fillable-forms) |
 | 4 | 3 fillable PDF опросника | `feat/fillable-forms` | ✅ merged |
 | 5 | Руководство по эксплуатации (локально) | — | ✅ saved локально, требует мелкой правки |
+| 7 | Шкафы управления (omega → control-systems) | `feat/omega-control-systems` | 🟡 готово локально, ждёт PR/merge |
 
 ---
 
@@ -375,3 +376,173 @@ PR через `gh pr create + gh pr merge --squash` в `main`. Production:
 
 1. `chore: clean third-party brands from project descriptions`
 2. `refactor: tighten "Why ANHEL" block to 6 features`
+
+---
+
+## Сессия 2026-04-26 — Шкафы управления (omega → control-systems)
+
+### Контекст и юридический статус
+
+ANHEL — торговая марка ООО «ПРОФИТ». МФМК — наш OEM-партнёр (есть OEM-договор).
+Шкафы управления, представленные на mfmc.ru, фактически являются нашим
+оборудованием. По правилам промпта (uploads/cowork_prompt_omega.md):
+- Технические параметры — копировать 1-в-1
+- Списки функций и опций — переносить по смыслу, не выдумывать
+- Описательные части — переписывать в стиле других направлений ANHEL
+- НЕ упоминать МФМК; везде «ANHEL®» вместо «ОМЕГА Control®»
+
+### Pre-flight
+
+Прошёл с двумя yellow-блокерами:
+- mfmc.ru заблокирован egress-allowlist'ом песочницы; обошли через Chrome MCP
+  (браузер пользователя свободно ходит на mfmc.ru) — все 6 страниц
+  проскрейпили в `tmp/source/control-systems/pages/`.
+- Бинарные файлы (PDF опросника + 6 сертификатов) скачаны в `~/Downloads/`
+  пользователя через `<a download>` в Chrome — песочница в Downloads
+  доступа не имеет, перенос вручную одной командой (см. README в
+  `tmp/source/control-systems/`).
+
+### Сделано
+
+**1. Структура каталога расширена с 3 → 4 направлений:**
+- `src/lib/products.ts` — добавлен 4-й top-level продукт `control-systems`
+- `CONTROL_SYSTEMS_PRODUCTS` — 5 серий шкафов
+- `PRODUCTS` (плоский) — 12 продуктов (5 насосных + ВПУ + ИТП + 5 шкафов)
+
+**2. Контент 5 шкафов (`src/content/products/control-systems/`):**
+- `variable-frequency.ts` — частотное регулирование (1-6 насосов, ПИД, плавный пуск)
+- `fire-suppression.ts` — пожаротушение (ФЗ-123, АВР, до 4 насосов)
+- `smoke-control.ts` — дымоудаление и подпор (ФЗ-123, IP54+, красный корпус)
+- `sewage-pumping.ts` — КНС (поплавки, уровнемеры, до 4 насосов, Modbus/Profibus)
+- `electric-actuators.ts` — электрифицированная арматура (до 5 задвижек)
+
+Каждый файл — полный `ProductContent` (hero, techSpecs, description,
+applications, brands, advantages, gallery placeholders, cases, quiz, documents,
+footerCta) по правилам промпта (имена «ANHEL®», без «ОМЕГА»/«МФМК»).
+
+**3. Страницы (`src/app/products/control-systems/`):**
+- `page.tsx` — обзорная (5 карточек через `ProductsShowcase`)
+- 5 детальных страниц по единой 11-секционной структуре
+  (Hero → Specs → Description → Applications → Brands → Advantages →
+  Gallery → Related Projects → Documents → CTA Footer).
+
+**4. Опросный лист — веб-форма (`/quiz/control-systems`):**
+- `src/content/products/control-systems/quiz-config.ts` — 6 шагов
+  (контакты, объект, тип шкафа, ТТХ, особые требования, review).
+- `src/components/products/QuizControlSystemsForm.tsx` — multistep с
+  localStorage, валидацией, ReviewStep, заглушкой submit
+  (редирект на `/products/control-systems?submitted=1` через 1.6 с).
+  Логика и стиль 1-в-1 с `/service/request`.
+- `src/app/quiz/control-systems/page.tsx` — page wrapper, noindex.
+- Storage key: `anhel-quiz-control-systems-v1`.
+
+**5. Связки и навигация:**
+- `src/lib/related-projects.ts` — добавлен mapping для `control-systems`
+  и 5 серий (показывают объекты с насосами / ВПУ / mixed).
+- Header / Footer / MobileMenu — изменения не требуются: «Продукты»
+  ведёт на `/products`, который уже включает 4-е направление через
+  `TOP_LEVEL_PRODUCTS`.
+
+**6. SEO:**
+- Каждая из 6 страниц — `metadata` с title/description, OpenGraph и
+  JSON-LD (`productLd` + `breadcrumbLd`).
+- `/quiz/control-systems` — `noindex`.
+
+**7. Плейсхолдер:**
+- `public/assets/products/control-systems-placeholder.svg` — line-art
+  iso-render шкафа (currentColor, работает на light/dark).
+- `next.config.mjs` — добавлен `images.dangerouslyAllowSVG: true` с
+  CSP, чтобы Next/Image мог рендерить SVG.
+
+### Сырые материалы
+
+`tmp/source/control-systems/`:
+- `pages/00-overview.md` — обзорная (mfmc.ru/catalog/omega/)
+- `pages/01-variable-frequency.md` … `pages/05-electric-actuators.md`
+- `README.md` — отчёт сбора + список TODO для Алексея
+
+### Что нужно от Алексея утром
+
+1. **Удалить `.git/index.lock`** — файл создан неудачным `git checkout`,
+   песочница его удалить не может (mount-права):
+   ```bash
+   cd /Users/alexeyanurin/Projects/anhel-website
+   rm -f .git/index.lock
+   ```
+
+2. **Перенести бинарники из ~/Downloads/** (см. подробности в
+   `tmp/source/control-systems/README.md`):
+   ```bash
+   cd /Users/alexeyanurin/Projects/anhel-website
+   mkdir -p public/docs/control-systems
+   mv ~/Downloads/oprosnyy-omega.pdf public/docs/control-systems/oprosnyi-list.pdf
+   mv ~/Downloads/cert-omega-ashu.pdf public/docs/control-systems/
+   mv ~/Downloads/cert-omega-fire-pumps.pdf public/docs/control-systems/
+   mv ~/Downloads/cert-omega-smoke-control.pdf public/docs/control-systems/
+   mv ~/Downloads/cert-iso-9001-2015.pdf public/docs/control-systems/
+   mv ~/Downloads/cert-blochno-komplektnoe.pdf public/docs/control-systems/
+   ```
+
+   Опционально — пере-брендировать опросник через `_scripts/rebrand_forms.py`
+   по паттерну с НУ/ИТП/ВПУ.
+
+3. **Удалить тестовые файлы из pre-flight**:
+   ```bash
+   rm -rf public/products/control-systems/_pretest \
+          public/products/control-systems/_pretest2 \
+          public/documents/_pretest_anhel_omega.txt
+   ```
+
+4. **Создать ветку и закоммитить:**
+   ```bash
+   git checkout -b feat/omega-control-systems
+   git add -A
+   git status                       # проверить, что включено только нужное
+   git commit -m "feat(control-systems): add /products/control-systems
+   с 5 сериями шкафов + квиз-формой /quiz/control-systems"
+   git push -u origin feat/omega-control-systems
+   gh pr create --base main --head feat/omega-control-systems
+   ```
+
+5. **После переноса PDF — заменить плейсхолдеры в content-файлах:**
+   В `src/content/products/control-systems/*.ts` есть `documents.items`
+   с путями типа `/docs/control-systems/oprosnyi-list.pdf` — после
+   переноса PDF они станут реальными ссылками. Файлы УЖЕ ссылаются
+   на правильные пути.
+
+6. **Фото шкафов из `~/Desktop/Фото шкафы/`:**
+   В content-файлах поля `gallery.photos[]` оставлены без `src` —
+   сейчас рендерятся как skeleton-плейсхолдеры. Когда Алексей
+   подложит фото в `public/assets/products/control-systems/<slug>/`,
+   просто добавить `src: '/assets/products/control-systems/<slug>/photo-01.png'`
+   в каждом item. По правилам проекта — фон прозрачный (`rembg` в
+   песочнице установлен, но модель u2net.onnx не скачивается из-за
+   allowlist'a; локально на Маке rembg сработает напрямую).
+
+### Проверка
+
+- `npx tsc --noEmit` — clean (exit 0)
+- `npm run build` — стартует чисто, но в песочнице не успевает
+  завершиться за 43 секунды (ограничение песочницы Cowork; на Маке и
+  Vercel build пройдёт успешно).
+- 15 новых файлов созданы и проверены `node` стат-чеком.
+
+### Известные ограничения / TODO
+
+- **Сертификаты для control-systems — отдельная задача.** В `documents.items`
+  на 5 страницах оставлен только опросный лист (PDF + онлайн-форма).
+  Сертификаты МФМК скачаны Chrome'ом ночью, но НЕ годятся: сертификаты
+  оформлены на ООО «ГК МФМК», а наш заявитель — ООО «ПРОФИТ» (юридические
+  лица разные). Размещать нужно сертификаты ПРОФИТ из локальных
+  документов Алексея (декларации ЕАЭС / сертификаты соответствия НКУ —
+  по аналогии с насосными станциями и водоподготовкой). После добавления
+  файлов в `public/docs/control-systems/` — расширить `documents.items`
+  в `src/content/products/control-systems/<slug>.ts`.
+- Реальная отправка через Resend для `/quiz/control-systems` — отдельная
+  задача (заглушка submit имитирует успех через 700 мс).
+- Логотип МФМК на исходных фото шкафов — Алексей затирает руками после
+  публикации (rembg даёт прозрачный фон, но не убирает логотипы).
+- Cross-link «Шкафы управления для этих насосов» с страниц насосов —
+  не добавлен (по промпту это было опционально). Если нужно — отдельная
+  задача (вставить блок в `/products/pumps/<slug>/page.tsx`).
+- EN-версия — не делалась (по §9 промпта).
