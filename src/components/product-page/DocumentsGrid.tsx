@@ -21,6 +21,22 @@ import type {
  * `gap-px bg-hairline` cell-border trick as the other grids.
  */
 export function DocumentsGrid({ content }: { content: DocumentsContent }) {
+  // Если документов нет — секция полностью скрывается. Раньше пустые
+  // ячейки 4-col грида рисовали серый прямоугольник справа от двух
+  // реальных карточек на широком экране.
+  const items = content.items.filter((d) => d.href);
+  if (items.length === 0) return null;
+
+  // Подбираем grid-cols по количеству карточек. 2 элемента → 2 колонки,
+  // 3 → 3 колонки, 4+ → 4 колонки. Без пустых ячеек справа.
+  const lgCols =
+    items.length >= 4
+      ? "lg:grid-cols-4"
+      : items.length === 3
+        ? "lg:grid-cols-3"
+        : "lg:grid-cols-2";
+  const smCols = items.length >= 2 ? "sm:grid-cols-2" : "sm:grid-cols-1";
+
   return (
     <section
       id="documents"
@@ -45,11 +61,10 @@ export function DocumentsGrid({ content }: { content: DocumentsContent }) {
           ) : null}
         </div>
 
-        {/* Mobile: 1-col compact rows (4 docs влезают в 1 экран).
-            Tablet (sm-md): 2 col card layout.
-            Desktop (lg+): 4 col card layout. */}
-        <ul className="mt-12 grid grid-cols-1 gap-px bg-[var(--color-hairline)] md:mt-16 sm:grid-cols-2 lg:grid-cols-4">
-          {content.items.map((doc, i) => (
+        <ul
+          className={`mt-12 grid grid-cols-1 gap-px bg-[var(--color-hairline)] md:mt-16 ${smCols} ${lgCols}`}
+        >
+          {items.map((doc, i) => (
             <DocCard key={doc.id} doc={doc} index={i} />
           ))}
         </ul>
