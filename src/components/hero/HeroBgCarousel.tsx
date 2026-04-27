@@ -71,12 +71,8 @@ export function HeroBgCarousel({
   // doesn't interpolate gradients, and animating rgba channels via JS would
   // burn frames for something the GPU already handles cheaply.
   const accentRgba = (alpha: number) => hexToRgba(product.accent, alpha);
-  // Subtle accent backlight behind product image. Was alpha 0.18 — too strong
-  // on warm accents (heat #E8873B) which produced visible orange field over
-  // the entire right column. 0.06 keeps a hint of color-association without
-  // reading as a glow. Cabinet-tile-on-pure-black is the visual reference.
   const gradient = `radial-gradient(circle at 72% 50%, ${accentRgba(
-    0.06
+    0.18
   )} 0%, rgba(10,10,10,0) 55%)`;
 
   return (
