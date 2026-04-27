@@ -71,8 +71,11 @@ export function HeroBgCarousel({
   // doesn't interpolate gradients, and animating rgba channels via JS would
   // burn frames for something the GPU already handles cheaply.
   const accentRgba = (alpha: number) => hexToRgba(product.accent, alpha);
+  // Было 0.18 — fire-red и heat-orange разливались на половину экрана.
+  // 0.10 даёт уверенно читаемый цветной backlight за продуктом, но не
+  // заполняет всю правую колонку.
   const gradient = `radial-gradient(circle at 72% 50%, ${accentRgba(
-    0.18
+    0.10
   )} 0%, rgba(10,10,10,0) 55%)`;
 
   return (
