@@ -162,6 +162,10 @@ export const PUMPS_PRODUCTS: readonly ProductSummary[] = [
  * арматура.
  */
 export const CONTROL_SYSTEMS_PRODUCTS: readonly ProductSummary[] = [
+  // Порядок отображения на /products/control-systems (2 колонки, 3 ряда):
+  //   row 1: variable-frequency (большой) | electric-actuators
+  //   row 2: fire-suppression  (красный)  | smoke-control (красный) — два красных рядом
+  //   row 3: sewage-pumping    (КНС)      | _
   {
     slug: "variable-frequency",
     href: "/products/control-systems/variable-frequency",
@@ -172,6 +176,17 @@ export const CONTROL_SYSTEMS_PRODUCTS: readonly ProductSummary[] = [
     image: "/assets/products/control-systems/variable-frequency/hero.png",
     imageAlt: "ANHEL — шкаф управления с частотным регулированием",
     accentHex: "#1E6FD9",
+  },
+  {
+    slug: "electric-actuators",
+    href: "/products/control-systems/electric-actuators",
+    title: "Для электрифицированной арматуры",
+    tagline:
+      "Управление электроприводами запорных и регулирующих задвижек. До 5 задвижек, прямой пуск, ручной/автоматический режим.",
+    accent: "treatment",
+    image: "/assets/products/control-systems/electric-actuators/hero.png",
+    imageAlt: "ANHEL — шкаф управления электрифицированной арматурой",
+    accentHex: "#8A94A0",
   },
   {
     slug: "fire-suppression",
@@ -205,17 +220,6 @@ export const CONTROL_SYSTEMS_PRODUCTS: readonly ProductSummary[] = [
     image: "/assets/products/control-systems/sewage-pumping/hero.png",
     imageAlt: "ANHEL — шкаф управления канализационных насосных станций",
     accentHex: "#1E6FD9",
-  },
-  {
-    slug: "electric-actuators",
-    href: "/products/control-systems/electric-actuators",
-    title: "Для электрифицированной арматуры",
-    tagline:
-      "Управление электроприводами запорных и регулирующих задвижек. До 5 задвижек, прямой пуск, ручной/автоматический режим.",
-    accent: "treatment",
-    image: "/assets/products/control-systems/electric-actuators/hero.png",
-    imageAlt: "ANHEL — шкаф управления электрифицированной арматурой",
-    accentHex: "#8A94A0",
   },
 ] as const;
 
