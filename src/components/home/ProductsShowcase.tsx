@@ -165,15 +165,17 @@ function ProductCard({
         className="pointer-events-none absolute inset-0 ring-1 ring-transparent transition-[box-shadow,ring-color] duration-300 [@media(hover:hover)]:group-hover:ring-[color:var(--card-accent)]"
       />
 
-      {/* Accent radial backlight за продуктом — цветная подсветка от продукта
-          (red для пожарных, blue для воды, orange для ИТП). Центр на 32% сверху
-          (продукт в верхней половине карточки), не на 65% где висел копи-блок.
-          Alpha 0.10 — заметно, но не разливается заливкой по карточке. */}
+      {/* Soft accent radial behind the product render — приглушённый
+          фон-свечение, читается как «продукт стоит на пьедестале».
+          Центр на 65% сверху — под нижней третью продукта, эффект «света
+          на пол». Раньше суммировался с baked-in halo в PNG и читался
+          как «лужа»; PNG теперь обрезаны бинарной альфой, glow снова
+          даёт чистый pedestal-эффект. */}
       <div
         aria-hidden="true"
         className="absolute inset-0 transition-opacity duration-500 [@media(hover:hover)]:group-hover:opacity-100 md:opacity-60"
         style={{
-          background: `radial-gradient(circle at 50% 32%, ${hexToRgba(accentHex, 0.10)} 0%, rgba(10,10,10,0) 55%)`,
+          background: `radial-gradient(circle at 50% 65%, ${hexToRgba(accentHex, 0.18)} 0%, rgba(10,10,10,0) 55%)`,
         }}
       />
 
