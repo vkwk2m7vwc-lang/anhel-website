@@ -8,7 +8,7 @@
  */
 
 export const CONTACTS = {
-  phone: "+7 (812) 416-4500",
+  phone: "+7 (812) 416-45-00",
   /** Dial format — rfc3966 tel: URI. */
   phoneTel: "+78124164500",
   email: "info@anhelspb.com",
