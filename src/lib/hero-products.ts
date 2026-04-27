@@ -84,12 +84,14 @@ export const HERO_PRODUCTS: readonly HeroProduct[] = [
   {
     slug: "control-systems",
     name: "Шкафы управления",
-    // Top-level превью — красный шкаф пожаротушения (наиболее
-    // узнаваемый ассоциативно: ANHEL/control-systems = автоматика
-    // пожарных систем).
-    image: "/assets/products/control-systems/fire-suppression/hero.png",
-    accent: "#D72638",
-    alt: "ANHEL® — шкаф управления для систем пожаротушения, красный высокий с мнемосхемой",
+    // В hero — флагманский variable-frequency: 4-секционный составной
+    // шкаф с HMI и контроллером. Наиболее визуально мощный из 5 серий,
+    // подходит как «главное отображение» направления (при этом 4-card
+    // grid в TOP_LEVEL_PRODUCTS сохраняет красный fire-suppression —
+    // ассоциация с автоматикой пожарных систем).
+    image: "/assets/products/control-systems/variable-frequency/hero.png",
+    accent: "#1E6FD9",
+    alt: "ANHEL® — шкаф управления с частотным регулированием, 4-секционный составной с HMI",
     href: "/products/control-systems",
   },
 ] as const;

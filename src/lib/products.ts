@@ -89,13 +89,13 @@ export const TOP_LEVEL_PRODUCTS: readonly ProductSummary[] = [
     title: "Шкафы управления",
     tagline:
       "Пять серий — частотные, для пожаротушения, дымоудаления, КНС и электрифицированной арматуры.",
-    accent: "fire",
-    // Top-level превью использует красный шкаф пожаротушения
-    // (наиболее узнаваемый ассоциативно — ANHEL/control-systems = автоматика
-    // пожарных систем).
-    image: "/assets/products/control-systems/fire-suppression/hero.png",
-    imageAlt: "ANHEL — шкафы управления, серия пожаротушения",
-    accentHex: "#D72638",
+    accent: "water",
+    // Top-level превью — variable-frequency (составной серый 4-секционный
+    // с HMI). Визуально согласован с другими 3 направлениями (все серые
+    // промышленные сборки), когда все 4 карточки видны вместе.
+    image: "/assets/products/control-systems/variable-frequency/hero.png",
+    imageAlt: "ANHEL — шкафы управления, серия с частотным регулированием",
+    accentHex: "#1E6FD9",
   },
 ] as const;
 
