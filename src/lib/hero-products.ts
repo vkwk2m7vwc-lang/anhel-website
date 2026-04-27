@@ -25,7 +25,12 @@
  */
 export type HeroProduct = {
   /** Stable key — used for AnimatePresence keys and aria-labels. */
-  slug: "pump-water" | "pump-fire" | "water-treatment" | "heating-unit";
+  slug:
+    | "pump-water"
+    | "pump-fire"
+    | "water-treatment"
+    | "heating-unit"
+    | "control-systems";
   /** Short title shown under the carousel numbers. */
   name: string;
   /** Path under /public — must be an existing 4K render. */
@@ -75,5 +80,16 @@ export const HERO_PRODUCTS: readonly HeroProduct[] = [
     accent: "#E8873B",
     alt: "ANHEL® — блочный индивидуальный тепловой пункт (БИТП)",
     href: "/products/heating-unit",
+  },
+  {
+    slug: "control-systems",
+    name: "Шкафы управления",
+    // Top-level превью — красный шкаф пожаротушения (наиболее
+    // узнаваемый ассоциативно: ANHEL/control-systems = автоматика
+    // пожарных систем).
+    image: "/assets/products/control-systems/fire-suppression/hero.png",
+    accent: "#D72638",
+    alt: "ANHEL® — шкаф управления для систем пожаротушения, красный высокий с мнемосхемой",
+    href: "/products/control-systems",
   },
 ] as const;
