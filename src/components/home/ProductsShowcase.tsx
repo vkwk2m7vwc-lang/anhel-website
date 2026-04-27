@@ -165,15 +165,15 @@ function ProductCard({
         className="pointer-events-none absolute inset-0 ring-1 ring-transparent transition-[box-shadow,ring-color] duration-300 [@media(hover:hover)]:group-hover:ring-[color:var(--card-accent)]"
       />
 
-      {/* Soft accent radial — едва заметная цветная подсветка ИЗ-ЗА продукта.
-          Центр на 32% сверху (продукт в верхней половине карточки), не на 65%
-          где висел копи-блок и читалось как «лужа под продуктом». Alpha 0.10
-          вместо 0.18 — тёплые акценты (heat #E8873B) больше не доминируют. */}
+      {/* Accent radial backlight за продуктом. Default state — почти невидимо
+          (alpha 0.05, opacity 25); полный glow только на hover. Прежняя версия
+          (alpha 0.10, opacity 60) на heat-orange ИТП давала видимую лужу.
+          Cabinet-on-black — визуальный референс. */}
       <div
         aria-hidden="true"
-        className="absolute inset-0 transition-opacity duration-500 [@media(hover:hover)]:group-hover:opacity-100 md:opacity-60"
+        className="absolute inset-0 transition-opacity duration-500 [@media(hover:hover)]:group-hover:opacity-100 md:opacity-25"
         style={{
-          background: `radial-gradient(circle at 50% 32%, ${hexToRgba(accentHex, 0.10)} 0%, rgba(10,10,10,0) 55%)`,
+          background: `radial-gradient(circle at 50% 32%, ${hexToRgba(accentHex, 0.05)} 0%, rgba(10,10,10,0) 55%)`,
         }}
       />
 

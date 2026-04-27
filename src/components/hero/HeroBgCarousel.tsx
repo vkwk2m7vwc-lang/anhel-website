@@ -71,8 +71,12 @@ export function HeroBgCarousel({
   // doesn't interpolate gradients, and animating rgba channels via JS would
   // burn frames for something the GPU already handles cheaply.
   const accentRgba = (alpha: number) => hexToRgba(product.accent, alpha);
+  // Subtle accent backlight behind product image. Was alpha 0.18 — too strong
+  // on warm accents (heat #E8873B) which produced visible orange field over
+  // the entire right column. 0.06 keeps a hint of color-association without
+  // reading as a glow. Cabinet-tile-on-pure-black is the visual reference.
   const gradient = `radial-gradient(circle at 72% 50%, ${accentRgba(
-    0.18
+    0.06
   )} 0%, rgba(10,10,10,0) 55%)`;
 
   return (
@@ -157,25 +161,11 @@ export function HeroBgCarousel({
           }
           className="relative flex h-[70%] w-[85%] items-center justify-center"
         >
-          {/* Pedestal glow — sits behind the product as a soft elliptical
-              light pool. Size ≈ 80%×40% of the tilt wrapper, horizontally
-              centred, centre positioned under the lower third of the
-              product so the product looks like it's standing on a lit
-              circle rather than inside a box. Accent colour follows the
-              active product; the `transition: background` cross-fades
-              smoothly in sync with the hero-level radial. */}
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute left-1/2 h-[40%] w-[80%] -translate-x-1/2"
-            style={{
-              bottom: "-6%",
-              background: `radial-gradient(ellipse at center, ${accentRgba(
-                0.35
-              )} 0%, ${accentRgba(0.15)} 40%, rgba(10,10,10,0) 70%)`,
-              filter: "blur(20px)",
-              transition: "background 600ms ease-in-out",
-            }}
-          />
+          {/* Pedestal glow удалён по запросу — был alpha 0.35 эллипс под
+              продуктом, на heat-акценте (orange) читался как «лужа на полу».
+              Hero теперь рендерит продукт на чистом фоне с лёгким accent
+              backlight за изображением (см. `gradient` выше). Если хочется
+              вернуть «свет на пол» — восстанови этот блок с alpha ≤ 0.05. */}
 
           <AnimatePresence mode="wait" initial={false}>
             <motion.div
@@ -368,20 +358,8 @@ export function HeroBgCarousel({
         onPointerLeave={resume}
       >
         <motion.div className="relative h-[200px] w-[200px]">
-          {/* Pedestal glow — mobile version. Smaller footprint (75%×35%)
-              to match the scaled-down 200×200 product container. */}
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute left-1/2 h-[35%] w-[75%] -translate-x-1/2"
-            style={{
-              bottom: "-6%",
-              background: `radial-gradient(ellipse at center, ${accentRgba(
-                0.35
-              )} 0%, ${accentRgba(0.15)} 40%, rgba(10,10,10,0) 70%)`,
-              filter: "blur(14px)",
-              transition: "background 600ms ease-in-out",
-            }}
-          />
+          {/* Pedestal glow (mobile) удалён вместе с desktop — см. коммент
+              в desktop-блоке выше. */}
           <AnimatePresence mode="wait" initial={false}>
             <motion.div
               key={`m-${product.slug}`}
