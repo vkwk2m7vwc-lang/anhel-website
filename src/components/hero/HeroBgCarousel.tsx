@@ -163,7 +163,12 @@ export function HeroBgCarousel({
               product so the product looks like it's standing on a lit
               circle rather than inside a box. Accent colour follows the
               active product; the `transition: background` cross-fades
-              smoothly in sync with the hero-level radial. */}
+              smoothly in sync with the hero-level radial.
+
+              Note: исходные PNG раньше имели запечённый «отражённый пол»
+              (α 48-200), который суммировался с этим CSS-glow и читался
+              как «лужа». Сейчас PNG обрезаны бинарной альфой — pedestal
+              даёт чистый эффект подиума без двойного наложения. */}
           <div
             aria-hidden="true"
             className="pointer-events-none absolute left-1/2 h-[40%] w-[80%] -translate-x-1/2"

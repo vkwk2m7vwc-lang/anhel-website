@@ -166,7 +166,11 @@ function ProductCard({
       />
 
       {/* Soft accent radial behind the product render — приглушённый
-          фон-свечение, читается как «продукт стоит на пьедестале». */}
+          фон-свечение, читается как «продукт стоит на пьедестале».
+          Центр на 65% сверху — под нижней третью продукта, эффект «света
+          на пол». Раньше суммировался с baked-in halo в PNG и читался
+          как «лужа»; PNG теперь обрезаны бинарной альфой, glow снова
+          даёт чистый pedestal-эффект. */}
       <div
         aria-hidden="true"
         className="absolute inset-0 transition-opacity duration-500 [@media(hover:hover)]:group-hover:opacity-100 md:opacity-60"

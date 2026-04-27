@@ -112,7 +112,8 @@ export default async function HeatingModulePage({ params }: RouteParams) {
           пропорции с ProductHero (текст col-6 / изображение col-6,
           mobile aspect-[4/3] под текстом). Кастомный hero оставлен
           (не reuse ProductHero), потому что мы рендерим module-specific
-          breadcrumbs + кнопку «← К каталогу модулей». */}
+          breadcrumbs + кнопку «← К каталогу модулей». Подсветка/тень
+          сделаны статически: server-component, без motion. */}
       <section
         id="product-hero"
         className="relative overflow-hidden bg-[var(--color-primary)]"
@@ -121,9 +122,21 @@ export default async function HeatingModulePage({ params }: RouteParams) {
             accent === "heat" ? "var(--accent-heat)" : "var(--accent-fire)",
         }}
       >
+        {/* Accent radial backlight — то же что в ProductHero (alpha 0.18,
+            72% 50%). Без него детальные ИТП-модули рендерились на чистом
+            чёрном без orange-подсветки за продуктом. */}
         <div
           aria-hidden="true"
-          className="absolute inset-0 bg-grid-hairline bg-grid opacity-30"
+          className="absolute inset-0 z-0"
+          style={{
+            background: `radial-gradient(circle at 72% 50%, ${
+              accent === "heat" ? "rgba(232,135,59,0.18)" : "rgba(215,38,56,0.18)"
+            } 0%, rgba(10,10,10,0) 55%)`,
+          }}
+        />
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 z-0 bg-grid-hairline bg-grid opacity-30"
         />
         <div className="relative z-20 mx-auto w-full max-w-[1440px] px-6 pb-10 pt-24 md:px-12 md:pb-14 md:pt-28">
           <Breadcrumbs
@@ -172,9 +185,18 @@ export default async function HeatingModulePage({ params }: RouteParams) {
               </div>
             </div>
 
-            {/* IMAGE — col-6 на md+, aspect-4/3 на mobile под текстом */}
+            {/* IMAGE — col-6 на md+, aspect-4/3 на mobile под текстом.
+                Drop-shadow тоном accent — как в ProductHero, придаёт
+                продукту объём и pedestal-feel. */}
             <div className="md:col-span-6">
-              <div className="relative aspect-[4/3] w-full md:aspect-auto md:h-[520px]">
+              <div
+                className="relative aspect-[4/3] w-full md:aspect-auto md:h-[520px]"
+                style={{
+                  filter: `drop-shadow(0 30px 40px ${
+                    accent === "heat" ? "rgba(232,135,59,0.45)" : "rgba(215,38,56,0.45)"
+                  })`,
+                }}
+              >
                 <Image
                   src={m.image.src}
                   alt={m.image.alt}
