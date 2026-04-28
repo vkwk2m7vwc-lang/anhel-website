@@ -3,7 +3,11 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import type { FooterCtaContent } from "@/content/products/types";
-import { PRODUCTS } from "@/lib/products";
+import {
+  TOP_LEVEL_PRODUCTS,
+  getTopLevelCategory,
+  type ProductSummary,
+} from "@/lib/products";
 import { cn } from "@/lib/utils";
 
 /**
@@ -11,20 +15,24 @@ import { cn } from "@/lib/utils";
  *
  * Layout (desktop):
  *   ┌──────────────────────────┬──────────────────────┐
- *   │  12 · ЗАПРОС КП          │  Остальные продукты  │
+ *   │  12 · ЗАПРОС КП          │  Остальные разделы   │
  *   │                          │  ┌─────────────────┐ │
- *   │  Соберите свою           │  │ Водоснабжение → │ │
+ *   │  Соберите свою           │  │ Водоподготовка →│ │
  *   │  станцию под проект      │  ├─────────────────┤ │
- *   │                          │  │ Водоподготовка →│ │
+ *   │                          │  │ Тепловые пункты →│ │
  *   │  [Заполнить опросный...] │  ├─────────────────┤ │
- *   │                          │  │ Теплопункты →   │ │
+ *   │                          │  │ Шкафы управления →│ │
  *   └──────────────────────────┴──────────────────────┘
  *
- * Neighbour strip reads `PRODUCTS` and filters out the current slug,
- * so each product page automatically advertises the other three with
- * zero per-page plumbing. Hover on a neighbour card tints its border
- * with that product's OWN accent colour (not the current page's) —
- * read as "this card belongs to a different family, click to leave".
+ * Раньше показывал плоский список из всех 11 «соседей» (5 насосных
+ * подслугов + водоподготовка + ИТП + 5 шкафов). На длинных страницах
+ * пользователь должен был листать большой список — неудобно.
+ *
+ * Теперь показываем 3 top-level категории — минус текущая. Например
+ * на /products/pumps/water-supply прячем pumps и показываем
+ * water-treatment + heating-unit + control-systems. На любой шкафной
+ * странице прячем control-systems. Каждая плитка ведёт на каталог
+ * раздела, оттуда можно перейти к нужному подпродукту.
  */
 export function ProductCtaFooter({
   content,
@@ -33,7 +41,8 @@ export function ProductCtaFooter({
   content: FooterCtaContent;
   currentSlug: string;
 }) {
-  const neighbours = PRODUCTS.filter((p) => p.slug !== currentSlug);
+  const currentCategory = getTopLevelCategory(currentSlug);
+  const neighbours = TOP_LEVEL_PRODUCTS.filter((p) => p.slug !== currentCategory);
 
   return (
     <section
@@ -116,7 +125,7 @@ function NeighbourCard({
   product,
   index,
 }: {
-  product: (typeof PRODUCTS)[number];
+  product: ProductSummary;
   index: number;
 }) {
   // Map accent key to the CSS variable — same table as ProductPageShell.

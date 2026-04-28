@@ -320,6 +320,6 @@ export const electricActuatorsContent: ProductContent = {
     title: "Соберите шкаф управления арматурой под ваш проект",
     subtitle: "Ответим в течение рабочего дня. Расчёт подбора бесплатный.",
     cta: { label: "Заполнить опросный лист", href: "/quiz/control-systems" },
-    neighboursCaption: "Остальные продукты",
+    neighboursCaption: "Остальные разделы",
   },
 };

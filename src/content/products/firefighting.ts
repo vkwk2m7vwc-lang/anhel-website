@@ -392,6 +392,6 @@ export const firefightingContent: ProductContent = {
     title: "Соберите свою станцию под проект",
     subtitle: "Ответим в течение рабочего дня. Расчёт подбора бесплатный.",
     cta: { label: "Заполнить опросный лист", href: "#documents" },
-    neighboursCaption: "Остальные продукты",
+    neighboursCaption: "Остальные разделы",
   },
 };
