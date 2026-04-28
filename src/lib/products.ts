@@ -237,3 +237,18 @@ export const PRODUCTS: readonly ProductSummary[] = [
   ...TOP_LEVEL_PRODUCTS.filter((p) => p.slug !== "pumps" && p.slug !== "control-systems"),
   ...CONTROL_SYSTEMS_PRODUCTS,
 ] as const;
+
+/**
+ * Resolve top-level category для произвольного slug.
+ * - Любой из 5 насосных подслугов → "pumps"
+ * - Любой из 5 шкафных подслугов → "control-systems"
+ * - Сами top-level slug'и (water-treatment, heating-unit) → как есть
+ *
+ * Используется в ProductCtaFooter — секция «Остальные продукты»
+ * показывает 3 категории (минус текущую), а не плоский список из 11.
+ */
+export function getTopLevelCategory(slug: string): string {
+  if (PUMPS_PRODUCTS.some((p) => p.slug === slug)) return "pumps";
+  if (CONTROL_SYSTEMS_PRODUCTS.some((p) => p.slug === slug)) return "control-systems";
+  return slug;
+}
