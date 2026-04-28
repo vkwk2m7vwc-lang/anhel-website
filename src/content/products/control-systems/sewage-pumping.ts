@@ -181,12 +181,18 @@ export const sewagePumpingContent: ProductContent = {
     title: "С производства",
     lede: "Фотографии будут опубликованы после ретуши заводских снимков.",
     photos: [
-      { id: "ph-01", alt: "Шкаф управления КНС — общий вид", aspect: "4/5" },
-      { id: "ph-02", alt: "Лицевая панель с переключателем «Ручной/Авто»", aspect: "4/5" },
-      { id: "ph-03", alt: "Подключение поплавковых выключателей", aspect: "4/5" },
-      { id: "ph-04", alt: "Шкаф на КНС — на объекте", aspect: "4/5" },
-      { id: "ph-05", alt: "Внутренняя компоновка с автоматикой", aspect: "4/5" },
-      { id: "ph-06", alt: "Партия шкафов на испытаниях", aspect: "4/5" },
+      {
+        id: "sewage-pumping-01",
+        src: "/assets/production/sewage-pumping/sewage-pumping-01.jpg",
+        alt: "ANHEL — производство шкафа управления КНС, фото 1",
+        aspect: "4/5",
+      },
+      {
+        id: "sewage-pumping-02",
+        src: "/assets/production/sewage-pumping/sewage-pumping-02.jpg",
+        alt: "ANHEL — производство шкафа управления КНС, фото 2",
+        aspect: "4/5",
+      },
     ],
   },
 

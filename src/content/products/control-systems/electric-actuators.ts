@@ -180,12 +180,30 @@ export const electricActuatorsContent: ProductContent = {
     title: "С производства",
     lede: "Фотографии будут опубликованы после ретуши заводских снимков.",
     photos: [
-      { id: "ph-01", alt: "Шкаф управления арматурой — общий вид", aspect: "4/5" },
-      { id: "ph-02", alt: "Лицевая панель с индикацией задвижек", aspect: "4/5" },
-      { id: "ph-03", alt: "Внутренняя компоновка с реле и контроллером", aspect: "4/5" },
-      { id: "ph-04", alt: "Шкаф на технологическом узле", aspect: "4/5" },
-      { id: "ph-05", alt: "Подключение электроприводов задвижек", aspect: "4/5" },
-      { id: "ph-06", alt: "Финальная приёмка перед отгрузкой", aspect: "4/5" },
+      {
+        id: "electric-actuators-01",
+        src: "/assets/production/electric-actuators/electric-actuators-01.jpg",
+        alt: "ANHEL — производство шкафа управления электрифицированной арматурой, фото 1",
+        aspect: "4/5",
+      },
+      {
+        id: "electric-actuators-02",
+        src: "/assets/production/electric-actuators/electric-actuators-02.jpg",
+        alt: "ANHEL — производство шкафа управления электрифицированной арматурой, фото 2",
+        aspect: "4/5",
+      },
+      {
+        id: "electric-actuators-03",
+        src: "/assets/production/electric-actuators/electric-actuators-03.jpg",
+        alt: "ANHEL — производство шкафа управления электрифицированной арматурой, фото 3",
+        aspect: "4/5",
+      },
+      {
+        id: "electric-actuators-04",
+        src: "/assets/production/electric-actuators/electric-actuators-04.jpg",
+        alt: "ANHEL — производство шкафа управления электрифицированной арматурой, фото 4",
+        aspect: "4/5",
+      },
     ],
   },
 

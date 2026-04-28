@@ -181,12 +181,18 @@ export const smokeControlContent: ProductContent = {
     title: "С производства",
     lede: "Фотографии будут опубликованы после ретуши заводских снимков.",
     photos: [
-      { id: "ph-01", alt: "Шкаф дымоудаления — характерный красный корпус", aspect: "4/5" },
-      { id: "ph-02", alt: "Индикация режима «Пожар» на лицевой панели", aspect: "4/5" },
-      { id: "ph-03", alt: "Внутренняя компоновка с пожарной автоматикой", aspect: "4/5" },
-      { id: "ph-04", alt: "Шкаф в составе системы противодымной защиты", aspect: "4/5" },
-      { id: "ph-05", alt: "Подключение к вентиляторам дымоудаления", aspect: "4/5" },
-      { id: "ph-06", alt: "Партия шкафов на испытательном стенде", aspect: "4/5" },
+      {
+        id: "smoke-control-01",
+        src: "/assets/production/smoke-control/smoke-control-01.jpg",
+        alt: "ANHEL — производство шкафа управления противодымной вентиляцией, фото 1",
+        aspect: "4/5",
+      },
+      {
+        id: "smoke-control-02",
+        src: "/assets/production/smoke-control/smoke-control-02.jpg",
+        alt: "ANHEL — производство шкафа управления противодымной вентиляцией, фото 2",
+        aspect: "4/5",
+      },
     ],
   },
 

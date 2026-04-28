@@ -753,3 +753,61 @@ aupd-config.ts
 - **Resend integration** для всех 4 опросников (PDF-template маппинг по kind)
 - **/privacy** — страница политики конфиденциальности
 - **Возможный отдельный AUPD-CTA** на странице /products/pumps/pressure-boost (сейчас она ведёт на pumps — это нормально, но можно добавить ссылку на специализированный AUPD в карточке Документы)
+
+
+---
+
+## 2026-04-28 — Фото производства МФМК (feat/production-photos)
+
+**Источник:** `~/Desktop/ANHEL Сайт/Фото мфмк (производство)/` — 6 папок, 74 фото.
+**Pipeline:** Pillow → resize 1600px long side, JPEG q85 progressive, optimize.
+**Дедупликация:** perceptual hash (imagehash, hash_size=12), pairs at hamming ≤ 6.
+
+### Mapping папка → slug
+
+| Source folder | → slug | Файлов на сайте |
+|---|---|---|
+| ВПУ | — | skip (уже загружено user'ом) |
+| ИТП | heating-unit | 13 (минус 02 шкаф + 07 пружина) |
+| НС Водоснабжение | pumps/water-supply | 14 (свой порядок: dsc → nasosnaya → monoblochnye → edited) |
+| НС Пожаротушения | pumps/firefighting | 11 (минус 08 — дубль 12) |
+| Специсполнение | pumps/special | 7 (минус arkhangelsk-_4_ — дубль из Водоснабжения) |
+| Шкафы | control-systems/* | 13 распределены на 5 slug |
+
+### Распределение Шкафов
+
+| Шкаф # | slug | Тип |
+|---|---|---|
+| 01, 02 | sewage-pumping | dsc09703, dsc09711 — серые групповые |
+| 03, 09 | smoke-control | dsc09716 + одиночный красный |
+| 04, 05, 06, 07 | electric-actuators | НИЯР внутрянки (атомные реакторы) |
+| 08, 10 | fire-suppression | красные с мнемосхемой |
+| 11, 12, 13 | variable-frequency | HMI + насосы + PLC |
+
+### Найденные дубликаты (выкинуты)
+
+- `nasosnaya_ustanovka_…arkhangelsk-_4_.jpg` — был в Водоснабжении и Специсполнении, оставил в Водоснабжении
+- `НС Пожаротушения/08.png` ≡ `12.png` — оставил 12 (выше bitrate)
+- `НС Пожаротушения/06.png` ≈ `13.png` (hamming d=6) — оставил оба (близкие, но не идентичные)
+
+### TODO для тебя — проверка логотипов МФМК
+
+⚠️ **Я просматривал composite-сетки на 480×320 пикселей — на этом масштабе логотипы МФМК на корпусах шкафов однозначно не различимы**. Часть фото ИЗ ПУБЛИЧНЫХ ИСТОЧНИКОВ МФМК (ссылки на kanalizatsionnykh-ochistnykh-sooruzheniy, atomnykh-reaktorov-niiar в filenames) — на них с большой вероятностью есть круглые логотипы МФМК на корпусах.
+
+**Что делать:** открой каждый файл в полном разрешении и удали/обработай те, где видны логотипы МФМК.
+
+Папки для проверки (по приоритету — где скорее всего есть логотипы):
+
+1. **`/public/assets/production/water-supply/`** — 14 фото. Большие синие шкафы — на корпусах часто есть лого
+2. **`/public/assets/production/firefighting/`** — 11 фото. Красные шкафы, аналогично
+3. **`/public/assets/production/special/`** — 7 фото
+4. **`/public/assets/production/control-systems/electric-actuators/`** — 4 фото (НИЯР — публиковались с логотипом МФМК)
+5. **`/public/assets/production/control-systems/fire-suppression/`** — 2 фото (КОС в Артеме — публиковались с логотипом МФМК)
+6. **`/public/assets/production/control-systems/smoke-control/`** — 2 фото
+7. **`/public/assets/production/control-systems/sewage-pumping/`** — 2 фото
+8. **`/public/assets/production/control-systems/variable-frequency/`** — 3 фото
+9. **`/public/assets/production/heating-unit/`** — 13 фото (ИТП Таврида + ЖК — обычно без логотипов)
+
+Если найдёшь логотипы — обработай в Photoshop/Affinity или просто удали проблемный файл (галерея автоматически скроется если фото нет, благодаря filter в `GalleryRail.tsx:28`).
+
+После ретуши/удаления — закоммить чтобы Vercel пересобрал.

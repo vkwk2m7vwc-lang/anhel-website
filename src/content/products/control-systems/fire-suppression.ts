@@ -182,12 +182,18 @@ export const fireSuppressionContent: ProductContent = {
     title: "С производства",
     lede: "Фотографии будут опубликованы после ретуши заводских снимков.",
     photos: [
-      { id: "ph-01", alt: "Шкаф управления для пожаротушения — общий вид", aspect: "4/5" },
-      { id: "ph-02", alt: "Лицевая панель с индикацией режима «Пожар»", aspect: "4/5" },
-      { id: "ph-03", alt: "Силовая часть и АВР", aspect: "4/5" },
-      { id: "ph-04", alt: "Шкаф на объекте — подключение к ППКП", aspect: "4/5" },
-      { id: "ph-05", alt: "Внутренняя компоновка с устройствами плавного пуска", aspect: "4/5" },
-      { id: "ph-06", alt: "Финальная приёмка с сертификационными отметками", aspect: "4/5" },
+      {
+        id: "fire-suppression-01",
+        src: "/assets/production/fire-suppression/fire-suppression-01.jpg",
+        alt: "ANHEL — производство шкафа управления для пожаротушения, фото 1",
+        aspect: "4/5",
+      },
+      {
+        id: "fire-suppression-02",
+        src: "/assets/production/fire-suppression/fire-suppression-02.jpg",
+        alt: "ANHEL — производство шкафа управления для пожаротушения, фото 2",
+        aspect: "4/5",
+      },
     ],
   },
 

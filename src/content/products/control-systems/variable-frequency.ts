@@ -183,12 +183,24 @@ export const variableFrequencyContent: ProductContent = {
     title: "С производства",
     lede: "Фотографии будут опубликованы после ретуши заводских снимков.",
     photos: [
-      { id: "ph-01", alt: "Шкаф управления ANHEL® на испытательном стенде", aspect: "4/5" },
-      { id: "ph-02", alt: "Внутренняя компоновка шкафа управления", aspect: "4/5" },
-      { id: "ph-03", alt: "Лицевая панель с HMI и индикацией", aspect: "4/5" },
-      { id: "ph-04", alt: "Подключение силовых кабелей", aspect: "4/5" },
-      { id: "ph-05", alt: "Шкаф в составе насосной станции на объекте", aspect: "4/5" },
-      { id: "ph-06", alt: "Финальная приёмка перед отгрузкой", aspect: "4/5" },
+      {
+        id: "variable-frequency-01",
+        src: "/assets/production/variable-frequency/variable-frequency-01.jpg",
+        alt: "ANHEL — производство шкафа управления с частотным регулированием, фото 1",
+        aspect: "4/5",
+      },
+      {
+        id: "variable-frequency-02",
+        src: "/assets/production/variable-frequency/variable-frequency-02.jpg",
+        alt: "ANHEL — производство шкафа управления с частотным регулированием, фото 2",
+        aspect: "4/5",
+      },
+      {
+        id: "variable-frequency-03",
+        src: "/assets/production/variable-frequency/variable-frequency-03.jpg",
+        alt: "ANHEL — производство шкафа управления с частотным регулированием, фото 3",
+        aspect: "4/5",
+      },
     ],
   },
 
