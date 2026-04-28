@@ -305,16 +305,10 @@ export const heatingCoolingContent: ProductContent = {
         href: "/docs/heating-cooling/oprosnyi-list.pdf",
       },
       {
-        id: "cert-pump",
-        title: "Сертификат — насосные установки ANHEL для отопления и кондиционирования",
-        size: "0.33 МБ",
-        href: "/docs/heating-cooling/cert-pump-station.pdf",
-      },
-      {
-        id: "cert-shu",
-        title: "Сертификат соответствия на шкаф управления ANHEL",
-        size: "0.87 МБ",
-        href: "/docs/heating-cooling/cert-shu.pdf",
+        id: "cert-deklaratsiya",
+        title: "Декларация соответствия ЕАЭС — насосные установки отопления и кондиционирования ANHEL®",
+        size: "0.86 МБ",
+        href: "/docs/heating-cooling/cert-deklaratsiya.pdf",
       },
       {
         id: "manual",
