@@ -290,21 +290,15 @@ export const pressureBoostContent: ProductContent = {
     items: [
       {
         id: "oprosnik",
-        title: "Опросный лист для подбора АУПД",
-        size: "0.29 МБ",
+        title: "Опросный лист для подбора насосных установок",
+        size: "1.49 МБ",
         href: "/docs/pressure-boost/oprosnyi-list.pdf",
       },
       {
-        id: "cert-pump",
-        title: "Сертификат — установки поддержания давления ANHEL",
-        size: "0.33 МБ",
-        href: "/docs/pressure-boost/cert-pump-station.pdf",
-      },
-      {
-        id: "cert-shu",
-        title: "Сертификат соответствия на шкаф управления ANHEL",
-        size: "0.87 МБ",
-        href: "/docs/pressure-boost/cert-shu.pdf",
+        id: "cert-deklaratsiya",
+        title: "Декларация соответствия ЕАЭС — установки поддержания давления ANHEL®",
+        size: "0.86 МБ",
+        href: "/docs/pressure-boost/cert-deklaratsiya.pdf",
       },
       {
         id: "manual",

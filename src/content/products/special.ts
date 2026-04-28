@@ -339,21 +339,15 @@ export const specialContent: ProductContent = {
     items: [
       {
         id: "oprosnik",
-        title: "Опросный лист для подбора специсполнения",
+        title: "Опросный лист для подбора насосных установок",
         size: "1.49 МБ",
         href: "/docs/special/oprosnyi-list.pdf",
       },
       {
-        id: "cert-pump",
-        title: "Сертификат — насосные установки ANHEL специсполнения",
-        size: "0.33 МБ",
-        href: "/docs/special/cert-pump-station.pdf",
-      },
-      {
-        id: "cert-shu",
-        title: "Сертификат соответствия на шкаф управления ANHEL",
-        size: "0.87 МБ",
-        href: "/docs/special/cert-shu.pdf",
+        id: "cert-deklaratsiya",
+        title: "Декларация соответствия ЕАЭС — насосные установки специального исполнения ANHEL®",
+        size: "0.86 МБ",
+        href: "/docs/special/cert-deklaratsiya.pdf",
       },
       {
         id: "manual",
