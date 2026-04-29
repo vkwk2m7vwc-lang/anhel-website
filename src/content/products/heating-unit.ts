@@ -165,7 +165,7 @@ export const heatingUnitContent: ProductContent = {
   // 05 (срок 15 лет вместо 10 — для ИТП это типичная гарантия),
   // 04 (погодозависимое + диспетчеризация вместо pump control modes).
   advantages: {
-    tag: "04 · ПРЕИМУЩЕСТВА",
+    tag: "03 · ПРЕИМУЩЕСТВА",
     title: "Почему ANHEL®",
     lede: "Заводская сборка, контроль качества и собственная автоматика.",
     items: [
@@ -211,7 +211,7 @@ export const heatingUnitContent: ProductContent = {
   // Section «Галерея». Реальные фото ИТП ANHEL® из цеха и с объектов.
   // Файлы под /public/assets/production/heating-unit/.
   gallery: {
-    tag: "05 · ГАЛЕРЕЯ",
+    tag: "04 · ГАЛЕРЕЯ",
     title: "С производства",
     photos: [
       {
@@ -331,7 +331,7 @@ export const heatingUnitContent: ProductContent = {
   },
 
   documents: {
-    tag: "08 · ДОКУМЕНТАЦИЯ",
+    tag: "05 · ДОКУМЕНТАЦИЯ",
     title: "Документы и сертификаты",
     lede: "Опросный лист и техническая документация — для проектирования и приёмки.",
     items: [
@@ -345,7 +345,7 @@ export const heatingUnitContent: ProductContent = {
   },
 
   footerCta: {
-    tag: "09 · ЗАПРОС КП",
+    tag: "06 · ЗАПРОС КП",
     title: "Соберите свой ИТП под проект",
     subtitle: "Ответим в течение рабочего дня. Расчёт подбора бесплатный.",
     cta: { label: "Заполнить опросный лист", href: "#documents" },
