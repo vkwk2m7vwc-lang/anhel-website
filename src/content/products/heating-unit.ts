@@ -333,13 +333,19 @@ export const heatingUnitContent: ProductContent = {
   documents: {
     tag: "05 · ДОКУМЕНТАЦИЯ",
     title: "Документы и сертификаты",
-    lede: "Опросный лист и техническая документация — для проектирования и приёмки.",
+    lede: "Опросный лист и сертификат — для проектирования и приёмки.",
     items: [
       {
         id: "oprosnik",
         title: "Опросный лист для подбора ИТП",
         size: "0.54 МБ",
         href: "/docs/heating-unit/oprosnyi-list.pdf",
+      },
+      {
+        id: "cert-deklaratsiya",
+        title: "Сертификат — блочные индивидуальные тепловые пункты ANHEL®",
+        size: "2.32 МБ",
+        href: "/docs/heating-unit/cert-deklaratsiya.pdf",
       },
     ],
   },
