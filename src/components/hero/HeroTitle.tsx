@@ -7,8 +7,13 @@ import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 /**
  * Hero headline with GSAP SplitText reveal.
  *
- * Text: «Системы, / которые держат здание / живым.» — the middle line is
- * rendered at opacity 0.5 so the first and third lines read as the accent.
+ * Text: «ANHEL — / это / честно.» — три строки. Em-dash на первой
+ * строке работает как «слово говорящего», вторая строка («это») —
+ * на opacity 0.5, чтобы фраза читалась как «ANHEL — честно», а
+ * «это» оставалось дыханием между ними. Тот же паттерн opacity-on-
+ * middle-line, что был у предыдущего «Системы, которые держат
+ * здание живым.» — структура слой-в-слой совпадает с main, чтобы
+ * GSAP SplitText reveal анимация шла идентично.
  *
  * Animation: split into words, stagger 0.04s, `expo.out` over 1.2s.
  * When the user prefers reduced motion, we skip SplitText entirely and
@@ -52,11 +57,9 @@ export function HeroTitle() {
       ref={ref}
       className="font-display text-hero font-medium text-[var(--color-secondary)]"
     >
-      <span className="block overflow-hidden">Системы,</span>
-      <span className="block overflow-hidden opacity-50">
-        которые держат здание
-      </span>
-      <span className="block overflow-hidden">живым.</span>
+      <span className="block overflow-hidden">ANHEL —</span>
+      <span className="block overflow-hidden opacity-50">это</span>
+      <span className="block overflow-hidden">честно.</span>
     </h1>
   );
 }
