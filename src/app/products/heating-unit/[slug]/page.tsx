@@ -5,7 +5,10 @@ import Link from "next/link";
 import { ProductPageShell } from "@/components/product-page/ProductPageShell";
 import { Breadcrumbs } from "@/components/product-page/Breadcrumbs";
 import { TechSpecsGrid } from "@/components/product-page/TechSpecsGrid";
-import { QuizSection } from "@/components/product-page/quiz/QuizSection";
+import { AdvantagesGrid } from "@/components/product-page/AdvantagesGrid";
+import { GalleryRail } from "@/components/product-page/GalleryRail";
+import { RelatedProjectsSection } from "@/components/product-page/RelatedProjectsSection";
+import { DocumentsGrid } from "@/components/product-page/DocumentsGrid";
 import { ProductCtaFooter } from "@/components/product-page/ProductCtaFooter";
 import { heatingUnitContent } from "@/content/products/heating-unit";
 import {
@@ -21,23 +24,32 @@ import {
 
 /**
  * Dynamic route for individual heating-unit module —
- * /products/pumps/heating-unit/[slug].
+ * /products/heating-unit/[slug].
  *
- * 8 модулей линейки. Перенумерованная (после удаления секции
- * «Состав установки») структура подстраницы:
- *   01 Hero (картинка модуля + tagline + CTA)
- *   02 Параметры (ТТХ, 4–8 строк)
- *   03 Описание (1–3 абзаца)
- *   04 Применение (4–5 пунктов)
- *   05 Опросный лист (общий с родительской страницей)
- *   06 Смежные модули (соседи по линейке)
+ * Section map (приведено к структуре насосных страниц минус Бренды,
+ * плюс «Другие модули» в конце перед CTA — UX-фидбек 28 апр 2026):
+ *   01 Hero (картинка модуля + tagline + CTA, custom — не reuse
+ *       ProductHero, потому что breadcrumbs и кнопка «← К каталогу
+ *       модулей» специфичны для модульной страницы)
+ *   02 Тех. характеристики    TechSpecsGrid
+ *   03 Описание               (custom inline section)
+ *   04 Применение             (custom inline section)
+ *   05 Преимущества           AdvantagesGrid (контент общий с
+ *                              родительской /products/heating-unit)
+ *   06 Галерея «С производства» GalleryRail (контент общий)
+ *   07 Объекты-референс       RelatedProjectsSection (общий пул проектов)
+ *   08 Документация           DocumentsGrid (контент общий)
+ *   09 Другие модули          (соседи по линейке — навигация без
+ *                              возврата на каталог)
+ *   10 Финальный CTA          ProductCtaFooter (3 категории-разделы)
  *
- * Секция «Состав установки» (composition) удалена по UX-фидбеку
- * заказчика — на mfmc.ru-источнике она тоже отсутствовала, был
- * placeholder-список с дублированием smyslov.
+ * AdvantagesGrid / GalleryRail / DocumentsGrid читают `tag` из контента,
+ * поэтому они получают override-объекты с правильной нумерацией секций
+ * (на родителе advantages.tag = "03 · ...", на модульной странице нужно
+ * "05 · ...").
  *
- * Бренды, документы, преимущества, кейсы — на родительской
- * /products/pumps/heating-unit/, чтобы не дублировать контент.
+ * Бренды не показываем — UX-фидбек user'а: на ИТП мы не указываем
+ * комплектующих по бренду, в отличие от насосных серий.
  */
 
 type RouteParams = { params: Promise<{ slug: string }> };
@@ -102,6 +114,21 @@ export default async function HeatingModulePage({ params }: RouteParams) {
   const neighbours = [1, 2].map(
     (offset) => heatingModules[(idx + offset) % heatingModules.length],
   );
+
+  // Override mono-tag для общих секций — на родителе свои номера, у нас
+  // в этой структуре они идут под 05/06/08.
+  const advantagesContent = {
+    ...heatingUnitContent.advantages,
+    tag: "05 · ПРЕИМУЩЕСТВА",
+  };
+  const galleryContent = {
+    ...heatingUnitContent.gallery,
+    tag: "06 · ГАЛЕРЕЯ",
+  };
+  const documentsContent = {
+    ...heatingUnitContent.documents,
+    tag: "08 · ДОКУМЕНТАЦИЯ",
+  };
 
   return (
     <ProductPageShell accent={accent}>
@@ -267,16 +294,26 @@ export default async function HeatingModulePage({ params }: RouteParams) {
         </div>
       </section>
 
-      {/* 05 Опросный лист */}
-      <QuizSection content={heatingUnitContent.quiz} />
+      {/* 05 Преимущества — общие с родительской /products/heating-unit */}
+      <AdvantagesGrid content={advantagesContent} />
 
-      {/* 06 Соседние модули — навигация без возврата на каталог */}
+      {/* 06 Галерея «С производства» — общая с родительской страницей */}
+      <GalleryRail content={galleryContent} />
+
+      {/* 07 Объекты-референс — auto-фильтр по slug "heating-unit",
+          секция прячется если связанных проектов нет */}
+      <RelatedProjectsSection productSlug="heating-unit" tag="07 · ОБЪЕКТЫ" />
+
+      {/* 08 Документация — общие документы по линейке ИТП */}
+      <DocumentsGrid content={documentsContent} />
+
+      {/* 09 Другие модули — навигация по линейке без возврата на каталог */}
       <section
         className="relative border-t border-[var(--color-hairline)] bg-[var(--color-primary)]"
         aria-labelledby="module-neighbours"
       >
         <div className="mx-auto w-full max-w-[1440px] px-6 py-20 md:px-12 md:py-28">
-          <p className="mono-tag">06 · СМЕЖНЫЕ МОДУЛИ</p>
+          <p className="mono-tag">09 · ДРУГИЕ МОДУЛИ</p>
           <h2
             id="module-neighbours"
             className="mt-4 max-w-[640px] font-display text-h2 font-medium text-[var(--color-secondary)]"
@@ -318,6 +355,7 @@ export default async function HeatingModulePage({ params }: RouteParams) {
         </div>
       </section>
 
+      {/* 10 Финальный CTA + neighbours strip (3 раздела, не плоский список) */}
       <ProductCtaFooter
         content={heatingUnitContent.footerCta}
         currentSlug={"heating-unit"}

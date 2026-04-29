@@ -1,11 +1,8 @@
 import type { Metadata } from "next";
 import { ProductHero } from "@/components/product-page/ProductHero";
 import { ProductPageShell } from "@/components/product-page/ProductPageShell";
-import { BrandsStrip } from "@/components/product-page/BrandsStrip";
 import { AdvantagesGrid } from "@/components/product-page/AdvantagesGrid";
 import { GalleryRail } from "@/components/product-page/GalleryRail";
-import { CasesCarousel } from "@/components/product-page/CasesCarousel";
-import { QuizSection } from "@/components/product-page/quiz/QuizSection";
 import { DocumentsGrid } from "@/components/product-page/DocumentsGrid";
 import { ProductCtaFooter } from "@/components/product-page/ProductCtaFooter";
 import { HeatingModulesCatalog } from "@/components/products/heating-unit/HeatingModulesCatalog";
@@ -27,16 +24,17 @@ import {
  * (везде, где нужен тепловой ввод); важнее показать, какие
  * конфигурации есть.
  *
- * Section map (9 секций):
+ * Section map (6 секций — после фокусировки):
  *   01 Hero
  *   02 Линейка модулей         (8 модульных исполнений)
- *   03 Бренды                  (теплообменники, регуляторы, насосы)
- *   04 Преимущества (9)
- *   05 Галерея (skeletons)
- *   06 Кейсы (placeholders)
- *   07 Опросный лист (квиз)
- *   08 Документация (4 PDF skeleton)
- *   09 Финальный CTA + соседние
+ *   03 Преимущества (6)
+ *   04 Галерея «С производства»
+ *   05 Документация (PDF)
+ *   06 Финальный CTA + соседние разделы
+ *
+ * Удалены: Бренды (теплообменники/регуляторы/насосы), Кейсы (плейсхолдеры
+ * без реальных объектов), Опросный лист — для ИТП вход в опросник идёт
+ * через CTA в hero и в footer. По UX-фидбеку user'а 28 апр 2026.
  *
  * ТТХ убраны с родительской страницы — каждый модуль ИТП имеет свои
  * параметры, поэтому аггрегированные диапазоны линейки на родителе
@@ -65,11 +63,8 @@ export default function HeatingUnitProductPage() {
     slug,
     hero,
     accent,
-    brands,
     advantages,
     gallery,
-    cases,
-    quiz,
     documents,
     footerCta,
   } = heatingUnitContent;
@@ -101,11 +96,8 @@ export default function HeatingUnitProductPage() {
           линейки путали юзера. Технические характеристики раскрываются
           только когда выбран конкретный модуль (на подстранице). */}
       <HeatingModulesCatalog modules={heatingModules} />
-      <BrandsStrip content={brands} />
       <AdvantagesGrid content={advantages} />
       <GalleryRail content={gallery} />
-      <CasesCarousel content={cases} />
-      <QuizSection content={quiz} />
       <DocumentsGrid content={documents} />
       <ProductCtaFooter content={footerCta} currentSlug={slug} />
     </ProductPageShell>
