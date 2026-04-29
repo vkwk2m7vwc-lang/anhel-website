@@ -1,29 +1,20 @@
-import { HeroShell } from "@/components/hero/HeroShell";
-import { HeroBgCarousel } from "@/components/hero/HeroBgCarousel";
+import { HonestNewspaperHero } from "@/components/honest/HonestNewspaperHero";
 import { ProductsShowcase } from "@/components/home/ProductsShowcase";
 
 /**
- * Home page.
+ * Home page — VARIANT honest-4 «Newspaper».
  *
- * `/` renders the carousel hero (variant E) — four rotating product
- * renders with accent-tinted ambient + pedestal glow. Autoplay is on
- * with a 5-second interval; hovering the product zone pauses it.
+ * Hero стилизован под первую полосу инженерной газеты: cream-канвас,
+ * газетная шапка с № выпуска и датой, banner-headline в стиле first
+ * page, deck-строка курсивом, lede в две колонки. Никаких карусели,
+ * фото, CTA-pill — только печатный лист.
  *
- * После hero — секция «Линейка продуктов» (4 карточки), чтобы посетитель
- * не приходилось докручивать до самого футера, чтобы найти продукты.
- * Это основная навигационная точка с главной → продуктовые страницы.
- *
- * `/hero-e` keeps the same view for the moment so the dev team can
- * link to it in reviews without redirecting the root. Once Stage 3
- * closes we can drop `/hero-e` and leave only `/`.
+ * Под hero — обычный ProductsShowcase, как «лист 2 — каталог».
  */
 export default function Home() {
   return (
     <>
-      <HeroShell
-        variantLabel="ANHEL®"
-        background={<HeroBgCarousel autoplay={true} />}
-      />
+      <HonestNewspaperHero />
       <ProductsShowcase />
     </>
   );
