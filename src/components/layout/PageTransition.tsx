@@ -31,7 +31,7 @@ export function PageTransition({ children }: { children: ReactNode }) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+        transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
       >
         {children}
         {/* Curtain sits above the page content during the exit phase.
@@ -43,7 +43,7 @@ export function PageTransition({ children }: { children: ReactNode }) {
           initial={{ clipPath: "inset(100% 0 0 0)" }}
           animate={{ clipPath: "inset(100% 0 0 0)" }}
           exit={{ clipPath: "inset(0 0 0 0)" }}
-          transition={{ duration: 0.6, ease: [0.76, 0, 0.24, 1] }}
+          transition={{ duration: 0.4, ease: [0.76, 0, 0.24, 1] }}
         />
       </motion.div>
     </AnimatePresence>
