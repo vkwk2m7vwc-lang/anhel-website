@@ -14,7 +14,7 @@ export const electricActuatorsContent: ProductContent = {
   slug: "electric-actuators",
   accent: "treatment",
 
-  metaTitle: "Шкафы управления для электрифицированной арматуры · ANHEL®",
+  metaTitle: "Шкафы управления для электрифицированной арматуры",
   metaDescription:
     "Шкафы управления ANHEL® для электроприводов запорной и регулирующей арматуры. До 5 задвижек, мощность электропривода 0,37–7,5 кВт, прямой пуск, ручной и автоматический режим.",
 

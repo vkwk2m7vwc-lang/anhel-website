@@ -72,7 +72,7 @@ export async function generateMetadata({
 }: RouteParams): Promise<Metadata> {
   const { slug } = await params;
   const m = getModule(slug);
-  if (!m) return { title: "Модуль не найден · ANHEL®" };
+  if (!m) return { title: "Модуль не найден" };
   return {
     title: `${m.title} · ANHEL`,
     description: m.tagline,

@@ -6,7 +6,7 @@ import { aupdQuizConfig } from '@/content/quiz/aupd-config';
 export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
-  title: 'Опросный лист — АУПД | ANHEL®',
+  title: 'Опросный лист — АУПД',
   description:
     'Заполните онлайн-опросник для подбора автоматической установки поддержания давления (АУПД) ANHEL®. Менеджер свяжется в течение 1 рабочего дня.',
 };

@@ -9,7 +9,7 @@ import { pumpsQuizConfig } from '@/content/quiz/pumps-config';
 export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
-  title: 'Опросный лист — подбор насосной установки | ANHEL®',
+  title: 'Опросный лист — подбор насосной установки',
   description:
     'Заполните онлайн-опросник для подбора насосной установки. Менеджер свяжется в течение 1 рабочего дня. Также доступен PDF-вариант.',
 };

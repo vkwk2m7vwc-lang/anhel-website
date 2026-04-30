@@ -6,7 +6,7 @@ import { vpuQuizConfig } from '@/content/quiz/vpu-config';
 export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
-  title: 'Опросный лист — установки водоподготовки | ANHEL®',
+  title: 'Опросный лист — установки водоподготовки',
   description:
     'Заполните онлайн-опросник для подбора установки водоподготовки ANHEL®. Менеджер свяжется в течение 1 рабочего дня.',
 };

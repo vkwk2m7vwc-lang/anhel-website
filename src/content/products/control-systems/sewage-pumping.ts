@@ -14,7 +14,7 @@ export const sewagePumpingContent: ProductContent = {
   slug: "sewage-pumping",
   accent: "water",
 
-  metaTitle: "Шкафы управления для КНС · ANHEL®",
+  metaTitle: "Шкафы управления для КНС",
   metaDescription:
     "Шкафы управления ANHEL® для канализационных насосных станций (КНС), дренажных насосов, ливневой канализации и водоразборных ёмкостей. До 4 насосов, поплавки и уровнемеры, протоколы Modbus RTU/TCP, ProfibusDP.",
 

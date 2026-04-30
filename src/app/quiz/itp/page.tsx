@@ -6,7 +6,7 @@ import { itpQuizConfig } from '@/content/quiz/itp-config';
 export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
-  title: 'Опросный лист — БИТП | ANHEL®',
+  title: 'Опросный лист — БИТП',
   description:
     'Заполните онлайн-опросник для подбора блочного индивидуального теплового пункта (БИТП) ANHEL®. Менеджер свяжется в течение 1 рабочего дня.',
 };

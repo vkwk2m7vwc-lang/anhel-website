@@ -15,7 +15,7 @@ export const fireSuppressionContent: ProductContent = {
   slug: "fire-suppression",
   accent: "fire",
 
-  metaTitle: "Шкафы управления для систем пожаротушения · ANHEL®",
+  metaTitle: "Шкафы управления для систем пожаротушения",
   metaDescription:
     "Шкафы управления ANHEL® для систем пожаротушения — дренчерные, спринклерные, пенные класса B. Автоматический пуск по сигналу «Пожар», АВР, контроль ППКП и ЭКМ. До 4 насосов мощностью до 500 кВт.",
 
