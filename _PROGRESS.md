@@ -16,6 +16,22 @@
 | 6 | Раздел /service + веб-форма заявки на диагностику | `feat/service-section` | ✅ merged |
 | 7 | Шкафы управления (omega → control-systems) | `feat/omega-control-systems` | ✅ merged |
 | 8 | Веб-опросные листы (pumps/aupd/itp/vpu) | `feat/web-questionnaire-pumps` | ✅ merged |
+| 9 | Pre-launch UX-аудит вживую | `audit/pre-launch-2026-05` | ⏳ отчёт готов, ждёт правок |
+
+---
+
+### audit/pre-launch-2026-05 — 2026-05-08
+
+Проведён глубокий UX-аудит вживую через Claude in Chrome перед запуском на anhelspb.com.
+- Покрытие: главная, /products + 16 продуктовых страниц, /projects, /service, /service/request, 5 квизов, темы dark/light, footer, performance.
+- Найдено: **4 критических блокера**, **10 важных**, **7 минорных** проблем.
+- Главные блокеры:
+  - 3 из 6 пунктов меню (О компании, Производство, Контакты) — мёртвые ссылки на отсутствующие якоря/страницы.
+  - Подменю «Продукты» физически не реализовано — пользователь видит custom-cursor и принимает за пустой dropdown.
+  - LoadingSplash висит 5–11 сек на /projects, /service, /service/request, /quiz/* — выглядит как сломанный сайт.
+  - Нет /privacy и согласия на обработку ПД — нарушение 152-ФЗ при наличии форм.
+- Отчёт: `_docs/pre-launch_audit.md`. Скриншот: `_docs/screenshots_audit/01_homepage_hero.jpg`.
+- Следующий шаг: план правок по C1–C4 (минимум для запуска), затем спринт по M1–M10.
 
 ---
 
