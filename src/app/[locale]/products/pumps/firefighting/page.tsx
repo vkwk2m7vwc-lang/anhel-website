@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { useTranslations } from "next-intl";
+import { setRequestLocale } from "next-intl/server";
 import { ProductHero } from "@/components/product-page/ProductHero";
 import { ProductPageShell } from "@/components/product-page/ProductPageShell";
 import { TechSpecsGrid } from "@/components/product-page/TechSpecsGrid";
@@ -10,7 +12,7 @@ import { DescriptionSection } from "@/components/product-page/DescriptionSection
 import { RelatedProjectsSection } from "@/components/product-page/RelatedProjectsSection";
 import { DocumentsGrid } from "@/components/product-page/DocumentsGrid";
 import { ProductCtaFooter } from "@/components/product-page/ProductCtaFooter";
-import { firefightingContent } from "@/content/products/firefighting";
+import { getFirefightingContent } from "@/content/products/firefighting";
 import {
   breadcrumbLd,
   ldScriptProps,
@@ -42,24 +44,33 @@ import {
  *
  * The `#quiz` anchor referenced by the hero CTAs lands with section 09.
  */
-export const metadata: Metadata = {
-  title: firefightingContent.metaTitle,
-  description: firefightingContent.metaDescription,
-  openGraph: {
-    type: "website",
-    title: `${firefightingContent.metaTitle} · ANHEL®`,
-    description: firefightingContent.metaDescription,
-    url: `/products/pumps/firefighting`,
-    images: [
-      {
-        url: firefightingContent.hero.image.src,
-        alt: firefightingContent.hero.image.alt,
-      },
-    ],
-  },
-};
+export async function generateMetadata({
+  params: { locale },
+}: {
+  params: { locale: string };
+}): Promise<Metadata> {
+  const content = getFirefightingContent(locale);
+  return {
+    title: content.metaTitle,
+    description: content.metaDescription,
+    openGraph: {
+      type: "website",
+      title: `${content.metaTitle} · ANHEL®`,
+      description: content.metaDescription,
+      url: `/products/pumps/firefighting`,
+      images: [{ url: content.hero.image.src, alt: content.hero.image.alt }],
+    },
+  };
+}
 
-export default function FirefightingProductPage() {
+export default function FirefightingProductPage({
+  params: { locale },
+}: {
+  params: { locale: string };
+}) {
+  setRequestLocale(locale);
+  const content = getFirefightingContent(locale);
+  const tProj = useTranslations("products.related_projects");
   const {
     slug,
     hero,
@@ -72,7 +83,7 @@ export default function FirefightingProductPage() {
     gallery,
     documents,
     footerCta,
-  } = firefightingContent;
+  } = content;
 
   // Schema.org Product + Breadcrumb. Model `HVS-NU` — working draft
   // (см. _docs/water_supply_report.md, замена одной строкой когда
@@ -80,16 +91,17 @@ export default function FirefightingProductPage() {
   const productJsonLd = productLd({
     slug,
     name: "Насосные станции пожаротушения ANHEL®",
-    description: firefightingContent.metaDescription,
-    image: firefightingContent.hero.image.src,
+    description: content.metaDescription,
+    image: content.hero.image.src,
     category: "Pump / Fire suppression",
     model: "HVS-NU",
   });
-  const breadcrumbJsonLd = breadcrumbLd([
-    { name: "Главная", url: "/" },
-    { name: "Насосные станции", url: "/products" },
-    { name: "Пожаротушение", url: `/products/pumps/${slug}` },
-  ]);
+  const breadcrumbJsonLd = breadcrumbLd(
+    content.hero.breadcrumbs.map((b, i, arr) => ({
+      name: b.label,
+      url: b.href ?? (i === arr.length - 1 ? `/products/pumps/${slug}` : "/products"),
+    })),
+  );
 
   return (
     <ProductPageShell accent={accent}>
@@ -103,7 +115,7 @@ export default function FirefightingProductPage() {
       <BrandsStrip content={brands} />
       <AdvantagesGrid content={advantages} />
       <GalleryRail content={gallery} />
-      <RelatedProjectsSection productSlug={slug} tag="08 · ОБЪЕКТЫ" />
+      <RelatedProjectsSection productSlug={slug} tag={tProj("projects_tag")} />
       <DocumentsGrid content={documents} />
       <ProductCtaFooter content={footerCta} currentSlug={slug} />
       {/*
