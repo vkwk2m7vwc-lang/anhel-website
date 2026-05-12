@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { X, Phone, Mail, ChevronDown } from "lucide-react";
 import { PRODUCTS_MEGA_CATEGORIES } from "./MegaMenu";
+import { DOCUMENTS_MEGA_CATEGORIES } from "./DocumentsMegaMenu";
 import { CONTACTS } from "@/lib/contacts";
 
 /**
@@ -35,7 +36,6 @@ const NAV_ANCHORS = [
   { label: "Объекты", href: "/projects" },
   { label: "Производство", href: "/#production" },
   { label: "Сервис", href: "/service" },
-  { label: "Документация", href: "/documents" },
   { label: "О компании", href: "/#about" },
   { label: "Контакты", href: "/contacts" },
 ];
@@ -178,6 +178,17 @@ export function MobileMenu({
               </section>
 
               <section>
+                <p className="mono-tag mb-4">Документация</p>
+                <ul className="flex flex-col gap-0">
+                  {DOCUMENTS_MEGA_CATEGORIES.map((cat) => (
+                    <li key={cat.href}>
+                      <ProductAccordionItem cat={cat} onClose={onClose} />
+                    </li>
+                  ))}
+                </ul>
+              </section>
+
+              <section>
                 <p className="mono-tag mb-4">Навигация</p>
                 <ul className="flex flex-col gap-1">
                   {NAV_ANCHORS.map((a) => (
@@ -235,7 +246,7 @@ function ProductAccordionItem({
   onClose,
   firstLinkRef,
 }: {
-  cat: (typeof PRODUCTS_MEGA_CATEGORIES)[number];
+  cat: (typeof PRODUCTS_MEGA_CATEGORIES)[number] | (typeof DOCUMENTS_MEGA_CATEGORIES)[number];
   onClose: () => void;
   firstLinkRef?: React.Ref<HTMLAnchorElement>;
 }) {

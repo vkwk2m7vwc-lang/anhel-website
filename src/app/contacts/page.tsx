@@ -104,17 +104,16 @@ export default function ContactsPage() {
           <p className="mono-tag mb-6">Реквизиты</p>
 
           <article className="rounded-md border border-[var(--color-hairline)] bg-[var(--color-primary)] p-8 shadow-sm md:p-14">
-            {/* Card header — wordmark + document label */}
+            {/* Card header — формальный документ про юр.лицо, без бренда ANHEL®.
+                ANHEL — товарный знак, под которым ООО «Профит» выпускает оборудование;
+                карточка организации — про само ООО «Профит». */}
             <header className="flex flex-col gap-3 border-b border-[var(--color-hairline)] pb-8 md:flex-row md:items-end md:justify-between md:pb-10">
               <div>
-                <p className="font-display text-3xl tracking-[0.04em] md:text-4xl">
-                  ANHEL
-                  <span aria-hidden="true" className="align-super text-[0.5em] tracking-normal">
-                    ®
-                  </span>
+                <p className="font-display text-3xl tracking-[0.02em] md:text-4xl">
+                  ООО «Профит»
                 </p>
                 <p className="mt-2 text-sm text-[var(--color-secondary)]/60">
-                  Инженерное оборудование
+                  Юридическое лицо за товарным знаком ANHEL®
                 </p>
               </div>
               <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-[var(--color-secondary)]/55">

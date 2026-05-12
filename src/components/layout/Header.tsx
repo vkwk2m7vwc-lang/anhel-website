@@ -10,6 +10,7 @@ import { CONTACTS } from "@/lib/contacts";
 import { PROJECTS_PATH } from "@/lib/routes";
 import { MobileMenu } from "./MobileMenu";
 import { ProductsMenu } from "./ProductsMenu";
+import { DocumentsMenu } from "./DocumentsMenu";
 import { ThemeToggle } from "./ThemeToggle";
 
 /**
@@ -25,15 +26,14 @@ import { ThemeToggle } from "./ThemeToggle";
  */
 
 /**
- * Остальные пункты NAV — обычные `<Link>`. Пункт «Продукты» вынесен в
- * отдельный <ProductsMenu /> с dropdown-мега-меню (см. ProductsMenu.tsx),
- * поэтому в этом массиве его нет.
+ * Остальные пункты NAV — обычные `<Link>`. Пункты «Продукты» и
+ * «Документация» вынесены в отдельные компоненты с dropdown-меню
+ * (см. ProductsMenu.tsx, DocumentsMenu.tsx), поэтому в массиве их нет.
  */
 const NAV = [
   { label: "Объекты", href: PROJECTS_PATH },
   { label: "Производство", href: "/#production" },
   { label: "Сервис", href: "/service" },
-  { label: "Документация", href: "/documents" },
   { label: "О компании", href: "/#about" },
   { label: "Контакты", href: "/contacts" },
 ];
@@ -88,7 +88,18 @@ export function Header() {
             className="hidden items-center gap-6 md:flex lg:gap-8"
           >
             <ProductsMenu />
-            {NAV.map((item) => (
+            {NAV.slice(0, 3).map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                data-cursor="hover"
+                className="text-sm text-[var(--color-secondary)]/70 transition-colors hover:text-[var(--color-secondary)]"
+              >
+                {item.label}
+              </Link>
+            ))}
+            <DocumentsMenu />
+            {NAV.slice(3).map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
