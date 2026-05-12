@@ -93,5 +93,41 @@
   "related_projects": {
     "heading": "Şu anda çalıştığı yerler",
     "see_all": "Tüm projeleri gör"
+  },
+  "families": {
+    "pumps": {
+      "meta": {
+        "title": "Pompa istasyonları",
+        "description": "ANHEL pompa istasyonları: su temini, yangın koruması, ısıtma ve soğutma, basınç artırma, özel amaçlı konfigürasyon. Proje parametrelerinize göre fabrika montajı.",
+        "og_title": "Pompa istasyonları",
+        "og_description": "Beş seri ANHEL pompa istasyonu — proje parametrelerinize göre fabrika montajı.",
+        "breadcrumb": "Pompa istasyonları"
+      },
+      "page": {
+        "mono_tag": "02 · POMPA İSTASYONLARI",
+        "heading": "Projeniz için beş pompa istasyonu serisi",
+        "lede": "Su temini, yangın koruması, ısıtma ve soğutma, basınç artırma, özel amaçlı konfigürasyon. Her seri projenin parametrelerine göre üretilir — pompalar, otomasyon ve kontrol modları hidrolik ve tasarım şartnamesinden seçilir.",
+        "showcase_mono_tag": "03 · SERİLER",
+        "showcase_title": "Beş seri",
+        "showcase_lede": "Teknik veriler, uygulama, avantajlar ve teknik veri formu için karta tıklayın."
+      }
+    },
+    "control-systems": {
+      "meta": {
+        "title": "Kontrol panoları",
+        "description": "ANHEL® kontrol panoları — pompa istasyonları, yangın koruma sistemleri, duman kontrolü, kanalizasyon pompası ve elektrik tahrikli vanalar için beş seri. Fabrika montajı, Rusya TR TS ve 123-FZ sertifikası.",
+        "og_title": "Kontrol panoları",
+        "og_description": "Beş seri ANHEL® kontrol panosu — fabrika montajı, Rusya TR TS sertifikası, garanti ve servis.",
+        "breadcrumb": "Kontrol panoları"
+      },
+      "page": {
+        "mono_tag": "02 · KONTROL PANOLARI",
+        "heading": "Projeniz için beş kontrol panosu serisi",
+        "lede": "Değişken frekanslı sürücü, yangın koruma, duman kontrolü, kanalizasyon pompası ve elektrik tahrikli vana kontrolü. Fabrika montajı, yangın panoları için Rusya TR TS ve 123-FZ yangın sertifikası, garanti ve anahtar teslim devreye alma.",
+        "showcase_mono_tag": "03 · SERİLER",
+        "showcase_title": "Beş seri",
+        "showcase_lede": "Teknik veriler, uygulama, avantajlar ve teknik veri formu için karta tıklayın."
+      }
+    }
   }
 }

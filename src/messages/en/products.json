@@ -93,5 +93,41 @@
   "related_projects": {
     "heading": "Already in use at",
     "see_all": "View all projects"
+  },
+  "families": {
+    "pumps": {
+      "meta": {
+        "title": "Pumping stations",
+        "description": "ANHEL pumping stations: water supply, fire protection, heating and cooling, pressure boosting, special-purpose configuration. Factory-assembled to your project parameters.",
+        "og_title": "Pumping stations",
+        "og_description": "Five series of ANHEL pumping stations — factory-assembled to your project parameters.",
+        "breadcrumb": "Pumping stations"
+      },
+      "page": {
+        "mono_tag": "02 · PUMPING STATIONS",
+        "heading": "Five pumping-station series built for your project",
+        "lede": "Water supply, fire protection, heating and cooling, pressure boosting, special-purpose configuration. Each series is built to project parameters — pumps, automation and control modes selected from the hydraulics and the design brief.",
+        "showcase_mono_tag": "03 · SERIES",
+        "showcase_title": "Five series",
+        "showcase_lede": "Open a card to view technical data, applications, advantages and the specification sheet."
+      }
+    },
+    "control-systems": {
+      "meta": {
+        "title": "Control cabinets",
+        "description": "ANHEL® control cabinets — five series for pumping stations, fire-protection systems, smoke control, sewage pumping and electric actuators. Factory assembly, Russian TR TS and 123-FZ certification.",
+        "og_title": "Control cabinets",
+        "og_description": "Five series of ANHEL® control cabinets — factory assembly, Russian TR TS certification, warranty and service.",
+        "breadcrumb": "Control cabinets"
+      },
+      "page": {
+        "mono_tag": "02 · CONTROL CABINETS",
+        "heading": "Five control-cabinet series built for your project",
+        "lede": "Variable-frequency drive, fire protection, smoke control, sewage pumping and electric-actuator control. Factory assembly, Russian TR TS and 123-FZ fire certification, warranty and turnkey commissioning.",
+        "showcase_mono_tag": "03 · SERIES",
+        "showcase_title": "Five series",
+        "showcase_lede": "Open a card to view technical data, applications, advantages and the specification sheet."
+      }
+    }
   }
 }

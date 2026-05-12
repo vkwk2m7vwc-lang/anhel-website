@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { ProductsShowcase } from "@/components/home/ProductsShowcase";
 import { CONTROL_SYSTEMS_PRODUCTS } from "@/lib/products";
 import { breadcrumbLd, ldScriptProps } from "@/lib/schema-org";
@@ -8,48 +10,60 @@ import { breadcrumbLd, ldScriptProps } from "@/lib/schema-org";
 /**
  * /products/control-systems — раздел-каталог шкафов управления.
  *
- * Точка входа в 5 серий шкафов управления:
- *   - С частотным регулированием (variable-frequency)
- *   - Для систем пожаротушения (fire-suppression)
- *   - Для дымоудаления и подпора (smoke-control)
- *   - Для КНС (sewage-pumping)
- *   - Для электрифицированной арматуры (electric-actuators)
+ * 5 серий: variable-frequency, fire-suppression, smoke-control,
+ * sewage-pumping, electric-actuators. Структурно идентичен
+ * /products/pumps.
  *
- * Структурно идентичен /products/pumps (5 насосных серий) и
- * /products/heating-unit (8 модулей ИТП) — та же page-shell +
- * ProductsShowcase. Reuse ради единого визуала карточек.
- *
- * Источник материалов — `tmp/source/control-systems/` (сырые
- * скрейпы с mfmc.ru, наш OEM-партнёр; в публикации — ANHEL®).
+ * i18n: hero/breadcrumb/showcase override — из
+ * `products.families.control-systems.{meta,page}`. Карточки —
+ * через `products.items.<slug>`.
  */
-export const metadata: Metadata = {
-  title: "Шкафы управления",
-  description:
-    "Шкафы управления ANHEL® — пять серий для насосных станций, систем пожаротушения, дымоудаления, КНС и электрифицированной арматуры. Заводская сборка, сертификация ТР ТС и ФЗ-123.",
-  openGraph: {
-    type: "website",
-    title: "Шкафы управления",
-    description:
-      "Пять серий шкафов управления ANHEL® — заводская сборка, сертификация ТР ТС, гарантия и сервис.",
-    url: "/products/control-systems",
-  },
-};
+export async function generateMetadata({
+  params: { locale },
+}: {
+  params: { locale: string };
+}): Promise<Metadata> {
+  const t = await getTranslations({
+    locale,
+    namespace: "products.families.control-systems.meta",
+  });
+  return {
+    title: t("title"),
+    description: t("description"),
+    openGraph: {
+      type: "website",
+      title: t("og_title"),
+      description: t("og_description"),
+      url: "/products/control-systems",
+    },
+  };
+}
 
-export default function ControlSystemsCategoryPage() {
+export default function ControlSystemsCategoryPage({
+  params: { locale },
+}: {
+  params: { locale: string };
+}) {
+  setRequestLocale(locale);
+  const t = useTranslations("products");
+  const tFamily = useTranslations("products.families.control-systems");
+
   const breadcrumbJsonLd = breadcrumbLd([
-    { name: "Главная", url: "/" },
-    { name: "Каталог", url: "/products" },
-    { name: "Шкафы управления", url: "/products/control-systems" },
+    { name: t("breadcrumbs.home"), url: "/" },
+    { name: t("breadcrumbs.catalog"), url: "/products" },
+    { name: tFamily("meta.breadcrumb"), url: "/products/control-systems" },
   ]);
 
   return (
     <>
       <script {...ldScriptProps(breadcrumbJsonLd)} />
 
-      {/* Page header — те же пропорции, что и у /products/pumps */}
       <section className="relative border-t border-[var(--color-hairline)] bg-[var(--color-primary)]">
         <div className="mx-auto w-full max-w-[1440px] px-6 pb-10 pt-28 md:px-12 md:pb-14 md:pt-32">
-          <nav aria-label="Хлебные крошки" className="font-mono text-[11px]">
+          <nav
+            aria-label={t("breadcrumbs.label")}
+            className="font-mono text-[11px]"
+          >
             <ol className="flex flex-wrap items-center gap-x-1.5 gap-y-1 uppercase tracking-[0.08em]">
               <li className="flex items-center gap-1.5">
                 <Link
@@ -57,7 +71,7 @@ export default function ControlSystemsCategoryPage() {
                   data-cursor="hover"
                   className="text-[var(--color-secondary)]/55 transition-colors hover:text-[var(--color-secondary)]"
                 >
-                  Главная
+                  {t("breadcrumbs.home")}
                 </Link>
                 <ChevronRight
                   aria-hidden="true"
@@ -72,7 +86,7 @@ export default function ControlSystemsCategoryPage() {
                   data-cursor="hover"
                   className="text-[var(--color-secondary)]/55 transition-colors hover:text-[var(--color-secondary)]"
                 >
-                  Каталог
+                  {t("breadcrumbs.catalog")}
                 </Link>
                 <ChevronRight
                   aria-hidden="true"
@@ -86,30 +100,27 @@ export default function ControlSystemsCategoryPage() {
                   aria-current="page"
                   className="text-[var(--color-secondary)]/80"
                 >
-                  Шкафы управления
+                  {tFamily("meta.breadcrumb")}
                 </span>
               </li>
             </ol>
           </nav>
 
-          <p className="mono-tag mt-8">02 · ШКАФЫ УПРАВЛЕНИЯ</p>
+          <p className="mono-tag mt-8">{tFamily("page.mono_tag")}</p>
           <h1 className="mt-4 max-w-[860px] font-display text-section font-medium text-[var(--color-secondary)]">
-            Пять серий шкафов управления под ваш объект
+            {tFamily("page.heading")}
           </h1>
           <p className="mt-6 max-w-[640px] text-body text-[var(--color-secondary)]/70 md:mt-8">
-            Частотное регулирование, пожаротушение, дымоудаление, КНС и
-            электрифицированная арматура. Заводская сборка, сертификация
-            ТР ТС и ФЗ-123 для пожарных шкафов, гарантия и пусконаладка
-            под ключ.
+            {tFamily("page.lede")}
           </p>
         </div>
       </section>
 
       <ProductsShowcase
         tone="page"
-        monoTag="03 · СЕРИИ"
-        title="Пять серий"
-        lede="Кликните карточку, чтобы перейти к ТТХ, применению, преимуществам и опросному листу."
+        monoTag={tFamily("page.showcase_mono_tag")}
+        title={tFamily("page.showcase_title")}
+        lede={tFamily("page.showcase_lede")}
         products={CONTROL_SYSTEMS_PRODUCTS}
       />
     </>

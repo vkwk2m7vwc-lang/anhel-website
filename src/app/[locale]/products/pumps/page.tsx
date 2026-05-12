@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { ProductsShowcase } from "@/components/home/ProductsShowcase";
 import { PUMPS_PRODUCTS } from "@/lib/products";
 import { breadcrumbLd, ldScriptProps } from "@/lib/schema-org";
@@ -8,46 +10,64 @@ import { breadcrumbLd, ldScriptProps } from "@/lib/schema-org";
 /**
  * /products/pumps — раздел-каталог насосных станций.
  *
- * Точка входа в 5 серий насосных станций:
- *   - Водоснабжение (ХВС, ГВС, повышение давления)
- *   - Пожаротушение (АПТ, ВПВ)
- *   - Отопление и кондиционирование
- *   - Поддержание давления (АУПД)
- *   - Специальное исполнение (контейнер / стеклопластик)
+ * Точка входа в 5 серий насосных станций. Структурно идентичен
+ * /products/heating-unit (8 модулей ИТП) — та же page-shell +
+ * ProductsShowcase.
  *
- * Структурно идентичен /products/heating-unit (8 модулей ИТП) —
- * та же page-shell + ProductsShowcase с подкатегориями вместо
- * top-level каталога. Reuse ProductsShowcase ради единого визуала
- * карточек (ring on hover, accent radial glow, product render).
+ * i18n: hero/breadcrumb/showcase override строки — из
+ * `products.families.pumps.{meta,page}`. Карточки внутри
+ * ProductsShowcase резолвят свои title/tagline через
+ * `products.items.<slug>` независимо.
  */
-export const metadata: Metadata = {
-  title: "Насосные станции",
-  description:
-    "Насосные станции ANHEL: водоснабжение, пожаротушение, отопление и кондиционирование, поддержание давления, специальное исполнение. Заводская сборка под параметры объекта.",
-  openGraph: {
-    type: "website",
-    title: "Насосные станции",
-    description:
-      "Пять серий насосных станций ANHEL — заводская сборка под параметры объекта.",
-    url: "/products/pumps",
-  },
-};
+export async function generateMetadata({
+  params: { locale },
+}: {
+  params: { locale: string };
+}): Promise<Metadata> {
+  const t = await getTranslations({
+    locale,
+    namespace: "products.families.pumps.meta",
+  });
+  return {
+    title: t("title"),
+    description: t("description"),
+    openGraph: {
+      type: "website",
+      title: t("og_title"),
+      description: t("og_description"),
+      url: "/products/pumps",
+    },
+  };
+}
 
-export default function PumpsCategoryPage() {
+export default function PumpsCategoryPage({
+  params: { locale },
+}: {
+  params: { locale: string };
+}) {
+  setRequestLocale(locale);
+  const t = useTranslations("products");
+  const tFamily = useTranslations("products.families.pumps");
+
+  // Breadcrumb JSON-LD uses translated labels so search engines see
+  // locale-correct names. URLs остаются без префикса — middleware и
+  // hreflang в layout уже описывают locale-граф.
   const breadcrumbJsonLd = breadcrumbLd([
-    { name: "Главная", url: "/" },
-    { name: "Каталог", url: "/products" },
-    { name: "Насосные станции", url: "/products/pumps" },
+    { name: t("breadcrumbs.home"), url: "/" },
+    { name: t("breadcrumbs.catalog"), url: "/products" },
+    { name: tFamily("meta.breadcrumb"), url: "/products/pumps" },
   ]);
 
   return (
     <>
       <script {...ldScriptProps(breadcrumbJsonLd)} />
 
-      {/* Page header — те же пропорции, что и у /products каталога */}
       <section className="relative border-t border-[var(--color-hairline)] bg-[var(--color-primary)]">
         <div className="mx-auto w-full max-w-[1440px] px-6 pb-10 pt-28 md:px-12 md:pb-14 md:pt-32">
-          <nav aria-label="Хлебные крошки" className="font-mono text-[11px]">
+          <nav
+            aria-label={t("breadcrumbs.label")}
+            className="font-mono text-[11px]"
+          >
             <ol className="flex flex-wrap items-center gap-x-1.5 gap-y-1 uppercase tracking-[0.08em]">
               <li className="flex items-center gap-1.5">
                 <Link
@@ -55,7 +75,7 @@ export default function PumpsCategoryPage() {
                   data-cursor="hover"
                   className="text-[var(--color-secondary)]/55 transition-colors hover:text-[var(--color-secondary)]"
                 >
-                  Главная
+                  {t("breadcrumbs.home")}
                 </Link>
                 <ChevronRight
                   aria-hidden="true"
@@ -70,7 +90,7 @@ export default function PumpsCategoryPage() {
                   data-cursor="hover"
                   className="text-[var(--color-secondary)]/55 transition-colors hover:text-[var(--color-secondary)]"
                 >
-                  Каталог
+                  {t("breadcrumbs.catalog")}
                 </Link>
                 <ChevronRight
                   aria-hidden="true"
@@ -84,31 +104,27 @@ export default function PumpsCategoryPage() {
                   aria-current="page"
                   className="text-[var(--color-secondary)]/80"
                 >
-                  Насосные станции
+                  {tFamily("meta.breadcrumb")}
                 </span>
               </li>
             </ol>
           </nav>
 
-          <p className="mono-tag mt-8">02 · НАСОСНЫЕ СТАНЦИИ</p>
+          <p className="mono-tag mt-8">{tFamily("page.mono_tag")}</p>
           <h1 className="mt-4 max-w-[860px] font-display text-section font-medium text-[var(--color-secondary)]">
-            Пять серий насосных станций под ваш объект
+            {tFamily("page.heading")}
           </h1>
           <p className="mt-6 max-w-[640px] text-body text-[var(--color-secondary)]/70 md:mt-8">
-            Водоснабжение, пожаротушение, отопление и кондиционирование,
-            поддержание давления, специальное исполнение. Каждая серия
-            собирается под параметры конкретного объекта — насосы,
-            автоматика и режимы управления подбираются по гидравлике
-            и инженерному заданию.
+            {tFamily("page.lede")}
           </p>
         </div>
       </section>
 
       <ProductsShowcase
         tone="page"
-        monoTag="03 · СЕРИИ"
-        title="Пять серий"
-        lede="Кликните карточку, чтобы перейти к ТТХ, применению, преимуществам и опросному листу."
+        monoTag={tFamily("page.showcase_mono_tag")}
+        title={tFamily("page.showcase_title")}
+        lede={tFamily("page.showcase_lede")}
         products={PUMPS_PRODUCTS}
       />
     </>
