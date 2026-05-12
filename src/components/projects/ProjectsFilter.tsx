@@ -5,26 +5,39 @@ import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { ProjectCard } from "./ProjectCard";
 import type { ProjectItem } from "@/content/projects/types";
+import { useTranslations } from "next-intl";
 
 type FilterKey = "all" | "pumps" | "water-treatment";
 
 const VALID_KEYS: readonly FilterKey[] = ["all", "pumps", "water-treatment"];
 
-const FILTERS: { key: FilterKey; label: string; count?: (items: ProjectItem[]) => number }[] = [
+/**
+ * Filter chip definitions. Labels are resolved via t() at render time
+ * because they depend on the active locale; `count` callbacks stay
+ * pure data-side.
+ */
+type FilterDef = {
+  key: FilterKey;
+  /** Translation key under `projects.filter` namespace. */
+  i18nKey: "all" | "pumps" | "water_treatment";
+  count: (items: ProjectItem[]) => number;
+};
+
+const FILTER_DEFS: readonly FilterDef[] = [
   {
     key: "all",
-    label: "Все",
+    i18nKey: "all",
     count: (items) => items.length,
   },
   {
     key: "pumps",
-    label: "Насосные станции",
+    i18nKey: "pumps",
     count: (items) =>
       items.filter((p) => p.category === "pumps" || p.category === "mixed").length,
   },
   {
     key: "water-treatment",
-    label: "Водоподготовка",
+    i18nKey: "water_treatment",
     count: (items) =>
       items.filter(
         (p) => p.category === "water-treatment" || p.category === "mixed",
@@ -47,6 +60,7 @@ const FILTERS: { key: FilterKey; label: string; count?: (items: ProjectItem[]) =
  * как в DocumentsGrid и ApplicationsGrid (визуальная согласованность).
  */
 export function ProjectsFilter({ projects }: { projects: ProjectItem[] }) {
+  const t = useTranslations("projects.filter");
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
@@ -101,7 +115,7 @@ export function ProjectsFilter({ projects }: { projects: ProjectItem[] }) {
   return (
     <>
       <div className="mt-10 flex flex-wrap gap-2 md:mt-14">
-        {FILTERS.map((f) => {
+        {FILTER_DEFS.map((f) => {
           const count = f.count ? f.count(projects) : projects.length;
           const active = filter === f.key;
           return (
@@ -118,7 +132,7 @@ export function ProjectsFilter({ projects }: { projects: ProjectItem[] }) {
                   : "border-[var(--color-hairline)] text-[var(--color-secondary)]/70 hover:border-[var(--color-secondary)]/40 hover:text-[var(--color-secondary)]",
               ].join(" ")}
             >
-              <span>{f.label}</span>
+              <span>{t(f.i18nKey)}</span>
               <span className={active ? "opacity-60" : "opacity-50"}>
                 {count.toString().padStart(2, "0")}
               </span>
@@ -156,7 +170,7 @@ export function ProjectsFilter({ projects }: { projects: ProjectItem[] }) {
 
       {filtered.length === 0 ? (
         <p className="mt-16 text-sm text-[var(--color-secondary)]/60">
-          В этой категории пока нет объектов.
+          {t("empty")}
         </p>
       ) : null}
     </>

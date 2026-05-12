@@ -1,29 +1,38 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
+import { useTranslations } from "next-intl";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { PROJECTS } from "@/content/projects/data";
 import { ProjectsFilter } from "@/components/projects/ProjectsFilter";
 
-export const metadata: Metadata = {
-  title: "Объекты — портфолио ANHEL®",
-  description:
-    "Реализованные объекты ANHEL®: насосные станции и установки водоподготовки в жилых комплексах и медицинских комплексах.",
-  alternates: { canonical: "/projects" },
-};
+export async function generateMetadata({
+  params: { locale },
+}: {
+  params: { locale: string };
+}): Promise<Metadata> {
+  const t = await getTranslations({ locale, namespace: "projects.meta" });
+  return {
+    title: t("title"),
+    description: t("description"),
+    alternates: { canonical: "/projects" },
+  };
+}
 
 /**
  * /projects — портфолио объектов.
  *
- * Source-of-truth содержимого: src/content/projects/data.ts. Каждый
- * объект имеет slug → детальная страница /projects/<slug>.
- *
- * Layout: hero-секция с моно-тегом, заголовком и числом объектов,
- * затем filter-row (Все / Насосные / Водоподготовка) и грид-сетка
- * 1/2/3 колонки с hairline-border-grid (как DocumentsGrid).
- *
- * Категория «Все» — default. Mixed-проекты учитываются при фильтре
- * pumps и water-treatment, чтобы не «прятать» их под одной из узких меток.
+ * i18n: hero/note/filter — из `projects.*`. Заголовки карточек,
+ * подписи к фото и строки оборудования резолвятся при рендере по
+ * slug/EquipmentKey из `projects.items.<slug>` и
+ * `projects.equipment_lines.<key>`.
  */
-export default function ProjectsPage() {
+export default function ProjectsPage({
+  params: { locale },
+}: {
+  params: { locale: string };
+}) {
+  setRequestLocale(locale);
+  const t = useTranslations("projects");
   const totalProjects = PROJECTS.length;
 
   return (
@@ -33,23 +42,22 @@ export default function ProjectsPage() {
         className="relative border-b border-[var(--color-hairline)]"
       >
         <div className="mx-auto w-full max-w-[1440px] px-6 pb-12 pt-32 md:px-12 md:pb-20 md:pt-40">
-          <p className="mono-tag">Объекты · {totalProjects.toString().padStart(2, "0")}</p>
+          <p className="mono-tag">
+            {t("hero.mono_tag", {
+              count: totalProjects.toString().padStart(2, "0"),
+            })}
+          </p>
           <h1
             id="projects-title"
             className="mt-6 max-w-[900px] font-display text-section font-medium tracking-[-0.02em]"
           >
-            Где работают наши установки.
+            {t("hero.title")}
           </h1>
           <p className="mt-6 max-w-[640px] text-[var(--color-secondary)]/70 md:text-[18px] md:leading-[1.55]">
-            Реализованные объекты с насосными станциями и системами
-            водоподготовки ANHEL®. Жилые комплексы Setl Group и ПИК,
-            медицинские комплексы, БЦ. Полный перечень — с указанием
-            поставленного оборудования по каждому проекту.
+            {t("hero.lede")}
           </p>
 
-          {/* Suspense boundary required by Next 14 для useSearchParams
-              в client-children при static prerender. fallback повторяет
-              минимальный скелетон filter-row, чтобы не было layout shift. */}
+          {/* Suspense boundary required by Next 14 для useSearchParams. */}
           <Suspense
             fallback={
               <div className="mt-10 h-[44px] md:mt-14" aria-hidden="true" />
@@ -67,19 +75,16 @@ export default function ProjectsPage() {
         <div className="mx-auto w-full max-w-[1440px] px-6 py-16 md:px-12 md:py-20">
           <div className="grid gap-8 md:grid-cols-2 md:gap-16">
             <div>
-              <p className="mono-tag">Примечание</p>
+              <p className="mono-tag">{t("note.mono_tag")}</p>
               <h2
                 id="projects-note-title"
                 className="mt-4 font-display text-h2 font-medium"
               >
-                Не каждый объект полностью на нашем оборудовании.
+                {t("note.title")}
               </h2>
             </div>
             <p className="text-[var(--color-secondary)]/70 md:text-[17px] md:leading-[1.6]">
-              На больших проектах состав поставки часто меняется по очередям —
-              где-то насосная ANHEL® со шкафом управления, где-то от сторонних
-              брендов под требования заказчика. В карточке указано то, что
-              физически было поставлено и смонтировано на конкретном объекте.
+              {t("note.body")}
             </p>
           </div>
         </div>

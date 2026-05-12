@@ -1,1 +1,108 @@
-{}
+{
+  "meta": {
+    "title": "Projeler — ANHEL® portföyü",
+    "description": "Tamamlanmış ANHEL® projeleri: konut komplekslerinde ve tıbbi merkezlerde pompa istasyonları ve su arıtma üniteleri."
+  },
+  "hero": {
+    "mono_tag": "Projeler · {count}",
+    "title": "Ekipmanlarımızın çalıştığı yerler.",
+    "lede": "ANHEL® pompa istasyonları ve su arıtma sistemlerinin yer aldığı tamamlanmış projeler. Setl Group ve PIK'in konut projeleri, tıbbi merkezler, ticari binalar. Tam liste — her projeye sevk edilen ekipman bilgisiyle birlikte."
+  },
+  "note": {
+    "mono_tag": "Not",
+    "title": "Her tesis tamamen bizim ekipmanlarımızla çalışmıyor.",
+    "body": "Büyük projelerde tedarik kapsamı genellikle faza göre değişir — bir fazda kontrol panolu ANHEL® pompa istasyonu, başka bir fazda müşteri şartnamesine göre üçüncü taraf markalar. Karttaki bilgiler, ilgili sahaya fiziksel olarak sevk edilen ve monte edilen ekipmanı gösterir."
+  },
+  "filter": {
+    "all": "Tümü",
+    "pumps": "Pompa istasyonları",
+    "water_treatment": "Su arıtma",
+    "empty": "Bu kategoride henüz proje yok."
+  },
+  "category_labels": {
+    "pumps": "Pompa istasyonları",
+    "water-treatment": "Su arıtma",
+    "mixed": "Pompalar + su arıtma"
+  },
+  "card": {
+    "remaining": "+{count} adet daha",
+    "details": "Projeyi görüntüle"
+  },
+  "detail": {
+    "back_link": "Tüm projeler",
+    "equipment_tag": "01 · TEDARİK EDİLDİ",
+    "equipment_title": "Ekipman",
+    "equipment_caption": "Bu sahadaki tedarik kapsamı. Proje şartnamesine göre tasarlanmış ve monte edilmiştir.",
+    "other_tag": "02 · DİĞER PROJELER",
+    "other_title": "Benzer teslimatlar",
+    "other_all_link": "Tüm projeler",
+    "meta_title_template": "{title} — ANHEL® projesi",
+    "meta_description_template": "{title} — tedarik edildi: {equipment}",
+    "not_found_title": "Proje bulunamadı"
+  },
+  "equipment_lines": {
+    "pumps_pressure_fire_anhel": "ANHEL basınç artırma ve yangın koruma pompa üniteleri",
+    "pumps_pressure_fire": "Basınç artırma ve yangın koruma pompa üniteleri",
+    "water_treatment_anhel": "ANHEL anahtar teslim su arıtma ünitesi",
+    "pumps_pressure_anhel": "ANHEL basınç artırma pompa üniteleri"
+  },
+  "cover_alt_suffix": {
+    "facade": "cephe",
+    "complex": "kompleks",
+    "development": "yerleşim"
+  },
+  "items": {
+    "sogaz-medical-complex": {
+      "title": "Çok fonksiyonlu tıbbi kompleks",
+      "cover_alt_suffix": "facade"
+    },
+    "zhk-imperial-club": {
+      "title": "Imperial Club konut kompleksi",
+      "cover_alt_suffix": "complex"
+    },
+    "zhk-grand-view": {
+      "title": "Grand View konut kompleksi",
+      "cover_alt_suffix": "facade"
+    },
+    "zhk-svetlana-park": {
+      "title": "Svetlana Park konut kompleksi",
+      "cover_alt_suffix": "development"
+    },
+    "zhk-astra-continental": {
+      "title": "Astra Continental konut kompleksi",
+      "cover_alt_suffix": "facade"
+    },
+    "zhk-astra-marine": {
+      "title": "Astra Marine konut kompleksi",
+      "cover_alt_suffix": "facade"
+    },
+    "zhk-titul": {
+      "title": "Titul konut kompleksi",
+      "cover_alt_suffix": "development"
+    },
+    "zhk-amber-club": {
+      "title": "Amber Club konut kompleksi",
+      "cover_alt_suffix": "facade"
+    },
+    "zhk-senat": {
+      "title": "Senat konut kompleksi",
+      "cover_alt_suffix": "facade"
+    },
+    "zhk-panorama-park": {
+      "title": "Panorama Park konut kompleksi",
+      "cover_alt_suffix": "development"
+    },
+    "zhk-vitebsky-park": {
+      "title": "Vitebsky Park konut kompleksi",
+      "cover_alt_suffix": "development"
+    },
+    "zhk-upoint": {
+      "title": "Upoint konut kompleksi",
+      "cover_alt_suffix": "facade"
+    },
+    "zhk-graf-orlov": {
+      "title": "Graf Orlov konut kompleksi",
+      "cover_alt_suffix": "facade"
+    }
+  }
+}
