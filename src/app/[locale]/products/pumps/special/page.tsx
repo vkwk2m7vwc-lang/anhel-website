@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { useTranslations } from "next-intl";
+import { setRequestLocale } from "next-intl/server";
 import { ProductHero } from "@/components/product-page/ProductHero";
 import { ProductPageShell } from "@/components/product-page/ProductPageShell";
 import { TechSpecsGrid } from "@/components/product-page/TechSpecsGrid";
@@ -10,7 +12,7 @@ import { DescriptionSection } from "@/components/product-page/DescriptionSection
 import { RelatedProjectsSection } from "@/components/product-page/RelatedProjectsSection";
 import { DocumentsGrid } from "@/components/product-page/DocumentsGrid";
 import { ProductCtaFooter } from "@/components/product-page/ProductCtaFooter";
-import { specialContent } from "@/content/products/special";
+import { getSpecialContent } from "@/content/products/special";
 import {
   breadcrumbLd,
   ldScriptProps,
@@ -28,24 +30,33 @@ import {
  *
  * Section map: см. water-supply/page.tsx — порядок секций идентичен.
  */
-export const metadata: Metadata = {
-  title: specialContent.metaTitle,
-  description: specialContent.metaDescription,
-  openGraph: {
-    type: "website",
-    title: `${specialContent.metaTitle} · ANHEL®`,
-    description: specialContent.metaDescription,
-    url: `/products/pumps/special`,
-    images: [
-      {
-        url: specialContent.hero.image.src,
-        alt: specialContent.hero.image.alt,
-      },
-    ],
-  },
-};
+export async function generateMetadata({
+  params: { locale },
+}: {
+  params: { locale: string };
+}): Promise<Metadata> {
+  const content = getSpecialContent(locale);
+  return {
+    title: content.metaTitle,
+    description: content.metaDescription,
+    openGraph: {
+      type: "website",
+      title: `${content.metaTitle} · ANHEL®`,
+      description: content.metaDescription,
+      url: `/products/pumps/special`,
+      images: [{ url: content.hero.image.src, alt: content.hero.image.alt }],
+    },
+  };
+}
 
-export default function SpecialProductPage() {
+export default function SpecialProductPage({
+  params: { locale },
+}: {
+  params: { locale: string };
+}) {
+  setRequestLocale(locale);
+  const content = getSpecialContent(locale);
+  const tProj = useTranslations("products.related_projects");
   const {
     slug,
     hero,
@@ -58,20 +69,21 @@ export default function SpecialProductPage() {
     gallery,
     documents,
     footerCta,
-  } = specialContent;
+  } = content;
 
   const productJsonLd = productLd({
     slug,
-    name: "Насосные станции ANHEL специального исполнения",
-    description: specialContent.metaDescription,
-    image: specialContent.hero.image.src,
+    name: content.metaTitle,
+    description: content.metaDescription,
+    image: content.hero.image.src,
     category: "Pump / Special execution",
   });
-  const breadcrumbJsonLd = breadcrumbLd([
-    { name: "Главная", url: "/" },
-    { name: "Каталог", url: "/products" },
-    { name: "Специальное исполнение", url: `/products/pumps/${slug}` },
-  ]);
+  const breadcrumbJsonLd = breadcrumbLd(
+    content.hero.breadcrumbs.map((b, i, arr) => ({
+      name: b.label,
+      url: b.href ?? (i === arr.length - 1 ? `/products/pumps/${slug}` : "/products"),
+    })),
+  );
 
   return (
     <ProductPageShell accent={accent}>
@@ -85,7 +97,7 @@ export default function SpecialProductPage() {
       <BrandsStrip content={brands} />
       <AdvantagesGrid content={advantages} />
       <GalleryRail content={gallery} />
-      <RelatedProjectsSection productSlug={slug} tag="08 · ОБЪЕКТЫ" />
+      <RelatedProjectsSection productSlug={slug} tag={tProj("projects_tag")} />
       <DocumentsGrid content={documents} />
       <ProductCtaFooter content={footerCta} currentSlug={slug} />
     </ProductPageShell>
