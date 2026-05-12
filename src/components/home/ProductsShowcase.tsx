@@ -104,7 +104,7 @@ export function ProductsShowcase({
             висящая карточка; принимаем такую асимметрию, чтобы каждая
             карточка имела достаточную ширину под продуктовый рендер.
             Если каталог станет 8+ — рассмотреть lg:grid-cols-3. */}
-        <ul className="mt-12 grid grid-cols-1 gap-px bg-[var(--color-hairline)] md:mt-16 md:grid-cols-2">
+        <ul className="mt-12 grid grid-cols-1 border-t border-[var(--color-hairline)] md:mt-16 md:grid-cols-2">
           {cards.map((product, i) => {
             const accentVar = ACCENT_VAR[product.accent];
             const isComingSoon = Boolean(product.comingSoon);
@@ -221,8 +221,11 @@ function ProductCard({
     </>
   );
 
+  // Per-card borders: bottom hairline всегда, правая граница только на md+
+  // и только для нечётных слотов (col 1) — даёт визуал «сетки», а пустой
+  // последний слот (если карточек 5) остаётся невидимым, без серого фона.
   const containerClass =
-    "group relative flex min-h-[360px] flex-col bg-[var(--color-primary)] p-6 transition-colors duration-300 [@media(hover:hover)]:hover:bg-[var(--color-hover-tint)] md:min-h-[440px] md:p-10";
+    "group relative flex min-h-[360px] flex-col border-b border-[var(--color-hairline)] bg-[var(--color-primary)] p-6 transition-colors duration-300 [@media(hover:hover)]:hover:bg-[var(--color-hover-tint)] md:min-h-[440px] md:p-10 md:[&:nth-child(odd)]:border-r md:[&:nth-child(odd)]:border-[var(--color-hairline)]";
 
   return (
     <motion.li

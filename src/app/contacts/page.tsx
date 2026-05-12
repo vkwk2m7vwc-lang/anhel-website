@@ -31,7 +31,9 @@ export const metadata: Metadata = {
 };
 
 const YANDEX_MAP_SRC =
-  "https://yandex.ru/map-widget/v1/?ll=30.3724%2C60.0048&z=16&l=map&pt=30.3724%2C60.0048%2Cpm2rdm";
+  "https://yandex.ru/map-widget/v1/?text=" +
+  encodeURIComponent("Санкт-Петербург, ул. Политехническая, 6 стр. 1") +
+  "&z=17";
 
 export default function ContactsPage() {
   return (
@@ -100,36 +102,78 @@ export default function ContactsPage() {
       <section className="border-b border-[var(--color-hairline)] bg-[var(--color-primary)] text-[var(--color-secondary)]">
         <div className="mx-auto max-w-[1440px] px-6 py-16 md:px-12 md:py-24">
           <p className="mono-tag mb-6">Реквизиты</p>
-          <h2 className="font-display text-2xl leading-tight md:text-4xl">
-            {LEGAL_ENTITY.shortName}
-          </h2>
 
-          <dl className="mt-10 grid gap-x-10 gap-y-6 md:grid-cols-2 md:gap-y-8">
-            <Detail label="Полное наименование" value={LEGAL_ENTITY.fullName} />
-            <Detail label="Сокращённое наименование" value={LEGAL_ENTITY.shortName} />
-            <Detail label="Юридический адрес" value={LEGAL_ENTITY.legalAddressLine} />
-            <Detail label="Фактический адрес" value={LEGAL_ENTITY.actualAddressLine} />
-            <Detail label="ИНН" value={LEGAL_ENTITY.inn} mono />
-            <Detail label="КПП" value={LEGAL_ENTITY.kpp} mono />
-            <Detail label="ОГРН" value={LEGAL_ENTITY.ogrn} mono />
-            <Detail label="ОКПО" value={LEGAL_ENTITY.okpo} mono />
-            <Detail label="Расчётный счёт" value={LEGAL_ENTITY.account} mono />
-            <Detail label="Банк" value={LEGAL_ENTITY.bank} />
-            <Detail label="БИК" value={LEGAL_ENTITY.bik} mono />
-            <Detail label="Корреспондентский счёт" value={LEGAL_ENTITY.correspondentAccount} mono />
-            <Detail label="Генеральный директор" value={LEGAL_ENTITY.director} />
-          </dl>
+          <article className="rounded-md border border-[var(--color-hairline)] bg-[var(--color-primary)] p-8 shadow-sm md:p-14">
+            {/* Card header — wordmark + document label */}
+            <header className="flex flex-col gap-3 border-b border-[var(--color-hairline)] pb-8 md:flex-row md:items-end md:justify-between md:pb-10">
+              <div>
+                <p className="font-display text-3xl tracking-[0.04em] md:text-4xl">
+                  ANHEL
+                  <span aria-hidden="true" className="align-super text-[0.5em] tracking-normal">
+                    ®
+                  </span>
+                </p>
+                <p className="mt-2 text-sm text-[var(--color-secondary)]/60">
+                  Инженерное оборудование
+                </p>
+              </div>
+              <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-[var(--color-secondary)]/55">
+                Карточка организации
+              </p>
+            </header>
 
-          {/* TODO: Алексей, когда подготовишь PDF карточки организации,
-              сохрани его в /public/anhel-card.pdf и убери aria-disabled. */}
-          <a
-            href="#"
-            aria-disabled="true"
-            tabIndex={-1}
-            className="mt-10 inline-flex cursor-not-allowed items-center gap-2 rounded-sm border border-[var(--color-hairline)] px-6 py-3 font-mono text-xs uppercase tracking-[0.12em] text-[var(--color-secondary)]/50"
-          >
-            Скачать карточку организации (PDF) — скоро
-          </a>
+            {/* Section: Наименование */}
+            <RekvSection title="Наименование">
+              <RekvRow label="Полное наименование" value={LEGAL_ENTITY.fullName} />
+              <RekvRow label="Сокращённое наименование" value={LEGAL_ENTITY.shortName} />
+            </RekvSection>
+
+            {/* Section: Адрес */}
+            <RekvSection title="Адрес">
+              <RekvRow label="Юридический адрес" value={LEGAL_ENTITY.legalAddressLine} />
+              <RekvRow label="Фактический адрес" value={LEGAL_ENTITY.actualAddressLine} />
+            </RekvSection>
+
+            {/* Section: Регистрационные коды */}
+            <RekvSection title="Регистрационные данные" cols={2}>
+              <RekvRow label="ИНН" value={LEGAL_ENTITY.inn} mono />
+              <RekvRow label="КПП" value={LEGAL_ENTITY.kpp} mono />
+              <RekvRow label="ОГРН" value={LEGAL_ENTITY.ogrn} mono />
+              <RekvRow label="ОКПО" value={LEGAL_ENTITY.okpo} mono />
+              <RekvRow label="ОКАТО" value={LEGAL_ENTITY.okato} mono />
+            </RekvSection>
+
+            {/* Section: Банковские */}
+            <RekvSection title="Банковские реквизиты">
+              <RekvRow label="Банк" value={LEGAL_ENTITY.bank} />
+              <div className="grid gap-x-10 gap-y-6 md:grid-cols-2">
+                <RekvRow label="Расчётный счёт" value={LEGAL_ENTITY.account} mono />
+                <RekvRow label="БИК" value={LEGAL_ENTITY.bik} mono />
+                <RekvRow label="Корреспондентский счёт" value={LEGAL_ENTITY.correspondentAccount} mono />
+              </div>
+            </RekvSection>
+
+            {/* Section: Подпись */}
+            <RekvSection title="Руководство" last>
+              <RekvRow label="Генеральный директор" value={LEGAL_ENTITY.director} />
+            </RekvSection>
+
+            {/* Download */}
+            <div className="mt-10 flex flex-col items-start gap-3 border-t border-[var(--color-hairline)] pt-8 md:flex-row md:items-center md:justify-between">
+              <p className="text-sm text-[var(--color-secondary)]/55">
+                Можно скачать PDF и приложить к заявке, договору или счёту.
+              </p>
+              <a
+                href="/anhel-card.pdf"
+                download="ANHEL-karta-organizacii.pdf"
+                data-cursor="hover"
+                className="inline-flex items-center gap-3 rounded-sm border border-[var(--color-secondary)] bg-[var(--color-secondary)] px-7 py-3 font-mono text-xs uppercase tracking-[0.12em] text-[var(--color-primary)] transition-opacity hover:opacity-90"
+              >
+                Скачать карточку (PDF)
+                <span aria-hidden="true">↓</span>
+              </a>
+            </div>
+          </article>
         </div>
       </section>
 
@@ -173,7 +217,41 @@ export default function ContactsPage() {
   );
 }
 
-function Detail({
+function RekvSection({
+  title,
+  cols = 1,
+  last,
+  children,
+}: {
+  title: string;
+  cols?: 1 | 2;
+  last?: boolean;
+  children: React.ReactNode;
+}) {
+  return (
+    <section
+      className={
+        "py-8 md:py-10 " +
+        (last ? "" : "border-b border-[var(--color-hairline)]")
+      }
+    >
+      <h2 className="mb-6 font-mono text-[11px] uppercase tracking-[0.14em] text-[var(--color-secondary)]/55">
+        {title}
+      </h2>
+      <div
+        className={
+          cols === 2
+            ? "grid gap-x-10 gap-y-6 md:grid-cols-2"
+            : "flex flex-col gap-6"
+        }
+      >
+        {children}
+      </div>
+    </section>
+  );
+}
+
+function RekvRow({
   label,
   value,
   mono,
@@ -184,17 +262,17 @@ function Detail({
 }) {
   return (
     <div>
-      <dt className="font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/55">
+      <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/55">
         {label}
-      </dt>
-      <dd
+      </p>
+      <p
         className={
           "mt-2 leading-relaxed text-[var(--color-secondary)] " +
-          (mono ? "font-mono text-[15px] tracking-[0.02em]" : "text-base")
+          (mono ? "font-mono text-[15px] tracking-[0.02em]" : "text-[15px]")
         }
       >
         {value}
-      </dd>
+      </p>
     </div>
   );
 }
