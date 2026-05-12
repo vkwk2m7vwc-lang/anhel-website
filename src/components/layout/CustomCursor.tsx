@@ -60,20 +60,25 @@ export function CustomCursor() {
       const target = e.target as HTMLElement | null;
       const kind = target?.closest<HTMLElement>("[data-cursor]")?.dataset.cursor;
       if (!kind) return;
+      // На интерактивных элементах кольцо схлопывается до 0, а точка
+      // вырастает до 2.4× — чтобы курсор оставался видимым как маленький
+      // блик, но не перекрывал текст пунктов меню и кнопок (C2 fix:
+      // раньше кольцо вырастало 2× и читалось как «пустое подменю»
+      // вокруг пункта «Продукты»).
       if (kind === "hover") {
-        gsap.to(ring, { scale: 2, duration: 0.3, ease: "power3.out" });
-        gsap.to(dot, { scale: 0, duration: 0.3, ease: "power3.out" });
+        gsap.to(ring, { scale: 0, opacity: 0, duration: 0.25, ease: "power3.out" });
+        gsap.to(dot, { scale: 2.4, duration: 0.25, ease: "power3.out" });
       } else if (kind === "text") {
-        gsap.to(ring, { scale: 3.5, duration: 0.3, ease: "power3.out" });
-        gsap.to(dot, { scale: 0.3, duration: 0.3, ease: "power3.out" });
+        gsap.to(ring, { scale: 0, opacity: 0, duration: 0.25, ease: "power3.out" });
+        gsap.to(dot, { scale: 3.6, duration: 0.25, ease: "power3.out" });
       }
     };
 
     const onOut = (e: MouseEvent) => {
       const target = e.target as HTMLElement | null;
       if (!target?.closest("[data-cursor]")) return;
-      gsap.to(ring, { scale: 1, duration: 0.3, ease: "power3.out" });
-      gsap.to(dot, { scale: 1, duration: 0.3, ease: "power3.out" });
+      gsap.to(ring, { scale: 1, opacity: 1, duration: 0.25, ease: "power3.out" });
+      gsap.to(dot, { scale: 1, duration: 0.25, ease: "power3.out" });
     };
 
     window.addEventListener("mousemove", onMove);
