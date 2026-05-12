@@ -35,6 +35,9 @@ export function HeroCounters() {
       <div ref={years.ref} className="flex flex-col">
         <p className="font-mono text-[32px] font-medium leading-none text-[var(--color-secondary)]">
           {years.value}
+          <span aria-hidden="true" className="text-[var(--accent-fire)]">
+            +
+          </span>
         </p>
         <p className="mt-2 font-mono text-[10px] uppercase tracking-[0.1em] text-[var(--color-secondary)]/50">
           Лет опыта
