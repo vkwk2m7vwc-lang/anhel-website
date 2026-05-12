@@ -67,7 +67,7 @@ export function HeroShell({
           The counters / variant-label row at the bottom is text-only
           and can stay click-through (no explicit auto on it). */}
       <div className="pointer-events-none relative z-20 mx-auto flex min-h-[100svh] w-full max-w-[1440px] flex-col justify-between px-6 pb-10 pt-28 md:px-12 md:pb-14 md:pt-32">
-        <div className="pointer-events-auto flex-1">
+        <div className="pointer-events-auto flex flex-1 flex-col justify-center">
           <div className="max-w-[1100px]">
             <HeroTitle />
           </div>
@@ -76,7 +76,7 @@ export function HeroShell({
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.6 }}
-            className="mt-8 max-w-[760px] text-base leading-relaxed text-[var(--color-secondary)]/70 md:mt-10 md:text-lg"
+            className="mt-8 max-w-[640px] text-base leading-relaxed text-[var(--color-secondary)]/70 md:mt-10 md:text-lg"
           >
             Модульные насосные станции, тепловые пункты, водоподготовка и
             шкафы управления для промышленных и гражданских объектов. Полный
