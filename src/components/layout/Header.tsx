@@ -18,18 +18,18 @@ import { ThemeToggle } from "./ThemeToggle";
  *  2. After a small scroll threshold we darken/blur the bar so it stays
  *     legible over any hero content.
  *
- * Navigation items match Stage 2 of TZ_ANHEL.md. Links point at anchors
- * on the home page for now — we'll lift them into real routes later when
- * the sections exist.
+ * Navigation: гибридная структура — Производство и О компании ведут на
+ * якоря секций главной (#production, #about), Контакты — отдельная
+ * страница `/contacts` с реквизитами, картой и формой обратной связи.
  */
 
 const NAV = [
   { label: "Продукты", href: CATALOG_PATH },
   { label: "Объекты", href: PROJECTS_PATH },
-  { label: "О компании", href: "/#about" },
-  { label: "Производство", href: "/#manufacturing" },
+  { label: "Производство", href: "/#production" },
   { label: "Сервис", href: "/service" },
-  { label: "Контакты", href: "/#contact" },
+  { label: "О компании", href: "/#about" },
+  { label: "Контакты", href: "/contacts" },
 ];
 
 export function Header() {

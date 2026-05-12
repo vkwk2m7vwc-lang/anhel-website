@@ -33,10 +33,10 @@ import { CONTACTS } from "@/lib/contacts";
 
 const NAV_ANCHORS = [
   { label: "Объекты", href: "/projects" },
-  { label: "О компании", href: "/#about" },
-  { label: "Производство", href: "/#manufacturing" },
+  { label: "Производство", href: "/#production" },
   { label: "Сервис", href: "/service" },
-  { label: "Контакты", href: "/#contact" },
+  { label: "О компании", href: "/#about" },
+  { label: "Контакты", href: "/contacts" },
 ];
 
 export function MobileMenu({

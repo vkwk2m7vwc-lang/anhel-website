@@ -1,21 +1,28 @@
 import { HeroShell } from "@/components/hero/HeroShell";
 import { HeroBgCarousel } from "@/components/hero/HeroBgCarousel";
 import { ProductsShowcase } from "@/components/home/ProductsShowcase";
+import { AboutSection } from "@/components/home/AboutSection";
+import { ProductionSection } from "@/components/home/ProductionSection";
 
 /**
  * Home page.
  *
- * `/` renders the carousel hero (variant E) — four rotating product
- * renders with accent-tinted ambient + pedestal glow. Autoplay is on
- * with a 5-second interval; hovering the product zone pauses it.
+ * `/` рендерит карусельный hero (вариант E) — четыре вращающихся
+ * продуктовых рендера с акцентной подсветкой. Autoplay 5 сек, hover
+ * на продуктовой зоне ставит на паузу.
  *
- * После hero — секция «Линейка продуктов» (4 карточки), чтобы посетитель
- * не приходилось докручивать до самого футера, чтобы найти продукты.
- * Это основная навигационная точка с главной → продуктовые страницы.
+ * Ниже hero:
+ *   1. ProductsShowcase — 4 карточки направлений (главная точка
+ *      навигации в каталог)
+ *   2. AboutSection (#about) — секция «О компании» с counters
+ *   3. ProductionSection (#production) — секция «Производство»
  *
- * `/hero-e` keeps the same view for the moment so the dev team can
- * link to it in reviews without redirecting the root. Once Stage 3
- * closes we can drop `/hero-e` and leave only `/`.
+ * #about и #production — якоря, на которые ведут пункты шапки
+ * «О компании» и «Производство». Раньше эти ссылки уходили на
+ * `/#about` и `/#manufacturing` без секций в DOM (мёртвые ссылки —
+ * C1 из pre-launch audit).
+ *
+ * Тексты в секциях — плейсхолдеры, копирайтер заменит после запуска.
  */
 export default function Home() {
   return (
@@ -25,6 +32,8 @@ export default function Home() {
         background={<HeroBgCarousel autoplay={true} />}
       />
       <ProductsShowcase />
+      <AboutSection />
+      <ProductionSection />
     </>
   );
 }

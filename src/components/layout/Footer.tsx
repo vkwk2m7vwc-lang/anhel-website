@@ -51,7 +51,7 @@ export function Footer() {
           <p className="text-[var(--color-secondary)]/60">
             Политехническая ул., д. 6, стр. 1,
             <br />
-            пом. 1-Н, Санкт-Петербург
+            пом. Н-7, Санкт-Петербург
           </p>
         </div>
 
@@ -60,9 +60,10 @@ export function Footer() {
           {[
             { label: "Продукты", href: CATALOG_PATH },
             { label: "Объекты", href: "/projects" },
-            { label: "О компании", href: "/#about" },
-            { label: "Производство", href: "/#manufacturing" },
+            { label: "Производство", href: "/#production" },
             { label: "Сервис", href: "/service" },
+            { label: "О компании", href: "/#about" },
+            { label: "Контакты", href: "/contacts" },
           ].map((item) => (
             <Link
               key={item.href}
