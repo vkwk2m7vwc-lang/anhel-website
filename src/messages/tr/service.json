@@ -1,1 +1,63 @@
-{}
+{
+  "meta": {
+    "title": "Servis ve Destek",
+    "description": "ANHEL pompa üniteleri, ısı istasyonları ve su arıtma sistemleri için arıza tespiti, devreye alma ve montaj denetimi. Çevrimiçi veya PDF servis talebi."
+  },
+  "breadcrumbs": {
+    "home": "Ana Sayfa",
+    "service": "Servis"
+  },
+  "hero": {
+    "mono_tag": "Servis",
+    "heading": "Servis ve Destek",
+    "lede": "ANHEL ekipmanları için arıza tespiti, onarım, devreye alma ve montaj denetimi. Doldurulmuş servis talebi alındıktan sonra sahaya mühendis gönderilir.",
+    "cta_online": "Çevrimiçi doldur",
+    "cta_pdf": "PDF formu indir",
+    "footnote": "Servis mühendisi gönderme kararı, info@anhelspb.com adresine doldurulmuş ve mühürlü talebin ulaşmasından sonra verilir."
+  },
+  "services": {
+    "mono_tag": "02 · Ne yapıyoruz",
+    "heading": "Dört servis hattı",
+    "cards": {
+      "diagnostics": {
+        "title": "Servis ve arıza tespiti",
+        "description": "Sahada mühendis ziyareti, arıza tespiti, onarım ve bileşen değişimi için öneriler."
+      },
+      "commissioning": {
+        "title": "Devreye alma",
+        "description": "Ekipmanın çevrimiçi hale getirilmesi: parametre kontrolleri, otomasyon ayarları, test çalıştırmaları."
+      },
+      "supervision": {
+        "title": "Montaj denetimi",
+        "description": "Müşterinin ekibinin yürüttüğü montajın teknik denetimi. Tasarıma uygunluk kontrolü."
+      },
+      "software": {
+        "title": "Yazılım ve teknik belgeler",
+        "description": "Kontrolör yeniden yükleme, ayarların geri yüklenmesi, servis belgelerinin sağlanması."
+      }
+    }
+  },
+  "requirements": {
+    "mono_tag": "03 · Ziyaret için gerekenler",
+    "heading": "Ziyaretin zamanında gerçekleşmesi için",
+    "items": {
+      "representative": {
+        "title": "Sahada temsilci",
+        "description": "Servis Protokolünü imzalama ve İş Tamamlama Tutanağına şirket mührünü basma yetkisine sahip."
+      },
+      "readiness": {
+        "title": "Ekipman hazırlığı",
+        "description": "Ekipmana erişim, kontrol panosunda gücü açıp kapatma imkanı, su beslemesini açıp kapatma imkanı, test noktalarında su çekme imkanı."
+      },
+      "request": {
+        "title": "Doldurulmuş talep formu",
+        "description": "info@anhelspb.com adresine gönderilmiş — doldurulmuş ve mühürlü."
+      }
+    }
+  },
+  "request_page": {
+    "meta_title": "Servis talebi",
+    "meta_description": "ANHEL ekipmanları için çevrimiçi servis talep formu.",
+    "ru_only_note": "Bu form Rusça'dır. Diğer dillerdeki talepler için lütfen İletişim sayfasındaki formu kullanın."
+  }
+}

@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { useTranslations } from 'next-intl';
+import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { Breadcrumbs } from '@/components/product-page/Breadcrumbs';
 import {
   SERVICE_CARDS,
@@ -11,60 +13,67 @@ import {
 /**
  * /service — лендинг сервисного раздела ANHEL.
  *
- * Главная цель — довести до заявки. Поэтому CTA-кнопки (Заполнить онлайн +
- * Скачать PDF) живут прямо в Hero — без скролла. Дальше идут поддерживающие
- * секции: что мы делаем, что нужно для выезда, контакты.
- *
- * Тарифы и сроки сознательно убраны — могут поменяться, и держать их в
- * статичной разметке = риск устаревания.
- *
  * Section map:
  *   01 Hero + CTA
  *   02 Услуги (4 карточки 2×2)
  *   03 Памятка «Что нужно для выезда» (3 пункта)
- *   04 Контакты сервиса
+ *
+ * i18n: вся UI-обвязка из `service.*`. Карточки/пункты хранят только
+ * icon и key; titles/descriptions резолвятся через
+ * t('services.cards.<key>.title') / t('requirements.items.<key>.description').
  */
-export const metadata: Metadata = {
-  title: 'Сервисное обслуживание',
-  description:
-    'Диагностика, пусконаладка и шефмонтаж насосных установок, тепловых пунктов и систем водоподготовки ANHEL. Заявка на сервис онлайн или PDF.',
-  openGraph: {
-    type: 'website',
-    title: 'Сервисное обслуживание',
-    description:
-      'Диагностика, пусконаладка и шефмонтаж насосных установок, тепловых пунктов и систем водоподготовки ANHEL. Заявка на сервис онлайн или PDF.',
-    url: '/service',
-  },
-};
+export async function generateMetadata({
+  params: { locale },
+}: {
+  params: { locale: string };
+}): Promise<Metadata> {
+  const t = await getTranslations({ locale, namespace: 'service.meta' });
+  return {
+    title: t('title'),
+    description: t('description'),
+    openGraph: {
+      type: 'website',
+      title: t('title'),
+      description: t('description'),
+      url: '/service',
+    },
+  };
+}
 
-const BREADCRUMBS = [
-  { label: 'Главная', href: '/' },
-  { label: 'Сервис' },
-];
+export default function ServicePage({
+  params: { locale },
+}: {
+  params: { locale: string };
+}) {
+  setRequestLocale(locale);
+  const t = useTranslations('service');
+  const tCards = useTranslations('service.services.cards');
+  const tReqs = useTranslations('service.requirements.items');
 
-export default function ServicePage() {
+  const breadcrumbs = [
+    { label: t('breadcrumbs.home'), href: '/' },
+    { label: t('breadcrumbs.service') },
+  ];
+
   return (
     <div className="bg-[var(--color-primary)] text-[var(--color-secondary)]">
       {/* === 01 Hero + CTA === */}
       <section className="relative overflow-hidden border-b border-[var(--color-hairline)]">
-        {/* Hairline grid фон — как на продуктовых страницах */}
         <div
           aria-hidden="true"
           className="absolute inset-0 z-0 bg-grid-hairline bg-grid opacity-60"
         />
         <div className="relative z-10 mx-auto w-full max-w-[1440px] px-6 pb-16 pt-24 md:px-12 md:pb-24 md:pt-32">
-          <Breadcrumbs items={BREADCRUMBS} />
+          <Breadcrumbs items={breadcrumbs} />
 
           <div className="mt-8 grid grid-cols-1 gap-10 md:mt-10 md:grid-cols-12 md:gap-14">
             <div className="md:col-span-7">
-              <p className="mono-tag">Сервис</p>
+              <p className="mono-tag">{t('hero.mono_tag')}</p>
               <h1 className="mt-6 font-display text-5xl font-medium leading-[1.05] md:mt-8 md:text-6xl lg:text-7xl">
-                Сервисное обслуживание
+                {t('hero.heading')}
               </h1>
               <p className="mt-6 max-w-[560px] text-body text-[var(--color-secondary)]/75 md:mt-8">
-                Диагностика, ремонт, пусконаладка и шефмонтаж оборудования
-                ANHEL. Выезд инженера на объект — после получения заполненной
-                заявки.
+                {t('hero.lede')}
               </p>
 
               {/* === CTA-кнопки в Hero === */}
@@ -74,7 +83,7 @@ export default function ServicePage() {
                   data-cursor="hover"
                   className="group inline-flex items-center gap-3 rounded-md bg-[var(--color-secondary)] px-[22px] py-[14px] text-sm font-medium text-[var(--color-primary)]"
                 >
-                  Заполнить онлайн
+                  {t('hero.cta_online')}
                   <span
                     aria-hidden="true"
                     className="inline-block font-mono transition-transform duration-300 ease-out-expo group-hover:translate-x-1"
@@ -88,7 +97,7 @@ export default function ServicePage() {
                   data-cursor="hover"
                   className="inline-flex items-center gap-3 rounded-md border-[0.5px] border-[var(--color-secondary)]/40 bg-transparent px-[22px] py-[14px] text-sm font-medium text-[var(--color-secondary)]/85 transition-colors hover:border-[var(--color-secondary)] hover:text-[var(--color-secondary)]"
                 >
-                  Скачать PDF-заявку
+                  {t('hero.cta_pdf')}
                   <span
                     aria-hidden="true"
                     className="font-mono text-[var(--color-secondary)]/65"
@@ -99,9 +108,7 @@ export default function ServicePage() {
               </div>
 
               <p className="mt-6 max-w-[520px] text-xs leading-relaxed text-[var(--color-secondary)]/55 md:text-sm">
-                Решение о выезде сервисного инженера принимается после
-                получения заполненной и пропечатанной заявки на
-                info@anhelspb.com.
+                {t('hero.footnote')}
               </p>
             </div>
 
@@ -112,9 +119,9 @@ export default function ServicePage() {
       {/* === 02 Услуги === */}
       <section className="border-b border-[var(--color-hairline)]">
         <div className="mx-auto w-full max-w-[1440px] px-6 py-16 md:px-12 md:py-24">
-          <p className="mono-tag">02 · Что мы делаем</p>
+          <p className="mono-tag">{t('services.mono_tag')}</p>
           <h2 className="mt-4 max-w-[680px] font-display text-3xl font-medium leading-tight md:mt-6 md:text-4xl lg:text-5xl">
-            Четыре направления сервиса
+            {t('services.heading')}
           </h2>
 
           <ul className="mt-10 grid grid-cols-1 gap-px overflow-hidden rounded-md border-[0.5px] border-[var(--color-hairline)] bg-[var(--color-hairline)] md:mt-14 md:grid-cols-2">
@@ -122,7 +129,7 @@ export default function ServicePage() {
               const Icon = card.icon;
               return (
                 <li
-                  key={card.title}
+                  key={card.key}
                   className="flex flex-col gap-5 bg-[var(--color-primary)] p-6 transition-colors hover:bg-[var(--color-hover-tint)] md:gap-6 md:p-8"
                 >
                   <span
@@ -133,10 +140,10 @@ export default function ServicePage() {
                   </span>
                   <div>
                     <h3 className="font-display text-xl font-medium leading-tight md:text-2xl">
-                      {card.title}
+                      {tCards(`${card.key}.title`)}
                     </h3>
                     <p className="mt-3 text-sm leading-relaxed text-[var(--color-secondary)]/70 md:text-[15px]">
-                      {card.description}
+                      {tCards(`${card.key}.description`)}
                     </p>
                   </div>
                 </li>
@@ -149,25 +156,25 @@ export default function ServicePage() {
       {/* === 03 Памятка === */}
       <section className="border-b border-[var(--color-hairline)]">
         <div className="mx-auto w-full max-w-[1440px] px-6 py-16 md:px-12 md:py-24">
-          <p className="mono-tag">03 · Что нужно для выезда</p>
+          <p className="mono-tag">{t('requirements.mono_tag')}</p>
           <h2 className="mt-4 max-w-[760px] font-display text-3xl font-medium leading-tight md:mt-6 md:text-4xl lg:text-5xl">
-            Чтобы выезд состоялся вовремя
+            {t('requirements.heading')}
           </h2>
 
           <ol className="mt-10 grid grid-cols-1 gap-x-12 gap-y-10 md:mt-14 md:grid-cols-3">
             {REQUIREMENTS.map((req, i) => (
               <li
-                key={req.title}
+                key={req.key}
                 className="border-t border-[var(--color-hairline)] pt-6"
               >
                 <p className="font-mono text-xs uppercase tracking-[0.12em] text-[var(--color-secondary)]/55">
                   {String(i + 1).padStart(2, '0')}
                 </p>
                 <h3 className="mt-3 font-display text-lg font-medium leading-tight md:text-xl">
-                  {req.title}
+                  {tReqs(`${req.key}.title`)}
                 </h3>
                 <p className="mt-3 text-sm leading-relaxed text-[var(--color-secondary)]/70 md:text-[15px]">
-                  {req.description}
+                  {tReqs(`${req.key}.description`)}
                 </p>
               </li>
             ))}
