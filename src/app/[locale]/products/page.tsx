@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { ProductsShowcase } from "@/components/home/ProductsShowcase";
 
 /**
@@ -10,34 +12,45 @@ import { ProductsShowcase } from "@/components/home/ProductsShowcase";
  * Используется как destination для:
  *   - "Смотреть каталог" CTA на главной hero
  *   - "Продукты" в Header NAV
- *   - Breadcrumb "Насосные станции" на продуктовых страницах
- *     (после того как catalog заработает)
+ *   - Breadcrumb с продуктовых страниц
  *
- * Не путать с продуктовыми страницами `/products/pumps/<slug>` —
- * те описывают конкретный продукт. Этот URL — обзорный каталог.
+ * i18n: вся UI-обвязка из `products.{meta,breadcrumbs,catalog}`.
+ * Карточки внутри ProductsShowcase читают свой `products.items.<slug>`
+ * при рендере независимо.
  */
-export const metadata: Metadata = {
-  title: "Каталог продукции",
-  description:
-    "Каталог инженерного оборудования ANHEL: насосные станции, установки водоподготовки, блочные индивидуальные тепловые пункты, шкафы управления. Четыре направления, заводская сборка, серийное производство, индивидуальная конфигурация под параметры объекта.",
-  openGraph: {
-    type: "website",
-    title: "Каталог продукции",
-    description:
-      "Четыре направления — насосные станции, водоподготовка, тепловые пункты и шкафы управления. Заводская сборка, индивидуальная конфигурация под параметры объекта.",
-    url: "/products",
-  },
-};
+export async function generateMetadata({
+  params: { locale },
+}: {
+  params: { locale: string };
+}): Promise<Metadata> {
+  const t = await getTranslations({ locale, namespace: "products.meta" });
+  return {
+    title: t("title"),
+    description: t("description"),
+    openGraph: {
+      type: "website",
+      title: t("og_title"),
+      description: t("og_description"),
+      url: "/products",
+    },
+  };
+}
 
-export default function ProductsCatalogPage() {
+export default function ProductsCatalogPage({
+  params: { locale },
+}: {
+  params: { locale: string };
+}) {
+  setRequestLocale(locale);
+  const t = useTranslations("products");
   return (
     <>
-      {/* Page header — компактный, без отдельного hero render'a:
-          каталог это указатель, а не лендинг. Breadcrumb +
-          mono-tag + h1 + лид-абзац. */}
       <section className="relative border-t border-[var(--color-hairline)] bg-[var(--color-primary)]">
         <div className="mx-auto w-full max-w-[1440px] px-6 pb-10 pt-28 md:px-12 md:pb-14 md:pt-32">
-          <nav aria-label="Хлебные крошки" className="font-mono text-[11px]">
+          <nav
+            aria-label={t("breadcrumbs.label")}
+            className="font-mono text-[11px]"
+          >
             <ol className="flex flex-wrap items-center gap-x-1.5 gap-y-1 uppercase tracking-[0.08em]">
               <li className="flex items-center gap-1.5">
                 <Link
@@ -45,7 +58,7 @@ export default function ProductsCatalogPage() {
                   data-cursor="hover"
                   className="text-[var(--color-secondary)]/55 transition-colors hover:text-[var(--color-secondary)]"
                 >
-                  Главная
+                  {t("breadcrumbs.home")}
                 </Link>
                 <ChevronRight
                   aria-hidden="true"
@@ -59,34 +72,30 @@ export default function ProductsCatalogPage() {
                   aria-current="page"
                   className="text-[var(--color-secondary)]/80"
                 >
-                  Каталог
+                  {t("breadcrumbs.catalog")}
                 </span>
               </li>
             </ol>
           </nav>
 
-          <p className="mono-tag mt-8">01 · КАТАЛОГ ПРОДУКЦИИ</p>
+          <p className="mono-tag mt-8">{t("catalog.mono_tag")}</p>
           <h1 className="mt-4 max-w-[860px] font-display text-section font-medium text-[var(--color-secondary)]">
-            Инженерное оборудование под ваш проект
+            {t("catalog.heading")}
           </h1>
           <p className="mt-6 max-w-[640px] text-body text-[var(--color-secondary)]/70 md:mt-8">
-            Четыре направления — насосные станции, водоподготовка,
-            тепловые пункты и шкафы управления. Заводская сборка,
-            серийное производство и индивидуальная конфигурация под
-            параметры объекта.
+            {t("catalog.lede")}
           </p>
         </div>
       </section>
 
-      {/* Top-level каталог — 3 раздела (Насосные / Водоподготовка /
-          ИТП). Внутри «Насосных» открывается подкаталог /products/pumps
-          с 5 сериями. Tone="page" выключает border-top и снижает
-          вертикальный padding (страница уже имеет header выше). */}
+      {/* Top-level каталог — 4 раздела. Передаём page-specific overrides
+          (mono_tag/title/lede) — иначе бы взялись дефолты из
+          `home.showcase`. */}
       <ProductsShowcase
         tone="page"
-        monoTag="02 · ЛИНЕЙКА ПРОДУКТОВ"
-        title="Четыре направления, один завод"
-        lede="Внутри: насосные станции — пять серий, тепловые пункты — восемь модулей, шкафы управления — пять серий."
+        monoTag={t("catalog.showcase_mono_tag")}
+        title={t("catalog.showcase_title")}
+        lede={t("catalog.showcase_lede")}
       />
     </>
   );

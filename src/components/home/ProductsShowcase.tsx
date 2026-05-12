@@ -118,12 +118,10 @@ export function ProductsShowcase({
             return (
               <ProductCard
                 key={product.slug}
+                slug={product.slug}
                 index={i}
                 href={isComingSoon ? undefined : product.href}
-                title={product.title}
-                tagline={product.tagline}
                 imageSrc={product.image}
-                imageAlt={product.imageAlt}
                 accentVar={accentVar}
                 accentHex={product.accentHex}
                 comingSoon={isComingSoon}
@@ -137,27 +135,27 @@ export function ProductsShowcase({
 }
 
 function ProductCard({
+  slug,
   index,
   href,
-  title,
-  tagline,
   imageSrc,
-  imageAlt,
   accentVar,
   accentHex,
   comingSoon,
 }: {
+  slug: string;
   index: number;
   href?: string;
-  title: string;
-  tagline: string;
   imageSrc: string;
-  imageAlt: string;
   accentVar: string;
   accentHex: string;
   comingSoon: boolean;
 }) {
-  const t = useTranslations("home.showcase");
+  const tItems = useTranslations(`products.items.${slug}`);
+  const tShowcase = useTranslations("home.showcase");
+  const title = tItems("title");
+  const tagline = tItems("tagline");
+  const imageAlt = tItems("image_alt");
 
   const staggerDelay = Math.min(index, 3) * 0.08;
 
@@ -211,7 +209,7 @@ function ProductCard({
               aria-hidden="true"
               className="font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/65"
             >
-              {t("coming_soon")}
+              {tShowcase("coming_soon")}
             </span>
           ) : (
             <span
@@ -252,7 +250,7 @@ function ProductCard({
           href={href}
           data-cursor="hover"
           className={containerClass}
-          aria-label={t("card_aria", { title })}
+          aria-label={tShowcase("card_aria", { title })}
         >
           {body}
         </Link>
