@@ -45,27 +45,64 @@ export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
 }
 
-export const metadata: Metadata = {
-  metadataBase: new URL(
-    process.env.NEXT_PUBLIC_SITE_URL ?? "https://anhelspb.com",
-  ),
-  title: {
-    default: "ANHEL® — инженерное оборудование для зданий",
-    template: "%s · ANHEL®",
-  },
-  description:
-    "ANHEL® — производитель инженерного оборудования. Офис — Санкт-Петербург, производство — Москва. Насосные станции, пожарные установки, теплообменные пункты, системы водоподготовки.",
-  openGraph: {
-    type: "website",
-    locale: "ru_RU",
-    siteName: "ANHEL®",
-    url: "/",
-  },
-  robots: {
-    index: true,
-    follow: true,
-  },
-};
+/**
+ * Locale-aware metadata. Replaces the previous static `metadata`
+ * export — title/description/og come from the `meta` namespace, and
+ * `alternates.languages` carries hreflang pointers to sibling locale
+ * URLs so search engines understand the locale graph.
+ *
+ * Root host comes from NEXT_PUBLIC_SITE_URL (overridable per
+ * environment) with a fallback to anhelspb.com production.
+ *
+ * Note: per-page metadata (e.g. /products has its own h1/title) is
+ * NOT overridden by this layout — it remains responsible for the
+ * default home title only. Once page-level generateMetadata is added
+ * (next pass), each page builds its own alternates from this same
+ * pattern.
+ */
+export async function generateMetadata({
+  params: { locale },
+}: {
+  params: { locale: string };
+}): Promise<Metadata> {
+  if (!locales.includes(locale as Locale)) notFound();
+
+  const t = await getTranslations({ locale, namespace: "meta.default" });
+  const base = process.env.NEXT_PUBLIC_SITE_URL ?? "https://anhelspb.com";
+
+  // Build sibling locale URLs for hreflang. RU sits on the bare host;
+  // others get a `/<code>` prefix. `x-default` points at RU.
+  const languages: Record<string, string> = {};
+  for (const l of locales) {
+    languages[l] = l === "ru" ? base + "/" : `${base}/${l}`;
+  }
+  languages["x-default"] = base + "/";
+
+  const canonical = locale === "ru" ? base + "/" : `${base}/${locale}`;
+
+  return {
+    metadataBase: new URL(base),
+    title: {
+      default: t("title"),
+      template: "%s · ANHEL®",
+    },
+    description: t("description"),
+    alternates: {
+      canonical,
+      languages,
+    },
+    openGraph: {
+      type: "website",
+      locale: t("og_locale"),
+      siteName: t("site_name"),
+      url: canonical,
+    },
+    robots: {
+      index: true,
+      follow: true,
+    },
+  };
+}
 
 export default async function LocaleLayout({
   children,
