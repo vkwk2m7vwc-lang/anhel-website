@@ -406,3 +406,21 @@ export function getHeatingModules(locale: string): HeatingModule[] {
     };
   });
 }
+
+/**
+ * Locale-aware version of `heatingModuleBySlug` — returns the same
+ * lookup table but with per-locale overrides applied. Used by the
+ * module sub-page (`/products/heating-unit/[slug]`) so heading,
+ * shortTitle, tagline and image alt come out in the requested locale.
+ */
+export function getHeatingModuleBySlug(
+  locale: string,
+): Record<HeatingModuleSlug, HeatingModule> {
+  return getHeatingModules(locale).reduce(
+    (acc, m) => {
+      acc[m.slug] = m;
+      return acc;
+    },
+    {} as Record<HeatingModuleSlug, HeatingModule>,
+  );
+}

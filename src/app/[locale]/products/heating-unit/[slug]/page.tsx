@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { setRequestLocale } from "next-intl/server";
+import { useTranslations } from "next-intl";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
@@ -10,10 +12,10 @@ import { GalleryRail } from "@/components/product-page/GalleryRail";
 import { RelatedProjectsSection } from "@/components/product-page/RelatedProjectsSection";
 import { DocumentsGrid } from "@/components/product-page/DocumentsGrid";
 import { ProductCtaFooter } from "@/components/product-page/ProductCtaFooter";
-import { heatingUnitContent } from "@/content/products/heating-unit";
+import { getHeatingUnitContent } from "@/content/products/heating-unit";
 import {
-  heatingModules,
-  heatingModuleBySlug,
+  getHeatingModules,
+  getHeatingModuleBySlug,
 } from "@/content/products/heating-unit-modules/data";
 import type { HeatingModuleSlug } from "@/content/products/heating-unit-modules/types";
 import {
@@ -52,26 +54,23 @@ import {
  * комплектующих по бренду, в отличие от насосных серий.
  */
 
-type RouteParams = { params: Promise<{ slug: string }> };
+type RouteParams = { params: Promise<{ locale: string; slug: string }> };
 
 export async function generateStaticParams() {
-  return heatingModules.map((m) => ({ slug: m.slug }));
+  return getHeatingModules("ru").map((m) => ({ slug: m.slug }));
 }
 
-function getModule(slug: string) {
-  if (!isValidSlug(slug)) return null;
-  return heatingModuleBySlug[slug];
-}
-
-function isValidSlug(slug: string): slug is HeatingModuleSlug {
-  return Object.prototype.hasOwnProperty.call(heatingModuleBySlug, slug);
+function getModule(slug: string, locale: string) {
+  const lookup = getHeatingModuleBySlug(locale);
+  if (!Object.prototype.hasOwnProperty.call(lookup, slug)) return null;
+  return lookup[slug as HeatingModuleSlug];
 }
 
 export async function generateMetadata({
   params,
 }: RouteParams): Promise<Metadata> {
-  const { slug } = await params;
-  const m = getModule(slug);
+  const { locale, slug } = await params;
+  const m = getModule(slug, locale);
   if (!m) return { title: "Модуль не найден" };
   return {
     title: `${m.title} · ANHEL`,
@@ -87,10 +86,13 @@ export async function generateMetadata({
 }
 
 export default async function HeatingModulePage({ params }: RouteParams) {
-  const { slug } = await params;
-  const m = getModule(slug);
+  const { locale, slug } = await params;
+  setRequestLocale(locale);
+  const m = getModule(slug, locale);
   if (!m) notFound();
 
+  const heatingUnitContent = getHeatingUnitContent(locale);
+  const heatingModules = getHeatingModules(locale);
   const accent = heatingUnitContent.accent;
 
   const productJsonLd = productLd({
@@ -102,10 +104,14 @@ export default async function HeatingModulePage({ params }: RouteParams) {
     model: "BITP-NU",
     routePath: `/products/heating-unit/${m.slug}`,
   });
+  // Parent breadcrumbs come from the localized heating-unit content;
+  // we add the current module shortTitle as the leaf.
+  const parentCrumbs = heatingUnitContent.hero.breadcrumbs;
   const breadcrumbJsonLd = breadcrumbLd([
-    { name: "Главная", url: "/" },
-    { name: "Каталог", url: "/products" },
-    { name: "Тепловые пункты", url: "/products/heating-unit" },
+    ...parentCrumbs.map((b, i, arr) => ({
+      name: b.label,
+      url: b.href ?? (i === arr.length - 1 ? "/products/heating-unit" : "/products"),
+    })),
     { name: m.shortTitle, url: `/products/heating-unit/${m.slug}` },
   ]);
 
