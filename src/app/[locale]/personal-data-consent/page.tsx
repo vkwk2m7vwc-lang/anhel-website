@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { CONTACTS } from "@/lib/contacts";
 import { LEGAL_ENTITY } from "@/lib/legal";
 
@@ -7,131 +9,147 @@ import { LEGAL_ENTITY } from "@/lib/legal";
  * `/personal-data-consent` — Согласие субъекта на обработку
  * персональных данных.
  *
- * Закрывает C4 (152-ФЗ). Связанный документ с /privacy-policy:
- *   - Политика описывает порядок обработки в целом
- *   - Согласие фиксирует юридический акт «субъект согласен с этим
- *     порядком и состав данных, которые передаёт»
- *
- * Текст оформлен как формальное согласие от первого лица — субъект
- * считается принявшим его при отметке чекбокса на любой форме сайта
- * (квизы, /service/request, /contacts).
+ * Связанный документ с /privacy-policy. EN/TR — пояснительный перевод,
+ * юр. сила сохраняется у русской редакции (которую субъект ПД и
+ * подтверждает чекбоксом). Реквизиты ООО «Профит» — RU во всех локалях.
  */
-export const metadata: Metadata = {
-  title: "Согласие на обработку персональных данных",
-  description:
-    "Согласие субъекта персональных данных на обработку, передаваемое ANHEL® (ООО «Профит») при заполнении форм на сайте anhelspb.com.",
-};
+export async function generateMetadata({
+  params: { locale },
+}: {
+  params: { locale: string };
+}): Promise<Metadata> {
+  const t = await getTranslations({ locale, namespace: "legal.consent.meta" });
+  return {
+    title: t("title"),
+    description: t("description"),
+  };
+}
 
-const EFFECTIVE_DATE = "12 мая 2026 года";
 const LEGAL_PRIVACY_EMAIL = CONTACTS.email;
 
-export default function PersonalDataConsentPage() {
+export default function PersonalDataConsentPage({
+  params: { locale },
+}: {
+  params: { locale: string };
+}) {
+  setRequestLocale(locale);
+  const t = useTranslations("legal.consent");
+
+  const operator = LEGAL_ENTITY.fullName;
+  const emailLink = (
+    <a
+      href={`mailto:${LEGAL_PRIVACY_EMAIL}`}
+      className="underline decoration-[var(--color-hairline)] underline-offset-[3px] hover:decoration-[var(--color-secondary)]"
+    >
+      {LEGAL_PRIVACY_EMAIL}
+    </a>
+  );
+  const siteLink = (
+    <a
+      href="https://anhelspb.com"
+      className="underline decoration-[var(--color-hairline)] underline-offset-[3px] hover:decoration-[var(--color-secondary)]"
+    >
+      anhelspb.com
+    </a>
+  );
+  const privacyLink = (label: string) => (
+    <Link
+      href="/privacy-policy"
+      className="underline decoration-[var(--color-hairline)] underline-offset-[3px] hover:decoration-[var(--color-secondary)]"
+    >
+      {label}
+    </Link>
+  );
+
   return (
     <main className="pt-24 md:pt-32">
       <article className="mx-auto max-w-3xl px-6 pb-24 text-[var(--color-secondary)] md:px-8 md:pb-32">
-        <p className="mono-tag mb-6">Документ</p>
+        <p className="mono-tag mb-6">{t("mono_tag")}</p>
         <h1 className="font-display text-3xl leading-tight md:text-5xl">
-          Согласие на обработку персональных данных
+          {t("title")}
         </h1>
         <p className="mt-6 font-mono text-[11px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/55">
-          Действует с {EFFECTIVE_DATE}
+          {t("effective", { date: t("effective_date") })}
         </p>
 
         <Block>
           <p>
-            Отправляя любую форму на сайте{" "}
-            <a href="https://anhelspb.com" className="underline decoration-[var(--color-hairline)] underline-offset-[3px] hover:decoration-[var(--color-secondary)]">
-              anhelspb.com
-            </a>
-            {" "}и проставляя отметку «Я даю согласие на обработку моих персональных данных», я (далее — «Субъект»), в соответствии с требованиями Федерального закона от 27.07.2006 № 152-ФЗ «О персональных данных», свободно, своей волей и в своём интересе даю согласие {LEGAL_ENTITY.fullName} (ИНН {LEGAL_ENTITY.inn}, ОГРН {LEGAL_ENTITY.ogrn}, юридический адрес: {LEGAL_ENTITY.legalAddressFull}; далее — «Оператор») на обработку моих персональных данных, указанных ниже.
+            {t("intro_before")} {siteLink}
+            {t("intro_after", {
+              operator,
+              inn: LEGAL_ENTITY.inn,
+              ogrn: LEGAL_ENTITY.ogrn,
+              address: LEGAL_ENTITY.legalAddressFull,
+            })}
           </p>
         </Block>
 
-        <Block title="Состав персональных данных">
-          <p>Перечень обрабатываемых персональных данных Субъекта:</p>
+        <Block title={t("s1.title")}>
+          <p>{t("s1.intro")}</p>
           <ul>
-            <li>фамилия, имя, отчество;</li>
-            <li>контактный телефон;</li>
-            <li>адрес электронной почты;</li>
-            <li>наименование организации и должность;</li>
-            <li>ИНН организации;</li>
-            <li>содержание сообщения и технические параметры объекта, переданные Субъектом в свободной форме.</li>
+            <li>{t("s1.i1")}</li>
+            <li>{t("s1.i2")}</li>
+            <li>{t("s1.i3")}</li>
+            <li>{t("s1.i4")}</li>
+            <li>{t("s1.i5")}</li>
+            <li>{t("s1.i6")}</li>
           </ul>
         </Block>
 
-        <Block title="Цели обработки">
-          <p>Согласие даётся для следующих целей:</p>
+        <Block title={t("s2.title")}>
+          <p>{t("s2.intro")}</p>
           <ul>
-            <li>обработка обращения и обратная связь по нему;</li>
-            <li>подготовка коммерческого предложения и технических расчётов;</li>
-            <li>заключение, исполнение и сопровождение договора поставки оборудования, монтажа или сервисного обслуживания;</li>
-            <li>информирование о статусе заказа и сервисных уведомлений по согласованным каналам связи;</li>
-            <li>исполнение обязательств, предусмотренных законодательством Российской Федерации.</li>
+            <li>{t("s2.i1")}</li>
+            <li>{t("s2.i2")}</li>
+            <li>{t("s2.i3")}</li>
+            <li>{t("s2.i4")}</li>
+            <li>{t("s2.i5")}</li>
           </ul>
         </Block>
 
-        <Block title="Перечень действий с персональными данными">
-          <p>Согласие распространяется на следующие действия Оператора:</p>
+        <Block title={t("s3.title")}>
+          <p>{t("s3.intro")}</p>
           <ul>
-            <li>сбор, запись, систематизация и накопление;</li>
-            <li>хранение, уточнение (обновление, изменение), извлечение;</li>
-            <li>использование, передача (предоставление, доступ);</li>
-            <li>обезличивание, блокирование, удаление и уничтожение.</li>
+            <li>{t("s3.i1")}</li>
+            <li>{t("s3.i2")}</li>
+            <li>{t("s3.i3")}</li>
+            <li>{t("s3.i4")}</li>
           </ul>
+          <p>{t("s3.footer")}</p>
+        </Block>
+
+        <Block title={t("s4.title")}>
+          <p>{t("s4.p1")}</p>
           <p>
-            Обработка может осуществляться как с использованием средств автоматизации, так и без них (включая обработку в бумажных документах при оформлении договоров и актов выполненных работ).
+            {t("s4.p2_before")} {emailLink}
+            {t("s4.p2_after")}
+          </p>
+          <p>{t("s4.p3")}</p>
+        </Block>
+
+        <Block title={t("s5.title")}>
+          <p>
+            {t("s5.p1_before")} {privacyLink(t("s5.p1_link"))}
+            {t("s5.p1_after")}
           </p>
         </Block>
 
-        <Block title="Срок действия согласия">
+        <Block title={t("s6.title")}>
           <p>
-            Настоящее согласие действует 5 (пять) лет с момента его предоставления либо до момента его отзыва Субъектом.
-          </p>
-          <p>
-            Согласие может быть отозвано Субъектом в любой момент путём направления письменного обращения на адрес электронной почты Оператора:{" "}
-            <a href={`mailto:${LEGAL_PRIVACY_EMAIL}`} className="underline decoration-[var(--color-hairline)] underline-offset-[3px] hover:decoration-[var(--color-secondary)]">
-              {LEGAL_PRIVACY_EMAIL}
-            </a>
-            . В обращении необходимо указать фамилию, имя, отчество и контактные данные, по которым Оператор сможет идентифицировать Субъекта.
-          </p>
-          <p>
-            Оператор прекращает обработку персональных данных Субъекта в течение 30 дней с момента получения отзыва, за исключением данных, обработка которых обязательна в силу закона.
-          </p>
-        </Block>
-
-        <Block title="Передача персональных данных">
-          <p>
-            Субъект соглашается с возможностью передачи персональных данных третьим лицам в объёме и по основаниям, указанным в{" "}
-            <Link
-              href="/privacy-policy"
-              className="underline decoration-[var(--color-hairline)] underline-offset-[3px] hover:decoration-[var(--color-secondary)]"
-            >
-              Политике обработки персональных данных
-            </Link>
-            . Передача персональных данных в иностранные государства не осуществляется.
-          </p>
-        </Block>
-
-        <Block title="Подтверждение Субъекта">
-          <p>
-            Субъект подтверждает, что предоставляет персональные данные добровольно, ознакомлен с правами, предусмотренными статьями 14–16 Федерального закона № 152-ФЗ, и согласен с положениями{" "}
-            <Link
-              href="/privacy-policy"
-              className="underline decoration-[var(--color-hairline)] underline-offset-[3px] hover:decoration-[var(--color-secondary)]"
-            >
-              Политики обработки персональных данных
-            </Link>
-            {" "}Оператора.
+            {t("s6.p1_before")} {privacyLink(t("s6.p1_link"))}
+            {t("s6.p1_after")}
           </p>
         </Block>
 
         <div className="mt-20 flex flex-col gap-2 border-t border-[var(--color-hairline)] pt-8 text-sm text-[var(--color-secondary)]/65 md:flex-row md:items-center md:justify-between">
-          <p>{LEGAL_ENTITY.shortName} · ИНН {LEGAL_ENTITY.inn}</p>
+          <p>
+            {LEGAL_ENTITY.shortName} · ИНН {LEGAL_ENTITY.inn}
+          </p>
           <Link
             href="/privacy-policy"
             className="underline decoration-[var(--color-hairline)] underline-offset-[3px] hover:decoration-[var(--color-secondary)]"
           >
-            ← Политика обработки ПД
+            {t("footer.to_privacy")}
           </Link>
         </div>
       </article>

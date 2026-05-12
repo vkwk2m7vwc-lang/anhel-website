@@ -1,1 +1,157 @@
-{}
+{
+  "privacy": {
+    "meta": {
+      "title": "Kişisel Veri İşleme Politikası",
+      "description": "ANHEL® (Profit LLC) Kişisel Veri İşleme Politikası. Rusya 152-FZ sayılı Federal Yasa kapsamında işleme amaçları, veri kategorileri, veri sahibi hakları ve talep iletişim bilgileri."
+    },
+    "mono_tag": "Belge",
+    "title": "Kişisel Veri İşleme Politikası",
+    "effective": "{date} tarihinden itibaren yürürlüktedir",
+    "effective_date": "12 Mayıs 2026",
+    "s1": {
+      "title": "Genel hükümler",
+      "p1": "Bu Kişisel Veri İşleme Politikası (bundan sonra \"Politika\") 27 Temmuz 2006 tarihli 152-FZ sayılı Rusya Federal Yasası \"Kişisel Veriler Hakkında\" uyarınca hazırlanmıştır ve {operator} (bundan sonra \"İşletmeci\") tarafından kişisel verilerin işlenme usulünü ve güvenliklerinin sağlanmasına yönelik önlemleri belirler.",
+      "p2_before": "Politika, İşletmeci tarafından şu web sitesinin çalıştırılmasıyla bağlantılı olarak yürütülen tüm kişisel veri toplama, saklama, kullanma, aktarma, anonimleştirme ve imha süreçlerine uygulanır:",
+      "p2_after": "."
+    },
+    "s2": {
+      "title": "İşletmeci",
+      "labels": {
+        "full_name": "Tam adı",
+        "short_name": "Kısa adı",
+        "inn": "Vergi No (INN)",
+        "ogrn": "Kayıt numarası (OGRN)",
+        "legal_address": "Kayıtlı adres",
+        "email": "Talepler için e-posta"
+      }
+    },
+    "s3": {
+      "title": "Kişisel verilerin işlenme amaçları",
+      "intro": "İşletmeci, site kullanıcılarının kişisel verilerini aşağıdaki amaçlarla işler:",
+      "i1": "başvurulara, taleplere ve teklif taleplerine yanıt verilmesi;",
+      "i2": "web sitesi üzerinden gönderilen teknik veri formlarına dayalı teknik teklif ve hesaplamaların hazırlanması;",
+      "i3": "ekipman tedariği, montajı ve servis sözleşmelerinin akdedilmesi, ifası ve yürütülmesi;",
+      "i4": "talep durumu, sipariş güncellemeleri ve servis bildirimleri konusunda bilgilendirme;",
+      "i5": "Rusya Federasyonu mevzuatından doğan yükümlülüklerin yerine getirilmesi (muhasebe ve vergi kayıtları, kamu kurumlarının taleplerine yanıt)."
+    },
+    "s4": {
+      "title": "İşlenen kişisel veri kategorileri",
+      "intro": "İşletmeci, veri sahibinin site üzerindeki formlar aracılığıyla gönüllü olarak sağladığı aşağıdaki kişisel veri kategorilerini işler:",
+      "i1": "soyadı, adı ve baba adı;",
+      "i2": "iletişim telefon numarası;",
+      "i3": "e-posta adresi;",
+      "i4": "kuruluş adı ve görev (tüzel kişilik adına gönderilen taleplerde);",
+      "i5": "kuruluşun Vergi No (INN) numarası (teklif hazırlanırken);",
+      "i6": "mesaj içeriği, tesis teknik parametreleri ve görev açıklaması — veri sahibinin serbest metin halinde gönüllü olarak ilettiği bilgiler.",
+      "footer": "İşletmeci özel kategorideki kişisel verileri (ırk, siyasi görüşler, sağlık durumu, mahrem yaşam) ve biyometrik kişisel verileri işlemez."
+    },
+    "s5": {
+      "title": "İşleme için yasal dayanak",
+      "p1": "İşletmeci, kişisel verileri veri sahibinin onayına dayanarak işler. Onay, sitedeki herhangi bir formu gönderirken \"Kişisel verilerimin işlenmesine onay veriyorum\" kutucuğunun işaretlenmesi yoluyla verilir; ayrıca 152-FZ sayılı Federal Yasanın 6. Maddesi 1. Kısmının 2. ve 5. paragraflarında öngörülen dayanaklar geçerlidir."
+    },
+    "s6": {
+      "title": "İşleme yöntemleri ve süreleri",
+      "p1": "Kişisel veriler hem otomasyon araçları kullanılarak hem de kullanılmadan işlenir. İşletmeci kişisel verileri Rusya Federasyonu topraklarında bulunan sunucularda saklar.",
+      "p2": "Kişisel veri işleme süresi, Rusya Federasyonu mevzuatı veya veri sahibi ile yapılan sözleşme aksini öngörmedikçe alındığı tarihten itibaren 5 (beş) yıldır. İşleme süresinin sona ermesi üzerine kişisel veriler imha edilir veya anonimleştirilir.",
+      "p3_before": "Veri sahibi, ilgili talebi şu adrese ileterek onayını her zaman geri çekebilir:",
+      "p3_after": ". Onayın geri çekilmesi, onay gerektirmeyen dayanaklara göre yürütülen işlemeyi engellemez."
+    },
+    "s7": {
+      "title": "Kişisel verilerin aktarımı",
+      "intro": "İşletmeci, aşağıdaki durumlar dışında kişisel verileri üçüncü taraflara aktarmaz:",
+      "i1": "veri sahibine karşı sözleşmesel yükümlülüklerin yerine getirilmesi (ekipman teslimatı, montaj ve servis işleri);",
+      "i2": "Rusya Federasyonu mevzuatına uyum, yasayla öngörülen şekilde kamu kurumlarının talepleri de dahil;",
+      "i3": "hizmet koşullarına göre veri gizliliğini sağlayan e-posta ve gönderim hizmetleri aracılığıyla yazışma ve mesajların işlenmesi.",
+      "footer": "İşletmeci, kişisel verileri yabancı yargı bölgelerine sınır ötesi aktarımını gerçekleştirmez."
+    },
+    "s8": {
+      "title": "Güvenlik önlemleri",
+      "intro": "İşletmeci, kişisel verileri yetkisiz erişim, imha, değiştirme, engelleme, kopyalama, yayma ve diğer hukuka aykırı eylemlerden korumak için gerekli hukuki, organizasyonel ve teknik önlemleri alır; bunlara aşağıdakiler dahildir:",
+      "i1": "kişisel veri işlemeyi organize etmekten sorumlu kişilerin görevlendirilmesi;",
+      "i2": "İşletmeci çalışanlarının kişisel verilere erişiminin görev gereği esasına göre kısıtlanması;",
+      "i3": "güvenli veri aktarım kanallarının (HTTPS) kullanılması;",
+      "i4": "veritabanlarının yedeklenmesi ve bütünlüklerinin denetlenmesi;",
+      "i5": "alınan güvenlik önlemlerinin etkinliğinin düzenli olarak değerlendirilmesi."
+    },
+    "s9": {
+      "title": "Veri sahibinin hakları",
+      "intro": "Veri sahibi aşağıdaki haklara sahiptir:",
+      "i1": "İşletmeci tarafından kişisel verilerinin işlenmesi hakkında bilgi edinme;",
+      "i2": "eksik, güncel olmayan, yanlış veya hukuka aykırı olarak elde edilmiş kişisel verilerinin düzeltilmesi, engellenmesi veya imha edilmesini talep etme;",
+      "i3": "kişisel veri işlemeye daha önce verilmiş onayı geri çekme;",
+      "i4": "İşletmecinin eylem veya eylemsizliğini veri sahipleri haklarının korunması için yetkili makama (Roskomnadzor) veya mahkemeye şikayet etme.",
+      "footer_before": "Bu hakların kullanılmasına yönelik talepler yazılı olarak şu adrese iletilir:",
+      "footer_after": ". Yanıt süresi, talebin alınmasından itibaren 30 gündür."
+    },
+    "s10": {
+      "title": "Politikadaki değişiklikler",
+      "p1_before": "İşletmeci bu Politikayı değiştirebilir. Politikanın güncel sürümü şu adreste yayınlanır:",
+      "p1_after": ". Güncel sürümün tarihi belgenin başında belirtilmiştir."
+    },
+    "footer": {
+      "to_consent": "Kişisel Veri Onayı →"
+    }
+  },
+  "consent": {
+    "meta": {
+      "title": "Kişisel Veri İşleme Onayı",
+      "description": "Veri sahibinin anhelspb.com sitesindeki formları gönderirken ANHEL®'a (Profit LLC) verdiği kişisel veri işleme onayı."
+    },
+    "mono_tag": "Belge",
+    "title": "Kişisel Veri İşleme Onayı",
+    "effective": "{date} tarihinden itibaren yürürlüktedir",
+    "effective_date": "12 Mayıs 2026",
+    "intro_before": "Şu web sitesindeki herhangi bir formu göndererek",
+    "intro_after": " ve \"Kişisel verilerimin işlenmesine onay veriyorum\" kutucuğunu işaretleyerek, ben (bundan sonra \"Veri Sahibi\"), 27 Temmuz 2006 tarihli 152-FZ sayılı Rusya Federal Yasası \"Kişisel Veriler Hakkında\" gereklerine uygun olarak, özgürce, kendi irademle ve kendi çıkarım doğrultusunda, aşağıda belirtilen kişisel verilerimin {operator} (INN {inn}, OGRN {ogrn}, kayıtlı adres: {address}; bundan sonra \"İşletmeci\") tarafından işlenmesine onay veriyorum.",
+    "s1": {
+      "title": "Kişisel veri kategorileri",
+      "intro": "İşlenen Veri Sahibi kişisel verilerinin listesi:",
+      "i1": "soyadı, adı ve baba adı;",
+      "i2": "iletişim telefon numarası;",
+      "i3": "e-posta adresi;",
+      "i4": "kuruluş adı ve görev;",
+      "i5": "kuruluşun Vergi No (INN) numarası;",
+      "i6": "Veri Sahibinin serbest metin halinde verdiği mesaj içeriği ve tesis teknik parametreleri."
+    },
+    "s2": {
+      "title": "İşleme amaçları",
+      "intro": "Onay aşağıdaki amaçlar için verilir:",
+      "i1": "başvurunun işlenmesi ve yanıt verilmesi;",
+      "i2": "ticari teklif ve teknik hesaplamaların hazırlanması;",
+      "i3": "ekipman tedariği, montaj veya servis sözleşmelerinin akdedilmesi, ifası ve yürütülmesi;",
+      "i4": "anlaşılan iletişim kanalları aracılığıyla sipariş durumu ve servis bildirimlerinin iletilmesi;",
+      "i5": "Rusya Federasyonu mevzuatından doğan yükümlülüklerin yerine getirilmesi."
+    },
+    "s3": {
+      "title": "Kişisel veriler üzerinde gerçekleştirilen işlemler",
+      "intro": "Onay, İşletmecinin aşağıdaki işlemlerini kapsar:",
+      "i1": "toplama, kayıt, sistematikleştirme ve biriktirme;",
+      "i2": "saklama, güncelleme (yenileme, değişiklik), geri alma;",
+      "i3": "kullanım, aktarım (sağlama, erişim);",
+      "i4": "anonimleştirme, engelleme, silme ve imha.",
+      "footer": "İşleme, otomasyon araçları kullanılarak veya kullanılmadan gerçekleştirilebilir (sözleşmelerin ve iş tamamlama tutanaklarının düzenlenmesi sırasında kağıt belgelerin işlenmesi dahil)."
+    },
+    "s4": {
+      "title": "Onayın süresi",
+      "p1": "Bu onay, verildiği tarihten itibaren 5 (beş) yıl süreyle veya Veri Sahibi tarafından geri çekilene kadar geçerlidir.",
+      "p2_before": "Onay, Veri Sahibi tarafından İşletmecinin e-posta adresine yazılı talep gönderilerek herhangi bir zamanda geri çekilebilir:",
+      "p2_after": ". Talepte, İşletmecinin Veri Sahibini tanımlayabilmesi için soyadı, adı, baba adı ve iletişim bilgilerinin belirtilmesi gerekir.",
+      "p3": "İşletmeci, yasayla zorunlu kılınan veriler dışında, geri çekme bildirimi alındıktan sonra 30 gün içinde Veri Sahibinin kişisel verilerinin işlenmesini durdurur."
+    },
+    "s5": {
+      "title": "Kişisel verilerin aktarımı",
+      "p1_before": "Veri Sahibi, kişisel verilerinin aşağıdaki belgede belirtilen kapsam ve dayanaklarda üçüncü taraflara aktarılabileceğini kabul eder:",
+      "p1_link": "Kişisel Veri İşleme Politikası",
+      "p1_after": ". Kişisel veriler yabancı yargı bölgelerine aktarılmaz."
+    },
+    "s6": {
+      "title": "Veri Sahibi Onayı",
+      "p1_before": "Veri Sahibi, kişisel verilerini gönüllü olarak sağladığını, 152-FZ sayılı Federal Yasanın 14–16. Maddelerinde belirtilen haklardan haberdar olduğunu ve İşletmecinin aşağıdaki belgesinin hükümlerine onay verdiğini teyit eder:",
+      "p1_link": "Kişisel Veri İşleme Politikası",
+      "p1_after": "."
+    },
+    "footer": {
+      "to_privacy": "← Kişisel Veri İşleme Politikası"
+    }
+  }
+}
