@@ -243,3 +243,166 @@ export const heatingModuleBySlug: Record<HeatingModuleSlug, HeatingModule> =
     },
     {} as Record<HeatingModuleSlug, HeatingModule>,
   );
+
+
+/**
+ * Per-locale overrides for the visible top-level fields of each
+ * heating module: title, shortTitle, tagline and the image alt.
+ *
+ * The deep content (description, techSpecs, applications) stays as
+ * the RU master for now — it shows on the module sub-page only, and
+ * translating ~400 strings per locale is a follow-up task. UI on
+ * the parent /products/heating-unit landing only renders the four
+ * fields below, so EN/TR catalog grid reads correctly out of the box.
+ */
+type HeatingModuleOverride = {
+  title: string;
+  shortTitle: string;
+  tagline: string;
+  imageAlt: string;
+};
+
+const EN_OVERRIDES: Record<HeatingModuleSlug, HeatingModuleOverride> = {
+  "input-metering": {
+    title: "Heat-intake and metering module",
+    shortTitle: "Heat intake and metering",
+    tagline:
+      "Receives heat from the district network, performs commercial metering and distributes it to the building's energy systems.",
+    imageAlt: "ANHEL — heat-intake and metering module",
+  },
+  "open-heating": {
+    title: "Open heating-circuit module",
+    shortTitle: "Open heating circuit",
+    tagline:
+      "Direct-coupled scheme: heat carrier from the trunk network feeds the building directly; DHW is drawn from the supply line.",
+    imageAlt: "ANHEL — open heating-circuit module",
+  },
+  "closed-heating": {
+    title: "Closed heating-circuit module",
+    shortTitle: "Closed heating circuit",
+    tagline:
+      "Indirect scheme: primary and secondary circulation loops are hydraulically separated by a plate heat exchanger.",
+    imageAlt: "ANHEL — closed heating-circuit module",
+  },
+  "makeup": {
+    title: "Heating-loop fill and make-up module",
+    shortTitle: "Fill and make-up",
+    tagline:
+      "Make-up unit — integral to the indirect heating scheme. Skid-mounted: shut-off valves, circulation pumps, piping.",
+    imageAlt: "ANHEL — fill and make-up module",
+  },
+  "single-stage-dhw": {
+    title: "Single-stage DHW module",
+    shortTitle: "Single-stage DHW",
+    tagline:
+      "Used in closed domestic-hot-water schemes. Skid-mounted: shut-off valves, heat exchanger, circulation pumps and piping.",
+    imageAlt: "ANHEL — single-stage DHW module",
+  },
+  "two-stage-dhw": {
+    title: "Two-stage DHW module",
+    shortTitle: "Two-stage DHW",
+    tagline:
+      "Used in closed domestic-hot-water schemes. Skid-mounted: 1st-stage and 2nd-stage heat exchangers, circulation pumps and piping.",
+    imageAlt: "ANHEL — two-stage DHW module",
+  },
+  "two-stage-dhw-monoblock": {
+    title: "Two-stage DHW monoblock module",
+    shortTitle: "Two-stage DHW (monoblock)",
+    tagline:
+      "Used in closed DHW schemes. Skid-mounted: dual-pass heat exchanger combining stages 1 and 2, circulation pumps and piping.",
+    imageAlt: "ANHEL — two-stage DHW monoblock module",
+  },
+  "steam-condensate": {
+    title: "Steam-condensate module",
+    shortTitle: "Steam-condensate",
+    tagline:
+      "Steam-to-water conversion with condensate collection and return to the steam network. Skid-mounted assembly.",
+    imageAlt: "ANHEL — steam-condensate module",
+  },
+};
+
+const TR_OVERRIDES: Record<HeatingModuleSlug, HeatingModuleOverride> = {
+  "input-metering": {
+    title: "Isı girişi ve sayaç modülü",
+    shortTitle: "Isı girişi ve sayaç",
+    tagline:
+      "Bölgesel ısı şebekesinden ısı alır, ticari sayım yapar ve binanın enerji sistemlerine dağıtır.",
+    imageAlt: "ANHEL — ısı girişi ve sayaç modülü",
+  },
+  "open-heating": {
+    title: "Açık ısıtma devresi modülü",
+    shortTitle: "Açık ısıtma devresi",
+    tagline:
+      "Doğrudan bağlı şema: ana hattan gelen ısı taşıyıcısı binayı doğrudan besler; DHW besleme hattından alınır.",
+    imageAlt: "ANHEL — açık ısıtma devresi modülü",
+  },
+  "closed-heating": {
+    title: "Kapalı ısıtma devresi modülü",
+    shortTitle: "Kapalı ısıtma devresi",
+    tagline:
+      "Dolaylı şema: birincil ve ikincil sirkülasyon halkaları plakalı eşanjörle hidrolik olarak ayrılır.",
+    imageAlt: "ANHEL — kapalı ısıtma devresi modülü",
+  },
+  "makeup": {
+    title: "Isıtma devresi doldurma ve takviye modülü",
+    shortTitle: "Doldurma ve takviye",
+    tagline:
+      "Takviye ünitesi — dolaylı ısıtma şemasının ayrılmaz parçası. Şase üzerinde: kapatma vanaları, sirkülasyon pompaları, borulama.",
+    imageAlt: "ANHEL — doldurma ve takviye modülü",
+  },
+  "single-stage-dhw": {
+    title: "Tek kademeli DHW modülü",
+    shortTitle: "Tek kademeli DHW",
+    tagline:
+      "Kapalı sıcak kullanım suyu şemalarında kullanılır. Şase üzerinde: kapatma vanaları, eşanjör, sirkülasyon pompaları ve borulama.",
+    imageAlt: "ANHEL — tek kademeli DHW modülü",
+  },
+  "two-stage-dhw": {
+    title: "İki kademeli DHW modülü",
+    shortTitle: "İki kademeli DHW",
+    tagline:
+      "Kapalı sıcak kullanım suyu şemalarında kullanılır. Şase üzerinde: 1. ve 2. kademe eşanjörler, sirkülasyon pompaları ve borulama.",
+    imageAlt: "ANHEL — iki kademeli DHW modülü",
+  },
+  "two-stage-dhw-monoblock": {
+    title: "İki kademeli DHW monoblok modülü",
+    shortTitle: "İki kademeli DHW (monoblok)",
+    tagline:
+      "Kapalı DHW şemalarında kullanılır. Şase üzerinde: 1. ve 2. kademeleri birleştiren çift geçişli eşanjör, sirkülasyon pompaları ve borulama.",
+    imageAlt: "ANHEL — iki kademeli DHW monoblok modülü",
+  },
+  "steam-condensate": {
+    title: "Buhar-kondensat modülü",
+    shortTitle: "Buhar-kondensat",
+    tagline:
+      "Buhar şebekesine geri dönüşlü kondensat toplama ile buhardan suya dönüşüm. Şase üzerinde montaj.",
+    imageAlt: "ANHEL — buhar-kondensat modülü",
+  },
+};
+
+const OVERRIDES_BY_LOCALE: Record<string, Record<HeatingModuleSlug, HeatingModuleOverride>> = {
+  en: EN_OVERRIDES,
+  tr: TR_OVERRIDES,
+};
+
+/**
+ * Returns the heating-modules array localized for the given locale.
+ * RU is the master; for EN/TR we replace the top-level visible fields
+ * (title, shortTitle, tagline, image.alt) from the overrides table.
+ * Deep fields (description, techSpecs, applications) stay RU for now.
+ */
+export function getHeatingModules(locale: string): HeatingModule[] {
+  const overrides = OVERRIDES_BY_LOCALE[locale];
+  if (!overrides) return heatingModules;
+  return heatingModules.map((m) => {
+    const o = overrides[m.slug];
+    if (!o) return m;
+    return {
+      ...m,
+      title: o.title,
+      shortTitle: o.shortTitle,
+      tagline: o.tagline,
+      image: { ...m.image, alt: o.imageAlt },
+    };
+  });
+}

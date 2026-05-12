@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { setRequestLocale } from "next-intl/server";
 import { ProductHero } from "@/components/product-page/ProductHero";
 import { ProductPageShell } from "@/components/product-page/ProductPageShell";
 import { AdvantagesGrid } from "@/components/product-page/AdvantagesGrid";
@@ -6,8 +7,8 @@ import { GalleryRail } from "@/components/product-page/GalleryRail";
 import { DocumentsGrid } from "@/components/product-page/DocumentsGrid";
 import { ProductCtaFooter } from "@/components/product-page/ProductCtaFooter";
 import { HeatingModulesCatalog } from "@/components/products/heating-unit/HeatingModulesCatalog";
-import { heatingUnitContent } from "@/content/products/heating-unit";
-import { heatingModules } from "@/content/products/heating-unit-modules/data";
+import { getHeatingUnitContent } from "@/content/products/heating-unit";
+import { getHeatingModules } from "@/content/products/heating-unit-modules/data";
 import {
   breadcrumbLd,
   ldScriptProps,
@@ -17,48 +18,52 @@ import {
 /**
  * /products/heating-unit
  *
- * БИТП — модульное тепловое оборудование. Отличие от насосных
- * станций: секция 3 переопределена как «Линейка модулей» (6 модулей
- * в каталожном виде), а не «Применение» по объектам. Это оправдано
- * природой ИТП как конструктора: «где ставится» — подразумевается
- * (везде, где нужен тепловой ввод); важнее показать, какие
- * конфигурации есть.
- *
- * Section map (6 секций — после фокусировки):
+ * БИТП — модульное тепловое оборудование. Section map:
  *   01 Hero
- *   02 Линейка модулей         (8 модульных исполнений)
- *   03 Преимущества (6)
- *   04 Галерея «С производства»
- *   05 Документация (PDF)
+ *   02 Линейка модулей (8 модулей)
+ *   03 Преимущества
+ *   04 Галерея
+ *   05 Документация
  *   06 Финальный CTA + соседние разделы
  *
- * Удалены: Бренды (теплообменники/регуляторы/насосы), Кейсы (плейсхолдеры
- * без реальных объектов), Опросный лист — для ИТП вход в опросник идёт
- * через CTA в hero и в footer. По UX-фидбеку user'а 28 апр 2026.
- *
- * ТТХ убраны с родительской страницы — каждый модуль ИТП имеет свои
- * параметры, поэтому аггрегированные диапазоны линейки на родителе
- * вводили в заблуждение. Технические характеристики показываются на
- * подстранице конкретного модуля (/products/heating-unit/[slug]).
+ * i18n: content приходит из `getHeatingUnitContent(locale)` —
+ * per-locale TS файлы под `src/content/products/locales/<lang>/heating-unit.ts`
+ * с одинаковой ProductContent-схемой. Компоненты (ProductHero,
+ * AdvantagesGrid и т.д.) сами рендерят то что им дали, локализация —
+ * на уровне content-дeлегатора.
  */
-export const metadata: Metadata = {
-  title: heatingUnitContent.metaTitle,
-  description: heatingUnitContent.metaDescription,
-  openGraph: {
-    type: "website",
-    title: `${heatingUnitContent.metaTitle} · ANHEL`,
-    description: heatingUnitContent.metaDescription,
-    url: `/products/heating-unit`,
-    images: [
-      {
-        url: heatingUnitContent.hero.image.src,
-        alt: heatingUnitContent.hero.image.alt,
-      },
-    ],
-  },
-};
+export async function generateMetadata({
+  params: { locale },
+}: {
+  params: { locale: string };
+}): Promise<Metadata> {
+  const content = getHeatingUnitContent(locale);
+  return {
+    title: content.metaTitle,
+    description: content.metaDescription,
+    openGraph: {
+      type: "website",
+      title: `${content.metaTitle} · ANHEL`,
+      description: content.metaDescription,
+      url: `/products/heating-unit`,
+      images: [
+        {
+          url: content.hero.image.src,
+          alt: content.hero.image.alt,
+        },
+      ],
+    },
+  };
+}
 
-export default function HeatingUnitProductPage() {
+export default function HeatingUnitProductPage({
+  params: { locale },
+}: {
+  params: { locale: string };
+}) {
+  setRequestLocale(locale);
+  const content = getHeatingUnitContent(locale);
+  const heatingModules = getHeatingModules(locale);
   const {
     slug,
     hero,
@@ -67,22 +72,25 @@ export default function HeatingUnitProductPage() {
     gallery,
     documents,
     footerCta,
-  } = heatingUnitContent;
+  } = content;
 
   const productJsonLd = productLd({
     slug,
-    name: "Блочные индивидуальные тепловые пункты ANHEL",
-    description: heatingUnitContent.metaDescription,
-    image: heatingUnitContent.hero.image.src,
+    name: content.metaTitle,
+    description: content.metaDescription,
+    image: content.hero.image.src,
     category: "HVAC / Heat exchanger unit",
     model: "BITP-NU",
     routePath: `/products/${slug}`,
   });
-  const breadcrumbJsonLd = breadcrumbLd([
-    { name: "Главная", url: "/" },
-    { name: "Каталог", url: "/products" },
-    { name: "Тепловые пункты", url: `/products/${slug}` },
-  ]);
+  const breadcrumbJsonLd = breadcrumbLd(
+    content.hero.breadcrumbs.map((b, i, arr) => ({
+      name: b.label,
+      url:
+        b.href ??
+        (i === arr.length - 1 ? `/products/${slug}` : "/products"),
+    })),
+  );
 
   return (
     <ProductPageShell accent={accent}>
@@ -90,11 +98,6 @@ export default function HeatingUnitProductPage() {
       <script {...ldScriptProps(breadcrumbJsonLd)} />
 
       <ProductHero content={hero} accent={accent} />
-      {/* 02 Линейка модулей — 8 кликабельных карточек, каждая ведёт на
-          /products/heating-unit/<slug>. ТТХ убраны с родителя:
-          у каждого модуля свои параметры, агрегированные диапазоны
-          линейки путали юзера. Технические характеристики раскрываются
-          только когда выбран конкретный модуль (на подстранице). */}
       <HeatingModulesCatalog modules={heatingModules} />
       <AdvantagesGrid content={advantages} />
       <GalleryRail content={gallery} />
