@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { useTranslations } from "next-intl";
 import { TOP_LEVEL_PRODUCTS, type ProductSummary } from "@/lib/products";
 import type { ProductAccent } from "@/content/products/types";
 
@@ -59,13 +60,18 @@ const ACCENT_VAR: Record<ProductAccent, string> = {
 
 export function ProductsShowcase({
   tone = "section",
-  monoTag = "02 · ЛИНЕЙКА ПРОДУКТОВ",
-  title = "Четыре направления, один завод",
-  lede = "Насосные станции, водоподготовка, тепловые пункты и шкафы управления. Заводская сборка, серийное производство, индивидуальная конфигурация под ТЗ.",
+  monoTag,
+  title,
+  lede,
   products,
 }: Props) {
   // Источник данных по умолчанию — TOP_LEVEL_PRODUCTS (4 раздела).
   // На /products/pumps передаётся PUMPS_PRODUCTS извне (5 серий).
+  const t = useTranslations("home.showcase");
+  const monoTagText = monoTag ?? t("mono_tag");
+  const titleText = title ?? t("title");
+  const ledeText = lede ?? t("lede");
+
   const cards = products ?? TOP_LEVEL_PRODUCTS;
 
   const sectionPadding =
@@ -84,17 +90,17 @@ export function ProductsShowcase({
             страницам. Lede — справа на md+, под h2 на mobile. */}
         <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
           <div>
-            <p className="mono-tag">{monoTag}</p>
+            <p className="mono-tag">{monoTagText}</p>
             <h2
               id="products-showcase-title"
               className="mt-4 max-w-[640px] font-display text-h2 font-medium text-[var(--color-secondary)]"
             >
-              {title}
+              {titleText}
             </h2>
           </div>
-          {lede ? (
+          {ledeText ? (
             <p className="max-w-[420px] text-sm text-[var(--color-secondary)]/65 md:text-right">
-              {lede}
+              {ledeText}
             </p>
           ) : null}
         </div>
@@ -151,6 +157,8 @@ function ProductCard({
   accentHex: string;
   comingSoon: boolean;
 }) {
+  const t = useTranslations("home.showcase");
+
   const staggerDelay = Math.min(index, 3) * 0.08;
 
   // Inner body — повторяется в обеих ветках (Link / disabled <div>),
@@ -203,7 +211,7 @@ function ProductCard({
               aria-hidden="true"
               className="font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/65"
             >
-              Скоро
+              {t("coming_soon")}
             </span>
           ) : (
             <span
@@ -244,7 +252,7 @@ function ProductCard({
           href={href}
           data-cursor="hover"
           className={containerClass}
-          aria-label={`${title} — открыть страницу продукта`}
+          aria-label={t("card_aria", { title })}
         >
           {body}
         </Link>

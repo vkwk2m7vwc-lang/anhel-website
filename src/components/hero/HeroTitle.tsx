@@ -1,21 +1,23 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { useTranslations } from "next-intl";
 import { gsap, SplitText } from "@/lib/gsap";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 
 /**
  * Hero headline with GSAP SplitText reveal.
  *
- * Text: «Производим инженерное оборудование, на которое можно положиться».
- * Renders as a single block; SplitText splits into words and animates them
- * with a staggered y-translate. The first paint shows the static text.
+ * Text comes from `home.hero.title`. Renders as a single block;
+ * SplitText splits into words and animates them with a staggered
+ * y-translate. The first paint shows the static text.
  *
  * Animation: split into words, stagger 0.04s, `expo.out` over 1.2s.
  * When the user prefers reduced motion, we skip SplitText entirely and
  * show the final static text.
  */
 export function HeroTitle() {
+  const t = useTranslations("home.hero");
   const ref = useRef<HTMLHeadingElement | null>(null);
   const prefersReduced = usePrefersReducedMotion();
 
@@ -53,7 +55,7 @@ export function HeroTitle() {
       ref={ref}
       className="font-display text-hero font-medium text-[var(--color-secondary)]"
     >
-      Производим инженерное оборудование, на которое можно положиться
+      {t("title")}
     </h1>
   );
 }

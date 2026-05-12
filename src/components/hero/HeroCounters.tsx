@@ -1,6 +1,7 @@
 "use client";
 
 import { useCountUp } from "@/hooks/useCountUp";
+import { useTranslations } from "next-intl";
 
 /**
  * Three hero proof-point counters:
@@ -11,6 +12,7 @@ import { useCountUp } from "@/hooks/useCountUp";
  * Each number counts up from 0 once its column scrolls into view.
  */
 export function HeroCounters() {
+  const t = useTranslations("home.hero");
   const objects = useCountUp<HTMLDivElement>({ to: 150 });
   const years = useCountUp<HTMLDivElement>({ to: 12 });
   const lines = useCountUp<HTMLDivElement>({ to: 4, pad: 2 });
@@ -28,7 +30,7 @@ export function HeroCounters() {
           </span>
         </p>
         <p className="mt-2 font-mono text-[10px] uppercase tracking-[0.1em] text-[var(--color-secondary)]/50">
-          Объектов
+          {t("counters.objects")}
         </p>
       </div>
 
@@ -40,7 +42,7 @@ export function HeroCounters() {
           </span>
         </p>
         <p className="mt-2 font-mono text-[10px] uppercase tracking-[0.1em] text-[var(--color-secondary)]/50">
-          Лет опыта
+          {t("counters.years")}
         </p>
       </div>
 
@@ -49,7 +51,7 @@ export function HeroCounters() {
           {lines.value}
         </p>
         <p className="mt-2 font-mono text-[10px] uppercase tracking-[0.1em] text-[var(--color-secondary)]/50">
-          Направления
+          {t("counters.directions")}
         </p>
       </div>
     </div>
