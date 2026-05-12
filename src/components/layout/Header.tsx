@@ -13,6 +13,7 @@ import { MobileMenu } from "./MobileMenu";
 import { ProductsMenu } from "./ProductsMenu";
 import { DocumentsMenu } from "./DocumentsMenu";
 import { ThemeToggle } from "./ThemeToggle";
+import { LanguageSwitcher } from "./LanguageSwitcher";
 
 /**
  * Fixed header with two behaviours:
@@ -131,6 +132,11 @@ export function Header() {
               <Phone size={14} strokeWidth={1.75} aria-hidden="true" />
               <span className="font-mono tracking-[0.02em]">{CONTACTS.phone}</span>
             </Link>
+
+            {/* Language switcher — `RU/EN/TR` dropdown next to the
+                theme toggle. Same visual cluster, identical h-10 height
+                so the right-hand group reads as one unit. */}
+            <LanguageSwitcher />
 
             {/* Theme toggle — солнце/луна. Кнопка-иконка такого же размера,
                 как mobile-menu trigger; стоит в правой группе после телефона. */}
