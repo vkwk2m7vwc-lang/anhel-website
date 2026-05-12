@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { useTranslations } from "next-intl";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { ProductHero } from "@/components/product-page/ProductHero";
 import { ProductPageShell } from "@/components/product-page/ProductPageShell";
 import { TechSpecsGrid } from "@/components/product-page/TechSpecsGrid";
@@ -10,7 +12,7 @@ import { DescriptionSection } from "@/components/product-page/DescriptionSection
 import { RelatedProjectsSection } from "@/components/product-page/RelatedProjectsSection";
 import { DocumentsGrid } from "@/components/product-page/DocumentsGrid";
 import { ProductCtaFooter } from "@/components/product-page/ProductCtaFooter";
-import { waterTreatmentContent } from "@/content/products/water-treatment";
+import { getWaterTreatmentContent } from "@/content/products/water-treatment";
 import {
   breadcrumbLd,
   ldScriptProps,
@@ -18,43 +20,49 @@ import {
 } from "@/lib/schema-org";
 
 /**
- * /products/water-treatment
- *
- * Четвёртая продуктовая страница — водоподготовка. Структура
- * аналогична water-supply (10 секций, без HowItWorks), но
- * технологически это другое оборудование: не насосы, а установки
- * фильтрации, умягчения, обезжелезивания и обратного осмоса.
+ * /products/water-treatment — четвёртая продуктовая страница.
  *
  * Section map:
- *   01 Hero                04 Бренды               07 Кейсы
- *   02 ТТХ                 05 Преимущества (9)     08 Опросный лист
- *   03 Применение          06 Галерея              09 Документация
- *                                                  10 Финальный CTA
+ *   01 Hero                04 Бренды              07 Кейсы (RelatedProjects)
+ *   02 ТТХ                 05 Преимущества        08 Опросный лист
+ *   03 Применение          06 Галерея             09 Документация
+ *                                                 10 Финальный CTA
  *
- * Применение — стандартные 6 карточек (жилые, котельные,
- * промышленность, пищевая, HoReCa, медицина). В отличие от ИТП
- * здесь «линейка модулей» не нужна — установка водоподготовки
- * это индивидуальный проект под качество входной воды, а не
- * каталог модулей.
+ * i18n: вся content приходит из `getWaterTreatmentContent(locale)`,
+ * tag для секции RelatedProjects — из products.related_projects.projects_tag.
  */
-export const metadata: Metadata = {
-  title: waterTreatmentContent.metaTitle,
-  description: waterTreatmentContent.metaDescription,
-  openGraph: {
-    type: "website",
-    title: `${waterTreatmentContent.metaTitle} · ANHEL®`,
-    description: waterTreatmentContent.metaDescription,
-    url: `/products/water-treatment`,
-    images: [
-      {
-        url: waterTreatmentContent.hero.image.src,
-        alt: waterTreatmentContent.hero.image.alt,
-      },
-    ],
-  },
-};
+export async function generateMetadata({
+  params: { locale },
+}: {
+  params: { locale: string };
+}): Promise<Metadata> {
+  const content = getWaterTreatmentContent(locale);
+  return {
+    title: content.metaTitle,
+    description: content.metaDescription,
+    openGraph: {
+      type: "website",
+      title: `${content.metaTitle} · ANHEL®`,
+      description: content.metaDescription,
+      url: `/products/water-treatment`,
+      images: [
+        {
+          url: content.hero.image.src,
+          alt: content.hero.image.alt,
+        },
+      ],
+    },
+  };
+}
 
-export default function WaterTreatmentProductPage() {
+export default function WaterTreatmentProductPage({
+  params: { locale },
+}: {
+  params: { locale: string };
+}) {
+  setRequestLocale(locale);
+  const content = getWaterTreatmentContent(locale);
+  const t = useTranslations("products.related_projects");
   const {
     slug,
     hero,
@@ -67,22 +75,23 @@ export default function WaterTreatmentProductPage() {
     gallery,
     documents,
     footerCta,
-  } = waterTreatmentContent;
+  } = content;
 
   const productJsonLd = productLd({
     slug,
-    name: "Установки водоподготовки ANHEL",
-    description: waterTreatmentContent.metaDescription,
-    image: waterTreatmentContent.hero.image.src,
+    name: content.metaTitle,
+    description: content.metaDescription,
+    image: content.hero.image.src,
     category: "Water treatment / Filtration",
     model: "VPU-NU",
     routePath: `/products/${slug}`,
   });
-  const breadcrumbJsonLd = breadcrumbLd([
-    { name: "Главная", url: "/" },
-    { name: "Каталог", url: "/products" },
-    { name: "Водоподготовка", url: `/products/${slug}` },
-  ]);
+  const breadcrumbJsonLd = breadcrumbLd(
+    content.hero.breadcrumbs.map((b, i, arr) => ({
+      name: b.label,
+      url: b.href ?? (i === arr.length - 1 ? `/products/${slug}` : "/products"),
+    })),
+  );
 
   return (
     <ProductPageShell accent={accent}>
@@ -96,7 +105,7 @@ export default function WaterTreatmentProductPage() {
       <BrandsStrip content={brands} />
       <AdvantagesGrid content={advantages} />
       <GalleryRail content={gallery} />
-      <RelatedProjectsSection productSlug={slug} tag="08 · ОБЪЕКТЫ" />
+      <RelatedProjectsSection productSlug={slug} tag={t("projects_tag")} />
       <DocumentsGrid content={documents} />
       <ProductCtaFooter content={footerCta} currentSlug={slug} />
     </ProductPageShell>
