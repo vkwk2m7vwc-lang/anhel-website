@@ -5,9 +5,11 @@ import { ThemeProvider as NextThemesProvider } from "next-themes";
 /**
  * Theme provider — обёртка над next-themes.
  *
- * Default theme — `dark` (фирменная палитра ANHEL). Кнопка-toggle в Header
- * переключает на `light`. `enableSystem` следит за `prefers-color-scheme`
- * на первом заходе.
+ * Default theme — `light` (по правке от 12.05.2026: «всегда по умолчанию
+ * сайт открывался в белой теме»). Кнопка-toggle в Header переключает на
+ * `dark`. `enableSystem={false}` — игнорируем системную `prefers-color-scheme`,
+ * иначе пользователь с тёмной OS-темой получил бы dark при первом заходе.
+ * После toggle выбор сохраняется в localStorage и применяется на след. заходах.
  *
  * `attribute="class"` — добавляет `<html class="dark">` или `class="light"`,
  * что совпадает с Tailwind `darkMode: "class"`.
@@ -25,8 +27,8 @@ export function ThemeProvider({
   return (
     <NextThemesProvider
       attribute="class"
-      defaultTheme="dark"
-      enableSystem
+      defaultTheme="light"
+      enableSystem={false}
       disableTransitionOnChange
     >
       {children}
