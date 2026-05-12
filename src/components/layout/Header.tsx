@@ -7,8 +7,9 @@ import { motion, useMotionValueEvent, useScroll } from "framer-motion";
 import { Menu, Phone } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { CONTACTS } from "@/lib/contacts";
-import { CATALOG_PATH, PROJECTS_PATH } from "@/lib/routes";
+import { PROJECTS_PATH } from "@/lib/routes";
 import { MobileMenu } from "./MobileMenu";
+import { ProductsMenu } from "./ProductsMenu";
 import { ThemeToggle } from "./ThemeToggle";
 
 /**
@@ -23,8 +24,12 @@ import { ThemeToggle } from "./ThemeToggle";
  * страница `/contacts` с реквизитами, картой и формой обратной связи.
  */
 
+/**
+ * Остальные пункты NAV — обычные `<Link>`. Пункт «Продукты» вынесен в
+ * отдельный <ProductsMenu /> с dropdown-мега-меню (см. ProductsMenu.tsx),
+ * поэтому в этом массиве его нет.
+ */
 const NAV = [
-  { label: "Продукты", href: CATALOG_PATH },
   { label: "Объекты", href: PROJECTS_PATH },
   { label: "Производство", href: "/#production" },
   { label: "Сервис", href: "/service" },
@@ -81,6 +86,7 @@ export function Header() {
             aria-label="Основная навигация"
             className="hidden items-center gap-8 md:flex"
           >
+            <ProductsMenu />
             {NAV.map((item) => (
               <Link
                 key={item.href}
