@@ -52,20 +52,25 @@ const namespaces = [
 
 /**
  * next-intl request config — invoked once per request after the
- * middleware resolves the locale. Loads every namespace in parallel
- * so a single `useTranslations('home')` call inside a component never
- * has to await dynamic-import boundaries.
+ * middleware resolves the locale.
  *
- * If a locale is somehow not in our allow-list (shouldn't happen with
- * `localePrefix: 'as-needed'`, but defensive), we 404 rather than
- * silently fall back — better to fail loudly than show broken keys.
+ * `requestLocale` (replaces the deprecated `locale` parameter as of
+ * next-intl 3.22) is a Promise of the locale value pulled from the
+ * URL segment by the middleware. We validate it against the allow
+ * list and 404 on anything else — defensive against weird hits that
+ * bypass middleware (shouldn't happen with `localePrefix: 'as-needed'`,
+ * but worth being explicit).
  *
- * No explicit `any` — we let TS infer the shape from the JSON
- * imports, which keeps next-intl's `AbstractIntlMessages` happy and
- * also keeps `eslint-no-explicit-any` quiet on the CI build.
+ * All namespaces load in parallel via `Promise.all` so a single
+ * `useTranslations('home')` call inside a component never has to
+ * await dynamic-import boundaries.
  */
-export default getRequestConfig(async ({ locale }) => {
-  if (!locales.includes(locale as Locale)) notFound();
+export default getRequestConfig(async ({ requestLocale }) => {
+  const requested = await requestLocale;
+  const locale = locales.includes(requested as Locale)
+    ? (requested as Locale)
+    : undefined;
+  if (!locale) notFound();
 
   const entries = await Promise.all(
     namespaces.map(
@@ -74,5 +79,5 @@ export default getRequestConfig(async ({ locale }) => {
     ),
   );
 
-  return { messages: Object.fromEntries(entries) };
+  return { locale, messages: Object.fromEntries(entries) };
 });
