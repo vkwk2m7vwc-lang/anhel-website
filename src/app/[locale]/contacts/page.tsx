@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Mail, Phone } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { CONTACTS } from "@/lib/contacts";
 import { LEGAL_ENTITY } from "@/lib/legal";
 import { ContactForm } from "@/components/contacts/ContactForm";
@@ -8,7 +10,6 @@ import { ContactForm } from "@/components/contacts/ContactForm";
 /**
  * `/contacts` — отдельная страница «Контакты».
  *
- * Заменяет мёртвую ссылку на якорь `/#contact` (C1 из pre-launch audit).
  * Структура (сверху вниз):
  *   1. Hero-блок — h1 + lede
  *   2. Quick contacts — телефон + email (крупно, кликабельно)
@@ -16,37 +17,48 @@ import { ContactForm } from "@/components/contacts/ContactForm";
  *   4. Яндекс-карта офиса (iframe)
  *   5. Форма обратной связи (с обязательным чекбоксом согласия на ПД)
  *
- * Карта: координаты Политехническая ул., 6/1 — 60.0048, 30.3724
- * (СПб, Светлановское МО). Если адрес поменяется — поправить координаты
- * и подпись в одном месте здесь.
+ * Карта: координаты Политехническая ул., 6/1 — 60.0048, 30.3724.
  *
- * Кнопка «Скачать карточку организации» (PDF) — заглушка с TODO,
- * пока файл `/public/anhel-card.pdf` не загружен. Когда придёт PDF —
- * убрать `aria-disabled` и поставить href на реальный файл.
+ * i18n: вся UI-обвязка из `contacts.*`. Юридические значения
+ * (полное наименование, ИНН, ОГРН, банк, расчётный счёт и т.п.)
+ * остаются на RU во всех локалях — это юр.факты, не переводимые.
+ * Меняются только лейблы (labels.inn → 'Tax ID (INN)' / 'Vergi No (INN)').
  */
-export const metadata: Metadata = {
-  title: "Контакты",
-  description:
-    "Контакты ANHEL® — телефон, email, реквизиты ООО «Профит», адрес офиса в Санкт-Петербурге и форма обратной связи.",
-};
+export async function generateMetadata({
+  params: { locale },
+}: {
+  params: { locale: string };
+}): Promise<Metadata> {
+  const t = await getTranslations({ locale, namespace: "contacts.meta" });
+  return {
+    title: t("title"),
+    description: t("description"),
+  };
+}
 
 const YANDEX_MAP_SRC =
   "https://yandex.ru/map-widget/v1/?text=" +
   encodeURIComponent("Санкт-Петербург, ул. Политехническая, 6 стр. 1") +
   "&z=17";
 
-export default function ContactsPage() {
+export default function ContactsPage({
+  params: { locale },
+}: {
+  params: { locale: string };
+}) {
+  setRequestLocale(locale);
+  const t = useTranslations("contacts");
   return (
     <main className="pt-24 md:pt-32">
       {/* Hero */}
       <section className="border-b border-[var(--color-hairline)] bg-[var(--color-primary)] text-[var(--color-secondary)]">
         <div className="mx-auto max-w-[1440px] px-6 py-16 md:px-12 md:py-24">
-          <p className="mono-tag mb-6">Контакты</p>
+          <p className="mono-tag mb-6">{t("hero.mono_tag")}</p>
           <h1 className="max-w-3xl font-display text-4xl leading-tight md:text-6xl">
-            Свяжитесь с нами — обсудим задачу, подберём решение, посчитаем КП.
+            {t("hero.heading")}
           </h1>
           <p className="mt-8 max-w-2xl text-base leading-relaxed text-[var(--color-secondary)]/70 md:text-lg">
-            Офис и инженерное бюро — Санкт-Петербург. Производство — Москва. Сервисная бригада работает по объектам в эксплуатации круглосуточно.
+            {t("hero.subtitle")}
           </p>
         </div>
       </section>
@@ -64,13 +76,13 @@ export default function ContactsPage() {
             </span>
             <span>
               <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/55">
-                Телефон
+                {t("quick.phone_label")}
               </p>
               <p className="mt-2 font-mono text-xl md:text-2xl">
                 {CONTACTS.phone}
               </p>
               <p className="mt-2 text-sm text-[var(--color-secondary)]/55">
-                Пн–Пт, 9:00–18:00 (МСК)
+                {t("quick.phone_hours")}
               </p>
             </span>
           </Link>
@@ -85,13 +97,13 @@ export default function ContactsPage() {
             </span>
             <span>
               <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/55">
-                Email
+                {t("quick.email_label")}
               </p>
               <p className="mt-2 break-all font-mono text-xl md:text-2xl">
                 {CONTACTS.email}
               </p>
               <p className="mt-2 text-sm text-[var(--color-secondary)]/55">
-                Отвечаем в течение рабочего дня
+                {t("quick.email_response")}
               </p>
             </span>
           </Link>
@@ -99,74 +111,83 @@ export default function ContactsPage() {
       </section>
 
       {/* Реквизиты — карточка организации.
-          id="requisites" — якорь для ссылок из Footer (`/contacts#requisites`)
-          и любых внутренних cross-references на финансовые/договорные
-          поля. scroll-mt-24 компенсирует sticky-header при скролле. */}
+          id="requisites" — якорь для ссылок из Footer (`/contacts#requisites`). */}
       <section
         id="requisites"
         className="scroll-mt-24 border-b border-[var(--color-hairline)] bg-[var(--color-primary)] text-[var(--color-secondary)]"
       >
         <div className="mx-auto max-w-[1440px] px-6 py-16 md:px-12 md:py-24">
-          <p className="mono-tag mb-6">Реквизиты</p>
+          <p className="mono-tag mb-6">{t("requisites.mono_tag")}</p>
 
           <article className="rounded-md border border-[var(--color-hairline)] bg-[var(--color-primary)] p-8 shadow-sm md:p-14">
-            {/* Card header — формальный документ про юр.лицо, без бренда ANHEL®.
-                ANHEL — товарный знак, под которым ООО «Профит» выпускает оборудование;
-                карточка организации — про само ООО «Профит». */}
             <header className="flex flex-col gap-3 border-b border-[var(--color-hairline)] pb-8 md:flex-row md:items-end md:justify-between md:pb-10">
               <div>
+                {/* Юр.лицо ВСЕГДА в кириллице — это юр.факт. */}
                 <p className="font-display text-3xl tracking-[0.02em] md:text-4xl">
                   ООО «Профит»
                 </p>
                 <p className="mt-2 text-sm text-[var(--color-secondary)]/60">
-                  Юридическое лицо за товарным знаком ANHEL®
+                  {t("requisites.brand_subtitle")}
                 </p>
               </div>
               <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-[var(--color-secondary)]/55">
-                Карточка организации
+                {t("requisites.card_label")}
               </p>
             </header>
 
-            {/* Section: Наименование */}
-            <RekvSection title="Наименование">
-              <RekvRow label="Полное наименование" value={LEGAL_ENTITY.fullName} />
-              <RekvRow label="Сокращённое наименование" value={LEGAL_ENTITY.shortName} />
+            <RekvSection title={t("requisites.sections.identification")}>
+              <RekvRow
+                label={t("requisites.labels.full_name")}
+                value={LEGAL_ENTITY.fullName}
+              />
+              <RekvRow
+                label={t("requisites.labels.short_name")}
+                value={LEGAL_ENTITY.shortName}
+              />
             </RekvSection>
 
-            {/* Section: Адрес */}
-            <RekvSection title="Адрес">
-              <RekvRow label="Юридический адрес" value={LEGAL_ENTITY.legalAddressLine} />
-              <RekvRow label="Фактический адрес" value={LEGAL_ENTITY.actualAddressLine} />
+            <RekvSection title={t("requisites.sections.address")}>
+              <RekvRow
+                label={t("requisites.labels.legal_address")}
+                value={LEGAL_ENTITY.legalAddressLine}
+              />
+              <RekvRow
+                label={t("requisites.labels.actual_address")}
+                value={LEGAL_ENTITY.actualAddressLine}
+              />
             </RekvSection>
 
-            {/* Section: Регистрационные коды */}
-            <RekvSection title="Регистрационные данные" cols={2}>
-              <RekvRow label="ИНН" value={LEGAL_ENTITY.inn} mono />
-              <RekvRow label="КПП" value={LEGAL_ENTITY.kpp} mono />
-              <RekvRow label="ОГРН" value={LEGAL_ENTITY.ogrn} mono />
-              <RekvRow label="ОКПО" value={LEGAL_ENTITY.okpo} mono />
-              <RekvRow label="ОКАТО" value={LEGAL_ENTITY.okato} mono />
+            <RekvSection title={t("requisites.sections.registration")} cols={2}>
+              <RekvRow label={t("requisites.labels.inn")} value={LEGAL_ENTITY.inn} mono />
+              <RekvRow label={t("requisites.labels.kpp")} value={LEGAL_ENTITY.kpp} mono />
+              <RekvRow label={t("requisites.labels.ogrn")} value={LEGAL_ENTITY.ogrn} mono />
+              <RekvRow label={t("requisites.labels.okpo")} value={LEGAL_ENTITY.okpo} mono />
+              <RekvRow label={t("requisites.labels.okato")} value={LEGAL_ENTITY.okato} mono />
             </RekvSection>
 
-            {/* Section: Банковские */}
-            <RekvSection title="Банковские реквизиты">
-              <RekvRow label="Банк" value={LEGAL_ENTITY.bank} />
+            <RekvSection title={t("requisites.sections.banking")}>
+              <RekvRow label={t("requisites.labels.bank")} value={LEGAL_ENTITY.bank} />
               <div className="grid gap-x-10 gap-y-6 md:grid-cols-2">
-                <RekvRow label="Расчётный счёт" value={LEGAL_ENTITY.account} mono />
-                <RekvRow label="БИК" value={LEGAL_ENTITY.bik} mono />
-                <RekvRow label="Корреспондентский счёт" value={LEGAL_ENTITY.correspondentAccount} mono />
+                <RekvRow label={t("requisites.labels.account")} value={LEGAL_ENTITY.account} mono />
+                <RekvRow label={t("requisites.labels.bik")} value={LEGAL_ENTITY.bik} mono />
+                <RekvRow
+                  label={t("requisites.labels.correspondent_account")}
+                  value={LEGAL_ENTITY.correspondentAccount}
+                  mono
+                />
               </div>
             </RekvSection>
 
-            {/* Section: Подпись */}
-            <RekvSection title="Руководство" last>
-              <RekvRow label="Генеральный директор" value={LEGAL_ENTITY.director} />
+            <RekvSection title={t("requisites.sections.leadership")} last>
+              <RekvRow
+                label={t("requisites.labels.director")}
+                value={LEGAL_ENTITY.director}
+              />
             </RekvSection>
 
-            {/* Download */}
             <div className="mt-10 flex flex-col items-start gap-3 border-t border-[var(--color-hairline)] pt-8 md:flex-row md:items-center md:justify-between">
               <p className="text-sm text-[var(--color-secondary)]/55">
-                Можно скачать PDF и приложить к заявке, договору или счёту.
+                {t("requisites.download_note")}
               </p>
               <a
                 href="/anhel-card.pdf"
@@ -174,7 +195,7 @@ export default function ContactsPage() {
                 data-cursor="hover"
                 className="inline-flex items-center gap-3 rounded-sm border border-[var(--color-secondary)] bg-[var(--color-secondary)] px-7 py-3 font-mono text-xs uppercase tracking-[0.12em] text-[var(--color-primary)] transition-opacity hover:opacity-90"
               >
-                Скачать карточку (PDF)
+                {t("requisites.download_cta")}
                 <span aria-hidden="true">↓</span>
               </a>
             </div>
@@ -185,13 +206,13 @@ export default function ContactsPage() {
       {/* Map */}
       <section className="border-b border-[var(--color-hairline)] bg-[var(--color-primary)] text-[var(--color-secondary)]">
         <div className="mx-auto max-w-[1440px] px-6 py-16 md:px-12 md:py-20">
-          <p className="mono-tag mb-6">Адрес офиса</p>
+          <p className="mono-tag mb-6">{t("map.mono_tag")}</p>
           <p className="max-w-2xl font-display text-2xl leading-tight md:text-3xl">
             {LEGAL_ENTITY.legalAddressLine}
           </p>
           <div className="mt-10 overflow-hidden rounded-sm border border-[var(--color-hairline)]">
             <iframe
-              title="Карта офиса ANHEL® — Политехническая ул., д. 6, стр. 1"
+              title={t("map.iframe_title")}
               src={YANDEX_MAP_SRC}
               width="100%"
               height="480"
@@ -207,12 +228,12 @@ export default function ContactsPage() {
       <section className="bg-[var(--color-primary)] text-[var(--color-secondary)]">
         <div className="mx-auto grid max-w-[1440px] gap-12 px-6 py-16 md:grid-cols-[1fr_1.2fr] md:gap-20 md:px-12 md:py-24">
           <div>
-            <p className="mono-tag mb-6">Форма обратной связи</p>
+            <p className="mono-tag mb-6">{t("form.mono_tag")}</p>
             <h2 className="font-display text-3xl leading-tight md:text-5xl">
-              Напишите задачу — ответим решением, не отпиской.
+              {t("form.heading")}
             </h2>
             <p className="mt-6 max-w-md text-base leading-relaxed text-[var(--color-secondary)]/70">
-              Если знаете, что нужно — напишите параметры. Если ещё думаете — опишите объект и задачу своими словами, инженер свяжется и поможет сформулировать.
+              {t("form.lede")}
             </p>
           </div>
           <ContactForm />

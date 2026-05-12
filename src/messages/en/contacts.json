@@ -1,1 +1,74 @@
-{}
+{
+  "meta": {
+    "title": "Contact",
+    "description": "Contact ANHEL® — phone, email, Profit LLC company details, office address in St. Petersburg and contact form."
+  },
+  "hero": {
+    "mono_tag": "Contact",
+    "heading": "Get in touch — we'll scope the task, propose a solution, and quote the price.",
+    "subtitle": "Head office and engineering — St. Petersburg. Manufacturing — Moscow. Service team operates on commissioned sites 24/7."
+  },
+  "quick": {
+    "phone_label": "Phone",
+    "phone_hours": "Mon–Fri, 9:00–18:00 (MSK)",
+    "email_label": "Email",
+    "email_response": "We reply within a working day"
+  },
+  "requisites": {
+    "mono_tag": "Company details",
+    "card_label": "Company profile",
+    "brand_subtitle": "Legal entity behind the ANHEL® brand",
+    "sections": {
+      "identification": "Identification",
+      "address": "Address",
+      "registration": "Registration",
+      "banking": "Banking details",
+      "leadership": "Management"
+    },
+    "labels": {
+      "full_name": "Full name",
+      "short_name": "Short name",
+      "legal_address": "Registered address",
+      "actual_address": "Operating address",
+      "inn": "Tax ID (INN)",
+      "kpp": "Tax registration code (KPP)",
+      "ogrn": "Registration number (OGRN)",
+      "okpo": "OKPO code",
+      "okato": "OKATO code",
+      "bank": "Bank",
+      "account": "Current account",
+      "bik": "BIC",
+      "correspondent_account": "Correspondent account",
+      "director": "Director general"
+    },
+    "download_note": "Download as PDF and attach it to a quote request, contract, or invoice.",
+    "download_cta": "Download profile (PDF)"
+  },
+  "map": {
+    "mono_tag": "Office address",
+    "iframe_title": "ANHEL® office map — 6 Politekhnicheskaya str., building 1"
+  },
+  "form": {
+    "mono_tag": "Contact form",
+    "heading": "Describe the task — we'll reply with a solution, not a brush-off.",
+    "lede": "If you know what you need — send the parameters. If you're still figuring it out — describe the site and the task in your own words, our engineer will get back to you and help shape the brief.",
+    "fields": {
+      "name": "Name",
+      "phone": "Phone",
+      "email": "Email",
+      "message": "Message",
+      "message_placeholder": "Describe the task, the site, the timing"
+    },
+    "consent": {
+      "prefix": "I consent to the processing of my personal data in accordance with the",
+      "privacy_link": "Privacy Policy",
+      "and": "and the",
+      "personal_data_link": "Personal Data Consent",
+      "dot": "."
+    },
+    "submit": "Send request",
+    "submitting": "Sending…",
+    "sent_title": "Request sent",
+    "sent_subtitle": "We'll be in touch within a working day. If urgent — call the number in the header."
+  }
+}

@@ -2,6 +2,7 @@
 
 import { useState, type FormEvent } from "react";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 
 /**
  * Форма обратной связи на странице `/contacts`.
@@ -9,14 +10,19 @@ import Link from "next/link";
  * Поля — минимум для B2B-заявки: имя, телефон, email, сообщение.
  * Чекбокс согласия на обработку ПД обязательный (152-ФЗ) — submit
  * заблокирован, пока не отмечен. Ссылки на /privacy-policy и
- * /personal-data-consent — эти страницы появятся отдельным
- * коммитом C4 в этой же ветке `feat/pre-launch-critical-fixes`.
+ * /personal-data-consent.
  *
  * Submit — пока stub: показываем «Заявка отправлена» состояние
  * без реального backend-вызова. Когда подключим Resend в отдельном
  * спринте (как для /service/request), заменим body handler.
+ *
+ * i18n: все лейблы, плейсхолдер, кнопки, юридический consent-текст —
+ * из `contacts.form.*`. ICU-сегменты разрезаны на prefix / link / and /
+ * link / dot, чтобы каждый язык мог собрать предложение в естественном
+ * для него порядке.
  */
 export function ContactForm() {
+  const t = useTranslations("contacts.form");
   const [consent, setConsent] = useState(false);
   const [status, setStatus] = useState<"idle" | "sending" | "sent">("idle");
 
@@ -24,17 +30,18 @@ export function ContactForm() {
     e.preventDefault();
     if (!consent) return;
     setStatus("sending");
-    // TODO: integrate Resend (см. /api/questionnaire паттерн).
-    // Пока — оптимистичный UX-stub, чтобы форма не молчала.
+    // TODO: integrate Resend.
     window.setTimeout(() => setStatus("sent"), 600);
   }
 
   if (status === "sent") {
     return (
       <div className="rounded-sm border border-[var(--color-hairline)] bg-[var(--color-image-placeholder)] p-8 text-[var(--color-secondary)]">
-        <p className="font-display text-2xl leading-tight">Заявка отправлена</p>
+        <p className="font-display text-2xl leading-tight">
+          {t("sent_title")}
+        </p>
         <p className="mt-3 text-sm text-[var(--color-secondary)]/70">
-          Свяжемся в течение рабочего дня. Если срочно — позвоните по номеру в шапке.
+          {t("sent_subtitle")}
         </p>
       </div>
     );
@@ -42,9 +49,15 @@ export function ContactForm() {
 
   return (
     <form onSubmit={onSubmit} className="flex flex-col gap-5" noValidate>
-      <Field label="Имя" name="name" type="text" required autoComplete="name" />
       <Field
-        label="Телефон"
+        label={t("fields.name")}
+        name="name"
+        type="text"
+        required
+        autoComplete="name"
+      />
+      <Field
+        label={t("fields.phone")}
         name="phone"
         type="tel"
         required
@@ -52,7 +65,7 @@ export function ContactForm() {
         inputMode="tel"
       />
       <Field
-        label="Email"
+        label={t("fields.email")}
         name="email"
         type="email"
         required
@@ -60,13 +73,13 @@ export function ContactForm() {
       />
       <label className="flex flex-col gap-2">
         <span className="font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/55">
-          Сообщение
+          {t("fields.message")}
         </span>
         <textarea
           name="message"
           rows={4}
           className="rounded-sm border border-[var(--color-hairline)] bg-transparent px-4 py-3 text-sm text-[var(--color-secondary)] outline-none transition-colors focus:border-[var(--color-secondary)]/50"
-          placeholder="Опишите задачу, объект, сроки"
+          placeholder={t("fields.message_placeholder")}
         />
       </label>
 
@@ -80,22 +93,21 @@ export function ContactForm() {
           className="mt-1 h-4 w-4 shrink-0 cursor-pointer accent-[var(--accent-water)]"
         />
         <span>
-          Я даю согласие на обработку моих персональных данных в
-          соответствии с{" "}
+          {t("consent.prefix")}{" "}
           <Link
             href="/privacy-policy"
             className="underline decoration-[var(--color-hairline)] underline-offset-[3px] hover:decoration-[var(--color-secondary)]"
           >
-            Политикой конфиденциальности
-          </Link>
-          {" "}и{" "}
+            {t("consent.privacy_link")}
+          </Link>{" "}
+          {t("consent.and")}{" "}
           <Link
             href="/personal-data-consent"
             className="underline decoration-[var(--color-hairline)] underline-offset-[3px] hover:decoration-[var(--color-secondary)]"
           >
-            Согласием на обработку ПД
+            {t("consent.personal_data_link")}
           </Link>
-          .
+          {t("consent.dot")}
         </span>
       </label>
 
@@ -105,7 +117,7 @@ export function ContactForm() {
         data-cursor="hover"
         className="mt-2 inline-flex items-center justify-center self-start rounded-sm border border-[var(--color-secondary)] bg-[var(--color-secondary)] px-7 py-3 font-mono text-xs uppercase tracking-[0.12em] text-[var(--color-primary)] transition-opacity disabled:cursor-not-allowed disabled:opacity-40"
       >
-        {status === "sending" ? "Отправляем…" : "Отправить заявку"}
+        {status === "sending" ? t("submitting") : t("submit")}
       </button>
     </form>
   );
