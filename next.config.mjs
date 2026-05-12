@@ -1,3 +1,16 @@
+import createNextIntlPlugin from "next-intl/plugin";
+
+/**
+ * next-intl plugin — points at our locale-aware request config.
+ *
+ * The plugin sets up module aliases so `useTranslations()` inside
+ * Server Components resolves to the messages loaded by the function
+ * exported from `src/i18n.ts`. No middleware required for this step
+ * alone — middleware is added in C2 together with the `[locale]`
+ * route segment.
+ */
+const withNextIntl = createNextIntlPlugin("./src/i18n.ts");
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   /**
@@ -52,4 +65,4 @@ const nextConfig = {
   },
 };
 
-export default nextConfig;
+export default withNextIntl(nextConfig);
