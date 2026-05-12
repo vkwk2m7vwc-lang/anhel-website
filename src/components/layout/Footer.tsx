@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { CONTACTS } from "@/lib/contacts";
 
 /**
@@ -27,8 +28,17 @@ import { CONTACTS } from "@/lib/contacts";
  * Якоря /documents#questionnaires|#catalogs|#certificates существуют
  * после рефактора /documents в этой же волне. Якорь /contacts#requisites
  * также добавлен в том же коммите.
+ *
+ * i18n: column titles, link labels, address и legal-нижка приходят
+ * из `common.footer.*`. Юр.лицо (ООО «Профит», ИНН) остаётся в RU во
+ * всех локалях — только подпись адаптируется (см. copy.md / brand
+ * decision); copyright-строка пока без подписи, она появится в C4 при
+ * переводе EN/TR через locale-specific варианты.
  */
 export function Footer() {
+  const t = useTranslations("common.footer");
+  const tBrand = useTranslations("common.brand");
+  const tAria = useTranslations("common.aria");
   const year = new Date().getFullYear();
 
   return (
@@ -37,27 +47,27 @@ export function Footer() {
         {/* Колонка 1 — Бренд */}
         <div className="md:col-span-4">
           <p className="font-display text-3xl leading-tight md:text-4xl">
-            ANHEL®
+            {tBrand("name")}
           </p>
           <p className="mt-4 max-w-xs text-sm text-[var(--color-secondary)]/65 md:text-[15px]">
-            Инженерное оборудование. Россия.
+            {tBrand("tagline_footer")}
           </p>
         </div>
 
         {/* Колонка 2 — Продукция */}
-        <FooterColumn title="Продукция">
-          <FooterLink href="/products/pumps">Насосные станции</FooterLink>
-          <FooterLink href="/products/heating-unit">Тепловые пункты</FooterLink>
-          <FooterLink href="/products/water-treatment">Водоподготовка</FooterLink>
-          <FooterLink href="/products/control-systems">Шкафы управления</FooterLink>
+        <FooterColumn title={t("columns.products")}>
+          <FooterLink href="/products/pumps">{t("products.pumps")}</FooterLink>
+          <FooterLink href="/products/heating-unit">{t("products.heating_unit")}</FooterLink>
+          <FooterLink href="/products/water-treatment">{t("products.water_treatment")}</FooterLink>
+          <FooterLink href="/products/control-systems">{t("products.control_systems")}</FooterLink>
         </FooterColumn>
 
         {/* Колонка 3 — Компания */}
-        <FooterColumn title="Компания">
-          <FooterLink href="/#about">О компании</FooterLink>
-          <FooterLink href="/#production">Производство</FooterLink>
-          <FooterLink href="/service">Сервис</FooterLink>
-          <FooterLink href="/projects">Проекты</FooterLink>
+        <FooterColumn title={t("columns.company")}>
+          <FooterLink href="/#about">{t("company.about")}</FooterLink>
+          <FooterLink href="/#production">{t("company.production")}</FooterLink>
+          <FooterLink href="/service">{t("company.service")}</FooterLink>
+          <FooterLink href="/projects">{t("company.projects")}</FooterLink>
         </FooterColumn>
 
         {/* Колонка 4 — Материалы.
@@ -65,15 +75,15 @@ export function Footer() {
             страницы в этом же коммите даёт им рабочие точки скролла).
             Реквизиты — якорь на /contacts (id="requisites" на блоке
             «Карточка организации» добавлен в этом же коммите). */}
-        <FooterColumn title="Материалы">
-          <FooterLink href="/documents#questionnaires">Опросные листы</FooterLink>
-          <FooterLink href="/documents#catalogs">Каталоги</FooterLink>
-          <FooterLink href="/documents#certificates">Сертификаты</FooterLink>
-          <FooterLink href="/contacts#requisites">Реквизиты</FooterLink>
+        <FooterColumn title={t("columns.materials")}>
+          <FooterLink href="/documents#questionnaires">{t("materials.questionnaires")}</FooterLink>
+          <FooterLink href="/documents#catalogs">{t("materials.catalogs")}</FooterLink>
+          <FooterLink href="/documents#certificates">{t("materials.certificates")}</FooterLink>
+          <FooterLink href="/contacts#requisites">{t("materials.requisites")}</FooterLink>
         </FooterColumn>
 
         {/* Колонка 5 — Контакты */}
-        <FooterColumn title="Контакты">
+        <FooterColumn title={t("columns.contacts")}>
           <Link
             href={`tel:${CONTACTS.phoneTel}`}
             data-cursor="hover"
@@ -89,9 +99,9 @@ export function Footer() {
             {CONTACTS.email}
           </Link>
           <p className="text-[var(--color-secondary)]/65">
-            Политехническая ул., д. 6, стр. 1,
+            {t("address_line_1")}
             <br />
-            пом. Н-7, Санкт-Петербург
+            {t("address_line_2")}
           </p>
         </FooterColumn>
       </div>
@@ -101,11 +111,9 @@ export function Footer() {
           колонке «Контакты» косвенно через email-домен. */}
       <div className="border-t border-[var(--color-hairline)]">
         <div className="mx-auto flex max-w-[1440px] flex-col items-start justify-between gap-4 px-6 py-6 text-xs text-[var(--color-secondary)]/65 md:flex-row md:items-center md:px-12">
-          <p>
-            © {year} ООО «Профит». ИНН 7802825464. Все права защищены.
-          </p>
+          <p>{t("copyright", { year })}</p>
           <nav
-            aria-label="Юридические документы"
+            aria-label={tAria("legal_docs_nav")}
             className="flex flex-wrap items-center gap-x-5 gap-y-2"
           >
             <Link
@@ -113,14 +121,14 @@ export function Footer() {
               data-cursor="hover"
               className="text-[var(--color-secondary)]/80 transition-colors hover:text-[var(--color-secondary)]"
             >
-              Политика конфиденциальности
+              {t("privacy_policy")}
             </Link>
             <Link
               href="/personal-data-consent"
               data-cursor="hover"
               className="text-[var(--color-secondary)]/80 transition-colors hover:text-[var(--color-secondary)]"
             >
-              Согласие на обработку данных
+              {t("personal_data_consent")}
             </Link>
           </nav>
         </div>

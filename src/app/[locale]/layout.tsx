@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { NextIntlClientProvider } from "next-intl";
-import { getMessages, setRequestLocale } from "next-intl/server";
+import { getMessages, getTranslations, setRequestLocale } from "next-intl/server";
 
 import { fontVariables } from "@/lib/fonts";
 import { LenisProvider } from "@/components/providers/LenisProvider";
@@ -88,6 +88,7 @@ export default async function LocaleLayout({
   // `getRequestConfig` (src/i18n.ts) returned, scoped to the current
   // locale.
   const messages = await getMessages();
+  const t = await getTranslations("common");
 
   return (
     <html lang={locale} className={fontVariables} suppressHydrationWarning>
@@ -107,7 +108,7 @@ export default async function LocaleLayout({
           href="#main-content"
           className="sr-only rounded-md bg-[var(--color-secondary)] px-4 py-2 text-sm font-medium text-[var(--color-primary)] focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[300]"
         >
-          Перейти к содержимому
+          {t("skip_link")}
         </a>
         <NextIntlClientProvider locale={locale} messages={messages}>
           <ThemeProvider>

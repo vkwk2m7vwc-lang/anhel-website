@@ -1,1 +1,69 @@
-{}
+{
+  "brand": {
+    "name": "ANHEL®",
+    "tagline_footer": "Инженерное оборудование. Россия."
+  },
+  "nav": {
+    "products": "Продукты",
+    "documents": "Документация",
+    "projects": "Объекты",
+    "production": "Производство",
+    "service": "Сервис",
+    "about": "О компании",
+    "contacts": "Контакты"
+  },
+  "aria": {
+    "home_link": "ANHEL® — на главную",
+    "main_nav": "Основная навигация",
+    "call_phone": "Позвонить: {phone}",
+    "open_menu": "Открыть меню",
+    "close_menu": "Закрыть меню",
+    "legal_docs_nav": "Юридические документы"
+  },
+  "skip_link": "Перейти к содержимому",
+  "theme_toggle": {
+    "to_light": "Переключить на светлую тему",
+    "to_dark": "Переключить на тёмную тему",
+    "light_label": "Светлая тема",
+    "dark_label": "Тёмная тема"
+  },
+  "footer": {
+    "columns": {
+      "products": "Продукция",
+      "company": "Компания",
+      "materials": "Материалы",
+      "contacts": "Контакты"
+    },
+    "products": {
+      "pumps": "Насосные станции",
+      "heating_unit": "Тепловые пункты",
+      "water_treatment": "Водоподготовка",
+      "control_systems": "Шкафы управления"
+    },
+    "company": {
+      "about": "О компании",
+      "production": "Производство",
+      "service": "Сервис",
+      "projects": "Проекты"
+    },
+    "materials": {
+      "questionnaires": "Опросные листы",
+      "catalogs": "Каталоги",
+      "certificates": "Сертификаты",
+      "requisites": "Реквизиты"
+    },
+    "address_line_1": "Политехническая ул., д. 6, стр. 1,",
+    "address_line_2": "пом. Н-7, Санкт-Петербург",
+    "copyright": "© {year} ООО «Профит». ИНН 7802825464. Все права защищены.",
+    "privacy_policy": "Политика конфиденциальности",
+    "personal_data_consent": "Согласие на обработку данных"
+  },
+  "actions": {
+    "request_quote": "Запросить КП",
+    "download_catalog": "Скачать каталог",
+    "contact_engineer": "Связаться с инженером",
+    "learn_more": "Подробнее",
+    "submit": "Отправить",
+    "cancel": "Отмена"
+  }
+}
