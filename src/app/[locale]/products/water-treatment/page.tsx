@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { useTranslations } from "next-intl";
-import { getTranslations, setRequestLocale } from "next-intl/server";
+import { setRequestLocale } from "next-intl/server";
 import { ProductHero } from "@/components/product-page/ProductHero";
 import { ProductPageShell } from "@/components/product-page/ProductPageShell";
 import { TechSpecsGrid } from "@/components/product-page/TechSpecsGrid";
