@@ -1,1 +1,114 @@
-{}
+{
+  "brand": {
+    "name": "ANHEL®",
+    "tagline_footer": "Engineering equipment. Russia."
+  },
+  "nav": {
+    "products": "Products",
+    "documents": "Documentation",
+    "projects": "Projects",
+    "production": "Manufacturing",
+    "service": "Service",
+    "about": "About",
+    "contacts": "Contact"
+  },
+  "aria": {
+    "home_link": "ANHEL® — back to homepage",
+    "main_nav": "Primary navigation",
+    "call_phone": "Call: {phone}",
+    "open_menu": "Open menu",
+    "close_menu": "Close menu",
+    "legal_docs_nav": "Legal documents"
+  },
+  "skip_link": "Skip to main content",
+  "theme_toggle": {
+    "to_light": "Switch to light theme",
+    "to_dark": "Switch to dark theme",
+    "light_label": "Light theme",
+    "dark_label": "Dark theme"
+  },
+  "footer": {
+    "columns": {
+      "products": "Products",
+      "company": "Company",
+      "materials": "Resources",
+      "contacts": "Contact"
+    },
+    "products": {
+      "pumps": "Pumping stations",
+      "heating_unit": "Heat substations",
+      "water_treatment": "Water treatment",
+      "control_systems": "Control cabinets"
+    },
+    "company": {
+      "about": "About us",
+      "production": "Manufacturing",
+      "service": "Service",
+      "projects": "Projects"
+    },
+    "materials": {
+      "questionnaires": "Specification sheets",
+      "catalogs": "Catalogues",
+      "certificates": "Certificates",
+      "requisites": "Company details"
+    },
+    "address_line_1": "6 Politekhnicheskaya str., building 1,",
+    "address_line_2": "office N-7, St. Petersburg, Russia",
+    "copyright": "© {year} Profit LLC (ООО «Профит»). Tax ID (INN) 7802825464. All rights reserved.",
+    "privacy_policy": "Privacy Policy",
+    "personal_data_consent": "Personal Data Consent"
+  },
+  "actions": {
+    "request_quote": "Request a quote",
+    "download_catalog": "Download catalogue",
+    "contact_engineer": "Talk to an engineer",
+    "learn_more": "Learn more",
+    "submit": "Submit",
+    "cancel": "Cancel"
+  },
+  "mega_menu": {
+    "products": {
+      "aria_label": "Products — categories",
+      "pumps": {
+        "title": "Pumping stations",
+        "description": "Five series: water supply, fire protection, heating, pressure boosting, special-purpose"
+      },
+      "heating_unit": {
+        "title": "Heat substations",
+        "description": "Eight block-modular substations: intake, heating, DHW, make-up"
+      },
+      "water_treatment": {
+        "title": "Water treatment",
+        "description": "Filtration and softening units for boiler houses and heat substations"
+      },
+      "control_systems": {
+        "title": "Control cabinets",
+        "description": "Five series: VFD, electric drives, fire alarm, smoke control, sewage pumping"
+      }
+    },
+    "documents": {
+      "aria_label": "Documentation — by type",
+      "questionnaires": {
+        "title": "Specification sheets",
+        "description": "Eight specification sheets across four product lines"
+      },
+      "catalogs": {
+        "title": "Catalogues",
+        "description": "Printed catalogues — coming soon"
+      },
+      "certificates": {
+        "title": "Certificates",
+        "description": "Seven EAEU conformity declarations"
+      }
+    }
+  },
+  "mobile_menu": {
+    "dialog_label": "Primary menu",
+    "section_products": "Products",
+    "section_documents": "Documentation",
+    "section_navigation": "Navigation",
+    "section_contacts": "Contact",
+    "go_to_section": "Go to section",
+    "office_line": "Headquarters — St. Petersburg. Manufacturing — Moscow."
+  }
+}
