@@ -7,12 +7,11 @@ import { CATALOG_PATH } from "@/lib/routes";
 
 /**
  * Two hero CTAs:
- *  1. «Смотреть каталог» — primary pill, white background, arrow glyph
- *     slides on hover. Magnetic cursor pull (desktop only).
- *  2. «Опросный лист» — ghost pill, currently disabled until Stage 7
- *     wires up the form. We render it visibly but mark it
- *     `aria-disabled` and block pointer/keyboard activation. A native
- *     tooltip explains the state ("Скоро").
+ *  1. «Каталог продукции» — primary pill, white background, arrow glyph
+ *     slides on hover. Magnetic cursor pull (desktop only). Links to
+ *     CATALOG_PATH (/products).
+ *  2. «Связаться» — ghost pill, links to /contacts. Magnetic pull
+ *     enabled on desktop, mirror of primary stylistically (ghost variant).
  *
  * Touch handling: on coarse-pointer devices we deliberately do NOT
  * attach the magnetic ref — even though `useMagnetic` itself bails
@@ -32,7 +31,7 @@ import { CATALOG_PATH } from "@/lib/routes";
 export function HeroCTAs() {
   const isTouch = useIsTouch();
   const primaryRef = useMagnetic<HTMLAnchorElement>({ strength: 0.35 });
-  const secondaryRef = useMagnetic<HTMLButtonElement>({ strength: 0.3 });
+  const secondaryRef = useMagnetic<HTMLAnchorElement>({ strength: 0.3 });
 
   return (
     <div className="mt-10 flex flex-wrap items-center gap-4 md:mt-12 md:gap-5">
@@ -43,7 +42,7 @@ export function HeroCTAs() {
         data-cta="catalog"
         className="group inline-flex items-center gap-3 rounded-md bg-[var(--color-secondary)] px-[22px] py-[14px] text-sm font-medium text-[var(--color-primary)]"
       >
-        Смотреть каталог
+        Каталог продукции
         <span
           aria-hidden="true"
           className="inline-block font-mono transition-transform duration-300 ease-out-expo group-hover:translate-x-1"
@@ -52,22 +51,21 @@ export function HeroCTAs() {
         </span>
       </Link>
 
-      <button
+      <Link
         ref={isTouch ? undefined : secondaryRef}
-        type="button"
-        aria-disabled="true"
-        title="Скоро"
+        href="/contacts"
         data-cursor="hover"
-        // `onClick` swallowed — the form is wired up on Stage 7. Keyboard
-        // users still see a tooltip via `title` and an aria hint.
-        onClick={(e) => e.preventDefault()}
-        className="inline-flex cursor-not-allowed items-center gap-3 rounded-md border-[0.5px] border-[var(--color-secondary)]/40 bg-transparent px-[22px] py-[14px] text-sm font-medium text-[var(--color-secondary)]/70 transition-colors hover:border-[var(--color-secondary)]/40 hover:bg-transparent"
+        data-cta="contacts"
+        className="group inline-flex items-center gap-3 rounded-md border-[0.5px] border-[var(--color-secondary)]/40 bg-transparent px-[22px] py-[14px] text-sm font-medium text-[var(--color-secondary)] transition-colors hover:border-[var(--color-secondary)]"
       >
-        Опросный лист
-        <span className="font-mono text-[10px] uppercase tracking-[0.1em] text-[var(--color-secondary)]/40">
-          Скоро
+        Связаться
+        <span
+          aria-hidden="true"
+          className="inline-block font-mono transition-transform duration-300 ease-out-expo group-hover:translate-x-1"
+        >
+          →
         </span>
-      </button>
+      </Link>
     </div>
   );
 }

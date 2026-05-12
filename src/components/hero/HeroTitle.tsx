@@ -7,8 +7,9 @@ import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 /**
  * Hero headline with GSAP SplitText reveal.
  *
- * Text: «Системы, / которые держат здание / живым.» — the middle line is
- * rendered at opacity 0.5 so the first and third lines read as the accent.
+ * Text: «Производим инженерное оборудование, на которое можно положиться».
+ * Renders as a single block; SplitText splits into words and animates them
+ * with a staggered y-translate. The first paint shows the static text.
  *
  * Animation: split into words, stagger 0.04s, `expo.out` over 1.2s.
  * When the user prefers reduced motion, we skip SplitText entirely and
@@ -52,11 +53,7 @@ export function HeroTitle() {
       ref={ref}
       className="font-display text-hero font-medium text-[var(--color-secondary)]"
     >
-      <span className="block overflow-hidden">Системы,</span>
-      <span className="block overflow-hidden opacity-50">
-        которые держат здание
-      </span>
-      <span className="block overflow-hidden">живым.</span>
+      Производим инженерное оборудование, на которое можно положиться
     </h1>
   );
 }
