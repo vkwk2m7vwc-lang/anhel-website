@@ -811,3 +811,51 @@ aupd-config.ts
 Если найдёшь логотипы — обработай в Photoshop/Affinity или просто удали проблемный файл (галерея автоматически скроется если фото нет, благодаря filter в `GalleryRail.tsx:28`).
 
 После ретуши/удаления — закоммить чтобы Vercel пересобрал.
+
+---
+
+## 2026-05-12 — feat/pre-launch-critical-fixes ▸ v1.1-navigation-and-legal
+
+**Закрыты 4 critical блокера из pre-launch audit (`_docs/pre-launch_audit.md` на ветке `audit/pre-launch-2026-05`).**
+
+### Что сделано
+
+- **C1 — навигация:** гибридная структура. Секции `#about` и `#production` на главной (плейсхолдер-тексты до копирайтинга), отдельная страница `/contacts` с реквизитами, картой и формой обратной связи. Адрес офиса исправлен с `1-Н` на `Н-7` по официальным реквизитам.
+- **C2 — mega-menu для «Продукты»:** 4 карточки 2×2 (Насосные / ИТП / Водоподготовка / Шкафы) с lucide-иконками. Hover/click + Esc/outside-click. Mobile — аккордеон. Курсор-кольцо больше не перекрывает текст пунктов.
+- **C3 — LoadingSplash:** портирована имплементация `bf71ba2` (CSS state machine + Performance Navigation Timing API) + дополнительный `sessionStorage` гейт. Total visible 1500мс. Показывается только cold pageview / F5, скрыт на Link-навигации и bfcache.
+- **C4 — legal:** созданы `/privacy-policy` и `/personal-data-consent` со стандартными 152-ФЗ текстами и реквизитами ООО «Профит» из `lib/legal.ts`. Чекбокс согласия с реальными ссылками во всех 5 квизах, на `/service/request` и на `/contacts`. Footer — legal-блок снизу.
+
+### Bonus (post-review)
+
+- Yandex-карта на `/contacts` — поиск по тексту вместо координат (метка теперь на здании, не на сквере).
+- Реквизиты на `/contacts` переверстаны как «карточка организации» с группами + рабочая кнопка скачать PDF.
+- `public/anhel-card.pdf` — реальная одностраничная карточка организации (reportlab + DejaVuSans). Без бренда ANHEL® — формальный документ про юр.лицо ООО «Профит».
+- Серый placeholder-слот под «Специальное исполнение» убран (border-based grid).
+- `CasesCarousel` скрывает себя если нет реальных фото — больше нет штрихованных «Фото объекта» заглушек.
+- `/documents` — единая страница со всеми 21 PDF, сгруппированы по 4 направлениям + общие документы. Mega-menu в шапке с переходом на якоря.
+
+### Snapshots
+
+- Точка перед работой: `v1.0-baseline-pre-launch-fixes` (8 мая)
+- Точка после работы: `v1.1-navigation-and-legal` (12 мая)
+
+### Откат
+
+```bash
+git checkout main
+git reset --hard v1.0-baseline-pre-launch-fixes
+git push origin main --force-with-lease
+```
+
+### Что НЕ делалось в этом проходе
+
+- M1–M10, N1–N7 — следующий спринт
+- Mobile-адаптация, performance, Hero PNG 5MB, Three.js — отдельный спринт
+- Resend backend для `/contacts` формы — следующий спринт
+- Реальные тексты копирайтера для AboutSection, ProductionSection, Hero — отдельная задача
+- Реальные фото производства в `ProductionSection` (placeholder остался) и `CasesCarousel` (секция спрятана до фото)
+- Печатные каталоги в `/documents` — placeholder, появятся когда Алексей загрузит
+
+### Следующий шаг
+
+Фикс M1–M10 + копирайтинг финальных текстов.
