@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { useTranslations } from "next-intl";
+import { setRequestLocale } from "next-intl/server";
 import { ProductHero } from "@/components/product-page/ProductHero";
 import { ProductPageShell } from "@/components/product-page/ProductPageShell";
 import { TechSpecsGrid } from "@/components/product-page/TechSpecsGrid";
@@ -10,7 +12,7 @@ import { DescriptionSection } from "@/components/product-page/DescriptionSection
 import { RelatedProjectsSection } from "@/components/product-page/RelatedProjectsSection";
 import { DocumentsGrid } from "@/components/product-page/DocumentsGrid";
 import { ProductCtaFooter } from "@/components/product-page/ProductCtaFooter";
-import { smokeControlContent } from "@/content/products/control-systems/smoke-control";
+import { getSmokeControlContent } from "@/content/products/control-systems/smoke-control";
 import {
   breadcrumbLd,
   ldScriptProps,
@@ -24,24 +26,33 @@ import {
  * отличительный признак противопожарного устройства. Пожарный
  * сертификат ФЗ-123, IP54+.
  */
-export const metadata: Metadata = {
-  title: smokeControlContent.metaTitle,
-  description: smokeControlContent.metaDescription,
-  openGraph: {
-    type: "website",
-    title: smokeControlContent.metaTitle,
-    description: smokeControlContent.metaDescription,
-    url: `/products/control-systems/${smokeControlContent.slug}`,
-    images: [
-      {
-        url: smokeControlContent.hero.image.src,
-        alt: smokeControlContent.hero.image.alt,
-      },
-    ],
-  },
-};
+export async function generateMetadata({
+  params: { locale },
+}: {
+  params: { locale: string };
+}): Promise<Metadata> {
+  const content = getSmokeControlContent(locale);
+  return {
+    title: content.metaTitle,
+    description: content.metaDescription,
+    openGraph: {
+      type: "website",
+      title: `${content.metaTitle} · ANHEL®`,
+      description: content.metaDescription,
+      url: `/products/control-systems/smoke-control`,
+      images: [{ url: content.hero.image.src, alt: content.hero.image.alt }],
+    },
+  };
+}
 
-export default function SmokeControlPage() {
+export default function SmokeControlPage({
+  params: { locale },
+}: {
+  params: { locale: string };
+}) {
+  setRequestLocale(locale);
+  const content = getSmokeControlContent(locale);
+  const tProj = useTranslations("products.related_projects");
   const {
     slug,
     hero,
@@ -54,23 +65,23 @@ export default function SmokeControlPage() {
     gallery,
     documents,
     footerCta,
-  } = smokeControlContent;
+  } = content;
 
   const productJsonLd = productLd({
     slug,
     name: "Шкаф управления ANHEL® противодымной вентиляцией",
-    description: smokeControlContent.metaDescription,
-    image: smokeControlContent.hero.image.src,
+    description: content.metaDescription,
+    image: content.hero.image.src,
     category: "Control cabinets / Smoke control",
     model: "OMEGA-SMOKE",
     routePath: `/products/control-systems/${slug}`,
   });
-  const breadcrumbJsonLd = breadcrumbLd([
-    { name: "Главная", url: "/" },
-    { name: "Каталог", url: "/products" },
-    { name: "Шкафы управления", url: "/products/control-systems" },
-    { name: "Для дымоудаления и подпора", url: `/products/control-systems/${slug}` },
-  ]);
+  const breadcrumbJsonLd = breadcrumbLd(
+    content.hero.breadcrumbs.map((b, i, arr) => ({
+      name: b.label,
+      url: b.href ?? (i === arr.length - 1 ? `/products/control-systems/smoke-control` : "/products"),
+    })),
+  );
 
   return (
     <ProductPageShell accent={accent}>
@@ -84,7 +95,7 @@ export default function SmokeControlPage() {
       <BrandsStrip content={brands} />
       <AdvantagesGrid content={advantages} />
       <GalleryRail content={gallery} />
-      <RelatedProjectsSection productSlug={slug} tag="08 · ОБЪЕКТЫ" />
+      <RelatedProjectsSection productSlug={slug} tag={tProj("projects_tag")} />
       <DocumentsGrid content={documents} />
       <ProductCtaFooter content={footerCta} currentSlug={slug} />
     </ProductPageShell>

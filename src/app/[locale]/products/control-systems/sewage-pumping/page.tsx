@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { useTranslations } from "next-intl";
+import { setRequestLocale } from "next-intl/server";
 import { ProductHero } from "@/components/product-page/ProductHero";
 import { ProductPageShell } from "@/components/product-page/ProductPageShell";
 import { TechSpecsGrid } from "@/components/product-page/TechSpecsGrid";
@@ -10,7 +12,7 @@ import { DescriptionSection } from "@/components/product-page/DescriptionSection
 import { RelatedProjectsSection } from "@/components/product-page/RelatedProjectsSection";
 import { DocumentsGrid } from "@/components/product-page/DocumentsGrid";
 import { ProductCtaFooter } from "@/components/product-page/ProductCtaFooter";
-import { sewagePumpingContent } from "@/content/products/control-systems/sewage-pumping";
+import { getSewagePumpingContent } from "@/content/products/control-systems/sewage-pumping";
 import {
   breadcrumbLd,
   ldScriptProps,
@@ -24,24 +26,33 @@ import {
  * дренажа, ливневой канализации и водоразборных ёмкостей. Сигналы
  * от поплавков, электродов, уровнемеров.
  */
-export const metadata: Metadata = {
-  title: sewagePumpingContent.metaTitle,
-  description: sewagePumpingContent.metaDescription,
-  openGraph: {
-    type: "website",
-    title: sewagePumpingContent.metaTitle,
-    description: sewagePumpingContent.metaDescription,
-    url: `/products/control-systems/${sewagePumpingContent.slug}`,
-    images: [
-      {
-        url: sewagePumpingContent.hero.image.src,
-        alt: sewagePumpingContent.hero.image.alt,
-      },
-    ],
-  },
-};
+export async function generateMetadata({
+  params: { locale },
+}: {
+  params: { locale: string };
+}): Promise<Metadata> {
+  const content = getSewagePumpingContent(locale);
+  return {
+    title: content.metaTitle,
+    description: content.metaDescription,
+    openGraph: {
+      type: "website",
+      title: `${content.metaTitle} · ANHEL®`,
+      description: content.metaDescription,
+      url: `/products/control-systems/sewage-pumping`,
+      images: [{ url: content.hero.image.src, alt: content.hero.image.alt }],
+    },
+  };
+}
 
-export default function SewagePumpingPage() {
+export default function SewagePumpingPage({
+  params: { locale },
+}: {
+  params: { locale: string };
+}) {
+  setRequestLocale(locale);
+  const content = getSewagePumpingContent(locale);
+  const tProj = useTranslations("products.related_projects");
   const {
     slug,
     hero,
@@ -54,23 +65,23 @@ export default function SewagePumpingPage() {
     gallery,
     documents,
     footerCta,
-  } = sewagePumpingContent;
+  } = content;
 
   const productJsonLd = productLd({
     slug,
     name: "Шкаф управления ANHEL® для КНС",
-    description: sewagePumpingContent.metaDescription,
-    image: sewagePumpingContent.hero.image.src,
+    description: content.metaDescription,
+    image: content.hero.image.src,
     category: "Control cabinets / Sewage pumping",
     model: "OMEGA-KNS",
     routePath: `/products/control-systems/${slug}`,
   });
-  const breadcrumbJsonLd = breadcrumbLd([
-    { name: "Главная", url: "/" },
-    { name: "Каталог", url: "/products" },
-    { name: "Шкафы управления", url: "/products/control-systems" },
-    { name: "Для КНС", url: `/products/control-systems/${slug}` },
-  ]);
+  const breadcrumbJsonLd = breadcrumbLd(
+    content.hero.breadcrumbs.map((b, i, arr) => ({
+      name: b.label,
+      url: b.href ?? (i === arr.length - 1 ? `/products/control-systems/sewage-pumping` : "/products"),
+    })),
+  );
 
   return (
     <ProductPageShell accent={accent}>
@@ -84,7 +95,7 @@ export default function SewagePumpingPage() {
       <BrandsStrip content={brands} />
       <AdvantagesGrid content={advantages} />
       <GalleryRail content={gallery} />
-      <RelatedProjectsSection productSlug={slug} tag="08 · ОБЪЕКТЫ" />
+      <RelatedProjectsSection productSlug={slug} tag={tProj("projects_tag")} />
       <DocumentsGrid content={documents} />
       <ProductCtaFooter content={footerCta} currentSlug={slug} />
     </ProductPageShell>
