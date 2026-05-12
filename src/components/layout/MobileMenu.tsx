@@ -2,9 +2,10 @@
 
 import { AnimatePresence, motion, type PanInfo } from "framer-motion";
 import Link from "next/link";
-import { useEffect, useRef } from "react";
-import { X, Phone, Mail } from "lucide-react";
-import { PRODUCTS } from "@/lib/products";
+import { useEffect, useRef, useState } from "react";
+import { X, Phone, Mail, ChevronDown } from "lucide-react";
+import { PRODUCTS_MEGA_CATEGORIES } from "./MegaMenu";
+import { DOCUMENTS_MEGA_CATEGORIES } from "./DocumentsMegaMenu";
 import { CONTACTS } from "@/lib/contacts";
 
 /**
@@ -33,10 +34,10 @@ import { CONTACTS } from "@/lib/contacts";
 
 const NAV_ANCHORS = [
   { label: "Объекты", href: "/projects" },
-  { label: "О компании", href: "/#about" },
-  { label: "Производство", href: "/#manufacturing" },
+  { label: "Производство", href: "/#production" },
   { label: "Сервис", href: "/service" },
-  { label: "Контакты", href: "/#contact" },
+  { label: "О компании", href: "/#about" },
+  { label: "Контакты", href: "/contacts" },
 ];
 
 export function MobileMenu({
@@ -164,46 +165,26 @@ export function MobileMenu({
               <section>
                 <p className="mono-tag mb-4">Продукты</p>
                 <ul className="flex flex-col gap-0">
-                  {PRODUCTS.map((p, i) => {
-                    const firstLiveIdx = PRODUCTS.findIndex(
-                      (pp) => !pp.comingSoon,
-                    );
-                    const isFirstLive = i === firstLiveIdx;
-                    if (p.comingSoon) {
-                      return (
-                        <li key={p.slug}>
-                          <div
-                            aria-disabled="true"
-                            className="flex cursor-not-allowed items-baseline justify-between gap-4 border-b border-[var(--color-hairline)] py-4 opacity-50"
-                          >
-                            <span className="font-display text-2xl font-medium text-[var(--color-secondary)]">
-                              {p.title}
-                            </span>
-                            <span className="font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/65">
-                              Скоро
-                            </span>
-                          </div>
-                        </li>
-                      );
-                    }
-                    return (
-                      <li key={p.slug}>
-                        <Link
-                          ref={isFirstLive ? firstLinkRef : undefined}
-                          href={p.href}
-                          onClick={onClose}
-                          className="flex items-baseline justify-between gap-4 border-b border-[var(--color-hairline)] py-4 text-[var(--color-secondary)]"
-                        >
-                          <span className="font-display text-2xl font-medium">
-                            {p.title}
-                          </span>
-                          <span aria-hidden="true" className="font-mono">
-                            →
-                          </span>
-                        </Link>
-                      </li>
-                    );
-                  })}
+                  {PRODUCTS_MEGA_CATEGORIES.map((cat, i) => (
+                    <li key={cat.href}>
+                      <ProductAccordionItem
+                        cat={cat}
+                        onClose={onClose}
+                        firstLinkRef={i === 0 ? firstLinkRef : undefined}
+                      />
+                    </li>
+                  ))}
+                </ul>
+              </section>
+
+              <section>
+                <p className="mono-tag mb-4">Документация</p>
+                <ul className="flex flex-col gap-0">
+                  {DOCUMENTS_MEGA_CATEGORIES.map((cat) => (
+                    <li key={cat.href}>
+                      <ProductAccordionItem cat={cat} onClose={onClose} />
+                    </li>
+                  ))}
                 </ul>
               </section>
 
@@ -251,5 +232,69 @@ export function MobileMenu({
         </motion.div>
       )}
     </AnimatePresence>
+  );
+}
+
+/**
+ * Аккордеон-карточка для категории продуктов в mobile-menu.
+ * Тап по заголовку — разворачивает описание. Тап по «Перейти» — навигация.
+ * Сделано отдельным компонентом, чтобы у каждой карточки был свой
+ * useState для open/closed без поднятия в parent (5 категорий).
+ */
+function ProductAccordionItem({
+  cat,
+  onClose,
+  firstLinkRef,
+}: {
+  cat: (typeof PRODUCTS_MEGA_CATEGORIES)[number] | (typeof DOCUMENTS_MEGA_CATEGORIES)[number];
+  onClose: () => void;
+  firstLinkRef?: React.Ref<HTMLAnchorElement>;
+}) {
+  const [open, setOpen] = useState(false);
+  const Icon = cat.Icon;
+  return (
+    <div className="border-b border-[var(--color-hairline)] py-3">
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        aria-expanded={open}
+        className="flex w-full items-center justify-between gap-4 text-left text-[var(--color-secondary)]"
+      >
+        <span className="flex items-center gap-3">
+          <Icon
+            size={20}
+            strokeWidth={1.5}
+            aria-hidden="true"
+            className="text-[var(--color-secondary)]/65"
+          />
+          <span className="font-display text-2xl font-medium">{cat.title}</span>
+        </span>
+        <ChevronDown
+          size={18}
+          strokeWidth={1.5}
+          aria-hidden="true"
+          className={
+            "transition-transform duration-200 " +
+            (open ? "rotate-180" : "rotate-0")
+          }
+        />
+      </button>
+      {open && (
+        <div className="mt-3 space-y-3 pl-9">
+          <p className="text-sm leading-relaxed text-[var(--color-secondary)]/70">
+            {cat.description}
+          </p>
+          <Link
+            ref={firstLinkRef}
+            href={cat.href}
+            onClick={onClose}
+            className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.12em] text-[var(--color-secondary)] underline decoration-[var(--color-hairline)] underline-offset-[3px] hover:decoration-[var(--color-secondary)]"
+          >
+            Перейти к разделу
+            <span aria-hidden="true">→</span>
+          </Link>
+        </div>
+      )}
+    </div>
   );
 }

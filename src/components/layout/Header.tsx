@@ -7,8 +7,10 @@ import { motion, useMotionValueEvent, useScroll } from "framer-motion";
 import { Menu, Phone } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { CONTACTS } from "@/lib/contacts";
-import { CATALOG_PATH, PROJECTS_PATH } from "@/lib/routes";
+import { PROJECTS_PATH } from "@/lib/routes";
 import { MobileMenu } from "./MobileMenu";
+import { ProductsMenu } from "./ProductsMenu";
+import { DocumentsMenu } from "./DocumentsMenu";
 import { ThemeToggle } from "./ThemeToggle";
 
 /**
@@ -18,18 +20,22 @@ import { ThemeToggle } from "./ThemeToggle";
  *  2. After a small scroll threshold we darken/blur the bar so it stays
  *     legible over any hero content.
  *
- * Navigation items match Stage 2 of TZ_ANHEL.md. Links point at anchors
- * on the home page for now — we'll lift them into real routes later when
- * the sections exist.
+ * Navigation: гибридная структура — Производство и О компании ведут на
+ * якоря секций главной (#production, #about), Контакты — отдельная
+ * страница `/contacts` с реквизитами, картой и формой обратной связи.
  */
 
+/**
+ * Остальные пункты NAV — обычные `<Link>`. Пункты «Продукты» и
+ * «Документация» вынесены в отдельные компоненты с dropdown-меню
+ * (см. ProductsMenu.tsx, DocumentsMenu.tsx), поэтому в массиве их нет.
+ */
 const NAV = [
-  { label: "Продукты", href: CATALOG_PATH },
   { label: "Объекты", href: PROJECTS_PATH },
-  { label: "О компании", href: "/#about" },
-  { label: "Производство", href: "/#manufacturing" },
+  { label: "Производство", href: "/#production" },
   { label: "Сервис", href: "/service" },
-  { label: "Контакты", href: "/#contact" },
+  { label: "О компании", href: "/#about" },
+  { label: "Контакты", href: "/contacts" },
 ];
 
 export function Header() {
@@ -79,9 +85,21 @@ export function Header() {
 
           <nav
             aria-label="Основная навигация"
-            className="hidden items-center gap-8 md:flex"
+            className="hidden items-center gap-6 md:flex lg:gap-8"
           >
-            {NAV.map((item) => (
+            <ProductsMenu />
+            {NAV.slice(0, 3).map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                data-cursor="hover"
+                className="text-sm text-[var(--color-secondary)]/70 transition-colors hover:text-[var(--color-secondary)]"
+              >
+                {item.label}
+              </Link>
+            ))}
+            <DocumentsMenu />
+            {NAV.slice(3).map((item) => (
               <Link
                 key={item.href}
                 href={item.href}

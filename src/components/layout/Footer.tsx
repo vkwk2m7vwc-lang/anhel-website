@@ -51,7 +51,7 @@ export function Footer() {
           <p className="text-[var(--color-secondary)]/60">
             Политехническая ул., д. 6, стр. 1,
             <br />
-            пом. 1-Н, Санкт-Петербург
+            пом. Н-7, Санкт-Петербург
           </p>
         </div>
 
@@ -60,9 +60,11 @@ export function Footer() {
           {[
             { label: "Продукты", href: CATALOG_PATH },
             { label: "Объекты", href: "/projects" },
-            { label: "О компании", href: "/#about" },
-            { label: "Производство", href: "/#manufacturing" },
+            { label: "Производство", href: "/#production" },
             { label: "Сервис", href: "/service" },
+            { label: "Документация", href: "/documents" },
+            { label: "О компании", href: "/#about" },
+            { label: "Контакты", href: "/contacts" },
           ].map((item) => (
             <Link
               key={item.href}
@@ -77,8 +79,27 @@ export function Footer() {
       </div>
 
       <div className="border-t border-[var(--color-hairline)]">
-        <div className="mx-auto flex max-w-[1440px] flex-col items-start justify-between gap-2 px-6 py-6 text-xs text-[var(--color-secondary)]/65 md:flex-row md:items-center md:px-12">
+        <div className="mx-auto flex max-w-[1440px] flex-col items-start justify-between gap-4 px-6 py-6 text-xs text-[var(--color-secondary)]/65 md:flex-row md:items-center md:px-12">
           <p>© {year} ANHEL®. Все права защищены.</p>
+          <nav
+            aria-label="Юридические документы"
+            className="flex flex-wrap items-center gap-x-5 gap-y-2"
+          >
+            <Link
+              href="/privacy-policy"
+              data-cursor="hover"
+              className="text-[var(--color-secondary)]/80 hover:text-[var(--color-secondary)]"
+            >
+              Политика конфиденциальности
+            </Link>
+            <Link
+              href="/personal-data-consent"
+              data-cursor="hover"
+              className="text-[var(--color-secondary)]/80 hover:text-[var(--color-secondary)]"
+            >
+              Согласие на обработку ПД
+            </Link>
+          </nav>
           <p>Санкт-Петербург · anhelspb.com</p>
         </div>
       </div>

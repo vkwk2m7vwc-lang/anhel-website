@@ -1,5 +1,7 @@
 'use client';
 
+import Link from 'next/link';
+
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   FormProvider,
@@ -408,16 +410,22 @@ function ReviewStep({
                   {fieldState.error.message}
                 </p>
               )}
-              <p className="mt-2 pl-7 text-xs text-secondary/55">
-                <a
-                  href="#"
+              <p className="mt-2 pl-7 text-xs leading-relaxed text-secondary/55">
+                В соответствии с{' '}
+                <Link
+                  href="/privacy-policy"
                   className="border-b border-secondary/40 hover:border-secondary"
-                  onClick={(e) => e.preventDefault()}
-                  title="Страница в разработке"
                 >
-                  Политика конфиденциальности
-                </a>{' '}
-                (страница появится позже)
+                  Политикой конфиденциальности
+                </Link>
+                {' '}и{' '}
+                <Link
+                  href="/personal-data-consent"
+                  className="border-b border-secondary/40 hover:border-secondary"
+                >
+                  Согласием на обработку ПД
+                </Link>
+                .
               </p>
             </div>
           )}

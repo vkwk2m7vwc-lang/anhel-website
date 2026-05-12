@@ -20,6 +20,13 @@ import type { CasesContent, CaseItem } from "@/content/products/types";
  * stay off the design in line with the Gallery decision.
  */
 export function CasesCarousel({ content }: { content: CasesContent }) {
+  // Скрываем секцию полностью, если у всех элементов нет реального фото
+  // (placeholder-only кейсы). Раньше CaseSkeleton рисовал серый штрих с
+  // надписью «Фото объекта» — это читается как заглушка / битый билд.
+  // Когда фото появятся, секция вернётся автоматически.
+  const itemsWithPhoto = content.items.filter((it) => Boolean(it.photo?.src));
+  if (itemsWithPhoto.length === 0) return null;
+
   return (
     <section
       id="cases"
@@ -47,7 +54,7 @@ export function CasesCarousel({ content }: { content: CasesContent }) {
 
       <div className="relative">
         <ul className="flex snap-x snap-mandatory gap-6 overflow-x-auto px-6 pb-16 md:gap-8 md:px-12">
-          {content.items.map((item, i) => (
+          {itemsWithPhoto.map((item, i) => (
             <CaseCard key={item.id} item={item} index={i} />
           ))}
           <li aria-hidden="true" className="shrink-0 pl-2" />

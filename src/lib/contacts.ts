@@ -12,5 +12,5 @@ export const CONTACTS = {
   /** Dial format — rfc3966 tel: URI. */
   phoneTel: "+78124164500",
   email: "info@anhelspb.com",
-  officeAddress: "Политехническая ул., д. 6, стр. 1, пом. 1-Н, Санкт-Петербург",
+  officeAddress: "Политехническая ул., д. 6, стр. 1, пом. Н-7, Санкт-Петербург",
 } as const;

@@ -8,6 +8,7 @@ import { Footer } from "@/components/layout/Footer";
 import { CustomCursor } from "@/components/layout/CustomCursor";
 import { PageTransition } from "@/components/layout/PageTransition";
 import { LoadingSplash } from "@/components/layout/LoadingSplash";
+import { AnchorScrollHandler } from "@/components/layout/AnchorScrollHandler";
 import { ldScriptProps, organizationLd } from "@/lib/schema-org";
 
 /**
@@ -69,6 +70,7 @@ export default function RootLayout({
         <ThemeProvider>
           <LenisProvider>
             <LoadingSplash />
+            <AnchorScrollHandler />
             <CustomCursor />
             <Header />
             <PageTransition>
