@@ -60,7 +60,7 @@ const ACCENT_VAR: Record<ProductAccent, string> = {
 export function ProductsShowcase({
   tone = "section",
   monoTag = "02 · ЛИНЕЙКА ПРОДУКТОВ",
-  title = "Четыре направления, одна сборка",
+  title = "Четыре направления, один завод",
   lede = "Насосные станции, водоподготовка, тепловые пункты и шкафы управления. Заводская сборка, серийное производство, индивидуальная конфигурация под ТЗ.",
   products,
 }: Props) {

@@ -3,19 +3,27 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
-import { Droplet, Flame, Filter, Cpu, type LucideIcon } from "lucide-react";
+import { FileText, BookOpen, FileBadge, type LucideIcon } from "lucide-react";
 
 /**
- * Мега-меню «Документация» — структурно идентично MegaMenu (продукты):
- * grid 2×2, 4 карточки направлений, fade-slide появление.
+ * Мега-меню «Документация» — выбор сразу по ТИПУ документа.
  *
- * Ссылки ведут на якоря внутри `/documents`, а не на отдельные
- * страницы — все PDF (опросные листы, сертификаты, руководства)
- * собраны в одной странице, mega-menu даёт быстрый прыжок в
- * нужный раздел без скролла руками.
+ * Историческая версия (v1) была по направлениям (Насосные / ИТП /
+ * ВПУ / ШУ). v2 (12.05.2026) — переход на структуру «по типу»:
+ * Опросные / Каталоги / Сертификаты. Согласуется с:
+ *   - Footer-колонкой «Материалы» (/documents#questionnaires|catalogs|certificates)
+ *   - top-level якорями на странице /documents
  *
- * Те же иконки lucide, что в MegaMenu, чтобы шапка читалась
- * целостно: один и тот же логический язык в обоих dropdown.
+ * Раньше у конкретного направления было удобно сразу попасть в его
+ * блок документов; теперь — обратная логика: «мне нужен опросный
+ * лист» → клик → секция «Опросные листы» с подгруппами по
+ * направлению. Внутри секции направление-anchors (`#pumps`, и т.д.)
+ * сохранены — старые external-ссылки на /documents#pumps продолжают
+ * работать.
+ *
+ * 3 пункта рендерятся горизонтально (grid-cols-3), меню чуть шире
+ * чем 4-карточный продуктовый — это намеренный визуальный контраст,
+ * чтобы две dropdown'ы в шапке не смотрелись одинаково.
  */
 
 type MegaMenuCategory = {
@@ -27,28 +35,22 @@ type MegaMenuCategory = {
 
 const CATEGORIES: readonly MegaMenuCategory[] = [
   {
-    title: "Насосные станции",
-    href: "/documents#pumps",
-    description: "5 опросных листов, 5 деклараций ЕАЭС, 5 руководств",
-    Icon: Droplet,
+    title: "Опросные листы",
+    href: "/documents#questionnaires",
+    description: "8 опросных листов по 4 направлениям",
+    Icon: FileText,
   },
   {
-    title: "Тепловые пункты",
-    href: "/documents#heating-unit",
-    description: "Опросный лист и декларация ЕАЭС соответствия",
-    Icon: Flame,
+    title: "Каталоги",
+    href: "/documents#catalogs",
+    description: "Печатные каталоги — в подготовке",
+    Icon: BookOpen,
   },
   {
-    title: "Водоподготовка",
-    href: "/documents#water-treatment",
-    description: "Опросный лист и декларация ЕАЭС",
-    Icon: Filter,
-  },
-  {
-    title: "Шкафы управления",
-    href: "/documents#control-systems",
-    description: "Опросный лист по 5 сериям шкафов",
-    Icon: Cpu,
+    title: "Сертификаты",
+    href: "/documents#certificates",
+    description: "7 деклараций ЕАЭС соответствия",
+    Icon: FileBadge,
   },
 ];
 
@@ -58,14 +60,14 @@ export function DocumentsMegaMenu({ onClose }: { onClose: () => void }) {
   return (
     <motion.div
       role="menu"
-      aria-label="Документация — направления"
+      aria-label="Документация — по типу"
       initial={{ opacity: 0, y: -8 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -8 }}
       transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
-      className="absolute left-1/2 top-full z-40 mt-3 w-[720px] -translate-x-1/2 rounded-md border border-[var(--color-secondary)]/15 bg-[var(--color-primary)]/95 p-3 shadow-2xl shadow-black/30 backdrop-blur-xl"
+      className="absolute left-1/2 top-full z-40 mt-3 w-[780px] -translate-x-1/2 rounded-md border border-[var(--color-secondary)]/15 bg-[var(--color-primary)]/95 p-3 shadow-2xl shadow-black/30 backdrop-blur-xl"
     >
-      <ul className="grid grid-cols-2 gap-2">
+      <ul className="grid grid-cols-3 gap-2">
         {CATEGORIES.map((cat) => {
           const isActive = pathname === "/documents";
           const Icon = cat.Icon;
@@ -77,7 +79,7 @@ export function DocumentsMegaMenu({ onClose }: { onClose: () => void }) {
                 data-cursor="hover"
                 onClick={onClose}
                 className={
-                  "group flex items-start gap-4 rounded-sm border border-transparent p-4 transition-colors " +
+                  "group flex h-full items-start gap-4 rounded-sm border border-transparent p-4 transition-colors " +
                   (isActive
                     ? "border-[var(--color-secondary)]/20 bg-[var(--color-hover-tint)]"
                     : "hover:border-[var(--color-secondary)]/15 hover:bg-[var(--color-hover-tint)]")

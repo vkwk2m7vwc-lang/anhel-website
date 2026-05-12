@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 /**
  * Секция «О компании» — якорь `#about` на главной.
  *
@@ -5,13 +7,14 @@
  * проектировщику/закупщику быстрый ответ «что за ANHEL» без перехода на
  * отдельную страницу. Скролл-якорь, не route.
  *
- * Содержимое — плейсхолдер ~3 абзацев, который заменит копирайтер.
- * Финальные цифры в счётчиках статические (без count-up anim), потому
- * что в hero уже играется анимация — повторять тот же эффект на одной
- * странице визуально шумно (см. M1 из audit: count-up читался как
- * «числа постоянно растут»). Для финальных значений берём те же
- * 150+/12/4, что и в hero — чтобы пользователь не получал разные
- * цифры в разных секциях одной страницы.
+ * Содержимое — финальные тексты v2 из copy.md (A.2):
+ *   - метка, заголовок, 3 абзаца (бренд → производство → полный цикл)
+ *   - ряд из 3 статичных счётчиков (150+ объектов / 12+ лет опыта / 04 направления)
+ *   - CTA «О производстве →» — якорь на /#production
+ *
+ * Счётчики статические (без count-up anim) — в hero уже играется
+ * анимация, повторять её одной секцией ниже визуально шумно (см. M1
+ * из audit: count-up читался как «числа постоянно растут»).
  *
  * Стиль секции согласован с `ProductsShowcase`: max-width 1440,
  * h2 на font-display, lede 60-70 chars, mono-tag сверху.
@@ -29,58 +32,102 @@ export function AboutSection() {
           id="about-heading"
           className="max-w-3xl font-display text-3xl leading-tight md:text-5xl"
         >
-          ANHEL® — российский производитель инженерного оборудования для зданий, которые будут стоять десятилетиями.
+          Делаем сложное оборудование простым в эксплуатации
         </h2>
 
         <div className="mt-10 grid gap-8 text-base leading-relaxed text-[var(--color-secondary)]/75 md:grid-cols-2 md:gap-14 md:text-lg">
           <p>
-            Мы проектируем и собираем насосные станции, тепловые пункты, установки водоподготовки и шкафы управления под задачу конкретного объекта — от жилых комплексов и медицинских центров до промышленных площадок и атомных реакторов.
+            ANHEL® — бренд ООО «Профит». Проектируем и производим модульные
+            насосные станции, блочно-модульные тепловые пункты, системы
+            водоподготовки и шкафы управления. Работаем с промышленными и
+            гражданскими объектами по всей России.
           </p>
           <p>
-            Каждая установка проходит полный цикл — расчёт, конфигурация под параметры объекта, обвязка, монтаж электрики, заводская приёмка под нагрузкой. На объект приезжает готовый блок, который встаёт в проект без переделок.
+            Собственное конструкторское бюро и сборочный цех. Каждый модуль
+            проходит гидравлические и электрические испытания на стенде до
+            отгрузки — на объект приезжает оборудование, готовое к
+            пусконаладке.
           </p>
         </div>
 
         <p className="mt-8 max-w-3xl text-base leading-relaxed text-[var(--color-secondary)]/60 md:text-lg">
-          Офис, инженерное бюро и производство — Санкт-Петербург и Москва. Сервис — собственная бригада с круглосуточной поддержкой по объектам в эксплуатации.
+          Закрываем весь цикл одной командой: расчёт и подбор → проектирование
+          → производство → монтаж и пусконаладка → сервис. Один договор, один
+          ответственный, одни сроки.
         </p>
 
-        {/* Static stats — без count-up animation. Финальные значения
-            те же, что в hero, чтобы пользователь не натыкался на
-            разные цифры в разных секциях одной страницы. */}
+        {/* Static stats — без count-up animation. 3 значения горизонтально:
+            150+ объектов / 12 лет опыта / 04 направления — реальные цифры
+            бренда (бизнес работает с 2014, 150+ объектов сданы). */}
         <div
           aria-label="Ключевые показатели"
           className="mt-16 grid grid-cols-3 gap-6 border-t border-[var(--color-hairline)] pt-10 md:mt-20 md:gap-16 md:pt-14"
         >
-          <div>
-            <p className="font-mono text-2xl font-medium leading-none text-[var(--color-secondary)] md:text-[32px]">
-              150
-              <span aria-hidden="true" className="text-[var(--accent-fire)]">
-                +
-              </span>
-            </p>
-            <p className="mt-2 font-mono text-[10px] uppercase tracking-[0.1em] text-[var(--color-secondary)]/50">
-              Объектов
-            </p>
-          </div>
-          <div>
-            <p className="font-mono text-2xl font-medium leading-none text-[var(--color-secondary)] md:text-[32px]">
-              12
-            </p>
-            <p className="mt-2 font-mono text-[10px] uppercase tracking-[0.1em] text-[var(--color-secondary)]/50">
-              Лет опыта
-            </p>
-          </div>
-          <div>
-            <p className="font-mono text-2xl font-medium leading-none text-[var(--color-secondary)] md:text-[32px]">
-              04
-            </p>
-            <p className="mt-2 font-mono text-[10px] uppercase tracking-[0.1em] text-[var(--color-secondary)]/50">
-              Направления
-            </p>
-          </div>
+          <Stat value="150" suffix="+" caption="Объектов" />
+          <Stat value="12" suffix="+" caption="Лет опыта" />
+          <Stat value="04" caption="Направления" />
+        </div>
+
+        {/* CTA на якорь #production — секция «Производство» ниже на той
+            же странице. Сам link плотный, ghost-style, как у hero. */}
+        <div className="mt-12 md:mt-16">
+          <Link
+            href="/#production"
+            data-cursor="hover"
+            data-cta="about-to-production"
+            className="group inline-flex items-center gap-3 rounded-md border-[0.5px] border-[var(--color-secondary)]/40 px-[22px] py-[14px] text-sm font-medium text-[var(--color-secondary)] transition-colors hover:border-[var(--color-secondary)]"
+          >
+            О производстве
+            <span
+              aria-hidden="true"
+              className="inline-block font-mono transition-transform duration-300 ease-out-expo group-hover:translate-x-1"
+            >
+              →
+            </span>
+          </Link>
         </div>
       </div>
     </section>
+  );
+}
+
+/**
+ * Single static stat — крупная цифра, опц. accent-suffix, опц. unit,
+ * подпись капсом снизу. Композиция стабильная, никакой анимации.
+ *
+ * `value` всегда строка (поддерживает «10» / «100» / «24» / «4» и пр.).
+ * `suffix` — отдельный span с accent-fire цветом (для «+»).
+ * `unit`   — мелкий моно-суффикс справа (для «24 мес»).
+ */
+function Stat({
+  value,
+  suffix,
+  unit,
+  caption,
+}: {
+  value: string;
+  suffix?: string;
+  unit?: string;
+  caption: string;
+}) {
+  return (
+    <div>
+      <p className="flex items-baseline gap-1 font-display text-[40px] font-medium leading-none text-[var(--color-secondary)] md:text-[56px]">
+        <span>{value}</span>
+        {suffix ? (
+          <span aria-hidden="true" className="text-[var(--accent-fire)]">
+            {suffix}
+          </span>
+        ) : null}
+        {unit ? (
+          <span className="ml-1 font-mono text-base font-normal text-[var(--color-secondary)]/70 md:text-lg">
+            {unit}
+          </span>
+        ) : null}
+      </p>
+      <p className="mt-3 font-mono text-[11px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/55 md:mt-4">
+        {caption}
+      </p>
+    </div>
   );
 }

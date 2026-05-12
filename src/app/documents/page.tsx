@@ -5,13 +5,28 @@ import { FileText, FileBadge, FileCog, Download, Building2 } from "lucide-react"
 /**
  * `/documents` — единая страница технической документации.
  *
- * Закрывает запрос Алексея: «нужна одна точка где собраны опросные
- * листы по направлениям, каталоги, сертификаты, руководства».
+ * Структура (v2, copy.md A.4):
  *
- * До этой страницы документы были разбросаны по продуктовым
- * страницам (секция 09 на каждой), а карточка организации жила
- * только на /contacts. Здесь — всё в одном месте, сгруппировано
- * по 4 направлениям + общие документы сверху.
+ *   1. Hero
+ *   2. Общие документы (карточка организации, сервисная заявка)
+ *   3. #questionnaires — Опросные листы
+ *        внутри: 4 группы по направлению, у каждой id={slug}
+ *        (#pumps / #heating-unit / #water-treatment / #control-systems)
+ *   4. #catalogs — Каталоги (placeholder, в подготовке)
+ *   5. #certificates — Сертификаты ЕАЭС
+ *        внутри: 4 группы по направлению (только где сертификаты есть)
+ *   6. Руководства по эксплуатации (без top-level якоря,
+ *      справочный раздел внизу страницы)
+ *
+ * Два набора якорей одновременно:
+ *   - Якоря по ТИПУ документа (#questionnaires/#catalogs/#certificates) —
+ *     приходят из Footer, режим «мне нужен этот тип документа»;
+ *   - Якоря по НАПРАВЛЕНИЮ (#pumps/#heating-unit/...) — приходят из
+ *     DocumentsMegaMenu в шапке, режим «всё по направлению X». Эти
+ *     якоря живут как article-id внутри секции «Опросные листы» —
+ *     это первое, что видит пользователь при заходе с mega-menu по
+ *     направлению; ниже того же блока идут каталоги и сертификаты,
+ *     где направление встречается ещё раз без id (id уникален в DOM).
  *
  * Структура источника:
  *   - public/docs/<slug>/oprosnyi-list.pdf  — 8 опросных листов
@@ -47,8 +62,6 @@ type DocCategory = {
   certificates: DocItem[];
   /** Руководства по эксплуатации. */
   manuals?: DocItem[];
-  /** Каталоги — пока нет, placeholder активируется когда появятся. */
-  catalogs?: DocItem[];
 };
 
 const CATEGORIES: readonly DocCategory[] = [
@@ -117,6 +130,25 @@ const COMMON_DOCS: readonly DocItem[] = [
 ];
 
 export default function DocumentsPage() {
+  // Группы для секции «Опросные листы» — у каждой category всегда есть
+  // ≥1 опросный лист, поэтому фильтр не нужен; ids смотрят на cat.slug
+  // (это единственное место, где cat.slug используется как DOM id —
+  // даёт работающие #pumps / #heating-unit / #water-treatment /
+  // #control-systems для DocumentsMegaMenu).
+  const questionnaireCats = CATEGORIES;
+
+  // Сертификаты есть не у всех (control-systems пустой) — фильтруем,
+  // чтобы не рисовать пустой блок «Сертификаты — Шкафы управления»
+  // с подписью «нет документов».
+  const certificateCats = CATEGORIES.filter(
+    (cat) => cat.certificates.length > 0,
+  );
+
+  // Руководства тоже не у всех — пока только у Насосных станций.
+  const manualCats = CATEGORIES.filter(
+    (cat) => cat.manuals && cat.manuals.length > 0,
+  );
+
   return (
     <main className="pt-24 md:pt-32">
       {/* Hero */}
@@ -145,82 +177,166 @@ export default function DocumentsPage() {
           <p className="mono-tag mb-8">Общие документы</p>
           <ul className="grid gap-3 md:grid-cols-2">
             {COMMON_DOCS.map((doc) => (
-              <DocCard
-                key={doc.href}
-                doc={doc}
-                icon={Building2}
-              />
+              <DocCard key={doc.href} doc={doc} icon={Building2} />
             ))}
           </ul>
         </div>
       </section>
 
-      {/* Направления */}
-      {CATEGORIES.map((cat) => (
-        <CategoryBlock key={cat.slug} cat={cat} />
-      ))}
+      {/* Опросные листы — top-level якорь #questionnaires.
+          Внутри — 4 группы по направлению, у каждой id={cat.slug}
+          для совместимости с DocumentsMegaMenu. */}
+      <section
+        id="questionnaires"
+        className="scroll-mt-24 border-b border-[var(--color-hairline)] bg-[var(--color-primary)] text-[var(--color-secondary)]"
+      >
+        <div className="mx-auto max-w-[1440px] px-6 py-16 md:px-12 md:py-20">
+          <SectionHeader
+            tag="По направлениям"
+            title="Опросные листы"
+            lead="Заполните параметры объекта в шаблоне — мы вернёмся с подбором и коммерческим предложением в течение рабочего дня."
+          />
+          <div className="mt-12 flex flex-col gap-12 md:gap-14">
+            {questionnaireCats.map((cat) => (
+              <DirectionGroup
+                key={cat.slug}
+                id={cat.slug}
+                title={cat.title}                items={cat.questionnaires}
+                icon={FileText}
+              />
+            ))}
+          </div>
+        </div>
+      </section>
 
-      {/* Каталоги-placeholder — пока нет реальных */}
-      <section className="bg-[var(--color-primary)] text-[var(--color-secondary)]">
-        <div className="mx-auto max-w-[1440px] px-6 py-14 md:px-12 md:py-16">
-          <p className="mono-tag mb-6">Каталоги</p>
-          <div className="rounded-md border border-dashed border-[var(--color-hairline)] bg-[var(--color-image-placeholder)] p-8 text-center md:p-14">
+      {/* Каталоги — top-level якорь #catalogs. Placeholder. */}
+      <section
+        id="catalogs"
+        className="scroll-mt-24 border-b border-[var(--color-hairline)] bg-[var(--color-primary)] text-[var(--color-secondary)]"
+      >
+        <div className="mx-auto max-w-[1440px] px-6 py-16 md:px-12 md:py-20">
+          <SectionHeader title="Каталоги" />
+          <div className="mt-10 rounded-md border border-dashed border-[var(--color-hairline)] bg-[var(--color-image-placeholder)] p-8 text-center md:p-14">
             <p className="font-display text-xl leading-tight text-[var(--color-secondary)]/80 md:text-2xl">
               Печатные каталоги по направлениям — в подготовке
             </p>
             <p className="mt-3 text-sm text-[var(--color-secondary)]/55">
-              Появятся в этом разделе. До тех пор для подбора подходят опросные листы и сертификаты выше.
+              Появятся в этом разделе. До тех пор для подбора подходят опросные листы и сертификаты.
             </p>
           </div>
         </div>
       </section>
+
+      {/* Сертификаты — top-level якорь #certificates. Сгруппировано
+          по направлениям, только там где сертификаты реально есть. */}
+      <section
+        id="certificates"
+        className="scroll-mt-24 border-b border-[var(--color-hairline)] bg-[var(--color-primary)] text-[var(--color-secondary)]"
+      >
+        <div className="mx-auto max-w-[1440px] px-6 py-16 md:px-12 md:py-20">
+          <SectionHeader
+            tag="По направлениям"
+            title="Сертификаты ЕАЭС"
+            lead="Декларации соответствия Техническим регламентам ЕАЭС — оборудование сертифицировано для применения на объектах России и стран Союза."
+          />
+          <div className="mt-12 flex flex-col gap-12 md:gap-14">
+            {certificateCats.map((cat) => (
+              <DirectionGroup
+                key={cat.slug}
+                title={cat.title}                items={cat.certificates}
+                icon={FileBadge}
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Руководства по эксплуатации — без top-level якоря в Footer,
+          справочный раздел внизу. Только направления с manuals. */}
+      {manualCats.length > 0 ? (
+        <section className="bg-[var(--color-primary)] text-[var(--color-secondary)]">
+          <div className="mx-auto max-w-[1440px] px-6 py-16 md:px-12 md:py-20">
+            <SectionHeader
+              tag="По направлениям"
+              title="Руководства по эксплуатации"
+              lead="Передаются заказчику в составе ИОТ при приёмке. Здесь — для предварительного ознакомления."
+            />
+            <div className="mt-12 flex flex-col gap-12 md:gap-14">
+              {manualCats.map((cat) => (
+                <DirectionGroup
+                  key={cat.slug}
+                  title={cat.title}                  items={cat.manuals ?? []}
+                  icon={FileCog}
+                />
+              ))}
+            </div>
+          </div>
+        </section>
+      ) : null}
     </main>
   );
 }
 
-function CategoryBlock({ cat }: { cat: DocCategory }) {
-  const groups: Array<{ title: string; icon: typeof FileText; items: DocItem[] }> = [
-    { title: "Опросные листы", icon: FileText, items: cat.questionnaires },
-    { title: "Сертификаты", icon: FileBadge, items: cat.certificates },
-  ];
-  if (cat.manuals && cat.manuals.length > 0) {
-    groups.push({ title: "Руководства", icon: FileCog, items: cat.manuals });
-  }
-
+/**
+ * Section header — mono-tag + h2 + опц. лид. Используется в каждой
+ * top-level секции страницы документации.
+ */
+function SectionHeader({
+  tag,
+  title,
+  lead,
+}: {
+  tag?: string;
+  title: string;
+  lead?: string;
+}) {
   return (
-    <section
-      id={cat.slug}
-      className="border-b border-[var(--color-hairline)] bg-[var(--color-primary)] text-[var(--color-secondary)]"
-    >
-      <div className="mx-auto max-w-[1440px] px-6 py-16 md:px-12 md:py-20">
-        <div className="mb-10 flex flex-col gap-2 md:flex-row md:items-end md:justify-between md:gap-10">
-          <div>
-            <p className="mono-tag mb-4">{cat.title}</p>
-            <h2 className="font-display text-2xl leading-tight md:text-4xl">{cat.title}</h2>
-          </div>
-          <p className="max-w-md text-sm leading-relaxed text-[var(--color-secondary)]/60 md:text-right md:text-[15px]">
-            {cat.caption}
-          </p>
-        </div>
+    <div className="max-w-3xl">
+      {tag ? <p className="mono-tag mb-6">{tag}</p> : null}
+      <h2 className="font-display text-3xl leading-tight md:text-5xl">
+        {title}
+      </h2>
+      {lead ? (
+        <p className="mt-6 text-base leading-relaxed text-[var(--color-secondary)]/70 md:text-lg">
+          {lead}
+        </p>
+      ) : null}
+    </div>
+  );
+}
 
-        <div className="flex flex-col gap-10">
-          {groups
-            .filter((g) => g.items.length > 0)
-            .map((group) => (
-              <div key={group.title}>
-                <p className="font-mono text-[11px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/55">
-                  {group.title}
-                </p>
-                <ul className="mt-4 grid gap-3 md:grid-cols-2">
-                  {group.items.map((doc) => (
-                    <DocCard key={doc.href} doc={doc} icon={group.icon} />
-                  ))}
-                </ul>
-              </div>
-            ))}
-        </div>
-      </div>
-    </section>
+/**
+ * Direction group — block внутри top-level секции по типу документа.
+ * Содержит заголовок направления слева, описание-капшен справа и
+ * сетку DocCard 2 в ряд.
+ *
+ * `id` опционален: внутри секции «Опросные листы» каждая группа
+ * получает id=slug для совместимости с DocumentsMegaMenu. В других
+ * секциях id не повторяем (id уникальны в DOM).
+ */
+function DirectionGroup({
+  id,
+  title,
+  items,
+  icon,
+}: {
+  id?: string;
+  title: string;
+  items: DocItem[];
+  icon: typeof FileText;
+}) {
+  if (items.length === 0) return null;
+  return (
+    <article id={id} className={id ? "scroll-mt-24" : undefined}>
+      <p className="mb-6 font-display text-2xl leading-tight md:text-3xl">
+        {title}
+      </p>
+      <ul className="grid gap-3 md:grid-cols-2">
+        {items.map((doc) => (
+          <DocCard key={doc.href} doc={doc} icon={icon} />
+        ))}
+      </ul>
+    </article>
   );
 }
 

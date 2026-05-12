@@ -98,8 +98,14 @@ export default function ContactsPage() {
         </div>
       </section>
 
-      {/* Реквизиты — карточка организации */}
-      <section className="border-b border-[var(--color-hairline)] bg-[var(--color-primary)] text-[var(--color-secondary)]">
+      {/* Реквизиты — карточка организации.
+          id="requisites" — якорь для ссылок из Footer (`/contacts#requisites`)
+          и любых внутренних cross-references на финансовые/договорные
+          поля. scroll-mt-24 компенсирует sticky-header при скролле. */}
+      <section
+        id="requisites"
+        className="scroll-mt-24 border-b border-[var(--color-hairline)] bg-[var(--color-primary)] text-[var(--color-secondary)]"
+      >
         <div className="mx-auto max-w-[1440px] px-6 py-16 md:px-12 md:py-24">
           <p className="mono-tag mb-6">Реквизиты</p>
 

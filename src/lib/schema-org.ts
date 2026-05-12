@@ -41,8 +41,8 @@ export function organizationLd(): JsonLd {
     "@type": "Organization",
     "@id": `${SITE_URL}/#organization`,
     name: "ANHEL",
-    legalName: "ГК Профит",
-    alternateName: ["ANHEL®", "ГК Профит"],
+    legalName: "ООО «Профит»",
+    alternateName: ["ANHEL®"],
     url: SITE_URL,
     logo: `${SITE_URL}/assets/products/hvs-nu.png`,
     description:
@@ -63,16 +63,17 @@ export function organizationLd(): JsonLd {
         availableLanguage: ["ru"],
       },
     ],
-    // Два производственных узла — офис в СПб (см. address) и
-    // производство в Москве. Schema.org позволяет multiple
-    // PostalAddress через departments.
+    // Производственное подразделение бренда — отдельный узел в графе,
+    // ссылающийся на родительскую Organization через @id. Город не
+    // указан: бренд позиционируется как российский производитель
+    // (см. addressCountry), без публичного указания города цеха.
+    // Юридический офис в СПб остаётся в `address` выше.
     department: [
       {
         "@type": "Organization",
         name: "ANHEL — производство",
         address: {
           "@type": "PostalAddress",
-          addressLocality: "Москва",
           addressCountry: "RU",
         },
       },
