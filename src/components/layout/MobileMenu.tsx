@@ -35,6 +35,7 @@ const NAV_ANCHORS = [
   { label: "Объекты", href: "/projects" },
   { label: "Производство", href: "/#production" },
   { label: "Сервис", href: "/service" },
+  { label: "Документация", href: "/documents" },
   { label: "О компании", href: "/#about" },
   { label: "Контакты", href: "/contacts" },
 ];

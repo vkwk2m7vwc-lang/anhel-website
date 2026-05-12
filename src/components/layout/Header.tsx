@@ -33,6 +33,7 @@ const NAV = [
   { label: "Объекты", href: PROJECTS_PATH },
   { label: "Производство", href: "/#production" },
   { label: "Сервис", href: "/service" },
+  { label: "Документация", href: "/documents" },
   { label: "О компании", href: "/#about" },
   { label: "Контакты", href: "/contacts" },
 ];
@@ -84,7 +85,7 @@ export function Header() {
 
           <nav
             aria-label="Основная навигация"
-            className="hidden items-center gap-8 md:flex"
+            className="hidden items-center gap-6 md:flex lg:gap-8"
           >
             <ProductsMenu />
             {NAV.map((item) => (
