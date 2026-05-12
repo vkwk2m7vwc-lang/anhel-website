@@ -4,6 +4,7 @@ import Link from "next/link";
 import { AnimatePresence } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { ChevronDown } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { CATALOG_PATH } from "@/lib/routes";
 import { MegaMenu } from "./MegaMenu";
 
@@ -23,6 +24,7 @@ import { MegaMenu } from "./MegaMenu";
  * под которой MegaMenu абсолютно позиционируется через `top-full`.
  */
 export function ProductsMenu() {
+  const t = useTranslations("common.nav");
   const [open, setOpen] = useState(false);
   const closeTimer = useRef<number | null>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
@@ -96,7 +98,7 @@ export function ProductsMenu() {
         }}
         className="inline-flex items-center gap-1 text-sm text-[var(--color-secondary)]/70 transition-colors hover:text-[var(--color-secondary)]"
       >
-        Продукты
+        {t("products")}
         <ChevronDown
           size={14}
           strokeWidth={1.75}

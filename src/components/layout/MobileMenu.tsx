@@ -4,9 +4,11 @@ import { AnimatePresence, motion, type PanInfo } from "framer-motion";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { X, Phone, Mail, ChevronDown } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { PRODUCTS_MEGA_CATEGORIES } from "./MegaMenu";
 import { DOCUMENTS_MEGA_CATEGORIES } from "./DocumentsMegaMenu";
 import { CONTACTS } from "@/lib/contacts";
+import { PROJECTS_PATH } from "@/lib/routes";
 
 /**
  * Full-screen mobile menu — the only navigation surface below md.
@@ -21,24 +23,23 @@ import { CONTACTS } from "@/lib/contacts";
  *     focus on open so screen readers announce where they landed
  *
  * Contents (single-column list, large type like terminal-industries):
- *   1. Продукты — 4 cards from PRODUCTS, comingSoon ones disabled
- *   2. Навигация — home-page anchors (Объекты, О компании, etc.)
- *   3. Контакты — phone + email + one-line address
+ *   1. Продукты — 4 cards from PRODUCTS_MEGA_CATEGORIES (i18n keys)
+ *   2. Документация — 3 cards from DOCUMENTS_MEGA_CATEGORIES
+ *   3. Навигация — home-page anchors (Объекты, О компании, etc.)
+ *   4. Контакты — phone + email + one-line address
  *
  * Socials intentionally omitted until the брендбук lists official
  * channels — a badge bar with blank icons would read as a mistake.
  *
  * Rendered only below md via the parent Header; the desktop nav
  * row in Header replaces this component on larger viewports.
+ *
+ * i18n: section titles, NAV labels, accordion strings and aria-labels
+ * resolve from `common.mobile_menu` / `common.nav` / `common.aria`.
+ * Product/Documents category titles live in `common.mega_menu.*` —
+ * the same key the desktop dropdowns read from, so labels stay
+ * consistent.
  */
-
-const NAV_ANCHORS = [
-  { label: "Объекты", href: "/projects" },
-  { label: "Производство", href: "/#production" },
-  { label: "Сервис", href: "/service" },
-  { label: "О компании", href: "/#about" },
-  { label: "Контакты", href: "/contacts" },
-];
 
 export function MobileMenu({
   isOpen,
@@ -47,8 +48,24 @@ export function MobileMenu({
   isOpen: boolean;
   onClose: () => void;
 }) {
+  const t = useTranslations("common");
+  const tMobile = useTranslations("common.mobile_menu");
+  const tNav = useTranslations("common.nav");
+  const tAria = useTranslations("common.aria");
   const panelRef = useRef<HTMLDivElement>(null);
   const firstLinkRef = useRef<HTMLAnchorElement>(null);
+
+  /**
+   * Bottom nav anchors — same list as Header desktop NAV, rebuilt
+   * each render so labels follow t() refresh. Hrefs static.
+   */
+  const NAV_ANCHORS = [
+    { label: tNav("projects"), href: PROJECTS_PATH },
+    { label: tNav("production"), href: "/#production" },
+    { label: tNav("service"), href: "/service" },
+    { label: tNav("about"), href: "/#about" },
+    { label: tNav("contacts"), href: "/contacts" },
+  ];
 
   // Body-scroll lock + initial focus. We read and restore the prior
   // overflow value so we play nicely if some other UI also locks
@@ -113,7 +130,7 @@ export function MobileMenu({
           ref={panelRef}
           role="dialog"
           aria-modal="true"
-          aria-label="Основное меню"
+          aria-label={tMobile("dialog_label")}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -142,14 +159,14 @@ export function MobileMenu({
                 href="/"
                 onClick={onClose}
                 className="font-display text-lg tracking-tight text-[var(--color-secondary)]"
-                aria-label="ANHEL® — на главную"
+                aria-label={tAria("home_link")}
               >
-                ANHEL®
+                {t("brand.name")}
               </Link>
               <button
                 type="button"
                 onClick={onClose}
-                aria-label="Закрыть меню"
+                aria-label={tAria("close_menu")}
                 className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[var(--color-secondary)]/20 text-[var(--color-secondary)]"
               >
                 <X size={18} strokeWidth={1.5} aria-hidden="true" />
@@ -159,16 +176,17 @@ export function MobileMenu({
             <div className="h-px bg-[var(--color-hairline)]" aria-hidden="true" />
 
             <nav
-              aria-label="Основная навигация"
+              aria-label={tAria("main_nav")}
               className="flex flex-1 flex-col gap-10 overflow-y-auto px-6 py-8"
             >
               <section>
-                <p className="mono-tag mb-4">Продукты</p>
+                <p className="mono-tag mb-4">{tMobile("section_products")}</p>
                 <ul className="flex flex-col gap-0">
                   {PRODUCTS_MEGA_CATEGORIES.map((cat, i) => (
                     <li key={cat.href}>
                       <ProductAccordionItem
                         cat={cat}
+                        categoryNs="products"
                         onClose={onClose}
                         firstLinkRef={i === 0 ? firstLinkRef : undefined}
                       />
@@ -178,18 +196,22 @@ export function MobileMenu({
               </section>
 
               <section>
-                <p className="mono-tag mb-4">Документация</p>
+                <p className="mono-tag mb-4">{tMobile("section_documents")}</p>
                 <ul className="flex flex-col gap-0">
                   {DOCUMENTS_MEGA_CATEGORIES.map((cat) => (
                     <li key={cat.href}>
-                      <ProductAccordionItem cat={cat} onClose={onClose} />
+                      <ProductAccordionItem
+                        cat={cat}
+                        categoryNs="documents"
+                        onClose={onClose}
+                      />
                     </li>
                   ))}
                 </ul>
               </section>
 
               <section>
-                <p className="mono-tag mb-4">Навигация</p>
+                <p className="mono-tag mb-4">{tMobile("section_navigation")}</p>
                 <ul className="flex flex-col gap-1">
                   {NAV_ANCHORS.map((a) => (
                     <li key={a.href}>
@@ -206,7 +228,7 @@ export function MobileMenu({
               </section>
 
               <section className="mt-auto space-y-3 border-t border-[var(--color-hairline)] pt-8">
-                <p className="mono-tag">Контакты</p>
+                <p className="mono-tag">{tMobile("section_contacts")}</p>
                 <a
                   href={`tel:${CONTACTS.phoneTel}`}
                   onClick={onClose}
@@ -224,7 +246,7 @@ export function MobileMenu({
                   {CONTACTS.email}
                 </a>
                 <p className="pt-2 text-sm leading-relaxed text-[var(--color-secondary)]/55">
-                  Офис — Санкт-Петербург, производство — Москва.
+                  {tMobile("office_line")}
                 </p>
               </section>
             </nav>
@@ -240,16 +262,27 @@ export function MobileMenu({
  * Тап по заголовку — разворачивает описание. Тап по «Перейти» — навигация.
  * Сделано отдельным компонентом, чтобы у каждой карточки был свой
  * useState для open/closed без поднятия в parent (5 категорий).
+ *
+ * `categoryNs` указывает, из какого подсловаря `common.mega_menu.*`
+ * читать title/description — `products` или `documents`. Это позволяет
+ * переиспользовать один компонент для обеих секций без копирования
+ * структуры.
  */
 function ProductAccordionItem({
   cat,
+  categoryNs,
   onClose,
   firstLinkRef,
 }: {
-  cat: (typeof PRODUCTS_MEGA_CATEGORIES)[number] | (typeof DOCUMENTS_MEGA_CATEGORIES)[number];
+  cat:
+    | (typeof PRODUCTS_MEGA_CATEGORIES)[number]
+    | (typeof DOCUMENTS_MEGA_CATEGORIES)[number];
+  categoryNs: "products" | "documents";
   onClose: () => void;
   firstLinkRef?: React.Ref<HTMLAnchorElement>;
 }) {
+  const t = useTranslations(`common.mega_menu.${categoryNs}`);
+  const tMobile = useTranslations("common.mobile_menu");
   const [open, setOpen] = useState(false);
   const Icon = cat.Icon;
   return (
@@ -267,7 +300,9 @@ function ProductAccordionItem({
             aria-hidden="true"
             className="text-[var(--color-secondary)]/65"
           />
-          <span className="font-display text-2xl font-medium">{cat.title}</span>
+          <span className="font-display text-2xl font-medium">
+            {t(`${cat.key}.title`)}
+          </span>
         </span>
         <ChevronDown
           size={18}
@@ -282,7 +317,7 @@ function ProductAccordionItem({
       {open && (
         <div className="mt-3 space-y-3 pl-9">
           <p className="text-sm leading-relaxed text-[var(--color-secondary)]/70">
-            {cat.description}
+            {t(`${cat.key}.description`)}
           </p>
           <Link
             ref={firstLinkRef}
@@ -290,7 +325,7 @@ function ProductAccordionItem({
             onClick={onClose}
             className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.12em] text-[var(--color-secondary)] underline decoration-[var(--color-hairline)] underline-offset-[3px] hover:decoration-[var(--color-secondary)]"
           >
-            Перейти к разделу
+            {tMobile("go_to_section")}
             <span aria-hidden="true">→</span>
           </Link>
         </div>

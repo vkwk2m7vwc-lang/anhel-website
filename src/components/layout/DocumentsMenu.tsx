@@ -4,6 +4,7 @@ import Link from "next/link";
 import { AnimatePresence } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { ChevronDown } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { DocumentsMegaMenu } from "./DocumentsMegaMenu";
 
 /**
@@ -15,6 +16,7 @@ import { DocumentsMegaMenu } from "./DocumentsMegaMenu";
  * Touch-устройства получают тот же двойной-клик путь.
  */
 export function DocumentsMenu() {
+  const t = useTranslations("common.nav");
   const [open, setOpen] = useState(false);
   const closeTimer = useRef<number | null>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
@@ -82,7 +84,7 @@ export function DocumentsMenu() {
         }}
         className="inline-flex items-center gap-1 text-sm text-[var(--color-secondary)]/70 transition-colors hover:text-[var(--color-secondary)]"
       >
-        Документация
+        {t("documents")}
         <ChevronDown
           size={14}
           strokeWidth={1.75}

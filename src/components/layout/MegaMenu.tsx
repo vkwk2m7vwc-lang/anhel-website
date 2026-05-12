@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
 import { Droplet, Flame, Filter, Cpu, type LucideIcon } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 /**
  * Мега-меню «Продукты» — закрывает C2 из pre-launch audit.
@@ -23,50 +24,38 @@ import { Droplet, Flame, Filter, Cpu, type LucideIcon } from "lucide-react";
  * категория (если `pathname` стартует с её URL) подсвечивается.
  *
  * Mobile эквивалент — accordion в MobileMenu.tsx, не этот компонент.
+ *
+ * i18n: title/description приходят из `common.mega_menu.products.<key>`,
+ * чтобы тот же словарь использовался и в MobileMenu (см. экспорт ниже).
+ * Здесь массив хранит только key+href+Icon — текст резолвится через t().
  */
 
-type MegaMenuCategory = {
-  title: string;
+type MegaMenuCategoryData = {
+  /**
+   * Key inside `common.mega_menu.products.*` — resolves title and
+   * description. Stays language-neutral because next-intl handles
+   * resolution per-request.
+   */
+  key: "pumps" | "heating_unit" | "water_treatment" | "control_systems";
   href: string;
-  description: string;
   Icon: LucideIcon;
 };
 
-const CATEGORIES: readonly MegaMenuCategory[] = [
-  {
-    title: "Насосные станции",
-    href: "/products/pumps",
-    description:
-      "5 серий: водоснабжение, пожаротушение, отопление, повысительные, специальные",
-    Icon: Droplet,
-  },
-  {
-    title: "Тепловые пункты",
-    href: "/products/heating-unit",
-    description: "8 модулей ИТП: ввод, отопление, ГВС, подпитка",
-    Icon: Flame,
-  },
-  {
-    title: "Водоподготовка",
-    href: "/products/water-treatment",
-    description: "Установки фильтрации и умягчения для котельных и ИТП",
-    Icon: Filter,
-  },
-  {
-    title: "Шкафы управления",
-    href: "/products/control-systems",
-    description: "5 серий: ЧРП, электропривода, ППА, ПДВ, КНС",
-    Icon: Cpu,
-  },
+const CATEGORIES: readonly MegaMenuCategoryData[] = [
+  { key: "pumps", href: "/products/pumps", Icon: Droplet },
+  { key: "heating_unit", href: "/products/heating-unit", Icon: Flame },
+  { key: "water_treatment", href: "/products/water-treatment", Icon: Filter },
+  { key: "control_systems", href: "/products/control-systems", Icon: Cpu },
 ];
 
 export function MegaMenu({ onClose }: { onClose: () => void }) {
+  const t = useTranslations("common.mega_menu.products");
   const pathname = usePathname();
 
   return (
     <motion.div
       role="menu"
-      aria-label="Продукты — категории"
+      aria-label={t("aria_label")}
       initial={{ opacity: 0, y: -8 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -8 }}
@@ -96,10 +85,10 @@ export function MegaMenu({ onClose }: { onClose: () => void }) {
                 </span>
                 <span className="flex flex-col gap-1.5">
                   <span className="font-display text-base font-medium leading-tight text-[var(--color-secondary)]">
-                    {cat.title}
+                    {t(`${cat.key}.title`)}
                   </span>
                   <span className="text-[13px] leading-snug text-[var(--color-secondary)]/65">
-                    {cat.description}
+                    {t(`${cat.key}.description`)}
                   </span>
                 </span>
               </Link>
@@ -111,5 +100,11 @@ export function MegaMenu({ onClose }: { onClose: () => void }) {
   );
 }
 
-/** Экспортируем для аккордеона в MobileMenu, чтобы не дублировать данные. */
-export const PRODUCTS_MEGA_CATEGORIES: readonly MegaMenuCategory[] = CATEGORIES;
+/**
+ * Экспортируем для аккордеона в MobileMenu. MobileMenu делает
+ * собственный `useTranslations` по тем же ключам — таким образом
+ * иконка и href живут здесь, а локализованный текст резолвится в
+ * каждом месте показа независимо.
+ */
+export const PRODUCTS_MEGA_CATEGORIES: readonly MegaMenuCategoryData[] =
+  CATEGORIES;

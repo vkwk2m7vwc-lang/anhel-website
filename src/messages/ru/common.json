@@ -65,5 +65,50 @@
     "learn_more": "Подробнее",
     "submit": "Отправить",
     "cancel": "Отмена"
+  },
+  "mega_menu": {
+    "products": {
+      "aria_label": "Продукты — категории",
+      "pumps": {
+        "title": "Насосные станции",
+        "description": "5 серий: водоснабжение, пожаротушение, отопление, повысительные, специальные"
+      },
+      "heating_unit": {
+        "title": "Тепловые пункты",
+        "description": "8 модулей ИТП: ввод, отопление, ГВС, подпитка"
+      },
+      "water_treatment": {
+        "title": "Водоподготовка",
+        "description": "Установки фильтрации и умягчения для котельных и ИТП"
+      },
+      "control_systems": {
+        "title": "Шкафы управления",
+        "description": "5 серий: ЧРП, электропривода, ППА, ПДВ, КНС"
+      }
+    },
+    "documents": {
+      "aria_label": "Документация — по типу",
+      "questionnaires": {
+        "title": "Опросные листы",
+        "description": "8 опросных листов по 4 направлениям"
+      },
+      "catalogs": {
+        "title": "Каталоги",
+        "description": "Печатные каталоги — в подготовке"
+      },
+      "certificates": {
+        "title": "Сертификаты",
+        "description": "7 деклараций ЕАЭС соответствия"
+      }
+    }
+  },
+  "mobile_menu": {
+    "dialog_label": "Основное меню",
+    "section_products": "Продукты",
+    "section_documents": "Документация",
+    "section_navigation": "Навигация",
+    "section_contacts": "Контакты",
+    "go_to_section": "Перейти к разделу",
+    "office_line": "Офис — Санкт-Петербург, производство — Москва."
   }
 }
