@@ -201,9 +201,7 @@ export default function DocumentsPage() {
               <DirectionGroup
                 key={cat.slug}
                 id={cat.slug}
-                title={cat.title}
-                caption={cat.caption}
-                items={cat.questionnaires}
+                title={cat.title}                items={cat.questionnaires}
                 icon={FileText}
               />
             ))}
@@ -245,9 +243,7 @@ export default function DocumentsPage() {
             {certificateCats.map((cat) => (
               <DirectionGroup
                 key={cat.slug}
-                title={cat.title}
-                caption={cat.caption}
-                items={cat.certificates}
+                title={cat.title}                items={cat.certificates}
                 icon={FileBadge}
               />
             ))}
@@ -269,9 +265,7 @@ export default function DocumentsPage() {
               {manualCats.map((cat) => (
                 <DirectionGroup
                   key={cat.slug}
-                  title={cat.title}
-                  caption={cat.caption}
-                  items={cat.manuals ?? []}
+                  title={cat.title}                  items={cat.manuals ?? []}
                   icon={FileCog}
                 />
               ))}
@@ -323,27 +317,20 @@ function SectionHeader({
 function DirectionGroup({
   id,
   title,
-  caption,
   items,
   icon,
 }: {
   id?: string;
   title: string;
-  caption: string;
   items: DocItem[];
   icon: typeof FileText;
 }) {
   if (items.length === 0) return null;
   return (
     <article id={id} className={id ? "scroll-mt-24" : undefined}>
-      <div className="mb-6 flex flex-col gap-2 md:flex-row md:items-end md:justify-between md:gap-10">
-        <p className="font-display text-2xl leading-tight md:text-3xl">
-          {title}
-        </p>
-        <p className="max-w-md text-sm leading-relaxed text-[var(--color-secondary)]/60 md:text-right md:text-[15px]">
-          {caption}
-        </p>
-      </div>
+      <p className="mb-6 font-display text-2xl leading-tight md:text-3xl">
+        {title}
+      </p>
       <ul className="grid gap-3 md:grid-cols-2">
         {items.map((doc) => (
           <DocCard key={doc.href} doc={doc} icon={icon} />
