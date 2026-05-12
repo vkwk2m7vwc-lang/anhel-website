@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { useTranslations } from "next-intl";
+import { setRequestLocale } from "next-intl/server";
 import { ProductHero } from "@/components/product-page/ProductHero";
 import { ProductPageShell } from "@/components/product-page/ProductPageShell";
 import { TechSpecsGrid } from "@/components/product-page/TechSpecsGrid";
@@ -10,7 +12,7 @@ import { DescriptionSection } from "@/components/product-page/DescriptionSection
 import { RelatedProjectsSection } from "@/components/product-page/RelatedProjectsSection";
 import { DocumentsGrid } from "@/components/product-page/DocumentsGrid";
 import { ProductCtaFooter } from "@/components/product-page/ProductCtaFooter";
-import { pressureBoostContent } from "@/content/products/pressure-boost";
+import { getPressureBoostContent } from "@/content/products/pressure-boost";
 import {
   breadcrumbLd,
   ldScriptProps,
@@ -28,24 +30,33 @@ import {
  *
  * Section map: см. water-supply/page.tsx — порядок секций идентичен.
  */
-export const metadata: Metadata = {
-  title: pressureBoostContent.metaTitle,
-  description: pressureBoostContent.metaDescription,
-  openGraph: {
-    type: "website",
-    title: `${pressureBoostContent.metaTitle} · ANHEL®`,
-    description: pressureBoostContent.metaDescription,
-    url: `/products/pumps/pressure-boost`,
-    images: [
-      {
-        url: pressureBoostContent.hero.image.src,
-        alt: pressureBoostContent.hero.image.alt,
-      },
-    ],
-  },
-};
+export async function generateMetadata({
+  params: { locale },
+}: {
+  params: { locale: string };
+}): Promise<Metadata> {
+  const content = getPressureBoostContent(locale);
+  return {
+    title: content.metaTitle,
+    description: content.metaDescription,
+    openGraph: {
+      type: "website",
+      title: `${content.metaTitle} · ANHEL®`,
+      description: content.metaDescription,
+      url: `/products/pumps/pressure-boost`,
+      images: [{ url: content.hero.image.src, alt: content.hero.image.alt }],
+    },
+  };
+}
 
-export default function PressureBoostProductPage() {
+export default function PressureBoostProductPage({
+  params: { locale },
+}: {
+  params: { locale: string };
+}) {
+  setRequestLocale(locale);
+  const content = getPressureBoostContent(locale);
+  const tProj = useTranslations("products.related_projects");
   const {
     slug,
     hero,
@@ -58,20 +69,22 @@ export default function PressureBoostProductPage() {
     gallery,
     documents,
     footerCta,
-  } = pressureBoostContent;
+  } = content;
 
   const productJsonLd = productLd({
     slug,
-    name: "Насосные станции ANHEL для поддержания давления",
-    description: pressureBoostContent.metaDescription,
-    image: pressureBoostContent.hero.image.src,
+    name: content.metaTitle,
+    description: content.metaDescription,
+    image: content.hero.image.src,
     category: "Pump / Pressure maintenance",
   });
-  const breadcrumbJsonLd = breadcrumbLd([
-    { name: "Главная", url: "/" },
-    { name: "Каталог", url: "/products" },
-    { name: "Поддержание давления", url: `/products/pumps/${slug}` },
-  ]);
+  const breadcrumbJsonLd = breadcrumbLd(
+    content.hero.breadcrumbs.map((b, i, arr) => ({
+      name: b.label,
+      url: b.href ?? (i === arr.length - 1 ? `/products/pumps/${slug}` : "/products"),
+    })),
+  );
+
 
   return (
     <ProductPageShell accent={accent}>
@@ -85,7 +98,7 @@ export default function PressureBoostProductPage() {
       <BrandsStrip content={brands} />
       <AdvantagesGrid content={advantages} />
       <GalleryRail content={gallery} />
-      <RelatedProjectsSection productSlug={slug} tag="08 · ОБЪЕКТЫ" />
+      <RelatedProjectsSection productSlug={slug} tag={tProj("projects_tag")} />
       <DocumentsGrid content={documents} />
       <ProductCtaFooter content={footerCta} currentSlug={slug} />
     </ProductPageShell>
