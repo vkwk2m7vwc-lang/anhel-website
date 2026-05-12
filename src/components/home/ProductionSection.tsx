@@ -13,8 +13,9 @@ import Link from "next/link";
  *   - CTA «Запросить визит на производство →» ведёт на /contacts
  *     (форма на /contacts пока не умеет читать query — query
  *     добавим, когда форма поддержит pre-fill, в этой волне нет)
- *   - фото-плейсхолдер цеха — оставляем как было; реальные фото
- *     придут отдельной задачей
+ *   - фото-плейсхолдер цеха убран (по правке v2 от 12.05.2026:
+ *     «фото с производства пока убери»). Когда придут реальные
+ *     фото цеха — вернуть отдельной задачей с next/image-сеткой.
  *
  * Принцип: слово «Москва» нигде не упоминается — ни в текстах
  * подблоков, ни в счётчиках (см. copy.md, общий принцип редактуры).
@@ -89,20 +90,6 @@ export function ProductionSection() {
           </Link>
         </div>
 
-        {/* Фото-плейсхолдер. Когда придут фото цеха — заменить на сетку
-            через next/image (GalleryRail-паттерн). До тех пор показываем
-            подпись, чтобы посетитель не недоумевал «почему здесь пусто». */}
-        <div className="mt-16 border-t border-[var(--color-hairline)] pt-10 md:mt-20 md:pt-14">
-          <div
-            role="img"
-            aria-label="Фото производственной площадки будет добавлено"
-            className="flex aspect-[16/9] items-center justify-center rounded-sm border border-dashed border-[var(--color-hairline)] bg-[var(--color-image-placeholder)] md:aspect-[21/9]"
-          >
-            <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-[var(--color-secondary)]/40">
-              Фото производства — будет добавлено
-            </p>
-          </div>
-        </div>
       </div>
     </section>
   );

@@ -9,7 +9,7 @@ import Link from "next/link";
  *
  * Содержимое — финальные тексты v2 из copy.md (A.2):
  *   - метка, заголовок, 3 абзаца (бренд → производство → полный цикл)
- *   - ряд из 4 статичных счётчиков (10+ / 100+ / 4 / 24 мес)
+ *   - ряд из 3 статичных счётчиков (150+ объектов / 12 лет / 04 направления)
  *   - CTA «О производстве →» — якорь на /#production
  *
  * Счётчики статические (без count-up anim) — в hero уже играется
@@ -56,16 +56,16 @@ export function AboutSection() {
           ответственный, одни сроки.
         </p>
 
-        {/* Static stats — без count-up animation. 4 значения горизонтально:
-            10+ лет / 100+ объектов / 4 направления / 24 мес гарантии. */}
+        {/* Static stats — без count-up animation. 3 значения горизонтально:
+            150+ объектов / 12 лет опыта / 04 направления — реальные цифры
+            бренда (бизнес работает с 2014, 150+ объектов сданы). */}
         <div
           aria-label="Ключевые показатели"
-          className="mt-16 grid grid-cols-2 gap-6 border-t border-[var(--color-hairline)] pt-10 md:mt-20 md:grid-cols-4 md:gap-16 md:pt-14"
+          className="mt-16 grid grid-cols-3 gap-6 border-t border-[var(--color-hairline)] pt-10 md:mt-20 md:gap-16 md:pt-14"
         >
-          <Stat value="10" suffix="+" caption="Лет на рынке" />
-          <Stat value="100" suffix="+" caption="Объектов под ключ" />
-          <Stat value="4" caption="Направления" />
-          <Stat value="24" unit="мес" caption="Гарантия" />
+          <Stat value="150" suffix="+" caption="Объектов" />
+          <Stat value="12" caption="Лет опыта" />
+          <Stat value="04" caption="Направления" />
         </div>
 
         {/* CTA на якорь #production — секция «Производство» ниже на той
