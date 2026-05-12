@@ -465,7 +465,27 @@ function FieldRow({
           className="mt-0.5 h-4 w-4 shrink-0 cursor-pointer accent-[var(--color-secondary)]"
         />
         <span className="text-sm leading-relaxed text-[var(--color-secondary)]/85 md:text-[15px]">
-          {field.label}
+          {field.name === 'consent_pd' ? (
+            <>
+              Я даю согласие на обработку моих персональных данных в соответствии с{' '}
+              <Link
+                href="/privacy-policy"
+                className="underline decoration-[var(--color-hairline)] underline-offset-[3px] hover:decoration-[var(--color-secondary)]"
+              >
+                Политикой конфиденциальности
+              </Link>
+              {' '}и{' '}
+              <Link
+                href="/personal-data-consent"
+                className="underline decoration-[var(--color-hairline)] underline-offset-[3px] hover:decoration-[var(--color-secondary)]"
+              >
+                Согласием на обработку ПД
+              </Link>
+              .
+            </>
+          ) : (
+            field.label
+          )}
           {field.required && (
             <span aria-hidden="true" className="ml-1 text-[var(--color-secondary)]/55">
               *

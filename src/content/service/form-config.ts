@@ -218,7 +218,7 @@ export const FORM_STEPS: readonly FormStep[] = [
       {
         name: 'consent_pd',
         label:
-          'Даю согласие на обработку персональных данных в соответствии с ФЗ-152.',
+          'Согласие на обработку персональных данных (152-ФЗ).',
         kind: 'checkbox',
         required: true,
         width: 'full',
