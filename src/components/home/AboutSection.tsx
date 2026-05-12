@@ -9,7 +9,7 @@ import Link from "next/link";
  *
  * Содержимое — финальные тексты v2 из copy.md (A.2):
  *   - метка, заголовок, 3 абзаца (бренд → производство → полный цикл)
- *   - ряд из 3 статичных счётчиков (150+ объектов / 12 лет / 04 направления)
+ *   - ряд из 3 статичных счётчиков (150+ объектов / 12+ лет опыта / 04 направления)
  *   - CTA «О производстве →» — якорь на /#production
  *
  * Счётчики статические (без count-up anim) — в hero уже играется
@@ -64,7 +64,7 @@ export function AboutSection() {
           className="mt-16 grid grid-cols-3 gap-6 border-t border-[var(--color-hairline)] pt-10 md:mt-20 md:gap-16 md:pt-14"
         >
           <Stat value="150" suffix="+" caption="Объектов" />
-          <Stat value="12" caption="Лет опыта" />
+          <Stat value="12" suffix="+" caption="Лет опыта" />
           <Stat value="04" caption="Направления" />
         </div>
 
