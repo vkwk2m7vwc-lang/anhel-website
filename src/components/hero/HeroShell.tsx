@@ -6,6 +6,8 @@ import type { ReactNode } from "react";
 import { HeroTitle } from "./HeroTitle";
 import { HeroCTAs } from "./HeroCTAs";
 import { HeroCounters } from "./HeroCounters";
+import { HeroProductMobile } from "./HeroProductMobile";
+import { HeroCountersMobile } from "./HeroCountersMobile";
 
 /**
  * HeroShell — shared hero scaffold used by all three variants (A/B/C).
@@ -69,16 +71,48 @@ export function HeroShell({
           The counters / variant-label row at the bottom is text-only
           and can stay click-through (no explicit auto on it). */}
       <div className="pointer-events-none relative z-20 mx-auto flex min-h-[100svh] w-full max-w-[1440px] flex-col justify-between px-6 pb-10 pt-28 md:px-12 md:pb-14 md:pt-32">
-        <div className="pointer-events-auto flex flex-1 flex-col justify-center">
-          <div className="max-w-[1100px]">
-            <HeroTitle />
+        {/* Text column — full-width on mobile/tablet, capped at 60% on
+            lg+ so the headline never crosses into the 40%-wide product
+            zone on the right. The carousel itself is hidden under lg
+            (see HeroBgCarousel), so on tablet the text gets the full
+            container width and the product reappears in ProductsShowcase
+            directly below the hero. */}
+        <div className="pointer-events-auto flex flex-1 flex-col justify-center lg:max-w-[60%]">
+          <HeroTitle />
+
+          {/* Mobile-only inline product slot — five products with
+              auto-advance and 01..05 numbered pagination. Variant 2 of
+              the mobile A/B: product sits between the headline and the
+              supporting copy, so the visual hook lands before the user
+              reads the subtitle. Hidden md+: desktop keeps the 60/40
+              split with the bg-layer carousel. */}
+          <div className="mt-8 md:hidden">
+            <HeroProductMobile />
+
+            {/* Mobile descriptor — tiny centred line summarising what we
+                make. Replaces the long subtitle on phones so the whole
+                hero (title → product → descriptor → counters → CTAs)
+                fits in a single iPhone-13/14/15 screen without scroll.
+                The full subtitle still renders on md+. */}
+            <p className="mt-6 text-center text-[12px] leading-snug text-[var(--color-secondary)]/60">
+              {t("mobile_descriptor")}
+            </p>
+
+            {/* Mobile counters band — 4 equal cells in one row with
+                hairline borders top/bottom. Mirrors the four AboutSection
+                metrics so the in-hero strip reads as a quick proof-points
+                summary on phones. AboutSection keeps the full 2×2 grid
+                with count-up animation on every breakpoint. */}
+            <div className="mt-6">
+              <HeroCountersMobile />
+            </div>
           </div>
 
           <motion.p
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.6 }}
-            className="mt-8 max-w-[640px] text-base leading-relaxed text-[var(--color-secondary)]/70 md:mt-10 md:text-lg"
+            className="hidden mt-8 max-w-[640px] text-sm leading-normal text-[var(--color-secondary)]/70 md:mt-10 md:block md:text-lg md:leading-relaxed"
           >
             {t("subtitle")}
           </motion.p>
@@ -89,7 +123,7 @@ export function HeroShell({
         {/* Bottom row: counters + variant label + scroll hint — all three
             children are presentational text, so we leave the row
             click-through (the outer wrapper already is). */}
-        <div className="mt-12 flex flex-col gap-10 border-t border-[var(--color-hairline)] pt-10 md:mt-16 md:flex-row md:items-end md:justify-between">
+        <div className="mt-12 hidden flex-col gap-10 border-t border-[var(--color-hairline)] pt-10 md:mt-16 md:flex md:flex-row md:items-end md:justify-between">
           <HeroCounters />
 
           <div className="flex flex-col gap-3 text-right md:items-end">

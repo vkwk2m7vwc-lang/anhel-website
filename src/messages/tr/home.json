@@ -1,7 +1,7 @@
 {
   "hero": {
-    "title": "Güvenebileceğiniz endüstriyel ekipman üretiyoruz",
-    "subtitle": "Endüstriyel ve ticari tesisler için modüler pompa istasyonları, ısı istasyonları, su arıtma sistemleri ve kontrol panoları. Hesaplamadan servise kadar tam döngü.",
+    "title": "Güvenebileceğiniz endüstriyel ekipman.",
+    "subtitle": "Pompa istasyonları, ısı istasyonları, su arıtma üniteleri ve kontrol panoları üretiyoruz. Tam döngü — tasarımdan devreye almaya.",
     "footer_tagline": "Mühendislik · Üretim · Otomasyon",
     "scroll_hint": "Kaydır",
     "cta_primary": "Ürün kataloğu",
@@ -9,8 +9,12 @@
     "counters": {
       "objects": "Proje",
       "years": "Yıllık deneyim",
-      "directions": "Ürün grubu"
-    }
+      "directions": "Ürün hattı",
+      "warranty": "Garanti",
+      "warranty_unit": "ay"
+    },
+    "title_emphasized": "endüstriyel ekipman.",
+    "mobile_descriptor": "Pompa istasyonları · su arıtma · ısı istasyonları · kontrol panoları"
   },
   "about": {
     "mono_tag": "Hakkımızda",
@@ -22,7 +26,9 @@
     "stats": {
       "objects_caption": "Proje",
       "years_caption": "Yıllık deneyim",
-      "directions_caption": "Ürün grubu"
+      "directions_caption": "Ürün hattı",
+      "warranty_caption": "Garanti",
+      "warranty_unit": "ay"
     },
     "cta": "Üretimimiz hakkında"
   },

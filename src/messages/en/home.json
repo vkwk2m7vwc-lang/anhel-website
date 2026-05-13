@@ -1,7 +1,7 @@
 {
   "hero": {
-    "title": "We manufacture engineering equipment you can rely on",
-    "subtitle": "Modular pumping stations, heat substations, water treatment systems and control cabinets for industrial and commercial facilities. Full cycle — from sizing to service.",
+    "title": "Engineering equipment you can rely on.",
+    "subtitle": "We manufacture pumping stations, heat substations, water treatment units and control panels. Full cycle — from design to commissioning.",
     "footer_tagline": "Engineering · Manufacturing · Automation",
     "scroll_hint": "Scroll",
     "cta_primary": "Product catalogue",
@@ -9,8 +9,12 @@
     "counters": {
       "objects": "Projects",
       "years": "Years of experience",
-      "directions": "Product lines"
-    }
+      "directions": "Product lines",
+      "warranty": "Warranty",
+      "warranty_unit": "months"
+    },
+    "title_emphasized": "Engineering equipment",
+    "mobile_descriptor": "Pumping stations · water treatment · heat substations · control panels"
   },
   "about": {
     "mono_tag": "About",
@@ -22,7 +26,9 @@
     "stats": {
       "objects_caption": "Projects",
       "years_caption": "Years of experience",
-      "directions_caption": "Product lines"
+      "directions_caption": "Product lines",
+      "warranty_caption": "Warranty",
+      "warranty_unit": "months"
     },
     "cta": "About our manufacturing"
   },

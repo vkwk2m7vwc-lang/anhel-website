@@ -109,7 +109,7 @@ export function HeroBgCarousel({
           The union gives us uniform pause-on-interact behaviour across
           every input type we actually care about. */}
       <div
-        className="pointer-events-auto absolute inset-y-0 right-0 hidden w-[45%] flex-col items-center justify-center md:flex"
+        className="pointer-events-auto absolute inset-y-0 right-0 hidden w-[40%] flex-col items-center justify-center lg:flex"
         style={{ perspective: "1200px" }}
         onMouseEnter={pause}
         onMouseLeave={resume}
@@ -214,7 +214,7 @@ export function HeroBgCarousel({
                     alt={tHero(`${product.slug}.alt`)}
                     fill
                     priority={active === 0}
-                    sizes="(min-width: 1440px) 600px, 45vw"
+                    sizes="(min-width: 1440px) 560px, 40vw"
                     className="object-contain transition-transform duration-300 ease-out-expo group-hover:scale-[1.01]"
                   />
                 </Link>
@@ -224,7 +224,7 @@ export function HeroBgCarousel({
                   alt={tHero(`${product.slug}.alt`)}
                   fill
                   priority={active === 0}
-                  sizes="(min-width: 1440px) 600px, 45vw"
+                  sizes="(min-width: 1440px) 560px, 40vw"
                   className="object-contain"
                 />
               )}
@@ -359,105 +359,11 @@ export function HeroBgCarousel({
         </div>
       </div>
 
-      {/* Mobile fallback — scaled-down centred render, switcher below.
-          No tilt, no play/pause chrome; we keep the swap animation so the
-          carousel still reads on narrow screens.
-
-          Same pedestal-glow approach as desktop — see the block above for
-          the rationale on why we don't use `filter: drop-shadow` here.
-
-          Pointer handlers mirror the desktop zone so tap-to-pause /
-          leave-to-resume-after-4-s works on mobile too. */}
-      <div
-        className="pointer-events-auto absolute inset-x-0 bottom-24 flex flex-col items-center gap-4 md:hidden"
-        onMouseEnter={pause}
-        onMouseLeave={resume}
-        onPointerEnter={pause}
-        onPointerLeave={resume}
-      >
-        <motion.div className="relative h-[200px] w-[200px]">
-          {/* Pedestal glow — mobile version. Smaller footprint (75%×35%)
-              to match the scaled-down 200×200 product container. */}
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute left-1/2 h-[35%] w-[75%] -translate-x-1/2"
-            style={{
-              bottom: "-6%",
-              background: `radial-gradient(ellipse at center, ${accentRgba(
-                0.35
-              )} 0%, ${accentRgba(0.15)} 40%, rgba(10,10,10,0) 70%)`,
-              filter: "blur(14px)",
-              transition: "background 600ms ease-in-out",
-            }}
-          />
-          <AnimatePresence mode="wait" initial={false}>
-            <motion.div
-              key={`m-${product.slug}`}
-              initial={
-                prefersReduced
-                  ? { opacity: 1 }
-                  : { opacity: 0, filter: "blur(6px)" }
-              }
-              animate={{ opacity: 1, filter: "blur(0px)" }}
-              exit={
-                prefersReduced
-                  ? { opacity: 0 }
-                  : { opacity: 0, filter: "blur(6px)" }
-              }
-              transition={{ duration: prefersReduced ? 0 : 0.4 }}
-              className="relative h-full w-full"
-            >
-              {product.href ? (
-                <Link
-                  href={product.href}
-                  aria-label={tUi("carousel.open_product", { name: tHero(`${product.slug}.name`) })}
-                  className="relative block h-full w-full"
-                >
-                  <Image
-                    src={product.image}
-                    alt=""
-                    aria-hidden="true"
-                    fill
-                    sizes="200px"
-                    className="object-contain opacity-90"
-                  />
-                </Link>
-              ) : (
-                <Image
-                  src={product.image}
-                  alt=""
-                  aria-hidden="true"
-                  fill
-                  sizes="200px"
-                  className="object-contain opacity-90"
-                />
-              )}
-            </motion.div>
-          </AnimatePresence>
-        </motion.div>
-
-        <div className="flex items-center gap-2">
-          {HERO_PRODUCTS.map((p, i) => {
-            const isActive = i === active;
-            return (
-              <button
-                key={`m-${p.slug}`}
-                type="button"
-                aria-label={tUi("carousel.show_product", { name: tHero(`${p.slug}.name`) })}
-                aria-pressed={isActive}
-                onClick={() => goTo(i)}
-                className={cn(
-                  "h-1.5 rounded-pill transition-all duration-200",
-                  "active:scale-[0.88]",
-                  isActive
-                    ? "w-6 bg-[var(--color-secondary)]"
-                    : "w-1.5 bg-[var(--color-secondary)]/30 hover:bg-[var(--color-secondary)]/60"
-                )}
-              />
-            );
-          })}
-        </div>
-      </div>
+      {/* Mobile-only product slot is rendered inline in HeroShell as
+          <HeroProductMobile />, not from this background layer. Keeps
+          the mobile flow predictable (title → product → CTA → counters)
+          and stops the old absolute-positioned widget from overlapping
+          the bottom counters row on tall mobile viewports. */}
     </>
   );
 }

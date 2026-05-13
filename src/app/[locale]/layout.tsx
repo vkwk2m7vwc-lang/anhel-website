@@ -96,6 +96,13 @@ export async function generateMetadata({
       locale: t("og_locale"),
       siteName: t("site_name"),
       url: canonical,
+      title: t("title"),
+      description: t("description"),
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: t("title"),
+      description: t("description"),
     },
     robots: {
       index: true,

@@ -55,11 +55,17 @@ export function AboutSection() {
             бренда (бизнес работает с 2014, 150+ объектов сданы). */}
         <div
           aria-label={t("stats_aria")}
-          className="mt-16 grid grid-cols-3 gap-6 border-t border-[var(--color-hairline)] pt-10 md:mt-20 md:gap-16 md:pt-14"
+          className="mt-16 grid grid-cols-2 gap-x-6 gap-y-10 border-t border-[var(--color-hairline)] pt-10 md:mt-20 md:grid-cols-4 md:gap-x-10 md:gap-y-0 md:pt-14 lg:gap-x-16"
         >
           <Stat value="150" suffix="+" caption={t("stats.objects_caption")} />
           <Stat value="12" suffix="+" caption={t("stats.years_caption")} />
-          <Stat value="04" caption={t("stats.directions_caption")} />
+          <Stat value="4" suffix="+" caption={t("stats.directions_caption")} />
+          <Stat
+            value="24"
+            suffix="+"
+            unit={t("stats.warranty_unit")}
+            caption={t("stats.warranty_caption")}
+          />
         </div>
 
         {/* CTA на якорь #production — секция «Производство» ниже на той

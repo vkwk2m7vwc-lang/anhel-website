@@ -1,61 +1,67 @@
 "use client";
 
-import { useEffect, useRef } from "react";
 import { useTranslations } from "next-intl";
-import { gsap, SplitText } from "@/lib/gsap";
-import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 
 /**
- * Hero headline with GSAP SplitText reveal.
+ * Hero headline — mobile/tablet mix of two weights, desktop unchanged.
  *
- * Text comes from `home.hero.title`. Renders as a single block;
- * SplitText splits into words and animates them with a staggered
- * y-translate. The first paint shows the static text.
+ * Mont-Fort-style emphasis: the noun renders semibold (600) and the
+ * qualifier renders extralight (200) with 55% opacity. Position of the
+ * two parts is locale-aware via `title_emphasized` — the component
+ * locates that fragment inside the full title with `indexOf`, so:
+ *   RU "Инженерное оборудование, на которое можно положиться."
+ *      → primary "Инженерное оборудование," + muted " на которое…"
+ *   EN "Engineering equipment you can rely on."
+ *      → primary "Engineering equipment" + muted " you can rely on."
+ *   TR "Güvenebileceğiniz endüstriyel ekipman."
+ *      → muted "Güvenebileceğiniz " + primary "endüstriyel ekipman."
  *
- * Animation: split into words, stagger 0.04s, `expo.out` over 1.2s.
- * When the user prefers reduced motion, we skip SplitText entirely and
- * show the final static text.
+ * At lg+ the spans collapse to a single `font-medium` weight + full
+ * colour, restoring the desktop text-hero look we don't want to touch.
+ *
+ * GSAP SplitText is intentionally NOT used here:
+ *   - SplitText rewrites the h1 inner HTML to wrap each word in a div
+ *     and that strips the inline emphasis/muted span structure, so
+ *     either we keep the animation OR we keep the typography — we
+ *     keep the typography. The reveal can be re-added later with a
+ *     custom per-word wrap that respects the two-span structure.
  */
 export function HeroTitle() {
   const t = useTranslations("home.hero");
-  const ref = useRef<HTMLHeadingElement | null>(null);
-  const prefersReduced = usePrefersReducedMotion();
+  const title = t("title");
+  const emphasized = t("title_emphasized");
+  const idx = title.indexOf(emphasized);
 
-  useEffect(() => {
-    if (prefersReduced) return;
-    const el = ref.current;
-    if (!el) return;
+  // Defensive: if `title_emphasized` falls out of sync with `title`
+  // (copy edit landing in only one of the two keys), fall back to
+  // rendering the whole title in the primary style so we never show
+  // garbled output to the user.
+  if (idx === -1) {
+    return (
+      <h1 className="font-display text-[34px] font-semibold leading-[0.95] tracking-[-0.04em] text-[var(--color-secondary)] md:text-[44px] lg:text-hero lg:font-medium lg:tracking-[-0.025em]">
+        {title}
+      </h1>
+    );
+  }
 
-    // Slight delay (≈DOMContentLoaded + 200ms) so fonts have a chance to
-    // swap before we split — measurements are stable.
-    const raf = requestAnimationFrame(() => {
-      const split = new SplitText(el, { type: "words" });
-      gsap.set(split.words, { yPercent: 100, opacity: 0 });
-      gsap.to(split.words, {
-        yPercent: 0,
-        opacity: 1,
-        duration: 1.2,
-        ease: "expo.out",
-        stagger: 0.04,
-        delay: 0.2,
-        onComplete: () => {
-          // Flatten transforms so the text doesn't lock GPU layers forever.
-          gsap.set(split.words, { clearProps: "transform,opacity" });
-        },
-      });
-      // Return cleanup via outer ref capture.
-      return () => split.revert();
-    });
-
-    return () => cancelAnimationFrame(raf);
-  }, [prefersReduced]);
+  const leading = title.slice(0, idx);
+  const trailing = title.slice(idx + emphasized.length);
 
   return (
-    <h1
-      ref={ref}
-      className="font-display text-hero font-medium text-[var(--color-secondary)]"
-    >
-      {t("title")}
+    <h1 className="font-display text-[34px] leading-[0.95] tracking-[-0.04em] text-[var(--color-secondary)] md:text-[44px] lg:text-hero lg:tracking-[-0.025em]">
+      {leading ? (
+        <span className="font-extralight text-[var(--color-secondary)]/55 lg:font-medium lg:text-[var(--color-secondary)]">
+          {leading}
+        </span>
+      ) : null}
+      <span className="font-semibold text-[var(--color-secondary)] lg:font-medium">
+        {emphasized}
+      </span>
+      {trailing ? (
+        <span className="font-extralight text-[var(--color-secondary)]/55 lg:font-medium lg:text-[var(--color-secondary)]">
+          {trailing}
+        </span>
+      ) : null}
     </h1>
   );
 }

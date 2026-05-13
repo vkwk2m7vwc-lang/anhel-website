@@ -12,7 +12,10 @@ import { Inter, Inter_Tight, JetBrains_Mono } from "next/font/google";
 
 export const fontDisplay = Inter_Tight({
   subsets: ["latin", "cyrillic"],
-  weight: ["400", "500", "600"],
+  // 200 (extralight) added for K1 hero-title mix: the muted half of the
+  // headline renders at font-extralight; without weight 200 in the loaded
+  // set the browser falls back to 400 and the visual contrast collapses.
+  weight: ["200", "400", "500", "600"],
   variable: "--font-display",
   display: "swap",
 });

@@ -36,13 +36,13 @@ export function HeroCTAs() {
   const secondaryRef = useMagnetic<HTMLAnchorElement>({ strength: 0.3 });
 
   return (
-    <div className="mt-10 flex flex-wrap items-center gap-4 md:mt-12 md:gap-5">
+    <div className="mt-8 flex w-full flex-col gap-2 md:mt-10 md:w-auto md:flex-row md:flex-wrap md:items-center md:gap-5">
       <Link
         ref={isTouch ? undefined : primaryRef}
         href={CATALOG_PATH}
         data-cursor="hover"
         data-cta="catalog"
-        className="group inline-flex items-center gap-3 rounded-md bg-[var(--color-secondary)] px-[22px] py-[14px] text-sm font-medium text-[var(--color-primary)]"
+        className="group inline-flex w-full items-center justify-center gap-3 rounded-md bg-[var(--color-secondary)] px-[22px] py-[14px] text-sm font-medium text-[var(--color-primary)] md:w-auto md:justify-start"
       >
         {t("cta_primary")}
         <span
@@ -58,7 +58,7 @@ export function HeroCTAs() {
         href="/contacts"
         data-cursor="hover"
         data-cta="contacts"
-        className="group inline-flex items-center gap-3 rounded-md border-[0.5px] border-[var(--color-secondary)]/40 bg-transparent px-[22px] py-[14px] text-sm font-medium text-[var(--color-secondary)] transition-colors hover:border-[var(--color-secondary)]"
+        className="group inline-flex w-full items-center justify-center gap-3 rounded-md border-[0.5px] border-[var(--color-secondary)]/40 bg-transparent px-[22px] py-[14px] text-sm font-medium text-[var(--color-secondary)] transition-colors hover:border-[var(--color-secondary)] md:w-auto md:justify-start"
       >
         {t("cta_secondary")}
         <span
