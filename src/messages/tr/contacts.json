@@ -16,8 +16,9 @@
   },
   "requisites": {
     "mono_tag": "Şirket bilgileri",
-    "card_label": "Şirket kartı",
+    "card_label": "Şirket profili",
     "brand_subtitle": "ANHEL® markasının arkasındaki tüzel kişilik",
+    "disclosure_summary": "Şirket bilgileri ve banka bilgileri — genişletmek için tıklayın",
     "sections": {
       "identification": "Tanım",
       "address": "Adres",

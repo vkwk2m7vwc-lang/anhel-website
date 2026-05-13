@@ -26,6 +26,11 @@ import { ContactForm } from "@/components/contacts/ContactForm";
  * Это информативный блок, не юр.документ — договор и юр.документы
  * пересылаются юристами отдельно по почте.
  *
+ * Поля реквизитов сложены под единый нативный `<details>` (одинаково
+ * на всех 3 локалях) — карточка не шумит, посетитель видит сначала
+ * только название + подзаголовок + ярлык, при клике раскрывает полную
+ * выкладку. summary-надпись локализована (`requisites.disclosure_summary`).
+ *
  * Юр.факты для документов (privacy-policy, personal-data-consent)
  * по-прежнему берутся из `@/lib/legal` LEGAL_ENTITY (RU-only).
  */
@@ -141,70 +146,88 @@ export default function ContactsPage({
               </p>
             </header>
 
-            <RekvSection title={t("requisites.sections.identification")}>
-              <RekvRow
-                label={t("requisites.labels.full_name")}
-                value={t("requisites.values.full_name")}
-              />
-              <RekvRow
-                label={t("requisites.labels.short_name")}
-                value={t("requisites.values.short_name")}
-              />
-            </RekvSection>
-
-            <RekvSection title={t("requisites.sections.address")}>
-              <RekvRow
-                label={t("requisites.labels.legal_address")}
-                value={t("requisites.values.legal_address")}
-              />
-              <RekvRow
-                label={t("requisites.labels.actual_address")}
-                value={t("requisites.values.actual_address")}
-              />
-            </RekvSection>
-
-            <RekvSection title={t("requisites.sections.registration")} cols={2}>
-              <RekvRow label={t("requisites.labels.inn")} value={t("requisites.values.inn")} mono />
-              <RekvRow label={t("requisites.labels.kpp")} value={t("requisites.values.kpp")} mono />
-              <RekvRow label={t("requisites.labels.ogrn")} value={t("requisites.values.ogrn")} mono />
-              <RekvRow label={t("requisites.labels.okpo")} value={t("requisites.values.okpo")} mono />
-              <RekvRow label={t("requisites.labels.okato")} value={t("requisites.values.okato")} mono />
-            </RekvSection>
-
-            <RekvSection title={t("requisites.sections.banking")}>
-              <RekvRow label={t("requisites.labels.bank")} value={t("requisites.values.bank")} />
-              <div className="grid gap-x-10 gap-y-6 md:grid-cols-2">
-                <RekvRow label={t("requisites.labels.account")} value={t("requisites.values.account")} mono />
-                <RekvRow label={t("requisites.labels.bik")} value={t("requisites.values.bik")} mono />
-                <RekvRow
-                  label={t("requisites.labels.correspondent_account")}
-                  value={t("requisites.values.correspondent_account")}
-                  mono
-                />
-              </div>
-            </RekvSection>
-
-            <RekvSection title={t("requisites.sections.leadership")} last>
-              <RekvRow
-                label={t("requisites.labels.director")}
-                value={t("requisites.values.director")}
-              />
-            </RekvSection>
-
-            <div className="mt-10 flex flex-col items-start gap-3 border-t border-[var(--color-hairline)] pt-8 md:flex-row md:items-center md:justify-between">
-              <p className="text-sm text-[var(--color-secondary)]/55">
-                {t("requisites.download_note")}
-              </p>
-              <a
-                href="/anhel-card.pdf"
-                download="ANHEL-karta-organizacii.pdf"
+            <details className="group">
+              <summary
                 data-cursor="hover"
-                className="inline-flex items-center gap-3 rounded-sm border border-[var(--color-secondary)] bg-[var(--color-secondary)] px-7 py-3 font-mono text-xs uppercase tracking-[0.12em] text-[var(--color-primary)] transition-opacity hover:opacity-90"
+                className="flex cursor-pointer list-none items-center justify-between gap-4 py-6 font-mono text-[11px] uppercase tracking-[0.14em] text-[var(--color-secondary)]/70 transition-colors marker:hidden hover:text-[var(--color-secondary)] [&::-webkit-details-marker]:hidden"
               >
-                {t("requisites.download_cta")}
-                <span aria-hidden="true">↓</span>
-              </a>
-            </div>
+                <span className="normal-case tracking-normal text-[13px] text-[var(--color-secondary)]/70 md:text-[14px]">
+                  {t("requisites.disclosure_summary")}
+                </span>
+                <span
+                  aria-hidden="true"
+                  className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-[var(--color-hairline)] text-base transition-transform group-open:rotate-45"
+                >
+                  +
+                </span>
+              </summary>
+              <div className="pt-2">
+                <RekvSection title={t("requisites.sections.identification")}>
+                  <RekvRow
+                    label={t("requisites.labels.full_name")}
+                    value={t("requisites.values.full_name")}
+                  />
+                  <RekvRow
+                    label={t("requisites.labels.short_name")}
+                    value={t("requisites.values.short_name")}
+                  />
+                </RekvSection>
+
+                <RekvSection title={t("requisites.sections.address")}>
+                  <RekvRow
+                    label={t("requisites.labels.legal_address")}
+                    value={t("requisites.values.legal_address")}
+                  />
+                  <RekvRow
+                    label={t("requisites.labels.actual_address")}
+                    value={t("requisites.values.actual_address")}
+                  />
+                </RekvSection>
+
+                <RekvSection title={t("requisites.sections.registration")} cols={2}>
+                  <RekvRow label={t("requisites.labels.inn")} value={t("requisites.values.inn")} mono />
+                  <RekvRow label={t("requisites.labels.kpp")} value={t("requisites.values.kpp")} mono />
+                  <RekvRow label={t("requisites.labels.ogrn")} value={t("requisites.values.ogrn")} mono />
+                  <RekvRow label={t("requisites.labels.okpo")} value={t("requisites.values.okpo")} mono />
+                  <RekvRow label={t("requisites.labels.okato")} value={t("requisites.values.okato")} mono />
+                </RekvSection>
+
+                <RekvSection title={t("requisites.sections.banking")}>
+                  <RekvRow label={t("requisites.labels.bank")} value={t("requisites.values.bank")} />
+                  <div className="grid gap-x-10 gap-y-6 md:grid-cols-2">
+                    <RekvRow label={t("requisites.labels.account")} value={t("requisites.values.account")} mono />
+                    <RekvRow label={t("requisites.labels.bik")} value={t("requisites.values.bik")} mono />
+                    <RekvRow
+                      label={t("requisites.labels.correspondent_account")}
+                      value={t("requisites.values.correspondent_account")}
+                      mono
+                    />
+                  </div>
+                </RekvSection>
+
+                <RekvSection title={t("requisites.sections.leadership")} last>
+                  <RekvRow
+                    label={t("requisites.labels.director")}
+                    value={t("requisites.values.director")}
+                  />
+                </RekvSection>
+
+                <div className="mt-10 flex flex-col items-start gap-3 border-t border-[var(--color-hairline)] pt-8 md:flex-row md:items-center md:justify-between">
+                  <p className="text-sm text-[var(--color-secondary)]/55">
+                    {t("requisites.download_note")}
+                  </p>
+                  <a
+                    href="/anhel-card.pdf"
+                    download="ANHEL-karta-organizacii.pdf"
+                    data-cursor="hover"
+                    className="inline-flex items-center gap-3 rounded-sm border border-[var(--color-secondary)] bg-[var(--color-secondary)] px-7 py-3 font-mono text-xs uppercase tracking-[0.12em] text-[var(--color-primary)] transition-opacity hover:opacity-90"
+                  >
+                    {t("requisites.download_cta")}
+                    <span aria-hidden="true">↓</span>
+                  </a>
+                </div>
+              </div>
+            </details>
           </article>
         </div>
       </section>

@@ -18,6 +18,7 @@
     "mono_tag": "Реквизиты",
     "card_label": "Карточка организации",
     "brand_subtitle": "Юридическое лицо за товарным знаком ANHEL®",
+    "disclosure_summary": "Реквизиты и банковские данные — нажмите, чтобы раскрыть",
     "sections": {
       "identification": "Наименование",
       "address": "Адрес",

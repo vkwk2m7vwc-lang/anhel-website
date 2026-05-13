@@ -18,6 +18,7 @@
     "mono_tag": "Company details",
     "card_label": "Company profile",
     "brand_subtitle": "Legal entity behind the ANHEL® brand",
+    "disclosure_summary": "Company details and bank info — click to expand",
     "sections": {
       "identification": "Identification",
       "address": "Address",
