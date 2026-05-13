@@ -88,8 +88,24 @@ export function QuizProgress({ steps, current, visited, onStepClick }: Props) {
         />
       </div>
 
-      {/* Список шагов с точками-маркерами */}
-      <div className="mt-5 flex items-start justify-between gap-2">
+      {/*
+       * Список шагов. На mobile (<sm) у нас 320-414 px ширины и до 5 шагов
+       * с русскими названиями — flex-1 + truncate ломает читаемость. Делаем
+       * горизонтальный snap-scroll: каждый шаг занимает 32% viewport,
+       * пользователь видит активный + 1-2 соседних, остальное прокручивает
+       * пальцем. -mx-5 + px-5 — компенсация padding'а QuizShell, чтобы
+       * перенос строки не обрезался.
+       *
+       * На sm+ возвращаем привычный flex с justify-between — там влезает.
+       */}
+      <div
+        className={cn(
+          'mt-5 flex items-start gap-2',
+          '-mx-5 overflow-x-auto px-5 pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden',
+          'snap-x snap-mandatory',
+          'sm:mx-0 sm:justify-between sm:overflow-visible sm:px-0 sm:pb-0 sm:snap-none',
+        )}
+      >
         {steps.map((step, idx) => {
           const active = idx === current;
           const visitedStep = visited.has(idx);
@@ -102,7 +118,12 @@ export function QuizProgress({ steps, current, visited, onStepClick }: Props) {
               disabled={!clickable}
               onClick={() => clickable && onStepClick?.(idx)}
               className={cn(
-                'group relative flex flex-1 flex-col items-start text-left transition-colors',
+                'group relative flex flex-col items-start text-left transition-colors',
+                // mobile: фикс-ширина 32vw чтобы можно было пролистывать;
+                // snap-start крепит активный шаг к левому краю когда
+                // computeLiveProgress переключает active. Высота — auto
+                // (текст в 2 строки норм). sm+ — flex-1 как раньше.
+                'min-w-[32vw] shrink-0 snap-start sm:min-w-0 sm:shrink sm:flex-1',
                 clickable && 'cursor-pointer',
                 !clickable && !active && 'cursor-default',
               )}

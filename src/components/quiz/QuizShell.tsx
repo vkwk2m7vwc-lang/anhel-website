@@ -321,13 +321,13 @@ function SuccessScreen({
       <div className="mt-8 flex flex-wrap gap-3">
         <a
           href="/"
-          className="border border-secondary px-5 py-2.5 text-sm hover:bg-secondary hover:text-primary"
+          className="inline-flex min-h-11 items-center justify-center border border-secondary px-5 py-2.5 text-sm hover:bg-secondary hover:text-primary"
         >
           На главную
         </a>
         <a
           href={catalogHref}
-          className="border border-[color:var(--color-hairline)] px-5 py-2.5 text-sm hover:bg-[color:var(--color-hover-tint)]"
+          className="inline-flex min-h-11 items-center justify-center border border-[color:var(--color-hairline)] px-5 py-2.5 text-sm hover:bg-[color:var(--color-hover-tint)]"
         >
           {catalogLabel}
         </a>
@@ -365,7 +365,10 @@ function ReviewStep({
                 <button
                   type="button"
                   onClick={() => onJump(idx)}
-                  className="text-xs text-secondary/65 hover:text-secondary"
+                  // min-h-11 + horizontal padding — на mobile «Изменить»
+                  // нужна нормальной tap-зоной. Visual look сохранили
+                  // через -mr-2 (компенсация padding'а у правого края).
+                  className="-mr-2 inline-flex min-h-11 items-center px-2 text-xs text-secondary/65 hover:text-secondary"
                 >
                   Изменить
                 </button>

@@ -127,7 +127,9 @@ export function ProjectsFilter({ projects }: { projects: ProjectItem[] }) {
               data-cursor="hover"
               aria-pressed={active}
               className={[
-                "inline-flex items-center gap-2 rounded-full border px-4 py-2 font-mono text-[11px] uppercase tracking-[0.12em] transition-colors duration-300",
+                // min-h-11 — фильтр-чип в Tailwind py-2 px-4 был ~32 px
+                // высотой, на mobile его сложно тапнуть между соседями.
+                "inline-flex min-h-11 items-center gap-2 rounded-full border px-4 py-2 font-mono text-[11px] uppercase tracking-[0.12em] transition-colors duration-300",
                 active
                   ? "border-[var(--color-secondary)] bg-[var(--color-secondary)] text-[var(--color-primary)]"
                   : "border-[var(--color-hairline)] text-[var(--color-secondary)]/70 hover:border-[var(--color-secondary)]/40 hover:text-[var(--color-secondary)]",

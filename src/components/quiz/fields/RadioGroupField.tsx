@@ -43,7 +43,11 @@ export function RadioGroupField({
             <label
               key={opt.value}
               htmlFor={inputId}
-              className="group flex cursor-pointer select-none items-center gap-3 py-1"
+              // py-2 + min-h-11 — tap target 44px (WCAG). Раньше py-1
+              // даёт ~26px высоты, на touch промахи стабильны. На inline-
+              // варианте (Да/Нет в строку) min-h-11 не мешает, gap-y-2
+              // в родителе превращается в gap-y-2 между строками 44px.
+              className="group flex min-h-11 cursor-pointer select-none items-center gap-3 py-2"
             >
               <span className="relative inline-flex h-[18px] w-[18px] shrink-0 items-center justify-center">
                 <input

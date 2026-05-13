@@ -194,7 +194,11 @@ export default async function HeatingModulePage({ params }: RouteParams) {
                 {tUi("module_label", { mono: m.mono })}
                 {m.draft ? " · DRAFT" : ""}
               </p>
-              <h1 className="mt-6 font-display text-5xl font-medium leading-[1.05] text-[var(--color-secondary)] md:mt-8 lg:text-7xl">
+              {/* text-4xl на mobile (36px) — модули типа
+                  «РАСПРЕДЕЛИТЕЛЬНЫЙ МОДУЛЬ» в text-5xl шли в 4 строки.
+                  Совпадает с фиксом в product-page/ProductHero.tsx —
+                  держим парность. */}
+              <h1 className="mt-6 font-display text-4xl font-medium leading-[1.05] text-[var(--color-secondary)] md:mt-8 md:text-5xl lg:text-7xl">
                 {m.title}
               </h1>
               <p className="mt-6 max-w-[540px] text-body text-[var(--color-secondary)]/75 md:mt-8">
