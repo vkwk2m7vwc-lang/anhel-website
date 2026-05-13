@@ -163,7 +163,14 @@
       },
       "module_label": "01 · MODULE {mono}",
       "quick_request": "Quick request",
-      "back_to_catalog": "← Back to module catalogue"
+      "back_to_catalog": "← Back to module catalogue",
+      "description_tag": "03 · DESCRIPTION",
+      "description_title": "Purpose and operating principle",
+      "applications_tag": "04 · APPLICATIONS",
+      "applications_title": "Where the module is used",
+      "references_tag": "07 · PROJECTS",
+      "neighbours_tag": "09 · OTHER MODULES",
+      "neighbours_title": "Other modules in the line"
     }
   }
 }

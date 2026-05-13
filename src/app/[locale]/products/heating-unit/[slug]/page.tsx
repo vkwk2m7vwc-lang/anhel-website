@@ -90,6 +90,7 @@ export default async function HeatingModulePage({ params }: RouteParams) {
   setRequestLocale(locale);
   const tUi = await getTranslations({ locale, namespace: "common.ui.module" });
   const tCrumb = await getTranslations({ locale, namespace: "common.ui.module.breadcrumbs" });
+  const tDet = await getTranslations({ locale, namespace: "common.ui" });
   const m = getModule(slug, locale);
   if (!m) notFound();
 
@@ -253,12 +254,12 @@ export default async function HeatingModulePage({ params }: RouteParams) {
         aria-labelledby="module-description"
       >
         <div className="mx-auto w-full max-w-[1440px] px-6 py-20 md:px-12 md:py-28">
-          <p className="mono-tag">03 · ОПИСАНИЕ</p>
+          <p className="mono-tag">{tUi("description_tag")}</p>
           <h2
             id="module-description"
             className="mt-4 max-w-[640px] font-display text-h2 font-medium text-[var(--color-secondary)]"
           >
-            Назначение и принцип работы
+            {tUi("description_title")}
           </h2>
           <p className="mt-8 max-w-[760px] text-base leading-relaxed text-[var(--color-secondary)]/80">
             {m.description}
@@ -272,12 +273,12 @@ export default async function HeatingModulePage({ params }: RouteParams) {
         aria-labelledby="module-applications"
       >
         <div className="mx-auto w-full max-w-[1440px] px-6 py-20 md:px-12 md:py-28">
-          <p className="mono-tag">04 · ПРИМЕНЕНИЕ</p>
+          <p className="mono-tag">{tUi("applications_tag")}</p>
           <h2
             id="module-applications"
             className="mt-4 max-w-[640px] font-display text-h2 font-medium text-[var(--color-secondary)]"
           >
-            Где используется модуль
+            {tUi("applications_title")}
           </h2>
           <ul className="mt-8 grid grid-cols-1 gap-px bg-[var(--color-hairline)] md:grid-cols-2">
             {m.applications.map((a, i) => (
@@ -308,7 +309,7 @@ export default async function HeatingModulePage({ params }: RouteParams) {
 
       {/* 07 Объекты-референс — auto-фильтр по slug "heating-unit",
           секция прячется если связанных проектов нет */}
-      <RelatedProjectsSection productSlug="heating-unit" tag="07 · ОБЪЕКТЫ" />
+      <RelatedProjectsSection productSlug="heating-unit" tag={tUi("references_tag")} />
 
       {/* 08 Документация — общие документы по линейке ИТП */}
       <DocumentsGrid content={documentsContent} />
@@ -319,12 +320,12 @@ export default async function HeatingModulePage({ params }: RouteParams) {
         aria-labelledby="module-neighbours"
       >
         <div className="mx-auto w-full max-w-[1440px] px-6 py-20 md:px-12 md:py-28">
-          <p className="mono-tag">09 · ДРУГИЕ МОДУЛИ</p>
+          <p className="mono-tag">{tUi("neighbours_tag")}</p>
           <h2
             id="module-neighbours"
             className="mt-4 max-w-[640px] font-display text-h2 font-medium text-[var(--color-secondary)]"
           >
-            Другие модули линейки
+            {tUi("neighbours_title")}
           </h2>
           <ul className="mt-8 grid grid-cols-1 gap-px bg-[var(--color-hairline)] md:grid-cols-2">
             {neighbours.map((n) => (
@@ -345,7 +346,7 @@ export default async function HeatingModulePage({ params }: RouteParams) {
                       {n.tagline}
                     </p>
                     <span className="mt-4 inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/55 [@media(hover:hover)]:group-hover:text-[var(--accent-current)]">
-                      Подробно
+                      {tDet("details_more")}
                       <span
                         aria-hidden="true"
                         className="inline-block transition-transform duration-300 ease-out-expo [@media(hover:hover)]:group-hover:translate-x-1"

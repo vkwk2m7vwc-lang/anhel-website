@@ -163,7 +163,14 @@
       },
       "module_label": "01 · MODÜL {mono}",
       "quick_request": "Hızlı talep",
-      "back_to_catalog": "← Modül kataloğuna dön"
+      "back_to_catalog": "← Modül kataloğuna dön",
+      "description_tag": "03 · AÇIKLAMA",
+      "description_title": "Amaç ve çalışma prensibi",
+      "applications_tag": "04 · UYGULAMALAR",
+      "applications_title": "Modülün kullanıldığı yerler",
+      "references_tag": "07 · PROJELER",
+      "neighbours_tag": "09 · DİĞER MODÜLLER",
+      "neighbours_title": "Hattaki diğer modüller"
     }
   }
 }

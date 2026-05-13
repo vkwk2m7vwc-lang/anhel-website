@@ -163,7 +163,14 @@
       },
       "module_label": "01 · {mono} МОДУЛЬ",
       "quick_request": "Быстрый запрос",
-      "back_to_catalog": "← К каталогу модулей"
+      "back_to_catalog": "← К каталогу модулей",
+      "description_tag": "03 · ОПИСАНИЕ",
+      "description_title": "Назначение и принцип работы",
+      "applications_tag": "04 · ПРИМЕНЕНИЕ",
+      "applications_title": "Где используется модуль",
+      "references_tag": "07 · ОБЪЕКТЫ",
+      "neighbours_tag": "09 · ДРУГИЕ МОДУЛИ",
+      "neighbours_title": "Другие модули линейки"
     }
   }
 }
