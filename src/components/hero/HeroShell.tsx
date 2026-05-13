@@ -28,11 +28,9 @@ import { HeroCountersMobile } from "./HeroCountersMobile";
 export function HeroShell({
   background,
   foreground,
-  variantLabel,
 }: {
   background: ReactNode;
   foreground?: ReactNode;
-  variantLabel: string;
 }) {
   const t = useTranslations("home.hero");
   return (
@@ -120,9 +118,15 @@ export function HeroShell({
           <HeroCTAs />
         </div>
 
-        {/* Bottom row: counters + variant label + scroll hint — all three
-            children are presentational text, so we leave the row
-            click-through (the outer wrapper already is). */}
+        {/* Bottom row: counters + brand tagline.
+            Two duplicate lines were removed in 2026-05 — `variantLabel`
+            (ANHEL® mark, redundant with the header logo) and `scroll_hint`
+            («ПРОКРУТИТЬ ↓», superfluous on a full-bleed hero). The variant
+            label prop was dropped from HeroShell's signature at the same
+            time. The remaining tagline is presentational text, so the row
+            stays click-through (the outer wrapper already is). Desktop/
+            tablet only (hidden md:flex) — mobile uses inline
+            HeroCountersMobile above. */}
         <div className="mt-12 hidden flex-col gap-10 border-t border-[var(--color-hairline)] pt-10 md:mt-16 md:flex md:flex-row md:items-end md:justify-between">
           <HeroCounters />
 
@@ -130,24 +134,6 @@ export function HeroShell({
             <p className="font-mono text-[10px] uppercase tracking-[0.1em] text-[var(--color-secondary)]/40">
               {t("footer_tagline")}
             </p>
-            <p className="font-mono text-[10px] uppercase tracking-[0.1em] text-[var(--color-secondary)]/50">
-              {variantLabel}
-            </p>
-            <motion.p
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 1, delay: 1.4 }}
-              className="flex items-center justify-end gap-2 font-mono text-[10px] uppercase tracking-[0.1em] text-[var(--color-secondary)]/60"
-            >
-              {t("scroll_hint")}
-              <motion.span
-                aria-hidden="true"
-                animate={{ y: [0, 4, 0] }}
-                transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
-              >
-                ↓
-              </motion.span>
-            </motion.p>
           </div>
         </div>
       </div>

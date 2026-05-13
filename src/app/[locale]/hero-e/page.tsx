@@ -10,9 +10,6 @@ export const metadata: Metadata = {
 
 export default function HeroEPage() {
   return (
-    <HeroShell
-      variantLabel="Вариант E · Карусель (авто)"
-      background={<HeroBgCarousel autoplay={true} />}
-    />
+    <HeroShell background={<HeroBgCarousel autoplay={true} />} />
   );
 }

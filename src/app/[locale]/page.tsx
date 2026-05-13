@@ -27,10 +27,7 @@ import { ProductionSection } from "@/components/home/ProductionSection";
 export default function Home() {
   return (
     <>
-      <HeroShell
-        variantLabel="ANHEL®"
-        background={<HeroBgCarousel autoplay={true} />}
-      />
+      <HeroShell background={<HeroBgCarousel autoplay={true} />} />
       <ProductsShowcase />
       <AboutSection />
       <ProductionSection />
