@@ -140,6 +140,30 @@
     },
     "modules": {
       "content_review_tooltip": "Modül içeriği inceleme aşamasındadır"
+    },
+    "details_more": "Detaylar",
+    "modules_catalog": {
+      "mono_tag": "02 · MODÜL HATTI",
+      "title": "Her ısı istasyonu konfigürasyonu için sekiz modül",
+      "lede": "Yapı kiti olarak ısı istasyonu: ısı girişi ve sayım, ısıtma, tek ve iki kademeli DHW, buhar-kondensat sistemleri."
+    },
+    "brands_tier_pumps": "Pompalar",
+    "brands_tier_components": "Otomasyon ve bileşenler",
+    "case_photo_alt": "Proje fotoğrafı",
+    "gallery_placeholder": "Fotoğraf yakında",
+    "module": {
+      "not_found": "Modül bulunamadı",
+      "advantages_tag": "05 · AVANTAJLAR",
+      "gallery_tag": "06 · GALERİ",
+      "documents_tag": "08 · BELGELER",
+      "breadcrumbs": {
+        "home": "Ana Sayfa",
+        "catalog": "Katalog",
+        "heating_unit": "Isı istasyonları"
+      },
+      "module_label": "01 · MODÜL {mono}",
+      "quick_request": "Hızlı talep",
+      "back_to_catalog": "← Modül kataloğuna dön"
     }
   }
 }

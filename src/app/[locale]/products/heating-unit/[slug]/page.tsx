@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { setRequestLocale } from "next-intl/server";
+import { setRequestLocale, getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import { Link } from "@/navigation";
@@ -70,7 +70,8 @@ export async function generateMetadata({
 }: RouteParams): Promise<Metadata> {
   const { locale, slug } = await params;
   const m = getModule(slug, locale);
-  if (!m) return { title: "Модуль не найден" };
+  const tMeta = await getTranslations({ locale, namespace: "common.ui.module" });
+  if (!m) return { title: tMeta("not_found") };
   return {
     title: `${m.title} · ANHEL`,
     description: m.tagline,
@@ -87,6 +88,8 @@ export async function generateMetadata({
 export default async function HeatingModulePage({ params }: RouteParams) {
   const { locale, slug } = await params;
   setRequestLocale(locale);
+  const tUi = await getTranslations({ locale, namespace: "common.ui.module" });
+  const tCrumb = await getTranslations({ locale, namespace: "common.ui.module.breadcrumbs" });
   const m = getModule(slug, locale);
   if (!m) notFound();
 
@@ -124,15 +127,15 @@ export default async function HeatingModulePage({ params }: RouteParams) {
   // в этой структуре они идут под 05/06/08.
   const advantagesContent = {
     ...heatingUnitContent.advantages,
-    tag: "05 · ПРЕИМУЩЕСТВА",
+    tag: tUi("advantages_tag"),
   };
   const galleryContent = {
     ...heatingUnitContent.gallery,
-    tag: "06 · ГАЛЕРЕЯ",
+    tag: tUi("gallery_tag"),
   };
   const documentsContent = {
     ...heatingUnitContent.documents,
-    tag: "08 · ДОКУМЕНТАЦИЯ",
+    tag: tUi("documents_tag"),
   };
 
   return (
@@ -144,7 +147,7 @@ export default async function HeatingModulePage({ params }: RouteParams) {
           пропорции с ProductHero (текст col-6 / изображение col-6,
           mobile aspect-[4/3] под текстом). Кастомный hero оставлен
           (не reuse ProductHero), потому что мы рендерим module-specific
-          breadcrumbs + кнопку «← К каталогу модулей». Подсветка/тень
+          breadcrumbs + кнопку «{tUi("back_to_catalog")}». Подсветка/тень
           сделаны статически: server-component, без motion. */}
       <section
         id="product-hero"
@@ -173,10 +176,10 @@ export default async function HeatingModulePage({ params }: RouteParams) {
         <div className="relative z-20 mx-auto w-full max-w-[1440px] px-6 pb-10 pt-24 md:px-12 md:pb-14 md:pt-28">
           <Breadcrumbs
             items={[
-              { label: "Главная", href: "/" },
-              { label: "Каталог", href: "/products" },
+              { label: tCrumb("home"), href: "/" },
+              { label: tCrumb("catalog"), href: "/products" },
               {
-                label: "Тепловые пункты",
+                label: tCrumb("heating_unit"),
                 href: "/products/heating-unit",
               },
               { label: m.shortTitle },
@@ -187,7 +190,7 @@ export default async function HeatingModulePage({ params }: RouteParams) {
             {/* TEXT — col-6 на md+ */}
             <div className="md:col-span-6">
               <p className="mono-tag">
-                01 · {m.mono} МОДУЛЬ
+                {tUi("module_label", { mono: m.mono })}
                 {m.draft ? " · DRAFT" : ""}
               </p>
               <h1 className="mt-6 font-display text-5xl font-medium leading-[1.05] text-[var(--color-secondary)] md:mt-8 lg:text-7xl">
@@ -201,9 +204,7 @@ export default async function HeatingModulePage({ params }: RouteParams) {
                   href="#documents"
                   data-cursor="hover"
                   className="group inline-flex items-center gap-3 rounded-md bg-[var(--color-secondary)] px-[22px] py-[14px] text-sm font-medium text-[var(--color-primary)]"
-                >
-                  Быстрый запрос
-                  <span aria-hidden="true" className="font-mono">
+                >{tUi("quick_request")}<span aria-hidden="true" className="font-mono">
                     →
                   </span>
                 </Link>
@@ -212,7 +213,7 @@ export default async function HeatingModulePage({ params }: RouteParams) {
                   data-cursor="hover"
                   className="inline-flex items-center gap-3 rounded-md border-[0.5px] border-[var(--color-secondary)]/40 bg-transparent px-[22px] py-[14px] text-sm font-medium text-[var(--color-secondary)]/80 transition-colors hover:border-[var(--color-secondary)] hover:text-[var(--color-secondary)]"
                 >
-                  ← К каталогу модулей
+                  {tUi("back_to_catalog")}
                 </Link>
               </div>
             </div>

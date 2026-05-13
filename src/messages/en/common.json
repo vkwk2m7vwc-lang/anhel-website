@@ -140,6 +140,30 @@
     },
     "modules": {
       "content_review_tooltip": "Module content is undergoing review"
+    },
+    "details_more": "Details",
+    "modules_catalog": {
+      "mono_tag": "02 · MODULE LINE-UP",
+      "title": "Eight modules for any heat-substation configuration",
+      "lede": "Heat-substation as a construction kit: heat intake and metering, heating, single- and two-stage DHW, steam-condensate systems."
+    },
+    "brands_tier_pumps": "Pumps",
+    "brands_tier_components": "Automation and components",
+    "case_photo_alt": "Project photo",
+    "gallery_placeholder": "Photo coming soon",
+    "module": {
+      "not_found": "Module not found",
+      "advantages_tag": "05 · ADVANTAGES",
+      "gallery_tag": "06 · GALLERY",
+      "documents_tag": "08 · DOCUMENTATION",
+      "breadcrumbs": {
+        "home": "Home",
+        "catalog": "Catalogue",
+        "heating_unit": "Heat substations"
+      },
+      "module_label": "01 · MODULE {mono}",
+      "quick_request": "Quick request",
+      "back_to_catalog": "← Back to module catalogue"
     }
   }
 }

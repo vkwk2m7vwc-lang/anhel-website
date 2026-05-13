@@ -140,6 +140,30 @@
     },
     "modules": {
       "content_review_tooltip": "Контент модуля проходит content-review"
+    },
+    "details_more": "Подробно",
+    "modules_catalog": {
+      "mono_tag": "02 · ЛИНЕЙКА МОДУЛЕЙ",
+      "title": "Восемь модулей под любую конфигурацию ИТП",
+      "lede": "Конструктор блочного теплового пункта: ввод и учёт тепла, отопление, ГВС в одно- и двухступенчатых исполнениях, пароконденсатные системы."
+    },
+    "brands_tier_pumps": "Насосы",
+    "brands_tier_components": "Автоматика и комплектующие",
+    "case_photo_alt": "Фото объекта",
+    "gallery_placeholder": "Фото появится",
+    "module": {
+      "not_found": "Модуль не найден",
+      "advantages_tag": "05 · ПРЕИМУЩЕСТВА",
+      "gallery_tag": "06 · ГАЛЕРЕЯ",
+      "documents_tag": "08 · ДОКУМЕНТАЦИЯ",
+      "breadcrumbs": {
+        "home": "Главная",
+        "catalog": "Каталог",
+        "heating_unit": "Тепловые пункты"
+      },
+      "module_label": "01 · {mono} МОДУЛЬ",
+      "quick_request": "Быстрый запрос",
+      "back_to_catalog": "← К каталогу модулей"
     }
   }
 }

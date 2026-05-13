@@ -326,6 +326,7 @@ function Lightbox({
  * no images.
  */
 function GallerySkeleton() {
+  const tUi = useTranslations("common.ui");
   return (
     <>
       {/* Diagonal hatch — reads as "draft / awaiting content" */}
@@ -341,7 +342,7 @@ function GallerySkeleton() {
       {/* Centre label so the skeleton is unambiguous at a glance */}
       <div className="absolute inset-0 flex items-center justify-center">
         <span className="font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/55">
-          Фото появится
+          {tUi("gallery_placeholder")}
         </span>
       </div>
     </>
