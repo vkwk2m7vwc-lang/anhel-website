@@ -41,6 +41,81 @@
       "consent_required": "Consent to personal data processing is required"
     }
   },
+  "aupd": {
+    "meta_title": "Questionnaire — Pressure-Maintenance Unit (Expansion Tank with Make-Up)",
+    "meta_description": "Complete the online questionnaire to size an ANHEL® pressure-maintenance unit (expansion tank with make-up). A manager will respond within one business day.",
+    "title": "Pressure-Maintenance Unit Sizing (Expansion Tank with Make-Up)",
+    "catalog_label": "Back to pressure-maintenance",
+    "steps": {
+      "contacts": { "title": "Contacts and facility", "description": "Who you are and where the unit will operate" },
+      "system-params": { "title": "System parameters", "description": "Capacity, volume, pressure" },
+      "medium-mode": { "title": "Heat carrier and operating mode", "description": "Medium type, temperature, pumps" },
+      "system-type": { "title": "System type and dimensions", "description": "Purpose and installation conditions" },
+      "review": { "title": "Review and send", "description": "Check your entries and send the request" }
+    },
+    "sections": {
+      "contact-data": { "title": "Contact details" },
+      "source": { "title": "How did you hear about us?" },
+      "object": { "title": "General information" },
+      "thermal-power": { "title": "System thermal capacity" },
+      "volume-pressure": { "title": "Volume and pressure" },
+      "medium": { "title": "Heat carrier type" },
+      "temperature": { "title": "System temperature schedule", "hint": "supply T1 / return T2" },
+      "pumps": { "title": "Pumps and filling" },
+      "sys": { "title": "System type" },
+      "limits": { "title": "Doorway size limit", "hint": "Height × width for moving the unit through" },
+      "additional": { "title": "Additional information" }
+    },
+    "fields": {
+      "contact_organization": { "label": "Company" },
+      "contact_fullname": { "label": "Full name" },
+      "contact_position": { "label": "Position" },
+      "contact_city": { "label": "City" },
+      "contact_email": { "label": "Email" },
+      "contact_phone": { "label": "Contact phone" },
+      "source_channel": {
+        "label": "How did you hear about us?",
+        "options": {
+          "ad": "Yandex / Google ads",
+          "search": "Yandex / Google search",
+          "social": "Social networks",
+          "recommend": "Recommendation from a colleague",
+          "known": "Already familiar, worked with us before",
+          "other": "Other"
+        }
+      },
+      "source_other": { "label": "Please specify" },
+      "object_name": { "label": "Facility name and location" },
+      "thermal_power_gcal": { "label": "System thermal capacity", "unit": "Gcal/h" },
+      "thermal_power_kw": { "label": "System thermal capacity", "unit": "kW" },
+      "system_volume": { "label": "System design volume", "unit": "L" },
+      "static_pressure": { "label": "System static pressure", "unit": "bar" },
+      "max_pressure": { "label": "Maximum working pressure", "unit": "m H₂O" },
+      "valve_pressure": { "label": "Safety valve set pressure", "unit": "m H₂O" },
+      "return_pressure": { "label": "District-heating return line pressure", "unit": "m H₂O" },
+      "heat_water": { "label": "water" },
+      "heat_glycol": { "label": "glycol solution" },
+      "glycol_percent": { "label": "Glycol concentration" },
+      "temp_t1": { "label": "T1 (supply)", "unit": "°C" },
+      "temp_t2": { "label": "T2 (return)", "unit": "°C" },
+      "pump_count": { "label": "Number of pumps" },
+      "fill_system": {
+        "label": "Filling system",
+        "options": {
+          "no": "no",
+          "yes": "yes",
+          "yes_5h": "yes, within 5 hours per MOEK requirement"
+        }
+      },
+      "sys_heating": { "label": "heating" },
+      "sys_ventilation": { "label": "ventilation" },
+      "sys_other": { "label": "other" },
+      "sys_other_text": { "label": "Please specify" },
+      "limit_height": { "label": "Height", "unit": "m" },
+      "limit_width": { "label": "Width", "unit": "m" },
+      "additional_info": { "label": "Additional information" }
+    }
+  },
   "itp": {
     "meta_title": "Questionnaire — Block-Type Heat Substation",
     "meta_description": "Complete the online questionnaire to size an ANHEL® block-type heat substation. A manager will respond within one business day.",

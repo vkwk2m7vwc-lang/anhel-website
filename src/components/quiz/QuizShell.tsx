@@ -18,7 +18,7 @@ import { type QuizStep } from '@/content/quiz/pumps-fields';
 import { makePumpsQuizSchema, pumpsQuizSchema } from '@/content/quiz/pumps-schema';
 import { makeVpuQuizSchema, vpuQuizSchema } from '@/content/quiz/vpu-schema';
 import { makeItpQuizSchema, itpQuizSchema } from '@/content/quiz/itp-schema';
-import { aupdQuizSchema } from '@/content/quiz/aupd-schema';
+import { makeAupdQuizSchema, aupdQuizSchema } from '@/content/quiz/aupd-schema';
 import type { QuizConfig, QuizKind } from '@/content/quiz/quiz-config';
 import { useTranslatedConfig } from './useTranslatedConfig';
 
@@ -69,6 +69,7 @@ export function QuizShell({ config: rawConfig, prefill }: Props) {
     if (rawConfig.kind === 'pumps') return makePumpsQuizSchema(tValidation);
     if (rawConfig.kind === 'vpu') return makeVpuQuizSchema(tValidation);
     if (rawConfig.kind === 'itp') return makeItpQuizSchema(tValidation);
+    if (rawConfig.kind === 'aupd') return makeAupdQuizSchema(tValidation);
     return STATIC_SCHEMAS[rawConfig.kind];
   }, [rawConfig.kind, tValidation]);
 

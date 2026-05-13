@@ -41,6 +41,81 @@
       "consent_required": "Kişisel veri işleme onayı gerekli"
     }
   },
+  "aupd": {
+    "meta_title": "Soru formu — Genleşme tankı ve takviye ünitesi",
+    "meta_description": "ANHEL® genleşme tankı ve takviye ünitesi boyutlandırması için çevrimiçi soru formunu doldurun. Bir uzmanımız bir iş günü içinde sizinle iletişime geçecek.",
+    "title": "Genleşme Tankı ve Takviye Ünitesi Boyutlandırma",
+    "catalog_label": "Basınç koruma sayfasına dön",
+    "steps": {
+      "contacts": { "title": "İletişim ve tesis", "description": "Kim olduğunuz ve ünitenin çalışacağı yer" },
+      "system-params": { "title": "Sistem parametreleri", "description": "Kapasite, hacim, basınç" },
+      "medium-mode": { "title": "Isı taşıyıcı ve çalışma rejimi", "description": "Akışkan tipi, sıcaklık, pompalar" },
+      "system-type": { "title": "Sistem tipi ve boyutlar", "description": "Amaç ve montaj koşulları" },
+      "review": { "title": "Gözden geçirme ve gönderme", "description": "Verileri kontrol edin ve talebi gönderin" }
+    },
+    "sections": {
+      "contact-data": { "title": "İletişim bilgileri" },
+      "source": { "title": "Bizi nereden duydunuz?" },
+      "object": { "title": "Genel bilgiler" },
+      "thermal-power": { "title": "Sistem ısıl kapasitesi" },
+      "volume-pressure": { "title": "Hacim ve basınç" },
+      "medium": { "title": "Isı taşıyıcı tipi" },
+      "temperature": { "title": "Sistem sıcaklık eğrisi", "hint": "T1 gidiş / T2 dönüş" },
+      "pumps": { "title": "Pompalar ve doldurma" },
+      "sys": { "title": "Sistem tipi" },
+      "limits": { "title": "Kapı açıklığı sınırı", "hint": "Ünitenin geçirilmesi için yükseklik × genişlik" },
+      "additional": { "title": "Ek bilgi" }
+    },
+    "fields": {
+      "contact_organization": { "label": "Firma" },
+      "contact_fullname": { "label": "Ad-soyad" },
+      "contact_position": { "label": "Görev / Pozisyon" },
+      "contact_city": { "label": "Şehir" },
+      "contact_email": { "label": "E-posta" },
+      "contact_phone": { "label": "Telefon" },
+      "source_channel": {
+        "label": "Bizi nereden duydunuz?",
+        "options": {
+          "ad": "Yandex / Google reklamları",
+          "search": "Yandex / Google arama",
+          "social": "Sosyal medya",
+          "recommend": "Meslektaş tavsiyesi",
+          "known": "Bizi tanıyordunuz / daha önce çalıştık",
+          "other": "Diğer"
+        }
+      },
+      "source_other": { "label": "Lütfen belirtin" },
+      "object_name": { "label": "Tesis adı ve konumu" },
+      "thermal_power_gcal": { "label": "Sistem ısıl kapasitesi", "unit": "Gcal/sa" },
+      "thermal_power_kw": { "label": "Sistem ısıl kapasitesi", "unit": "kW" },
+      "system_volume": { "label": "Sistem tasarım hacmi", "unit": "L" },
+      "static_pressure": { "label": "Sistem statik basıncı", "unit": "bar" },
+      "max_pressure": { "label": "Maksimum işletme basıncı", "unit": "mSS" },
+      "valve_pressure": { "label": "Emniyet vanası ayar basıncı", "unit": "mSS" },
+      "return_pressure": { "label": "Bölgesel ısıtma dönüş hat basıncı", "unit": "mSS" },
+      "heat_water": { "label": "su" },
+      "heat_glycol": { "label": "glikol çözeltisi" },
+      "glycol_percent": { "label": "Glikol konsantrasyonu" },
+      "temp_t1": { "label": "T1 (gidiş)", "unit": "°C" },
+      "temp_t2": { "label": "T2 (dönüş)", "unit": "°C" },
+      "pump_count": { "label": "Pompa sayısı" },
+      "fill_system": {
+        "label": "Doldurma sistemi",
+        "options": {
+          "no": "hayır",
+          "yes": "evet",
+          "yes_5h": "evet, MOEK gereğince 5 saat içinde"
+        }
+      },
+      "sys_heating": { "label": "ısıtma" },
+      "sys_ventilation": { "label": "havalandırma" },
+      "sys_other": { "label": "diğer" },
+      "sys_other_text": { "label": "Lütfen belirtin" },
+      "limit_height": { "label": "Yükseklik", "unit": "m" },
+      "limit_width": { "label": "Genişlik", "unit": "m" },
+      "additional_info": { "label": "Ek bilgi" }
+    }
+  },
   "itp": {
     "meta_title": "Soru formu — Blok ısı merkezi",
     "meta_description": "ANHEL® blok ısı merkezi boyutlandırması için çevrimiçi soru formunu doldurun. Bir uzmanımız bir iş günü içinde sizinle iletişime geçecek.",
