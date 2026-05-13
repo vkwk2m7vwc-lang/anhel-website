@@ -143,7 +143,7 @@ export const content: ProductContent = {
     items: [
       { id: "oprosnik", title: "Pumping-station specification sheet", size: "1.49 MB", href: "/docs/heating-cooling/oprosnyi-list.pdf" },
       { id: "cert-deklaratsiya", title: "EAEU Conformity Declaration — ANHEL® heating-and-cooling pumping stations", size: "0.86 MB", href: "/docs/heating-cooling/cert-deklaratsiya.pdf" },
-      { id: "manual", title: "Operating manual — ANHEL® SPD-type pumping stations", size: "1.41 MB", href: "/docs/heating-cooling/manual.pdf" },
+      { id: "manual", title: "Operating manual — ANHEL® SPD-type pumping stations", size: "61 KB", href: "/docs/heating-cooling/manual-en.pdf" },
     ],
   },
 

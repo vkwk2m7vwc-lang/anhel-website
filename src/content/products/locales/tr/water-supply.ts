@@ -160,7 +160,7 @@ export const content: ProductContent = {
     items: [
       { id: "oprosnik", title: "Pompa istasyonu teknik veri formu", size: "1,49 MB", href: "/docs/water-supply/oprosnyi-list.pdf" },
       { id: "cert-deklaratsiya", title: "EAEU Uygunluk Beyannamesi — ANHEL® su temini pompa istasyonları", size: "0,86 MB", href: "/docs/water-supply/cert-deklaratsiya.pdf" },
-      { id: "manual", title: "Kullanım kılavuzu — ANHEL® SPD tipi pompa istasyonları", size: "1,41 MB", href: "/docs/water-supply/manual.pdf" },
+      { id: "manual", title: "Kullanım kılavuzu — ANHEL® SPD tipi pompa istasyonları", size: "63 KB", href: "/docs/water-supply/manual-tr.pdf" },
     ],
   },
 

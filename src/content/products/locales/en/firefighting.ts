@@ -138,7 +138,7 @@ export const content: ProductContent = {
     items: [
       { id: "oprosnik", title: "Pumping-station specification sheet", size: "1.49 MB", href: "/docs/firefighting/oprosnyi-list.pdf" },
       { id: "cert-deklaratsiya", title: "EAEU Conformity Declaration — ANHEL® fire-protection pumping stations", size: "0.86 MB", href: "/docs/firefighting/cert-deklaratsiya.pdf" },
-      { id: "manual", title: "Operating manual — ANHEL® SPD-type pumping stations", size: "1.41 MB", href: "/docs/firefighting/manual.pdf" },
+      { id: "manual", title: "Operating manual — ANHEL® SPD-type pumping stations", size: "61 KB", href: "/docs/firefighting/manual-en.pdf" },
     ],
   },
 

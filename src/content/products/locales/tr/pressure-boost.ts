@@ -135,7 +135,7 @@ export const content: ProductContent = {
     items: [
       { id: "oprosnik", title: "Pompa istasyonu teknik veri formu", size: "1,49 MB", href: "/docs/pressure-boost/oprosnyi-list.pdf" },
       { id: "cert-deklaratsiya", title: "EAEU Uygunluk Beyannamesi — ANHEL® basınç koruma üniteleri", size: "0,86 MB", href: "/docs/pressure-boost/cert-deklaratsiya.pdf" },
-      { id: "manual", title: "Kullanım kılavuzu — ANHEL® SPD tipi pompa istasyonları", size: "1,41 MB", href: "/docs/pressure-boost/manual.pdf" },
+      { id: "manual", title: "Kullanım kılavuzu — ANHEL® SPD tipi pompa istasyonları", size: "63 KB", href: "/docs/pressure-boost/manual-tr.pdf" },
     ],
   },
 

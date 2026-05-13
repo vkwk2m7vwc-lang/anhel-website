@@ -265,11 +265,18 @@ export default function DocumentsPage({
                 <DirectionGroup
                   key={cat.slug}
                   title={tDirections(`${cat.slug}.title`)}
-                  items={(cat.manuals ?? []).map((m) => ({
-                    title: tItems(m.key),
-                    href: m.href,
-                    size: m.size,
-                  }))}
+                  items={(cat.manuals ?? []).map((m) => {
+                    // Locale-aware manual swap. The RU master is
+                    // /docs/<cat>/manual.pdf (1.38 MB). EN/TR translated
+                    // re-renders sit alongside as manual-en.pdf /
+                    // manual-tr.pdf (~60 KB each, generated via
+                    // _scripts/build_manual_translations.py).
+                    if (locale === "ru") return { title: tItems(m.key), href: m.href, size: m.size };
+                    const suffix = locale === "en" ? "-en" : "-tr";
+                    const localizedHref = m.href.replace(/manual\.pdf$/, `manual${suffix}.pdf`);
+                    const localizedSize = locale === "en" ? "61 KB" : "63 KB";
+                    return { title: tItems(m.key), href: localizedHref, size: localizedSize };
+                  })}
                   icon={FileCog}
                 />
               ))}

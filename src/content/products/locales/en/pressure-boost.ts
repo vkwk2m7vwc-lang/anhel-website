@@ -135,7 +135,7 @@ export const content: ProductContent = {
     items: [
       { id: "oprosnik", title: "Pumping-station specification sheet", size: "1.49 MB", href: "/docs/pressure-boost/oprosnyi-list.pdf" },
       { id: "cert-deklaratsiya", title: "EAEU Conformity Declaration — ANHEL® pressure-boosting units", size: "0.86 MB", href: "/docs/pressure-boost/cert-deklaratsiya.pdf" },
-      { id: "manual", title: "Operating manual — ANHEL® SPD-type pumping stations", size: "1.41 MB", href: "/docs/pressure-boost/manual.pdf" },
+      { id: "manual", title: "Operating manual — ANHEL® SPD-type pumping stations", size: "61 KB", href: "/docs/pressure-boost/manual-en.pdf" },
     ],
   },
 
