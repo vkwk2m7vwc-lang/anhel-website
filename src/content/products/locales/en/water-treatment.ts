@@ -26,7 +26,7 @@ export const content: ProductContent = {
     subtitle:
       "High-tech equipment combining state-of-the-art process, structural and energy-saving design. Filtration, softening, iron removal and reverse osmosis — delivered as a single package with automation and components from leading global manufacturers.",
     image: {
-      src: "/assets/products/vpu.png",
+      src: "/assets/products/vpu.webp",
       alt: "ANHEL — water-treatment unit with steel filter vessels",
     },
     primaryCta: {

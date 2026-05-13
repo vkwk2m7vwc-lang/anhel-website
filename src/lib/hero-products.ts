@@ -52,7 +52,7 @@ export const HERO_PRODUCTS: readonly HeroProduct[] = [
   {
     slug: "pump-water",
     name: "Насосная станция водоснабжения",
-    image: "/assets/products/hvs-nu.png",
+    image: "/assets/products/hvs-nu.webp",
     accent: "#1E6FD9",
     alt: "ANHEL® — насосная станция холодного водоснабжения, модель HVS-NU",
     href: "/products/pumps/water-supply",
@@ -60,7 +60,7 @@ export const HERO_PRODUCTS: readonly HeroProduct[] = [
   {
     slug: "pump-fire",
     name: "Насосная станция пожаротушения",
-    image: "/assets/products/hvs-nu-red2.png",
+    image: "/assets/products/hvs-nu-red2.webp",
     accent: "#D72638",
     alt: "ANHEL® — насосная станция пожаротушения, красный шкаф HVS-NU",
     href: "/products/pumps/firefighting",
@@ -68,7 +68,7 @@ export const HERO_PRODUCTS: readonly HeroProduct[] = [
   {
     slug: "water-treatment",
     name: "Установка водоподготовки",
-    image: "/assets/products/vpu.png",
+    image: "/assets/products/vpu.webp",
     accent: "#8A94A0",
     alt: "ANHEL — установка водоподготовки со стальными фильтрами",
     href: "/products/water-treatment",
@@ -76,7 +76,7 @@ export const HERO_PRODUCTS: readonly HeroProduct[] = [
   {
     slug: "heating-unit",
     name: "Блочный тепловой пункт",
-    image: "/assets/products/bitp.png",
+    image: "/assets/products/bitp.webp",
     accent: "#E8873B",
     alt: "ANHEL® — блочный индивидуальный тепловой пункт (БИТП)",
     href: "/products/heating-unit",

@@ -20,7 +20,7 @@ export const content: ProductContent = {
     subtitle:
       "Yangın koruma sisteminde hem bekleme hem de yangın müdahalesi sırasındaki artan talep boyunca gerekli basıncı ve debiyi sağlayan üniteler. Otomatik başlatma, sıcak yedekleme ve tam mevzuat belgeleri.",
     image: {
-      src: "/assets/products/hvs-nu-red2.png",
+      src: "/assets/products/hvs-nu-red2.webp",
       alt: "ANHEL® — kırmızı muhafazada yangın koruma pompa istasyonu, HVS-NU serisi",
     },
     primaryCta: { label: "Çevrimiçi doldur", href: "/quiz/pumps?from=firefighting", variant: "primary" },

@@ -20,7 +20,7 @@ import type { HeatingModule } from "@/content/products/heating-unit-modules/type
  * stuck in its hover state (same fix family as the other grids).
  *
  * Image fallback: the data layer currently uses one shared placeholder
- * (`/assets/products/bitp.png`) for all 8 modules — see
+ * (`/assets/products/bitp.webp`) for all 8 modules — see
  * `_docs/heating_unit_modules_gaps.md` for the path forward.
  */
 export function HeatingModulesCatalog({

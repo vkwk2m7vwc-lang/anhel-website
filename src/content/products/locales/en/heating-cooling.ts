@@ -23,7 +23,7 @@ export const content: ProductContent = {
     subtitle:
       "Units that circulate heating fluid or chilled water in central heating, cooling and air-conditioning systems. Precise pressure control, motor protection and control algorithms tuned for minimum energy consumption.",
     image: {
-      src: "/assets/products/heating-cooling.png",
+      src: "/assets/products/heating-cooling.webp",
       alt: "ANHEL — pumping station for heating and cooling systems: expansion tank, pump group and control cabinet",
     },
     primaryCta: { label: "Fill in online", href: "/quiz/pumps?from=heating-cooling", variant: "primary" },

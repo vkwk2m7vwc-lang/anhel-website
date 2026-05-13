@@ -12,7 +12,7 @@ import type { ProductContent } from "../../types";
  * серийное обозначение подтвердит заказчик перед production
  * release.
  *
- * Image: `/assets/products/hvs-nu.png` (cold-water render — голубой
+ * Image: `/assets/products/hvs-nu.webp` (cold-water render — голубой
  * пьедестал-свечение на hero carousel главной). Shared render с home
  * hero, когда появится production-render — меняется в одном месте.
  *
@@ -42,7 +42,7 @@ export const content: ProductContent = {
     subtitle:
       "Установки для повышения и поддержания постоянного уровня давления или создания необходимого перепада давления. Сборка на базе многоступенчатых вертикальных, консольных или моноблочных горизонтальных насосов под параметры объекта.",
     image: {
-      src: "/assets/products/hvs-nu.png",
+      src: "/assets/products/hvs-nu.webp",
       alt: "ANHEL® — насосная станция холодного водоснабжения, серия HVS-NU",
     },
     // Pair of hero CTAs:

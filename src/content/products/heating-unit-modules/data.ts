@@ -7,7 +7,7 @@ import type { HeatingModule, HeatingModuleSlug, HeatingModuleSpec } from "./type
  * в _docs/mfmc-research/heating-unit-*.json. Бренд-замена «Сигма Heat®»
  * → ANHEL; «МФМК» не упоминается.
  *
- * Картинки: placeholder /assets/products/bitp.png для всех 8 модулей.
+ * Картинки: placeholder /assets/products/bitp.webp для всех 8 модулей.
  * 8 индивидуальных рендеров присланы заказчиком в чате, ожидают
  * сохранения в public/assets/products/heating-unit/modules/<slug>.png —
  * см. _docs/heating_unit_modules_gaps.md.

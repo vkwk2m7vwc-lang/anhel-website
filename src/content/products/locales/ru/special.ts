@@ -16,7 +16,7 @@ import type { ProductContent } from "../../types";
  * странице сведены в единый блок: применение и преимущества
  * объединены, ТТХ — общие диапазоны линейки.
  *
- * Image: /assets/products/special.png — рендер модульной сборки
+ * Image: /assets/products/special.webp — рендер модульной сборки
  * коллекторов специсполнения.
  */
 export const content: ProductContent = {
@@ -39,7 +39,7 @@ export const content: ProductContent = {
     subtitle:
       "Высокотехнологичное оборудование для объектов, где важна быстрая адаптация к условиям эксплуатации. Два формата сборки — в утеплённом контейнере или в стеклопластиковой ёмкости. Универсальное решение для водоснабжения, пожаротушения, отопления и охлаждения.",
     image: {
-      src: "/assets/products/special.png",
+      src: "/assets/products/special.webp",
       alt: "ANHEL — насосная станция специального исполнения: модульная сборка коллекторов и насосной группы",
     },
     // Pair of hero CTAs:

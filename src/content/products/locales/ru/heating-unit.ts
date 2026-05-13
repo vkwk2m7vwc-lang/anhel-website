@@ -9,7 +9,7 @@ import type { ProductContent } from "../../types";
  * (закрытая система отопления, ГВС, совмещённые и т.д.).
  *
  * Section structure:
- *   - Hero — один ассет /assets/products/bitp.png (тот же что на
+ *   - Hero — один ассет /assets/products/bitp.webp (тот же что на
  *     home carousel, когда появится production render — меняется
  *     в одном месте)
  *   - ТТХ — аггрегированные диапазоны по всей линейке
@@ -24,7 +24,7 @@ import type { ProductContent } from "../../types";
  * Серия: `BITP-NU` (working draft, по аналогии с HVS-NU для насосов).
  * Финальное обозначение подтвердит заказчик.
  *
- * Image: /assets/products/bitp.png — тот же render, что на home
+ * Image: /assets/products/bitp.webp — тот же render, что на home
  * carousel (heat-unit slide). Заменится на production-render когда
  * будет.
  *
@@ -53,7 +53,7 @@ export const content: ProductContent = {
     subtitle:
       "Модульное оборудование для отопления, горячего водоснабжения и охлаждения. Заводская сборка, погодозависимое регулирование и полный комплект разрешительной документации.",
     image: {
-      src: "/assets/products/bitp.png",
+      src: "/assets/products/bitp.webp",
       alt: "ANHEL® — блочный индивидуальный тепловой пункт, модульное исполнение",
     },
     // Pair of hero CTAs:

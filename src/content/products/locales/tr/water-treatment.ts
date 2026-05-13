@@ -25,7 +25,7 @@ export const content: ProductContent = {
     subtitle:
       "Son teknoloji proses, yapısal ve enerji tasarrufu tasarımını birleştiren yüksek teknolojili ekipman. Filtreleme, yumuşatma, demir giderme ve ters osmoz — önde gelen küresel üreticilerden otomasyon ve bileşenlerle birlikte tek pakette teslim edilir.",
     image: {
-      src: "/assets/products/vpu.png",
+      src: "/assets/products/vpu.webp",
       alt: "ANHEL — çelik filtre tanklı su arıtma ünitesi",
     },
     primaryCta: {

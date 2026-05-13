@@ -26,7 +26,7 @@ export const content: ProductContent = {
     subtitle:
       "Basıncı artırmak ve sabit tutmak ya da gerekli basınç farkını oluşturmak için üniteler. Proje parametrelerine göre çok kademeli dikey, uçtan emişli veya yakın eşlenikli yatay pompalar üzerine inşa edilir.",
     image: {
-      src: "/assets/products/hvs-nu.png",
+      src: "/assets/products/hvs-nu.webp",
       alt: "ANHEL® — soğuk su pompa istasyonu, HVS-NU serisi",
     },
     primaryCta: {

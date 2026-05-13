@@ -20,7 +20,7 @@ export const content: ProductContent = {
     subtitle:
       "Units that maintain the required pressure and flow in the fire-protection system both on standby and during the increased demand of a fire response. Automatic start, hot redundancy and a complete set of regulatory documentation.",
     image: {
-      src: "/assets/products/hvs-nu-red2.png",
+      src: "/assets/products/hvs-nu-red2.webp",
       alt: "ANHEL® — fire-protection pumping station in a red enclosure, HVS-NU series",
     },
     primaryCta: { label: "Fill in online", href: "/quiz/pumps?from=firefighting", variant: "primary" },

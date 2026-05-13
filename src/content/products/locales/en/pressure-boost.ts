@@ -20,7 +20,7 @@ export const content: ProductContent = {
     subtitle:
       "Automatic pressure-boosting unit (APBU) — a hydraulic module with pumps, an expansion vessel and intelligent automation. Maintains a constant system pressure to ±0.01 bar, with automatic deaeration and compensation of thermal expansion.",
     image: {
-      src: "/assets/products/pressure-boost.png",
+      src: "/assets/products/pressure-boost.webp",
       alt: "ANHEL — automatic pressure-boosting unit: control cabinet, pump group and membrane expansion vessel",
     },
     primaryCta: { label: "Fill in online", href: "/quiz/pumps?from=pressure-boost", variant: "primary" },
