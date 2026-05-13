@@ -1,4 +1,7 @@
-'use client';
+// Серверный компонент: только композиция и фильтрация полей. Дети
+// (QuizFieldRenderer) клиентские из-за react-hook-form context, но
+// сама QuizSection не использует useState/useEffect/useFormContext —
+// убираем "use client" чтобы её разметку рендерил сервер.
 
 import type { QuizSection as TSection } from '@/content/quiz/pumps-fields';
 import { QuizFieldRenderer } from './QuizFieldRenderer';

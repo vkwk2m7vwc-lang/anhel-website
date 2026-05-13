@@ -1,4 +1,9 @@
-"use client";
+// Серверный компонент. Раньше стоял "use client" из-за импортов
+// клиентских scene-сцен (framer-motion useInView внутри SceneFrame),
+// но сам ScenarioCScene не держит state/handler'ов — только compose
+// of children. Next-14 App Router нормально допускает server→client
+// boundary через import, лишняя клиентская обвязка только наращивала
+// bundle.
 
 import { scenarioCScenes } from "@/content/products/firefighting-scenario-c";
 import { ChapterDivider } from "./ChapterDivider";
