@@ -2,11 +2,28 @@
 
 import { Link } from "@/navigation";
 import { motion } from "framer-motion";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import type {
   DocumentsContent,
   DocumentItem,
 } from "@/content/products/types";
+
+/**
+ * IDs of documents whose PDF body is RU-only. On non-RU locales we
+ * surface a small "Original document (Russian)" line under the card
+ * so the visitor isn't surprised when the file opens in Russian.
+ *
+ * `oprosnik` — questionnaire (the translated *online* flow is at
+ *  /quiz/<kind>; the PDF stays a RU master since it is a fillable
+ *  AcroForm document we serve as an offline / email-attachment
+ *  fallback).
+ * `cert-deklaratsiya` — EAEU Declaration of Conformity (legally
+ *  issued in Russian; translation is not permitted).
+ *
+ * The `manual` card is already locale-swapped at the data layer
+ * (manual-en.pdf / manual-tr.pdf), so it is NOT included here.
+ */
+const RU_ONLY_DOC_IDS = new Set(["oprosnik", "oprosnik-pdf", "cert-deklaratsiya"]);
 
 /**
  * Documents grid — section 11.
@@ -76,6 +93,15 @@ export function DocumentsGrid({ content }: { content: DocumentsContent }) {
 
 function DocCard({ doc, index }: { doc: DocumentItem; index: number }) {
   const tUi = useTranslations("common.ui");
+  const tDocs = useTranslations("documents.sections.certificates");
+  const locale = useLocale();
+  // Surface "Original document (Russian)" under RU-only cards on EN/TR.
+  // Reuses the same translation key the /documents page uses for the
+  // EAEU certificate badge so all "RU master" indicators read identically.
+  const ruNote =
+    locale !== "ru" && RU_ONLY_DOC_IDS.has(doc.id)
+      ? tDocs("original_note")
+      : undefined;
   return (
     <motion.li
       initial={{ opacity: 0, y: 16 }}
@@ -133,6 +159,13 @@ function DocCard({ doc, index }: { doc: DocumentItem; index: number }) {
           {doc.size ? (
             <span className="font-mono text-[10px] uppercase tracking-[0.08em] text-[var(--color-secondary)]/55 sm:hidden">
               {doc.size}
+            </span>
+          ) : null}
+          {/* RU-only badge for `oprosnik` / `cert-deklaratsiya` on EN/TR.
+              See RU_ONLY_DOC_IDS above for the rationale. */}
+          {ruNote ? (
+            <span className="text-[11px] italic text-[var(--color-secondary)]/45 sm:text-xs">
+              {ruNote}
             </span>
           ) : null}
           {/* На sm+ — отдельный CTA «Скачать →»; на mobile это место занимает arrow справа от строки. */}

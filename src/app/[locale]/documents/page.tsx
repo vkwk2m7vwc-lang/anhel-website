@@ -109,9 +109,31 @@ const CATEGORIES: readonly DocCategoryData[] = [
   },
 ];
 
-const COMMON_DOCS: readonly { key: "anhel_card" | "service_request"; href: string; size: string }[] = [
-  { key: "anhel_card", href: "/anhel-card.pdf", size: "0.07 MB" },
-  { key: "service_request", href: "/documents/service-request-anhel.pdf", size: "0.06 MB" },
+/**
+ * COMMON_DOCS entries with locale-aware href.
+ *
+ * `anhel_card` — replaced the legacy single-locale /anhel-card.pdf
+ * (deleted in 91873dc) with the three new locale variants
+ * /company-profile-{ru,en,tr}.pdf produced by
+ * _scripts/build_company_profile.py. The href is resolved per locale
+ * inside the component below, mirroring the same swap on /contacts.
+ *
+ * `service_request` — RU-only PDF for now. On EN/TR locales the
+ * download still works (lands on RU PDF), and we surface a small
+ * "Original document (Russian)" note under the card so the visitor
+ * isn't surprised when the file opens. Same pattern used for the
+ * EAEU certificates.
+ */
+const COMMON_DOCS: readonly {
+  key: "anhel_card" | "service_request";
+  size: string;
+  /** href base — `anhel_card` is locale-swapped, `service_request` is static. */
+  baseHref: string;
+  /** When true, the href becomes `${baseHref}-${locale}.pdf` (stem swap). */
+  localeAware: boolean;
+}[] = [
+  { key: "anhel_card", baseHref: "/company-profile", size: "0.04 MB", localeAware: true },
+  { key: "service_request", baseHref: "/documents/service-request-anhel.pdf", size: "0.06 MB", localeAware: false },
 ];
 
 export default function DocumentsPage({
@@ -133,7 +155,13 @@ export default function DocumentsPage({
   // показывается под каждым сертификатом ТОЛЬКО на не-RU локалях,
   // чтобы EN/TR-читатели понимали, что PDF откроется на русском.
   // На RU подпись избыточна, поэтому не рендерим.
-  const certNote = locale === "ru" ? undefined : t("sections.certificates.original_note");
+  //
+  // The same note is reused under the questionnaire PDF cards (single
+  // RU master per direction) and under the service-request PDF in
+  // COMMON_DOCS — both of those are still RU-only today. Translated
+  // online flows live at /quiz/* and /service/request; the PDF download
+  // is a fallback for offline / email-attachment workflows.
+  const ruNote = locale === "ru" ? undefined : t("sections.certificates.original_note");
 
   return (
     <main className="pt-24 md:pt-32">
@@ -162,15 +190,25 @@ export default function DocumentsPage({
         <div className="mx-auto max-w-[1440px] px-6 py-14 md:px-12 md:py-16">
           <p className="mono-tag mb-8">{t("common_section.mono_tag")}</p>
           <ul className="grid gap-3 md:grid-cols-2">
-            {COMMON_DOCS.map((doc) => (
-              <DocCard
-                key={doc.href}
-                title={tCommon(doc.key)}
-                href={doc.href}
-                size={doc.size}
-                icon={Building2}
-              />
-            ))}
+            {COMMON_DOCS.map((doc) => {
+              // anhel_card is locale-aware — base + `-${locale}.pdf`.
+              // service_request is RU-only, so on EN/TR we surface the
+              // "Original document (Russian)" note.
+              const href = doc.localeAware
+                ? `${doc.baseHref}-${locale}.pdf`
+                : doc.baseHref;
+              const note = doc.localeAware ? undefined : ruNote;
+              return (
+                <DocCard
+                  key={doc.key}
+                  title={tCommon(doc.key)}
+                  href={href}
+                  size={doc.size}
+                  note={note}
+                  icon={Building2}
+                />
+              );
+            })}
           </ul>
         </div>
       </section>
@@ -196,6 +234,10 @@ export default function DocumentsPage({
                   title: tItems(q.key),
                   href: q.href,
                   size: q.size,
+                  // PDF master is RU-only; the translated online flow
+                  // lives at /quiz/<kind>. Show the same RU note as on
+                  // certificates so non-RU visitors aren't surprised.
+                  note: ruNote,
                 }))}
                 icon={FileText}
               />
@@ -242,7 +284,7 @@ export default function DocumentsPage({
                   title: tItems(c.key),
                   href: c.href,
                   size: c.size,
-                  note: certNote,
+                  note: ruNote,
                 }))}
                 icon={FileBadge}
               />
