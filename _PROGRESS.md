@@ -1188,3 +1188,149 @@ Three.js глобальный, аудит 47 «use client»).
   фиксации эффекта.
 
 Затем — i18n wave-3 (PDF локализация EN/TR) и финальный pre-launch audit.
+
+
+---
+
+## Сессия 2026-05-13 (третья) — PDF локализация EN/TR (Part A–E)
+
+**Цель ТЗ:** локализовать все PDF-документы сайта на EN и TR, так
+чтобы иностранные заказчики могли скачать опросник на своём языке,
+распечатать, заполнить, прислать.
+
+**Pre-flight:**
+- Тэг `v1.10.1-before-pdf-localization` на `df75c0d`
+  (текущий HEAD `feat/i18n-wave-3-documents`).
+- Wave-3 НЕ смерджена в main — продолжили в той же ветке.
+- `gh` CLI не установлен; PR будет создан через pre-filled URL.
+
+### Что сделано
+
+| Коммит | Тип | Что |
+|---|---|---|
+| `03254aa` | feat(i18n/pdfs) | EN/TR опросники — 5 quiz kinds × 2 локали × 8 каталогов |
+| `8c2ed17` | feat(i18n/pdfs) | Service-request форма EN/TR |
+| `cf2fe98` | feat(i18n/pdfs) | Locale-aware swap всех кнопок скачивания |
+
+**Vercel preview:** https://anhel-website-git-feat-i18n-wave-cc682a-anurin7-5494s-projects.vercel.app
+
+### Часть A — Опросные листы (16 PDF)
+
+`_scripts/build_questionnaire_translations.py` — универсальный
+ReportLab-генератор. Архитектура:
+
+- Структура опросника (steps → sections → fields) задана в Python
+  как зеркало `src/content/quiz/*-fields.ts` + control-systems
+  `quiz-config.ts`. ITP heating/vent — через `_itp_system_fields()`,
+  повторяя TS-функцию `makeSystemFields()`.
+- Labels, hints, options резолвятся из `src/messages/{en,tr}/quiz.json`
+  (готовые переводы из wave-3 не переводим заново).
+- Renderer класс: A4, ANHEL header + Profit LLC contact strip + doc-ID,
+  cover card с инструкцией, мульти-страничный поток с автопагинацией,
+  футер с номером страницы. Поля: text/number (подчёркнутая линия +
+  единица измерения), textarea (3-строчный box), checkbox (☐ + label),
+  radio (○ Option + Option + Option).
+- FIELD_UNITS таблица единиц (°C, m³/h, bar, Gcal/h…) — пишутся
+  возле линии ввода.
+
+Map quiz_kind → product directories (один и тот же EN/TR PDF копируется):
+
+  pumps (NU, 67 fields)    → firefighting / water-supply / heating-cooling / special
+  aupd (30 fields)         → pressure-boost
+  itp (61 fields)          → heating-unit
+  vpu (26 fields)          → water-treatment
+  control_systems (24)     → control-systems
+
+**Итого:** 5 уникальных × 2 локали = 10 файлов × копий = 16 PDF в
+`public/docs/<product>/oprosnyi-list-<locale>.pdf`. Размер 35–52 KB.
+Шрифт — DejaVu Sans с полным Latin + Turkish (ş, ı, ç, ğ).
+
+### Часть B — Service request форма (2 PDF)
+
+`_scripts/build_service_request_translations.py` — переиспользует
+Renderer + chrome из questionnaire-генератора. Структура из
+`src/content/service/form-config.ts` (4 шага + review). Сигнатурный
+блок и follow-up note про фото/видео — добавлены поверх стандартного
+рендера. Переводы из `src/messages/{en,tr}/service.json`
+(`service.request_form` namespace из wave-3).
+
+Output:
+  `/public/documents/service-request-anhel-en.pdf` — 37 KB
+  `/public/documents/service-request-anhel-tr.pdf` — 38 KB
+
+RU-master `/public/documents/service-request-anhel.pdf` не тронут.
+
+### Часть C — Руководства
+
+В wave-3 уже сделаны 10 PDF (5 насосных категорий × 2 локали,
+~60–63 KB). Проверены: pypdf reads 16 страниц, шапка/футер EN/TR
+корректные. Других категорий с RU-руководством на сайте нет
+(heating-unit/water-treatment/control-systems никогда не имели
+manual.pdf), переводить нечего.
+
+### Часть D — Что НЕ переводим (по ТЗ)
+
+- Декларации соответствия ЕАЭС — юр. документы РФ.
+- Сертификаты — юр. документы РФ.
+- Технические каталоги МФМК — требуют переверстки, отдельная задача.
+
+На карточках этих документов на EN/TR продолжает выводиться
+«Original document (Russian)» note.
+
+### Часть E — Locale-aware кнопки скачивания
+
+24 product-locale файла (`src/content/products/locales/{en,tr}/*.ts`):
+  - `secondaryCta.href` → `-<locale>.pdf`
+  - `documents.items[].href` → `-<locale>.pdf`
+  - размер обновлён на актуальный (PDF меньше в 30–60 раз)
+
+Документная страница `src/app/[locale]/documents/page.tsx`:
+  - `COMMON_DOCS` переписан на `href: (locale) => string`. Теперь
+    оба entry (anhel_card + service_request) локализуются через
+    функцию-резолвер.
+  - Новая функция `localizedQuestionnaire(q, locale)` свапает stem
+    `oprosnyi-list.pdf` → `oprosnyi-list-<locale>.pdf` и подставляет
+    компактный size.
+  - `ruNote` теперь применяется ТОЛЬКО к сертификатам/декларациям.
+  - Manual-карточки уже умели swap из wave-3, без правок.
+
+Сервисная страница `src/app/[locale]/service/page.tsx`:
+  - Hero CTA «Download PDF form» резолвится через новый
+    `resolveServicePdfHref(locale)` из `page-content.ts`.
+  - Старая константа `SERVICE_PDF_HREF` помечена `@deprecated`,
+    оставлена для совместимости.
+
+`.gitignore`: добавлен `.claude/` (Cowork worktree cache).
+
+`npx tsc --noEmit` clean.
+
+### Финальная таблица PDF локализаций
+
+| Тип документа | RU | EN | TR | Locale-aware? |
+|---|---|---|---|---|
+| Карточка организации | ✅ 40 KB | ✅ 33 KB | ✅ 34 KB | ✅ /contacts + /documents |
+| Опросник pumps (×4 dirs) | ✅ 1.45 MB | ✅ 40 KB | ✅ 42 KB | ✅ |
+| Опросник aupd (pressure-boost) | ✅ 0.29 MB | ✅ 38 KB | ✅ 40 KB | ✅ |
+| Опросник itp (heating-unit) | ✅ 0.52 MB | ✅ 50 KB | ✅ 51 KB | ✅ |
+| Опросник vpu (water-treatment) | ✅ 2.17 MB | ✅ 37 KB | ✅ 39 KB | ✅ |
+| Опросник control-systems | ✅ 1.80 MB | ✅ 35 KB | ✅ 36 KB | ✅ |
+| Service-request форма | ✅ 60 KB | ✅ 37 KB | ✅ 38 KB | ✅ |
+| Руководство (×5 pump dirs) | ✅ 1.38 MB | ✅ 61 KB | ✅ 63 KB | ✅ wave-3 |
+| Декларации соответствия | ✅ 0.5–0.9 MB | — | — | RU-only (юр.) |
+| Каталоги МФМК | — | — | — | требуют переверстки |
+
+### Состояние ветки
+
+- Branch: `feat/i18n-wave-3-documents` (продолжение wave-3)
+- Tags: `v1.10.1-before-pdf-localization` (pre-flight),
+        `v1.11-pdf-localization-complete` (после squash-merge)
+- Commits ahead of origin/main (по PR счёт от main 7b78ad0):
+  - wave-3 коммиты (12) + локализация PDF (3)
+- Diff: 33 файла (~17 PDFs + 24 locale-content + 3 ts + 3 scripts)
+
+### Следующий шаг
+
+- Squash-merge PR `feat/i18n-wave-3-documents` → main:
+  https://github.com/vkwk2m7vwc-lang/anhel-website/compare/main...feat/i18n-wave-3-documents?expand=1&title=PDF%20localization%20EN%2FTR%20%2B%20wave-3%20documents&body=Squash-merge%20PDF%20localization%20wave%20into%20wave-3%20documents%20branch.
+- После merge: `git tag v1.11-pdf-localization-complete` на merge commit.
+- Затем — финальный редакционный аудит сайта перед публичным запуском.
