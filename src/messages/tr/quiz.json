@@ -1,1 +1,90 @@
-{}
+{
+  "shell": {
+    "tag": "Soru formu",
+    "intro_para_1": "Sayın iş ortağımız, uygulamanıza birebir uygun ekipmanı seçebilmemiz için lütfen aşağıdaki soru formunu doldurun veya aynı verileri içeren bir teknik şartname tarafımıza iletin.",
+    "intro_para_2": "Soru formunu doldururken sorun yaşarsanız +7 (812) 416-45-00 numarayı arayın — mühendislerimiz size memnuniyetle yardımcı olacaktır.",
+    "disclaimer_title": "Dikkat",
+    "disclaimer_body": "Profit LLC, soru formunda belirtilen seçim verilerinin doğruluğundan sorumlu değildir. Müşterinin soru formunu doldurmayı reddetmesi durumunda, siparişte verilen katalog koduyla ifade edilen teknik özelliklere ANHEL® kataloğuna uygun şekilde onay verildiği ve ek bir gereksinim bulunmadığı kabul edilir.",
+    "consent_label": "Kişisel verilerin gizlilik politikasına uygun olarak işlenmesini kabul ediyorum",
+    "consent_privacy_pre": "Aşağıdaki belgelere uygun olarak: ",
+    "consent_privacy": "Gizlilik Politikası",
+    "consent_and": " ve ",
+    "consent_data": "Kişisel Veri İşleme Onayı",
+    "back": "Geri",
+    "next": "İleri",
+    "submit": "Talep gönder",
+    "submitting": "Gönderiliyor…",
+    "edit": "Düzenle",
+    "yes_short": "Evet",
+    "received_tag": "Talep alındı",
+    "thanks_title": "Teşekkürler",
+    "thanks_body": "Talebinizi aldık. Bir uzmanımız bir iş günü içinde sizinle iletişime geçecek.",
+    "urgent_pre": "Acil sorular için ",
+    "urgent_or": " numaradan arayın veya ",
+    "urgent_dot": " adresine yazın.",
+    "to_home": "Ana sayfaya",
+    "restored": "Önceki oturumun verileri geri yüklendi. Kaldığınız yerden devam edebilirsiniz.",
+    "error_default": "Talebiniz gönderilemedi. Lütfen daha sonra tekrar deneyin.",
+    "error_network": "Ağ hatası. PDF sürümünü indirip info@anhelspb.com adresine gönderin — talebinizi işleme alacağız.",
+    "step_of": "{total} adımdan {current}."
+  },
+  "vpu": {
+    "meta_title": "Soru formu — Su arıtma ünitesi",
+    "meta_description": "ANHEL® su arıtma ünitesi boyutlandırması için çevrimiçi soru formunu doldurun. Bir uzmanımız bir iş günü içinde sizinle iletişime geçecek.",
+    "title": "Su Arıtma Ünitesi Boyutlandırma",
+    "catalog_label": "Su arıtma kataloğuna dön",
+    "steps": {
+      "contacts": { "title": "İletişim", "description": "Kim olduğunuz ve hangi tesis için" },
+      "source": { "title": "Kaynak su ve gereksinimler", "description": "Ham ve arıtılmış su parametreleri" },
+      "flow-mode": { "title": "Debi ve çalışma rejimi", "description": "Kapasite ve çalışma takvimi" },
+      "drain-docs": { "title": "Tahliye ve dokümantasyon", "description": "Geri yıkama tahliyesi ve proje dokümantasyonu" },
+      "review": { "title": "Gözden geçirme ve gönderme", "description": "Verileri kontrol edin ve talebi gönderin" }
+    },
+    "sections": {
+      "contact-data": { "title": "İletişim bilgileri" },
+      "source": { "title": "Kaynak su" },
+      "clean-flow": { "title": "Gerekli arıtılmış su debisi" },
+      "schedule": { "title": "Su tüketim takvimi", "hint": "Ünitenin en uygun çalışma şemasının seçilmesi için" },
+      "storage": { "title": "Yedek depolama ve basma yüksekliği" },
+      "drain": { "title": "Geri yıkama suyu" },
+      "docs": { "title": "Proje dokümantasyonu" }
+    },
+    "fields": {
+      "contact_organization": { "label": "Firma" },
+      "contact_fullname": { "label": "Ad-soyad" },
+      "contact_position": { "label": "Görev / Pozisyon" },
+      "contact_city": { "label": "Şehir" },
+      "contact_email": { "label": "E-posta" },
+      "contact_phone": { "label": "Telefon" },
+      "water_source": {
+        "label": "Su kaynağı",
+        "hint": "Lütfen ham su analizini soru formuna ekleyin"
+      },
+      "water_temp": { "label": "Ham su sıcaklığı (min, maks)" },
+      "water_quality_req": {
+        "label": "Arıtılmış su kalite gereksinimleri",
+        "hint": "Gereksinimleri veya ilgili standardın referansını ekleyin"
+      },
+      "input_flow": { "label": "Bağlantı noktasında şebeke giriş debisi", "unit": "m³/sa" },
+      "input_pressure": { "label": "Bağlantı noktasında şebeke giriş basıncı", "unit": "mSS" },
+      "input_pump_type": { "label": "Giriş pompası tipi (mevcutsa)" },
+      "clean_flow_daily": { "label": "Günlük", "unit": "m³/gün" },
+      "clean_flow_max_h": { "label": "Tepe saatlik", "unit": "m³/sa" },
+      "shifts_count": { "label": "Vardiya sayısı" },
+      "shift_duration": { "label": "Vardiya süresi" },
+      "shift_break": { "label": "Vardiyalar arası mola (maks)" },
+      "operating_mode": { "label": "Ünitenin çalışma rejimi" },
+      "water_reserve": { "label": "Gerekli arıtılmış su yedeği (depolama tankı V)", "unit": "m³" },
+      "existing_tanks": { "label": "Mevcut arıtılmış su tank kapasitesi", "unit": "m³" },
+      "output_pressure": { "label": "Ünite çıkışında gerekli basma yüksekliği", "unit": "mSS" },
+      "drain_network": { "label": "Geri yıkama tahliyesi için hat — mevcut mu?" },
+      "drain_limits_composition": {
+        "label": "İçerik kısıtlamaları",
+        "hint": "Tahliye edilen geri yıkama suyunun kalitesine ilişkin kısıtlamalar"
+      },
+      "drain_limits_volume": { "label": "Hacim kısıtlamaları" },
+      "design_docs_scope": { "label": "Ünite ile birlikte sağlanacak proje dokümantasyonu kapsamı" },
+      "additional_info": { "label": "Ek bilgi" }
+    }
+  }
+}

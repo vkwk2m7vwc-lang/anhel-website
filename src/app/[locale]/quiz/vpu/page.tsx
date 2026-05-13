@@ -1,15 +1,22 @@
 import type { Metadata } from 'next';
 import type { CSSProperties } from 'react';
+import { getTranslations } from 'next-intl/server';
 import { QuizShell } from '@/components/quiz/QuizShell';
 import { vpuQuizConfig } from '@/content/quiz/vpu-config';
 
 export const dynamic = 'force-dynamic';
 
-export const metadata: Metadata = {
-  title: 'Опросный лист — установки водоподготовки',
-  description:
-    'Заполните онлайн-опросник для подбора установки водоподготовки ANHEL®. Менеджер свяжется в течение 1 рабочего дня.',
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: { locale: string };
+}): Promise<Metadata> {
+  const t = await getTranslations({ locale: params.locale, namespace: 'quiz.vpu' });
+  return {
+    title: t('meta_title'),
+    description: t('meta_description'),
+  };
+}
 
 /** /quiz/vpu — опросник по водоподготовке. Акцент: treatment (графит). */
 export default function VpuQuizPage() {

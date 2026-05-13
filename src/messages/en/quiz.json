@@ -1,1 +1,90 @@
-{}
+{
+  "shell": {
+    "tag": "Questionnaire",
+    "intro_para_1": "Dear partners, to size equipment that fits your application precisely, please fill in the questionnaire below or send us a technical specification covering the same data.",
+    "intro_para_2": "If you have any difficulty completing the questionnaire, call +7 (812) 416-45-00 — our engineers will be glad to assist.",
+    "disclaimer_title": "Please note",
+    "disclaimer_body": "Profit LLC is not responsible for the accuracy of the input data provided in this questionnaire. If the customer declines to complete the questionnaire, we treat it as acceptance of the technical specification implied by the catalogue code in the order, in line with the ANHEL® catalogue, with no additional requirements.",
+    "consent_label": "I agree to the processing of personal data under the privacy policy",
+    "consent_privacy_pre": "In accordance with the ",
+    "consent_privacy": "Privacy Policy",
+    "consent_and": " and the ",
+    "consent_data": "Personal Data Consent",
+    "back": "Back",
+    "next": "Next",
+    "submit": "Send request",
+    "submitting": "Sending…",
+    "edit": "Edit",
+    "yes_short": "Yes",
+    "received_tag": "Request received",
+    "thanks_title": "Thank you",
+    "thanks_body": "We have received your request. A manager will get back to you within one business day.",
+    "urgent_pre": "For urgent matters, call ",
+    "urgent_or": " or write to ",
+    "urgent_dot": ".",
+    "to_home": "Back to home",
+    "restored": "Data from your previous session has been restored. You can continue from where you left off.",
+    "error_default": "We could not send your request. Please try again later.",
+    "error_network": "Network error. Please download the PDF version and email it to info@anhelspb.com — we will process your request.",
+    "step_of": "Step {current} of {total}"
+  },
+  "vpu": {
+    "meta_title": "Questionnaire — Water Treatment Unit",
+    "meta_description": "Complete this online questionnaire to size an ANHEL® water treatment unit. A manager will respond within one business day.",
+    "title": "Water Treatment Unit Sizing",
+    "catalog_label": "Back to water treatment catalogue",
+    "steps": {
+      "contacts": { "title": "Contacts", "description": "Who you are and which facility this is for" },
+      "source": { "title": "Source water and requirements", "description": "Raw and treated water parameters" },
+      "flow-mode": { "title": "Flow and operating mode", "description": "Capacity and operating schedule" },
+      "drain-docs": { "title": "Drainage and documentation", "description": "Backwash discharge and project documentation" },
+      "review": { "title": "Review and send", "description": "Check your entries and send the request" }
+    },
+    "sections": {
+      "contact-data": { "title": "Contact details" },
+      "source": { "title": "Source water" },
+      "clean-flow": { "title": "Treated-water flow demand" },
+      "schedule": { "title": "Water consumption schedule", "hint": "Required to choose the optimal operating scheme" },
+      "storage": { "title": "Buffer storage and outlet head" },
+      "drain": { "title": "Backwash water" },
+      "docs": { "title": "Project documentation" }
+    },
+    "fields": {
+      "contact_organization": { "label": "Company" },
+      "contact_fullname": { "label": "Full name" },
+      "contact_position": { "label": "Position" },
+      "contact_city": { "label": "City" },
+      "contact_email": { "label": "Email" },
+      "contact_phone": { "label": "Contact phone" },
+      "water_source": {
+        "label": "Water supply source",
+        "hint": "Please attach a raw-water analysis report to the questionnaire"
+      },
+      "water_temp": { "label": "Raw water temperature (min, max)" },
+      "water_quality_req": {
+        "label": "Treated-water quality requirements",
+        "hint": "Please attach the requirements or a reference to the applicable standard"
+      },
+      "input_flow": { "label": "Inlet flow rate at the supply network connection point", "unit": "m³/h" },
+      "input_pressure": { "label": "Inlet pressure at the supply network connection point", "unit": "m H₂O" },
+      "input_pump_type": { "label": "Inlet pump type (if any)" },
+      "clean_flow_daily": { "label": "Daily flow", "unit": "m³/day" },
+      "clean_flow_max_h": { "label": "Peak hourly flow", "unit": "m³/h" },
+      "shifts_count": { "label": "Number of shifts" },
+      "shift_duration": { "label": "Shift duration" },
+      "shift_break": { "label": "Break between shifts (max)" },
+      "operating_mode": { "label": "Operating mode" },
+      "water_reserve": { "label": "Treated-water buffer storage required (tank capacity V)", "unit": "m³" },
+      "existing_tanks": { "label": "Existing treated-water tank capacity", "unit": "m³" },
+      "output_pressure": { "label": "Required outlet head", "unit": "m H₂O" },
+      "drain_network": { "label": "Network for backwash discharge — available?" },
+      "drain_limits_composition": {
+        "label": "Composition limits",
+        "hint": "Any quality restrictions on the discharged backwash water"
+      },
+      "drain_limits_volume": { "label": "Volume limits" },
+      "design_docs_scope": { "label": "Scope of project documentation to be supplied with the unit" },
+      "additional_info": { "label": "Additional information" }
+    }
+  }
+}
