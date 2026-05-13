@@ -46,10 +46,72 @@ export async function generateMetadata({
   };
 }
 
-const YANDEX_MAP_SRC =
-  "https://yandex.ru/map-widget/v1/?text=" +
-  encodeURIComponent("Санкт-Петербург, ул. Политехническая, 6 стр. 1") +
-  "&z=17";
+/**
+ * Координаты Политехническая ул., 6 (СПб, окр. Светлановское) —
+ * проверены геокодингом по OSM/Nominatim. Используются как для
+ * iframe-карты, так и для внешних «Открыть в картах».
+ *
+ * Точка строго по адресу здания, без поиска организации, чтобы
+ * на картах открывался обычный pin, а не карточка «Profit» —
+ * у нас нет полноценной карточки компании на Яндекс/Google, и
+ * пускать посетителя в пустую карточку нежелательно.
+ */
+const OFFICE_COORDS = { lat: 59.9933, lon: 30.3559, zoom: 16 } as const;
+
+/**
+ * DMS-подпись для пина в Google Maps pb-URL.
+ * 59.9933° N → 59°59'35.9"N, 30.3559° E → 30°21'21.2"E.
+ * base64 кодировка строки "59°59'35.9"N 30°21'21.2"E" (URL-safe вариант
+ * подходит и для !2z параметра в pb=).
+ */
+const OFFICE_DMS_B64 = "NTnCsDU5JzM1LjkiTiAzMMKwMjEnMjEuMiJF";
+
+/**
+ * Iframe-карта по локали.
+ *
+ * RU → Яндекс Карты Widget v1 (нативные для русскоязычного посетителя,
+ *      UI на русском). Без `text=...` — только `ll` (центр) + `pt` (метка),
+ *      поэтому при первом рендере на карте обычный pin, без всплывающей
+ *      карточки организации.
+ *
+ * EN/TR → Google Maps embed в современном pb-формате (тот, что Google
+ *         отдаёт в «Share → Embed map» на maps.google.com). В отличие
+ *         от устаревшего `?q=...&output=embed`, pb-URL отдаёт полностью
+ *         интерактивную карту — скролл-зум, drag, переключение типа,
+ *         как у Яндекса. UI локализуется через `!1s${hl}!2s` сегмент.
+ *
+ * Параметры Яндекса: `ll` и `pt` принимают LON,LAT (порядок именно
+ * долгота-широта). В Google pb-URL — `2d${lon}!3d${lat}` (тоже сначала
+ * долгота, потом широта). У Google `?q=lat,lon` был LAT,LON, но мы от
+ * этого формата отказались — он скролл-зум не поддерживает.
+ */
+function getMapEmbedSrc(locale: string): string {
+  const { lat, lon } = OFFICE_COORDS;
+  if (locale === "ru") {
+    const { zoom } = OFFICE_COORDS;
+    return `https://yandex.ru/map-widget/v1/?ll=${lon},${lat}&z=${zoom}&pt=${lon},${lat},pm2rdm`;
+  }
+  const hl = locale === "tr" ? "tr" : "en";
+  // pb-формат: !1d — viewport span (2000м для зума ~16),
+  //            !2d/!3d — lon/lat центра,
+  //            !2z — base64 подписи у пина (DMS координаты),
+  //            !5e0 — обычная карта (1=satellite, 2=terrain),
+  //            !1s${hl}!2s — UI-локаль.
+  return `https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d2000!2d${lon}!3d${lat}!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2z${OFFICE_DMS_B64}!5e0!3m2!1s${hl}!2s!4v1700000000000!5m2!1s${hl}!2s`;
+}
+
+/**
+ * URL для внешней кнопки «Открыть в …». На RU — Yandex Maps web,
+ * на EN/TR — Google Maps. Оба показывают pin по координатам, без
+ * карточки организации.
+ */
+function getMapExternalHref(locale: string): string {
+  const { lat, lon, zoom } = OFFICE_COORDS;
+  if (locale === "ru") {
+    return `https://yandex.ru/maps/?ll=${lon},${lat}&z=${zoom}&pt=${lon},${lat},pm2rdm`;
+  }
+  return `https://www.google.com/maps?q=${lat},${lon}`;
+}
 
 export default function ContactsPage({
   params: { locale },
@@ -242,13 +304,25 @@ export default function ContactsPage({
           <div className="mt-10 overflow-hidden rounded-sm border border-[var(--color-hairline)]">
             <iframe
               title={t("map.iframe_title")}
-              src={YANDEX_MAP_SRC}
+              src={getMapEmbedSrc(locale)}
               width="100%"
               height="480"
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
               className="block border-0"
             />
+          </div>
+          <div className="mt-6">
+            <a
+              href={getMapExternalHref(locale)}
+              target="_blank"
+              rel="noreferrer noopener"
+              data-cursor="hover"
+              className="inline-flex items-center gap-2 rounded-sm border border-[var(--color-hairline)] px-5 py-3 font-mono text-[11px] uppercase tracking-[0.14em] text-[var(--color-secondary)]/75 transition-colors hover:border-[var(--color-secondary)]/45 hover:text-[var(--color-secondary)]"
+            >
+              <span>{t("map.open_external")}</span>
+              <span aria-hidden="true" className="text-[12px]">↗</span>
+            </a>
           </div>
         </div>
       </section>

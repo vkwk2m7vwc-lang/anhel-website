@@ -63,7 +63,8 @@
   },
   "map": {
     "mono_tag": "Office address",
-    "iframe_title": "ANHEL® office map — 6 Politekhnicheskaya str., building 1"
+    "iframe_title": "ANHEL® office map — 6 Politekhnicheskaya str., building 1",
+    "open_external": "Open in Google Maps"
   },
   "form": {
     "mono_tag": "Contact form",

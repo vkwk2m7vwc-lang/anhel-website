@@ -63,7 +63,8 @@
   },
   "map": {
     "mono_tag": "Ofis adresi",
-    "iframe_title": "ANHEL® ofis haritası — Politekhnicheskaya cad. No: 6, blok 1"
+    "iframe_title": "ANHEL® ofis haritası — Politekhnicheskaya cad. No: 6, blok 1",
+    "open_external": "Google Haritalar'da aç"
   },
   "form": {
     "mono_tag": "İletişim formu",
