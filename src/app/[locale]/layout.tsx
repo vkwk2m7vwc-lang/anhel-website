@@ -137,6 +137,25 @@ export default async function LocaleLayout({
   return (
     <html lang={locale} className={fontVariables} suppressHydrationWarning>
       <head>
+        {/* Preload критического шрифта (Inter Tight cyrillic weight 400) —
+            он стоит в hero-заголовке и счётчиках, без него LCP ловит
+            flash-of-unstyled-text. crossOrigin обязателен, иначе preload
+            не привяжется к font-face. */}
+        <link
+          rel="preload"
+          as="font"
+          type="font/woff2"
+          href="/fonts/inter-tight/NGSwv5HMAFg6IuGlBNMjxLsD8ah8QA.woff2"
+          crossOrigin="anonymous"
+        />
+        {/* Inter cyrillic 400 — body шрифт, идёт сразу после hero */}
+        <link
+          rel="preload"
+          as="font"
+          type="font/woff2"
+          href="/fonts/inter/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa0ZL7SUc.woff2"
+          crossOrigin="anonymous"
+        />
         {/* Site-wide Organization JSON-LD. Rendered once in <head> so
             Google's structured-data graph has a single canonical
             organization @id to link Product/Article/Breadcrumb
