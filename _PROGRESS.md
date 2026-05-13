@@ -1073,3 +1073,118 @@ audit/pre-launch-2026-05 в основном clone-е. Worktree остался �
 3. Если нужно — конкретный список страниц с проблемами
 
 См. recovery-kit README v2 для возможных направлений B-работы.
+
+---
+
+## Сессия 2026-05-13 (вторая) — мобильная адаптация + perf-фиксы
+
+**Цель:** B-задача из предыдущей сессии — мобильная адаптация всех
+страниц + перф-фиксы (Google Fonts блокировки в RU, Hero PNG ~5 MB,
+Three.js глобальный, аудит 47 «use client»).
+
+**Pre-flight:**
+- Тэг `v1.8-before-mobile-adaptation` на `origin/main` (`338385a`).
+- Ветка `feat/mobile-adaptation-and-perf` от main, 4 коммита сверху.
+
+### Что сделано в коммитах
+
+| Коммит | Тип | Что |
+|---|---|---|
+| `f901421` | perf(fonts) | Self-host Inter/Inter Tight/JetBrains Mono + удаление мёртвого three.js |
+| `33241e3` | perf(images) | Конверт hero/product PNG → WebP (-87%, -14.5 MB) |
+| `ca8226b` | fix(mobile)  | Tap targets 44px, sticky-nav padding, hero downscale, step-rail scroll |
+| `0722d92` | perf(rsc)    | "use client" → server для 2 чистых composers |
+
+**Vercel preview:** https://anhel-website-git-feat-mobile-ada-f0d266-anurin7-5494s-projects.vercel.app
+
+### Подробности
+
+**1. Self-hosted fonts** (`f901421`)
+- Скачали woff2-файлы Inter/Inter Tight/JetBrains Mono из Google Fonts
+  API в `public/fonts/{inter,inter-tight,jetbrains-mono}/` (580 KB total).
+- `public/fonts/fonts.css` — единый @font-face listing с unicode-range,
+  подключается из `globals.css` через `@import`.
+- `src/lib/fonts.ts` — удалён `next/font/google`, оставлен compat-shim.
+- `globals.css` `:root` — добавлены `--font-display/--font-body/--font-mono`.
+- `layout.tsx` — preload Inter Tight cyrillic-400 + Inter cyrillic-400.
+- `scripts/fetch-fonts.sh` + `npm run fonts:fetch` — регенерация.
+- **Эффект:** RU-аудитория больше не зависит от заблокированных
+  `fonts.googleapis.com` / `fonts.gstatic.com`. LCP стабильнее.
+
+**2. Drop unused three.js** (`f901421`)
+- `src/components/three/SceneCanvas.tsx` не импортировался нигде —
+  удалён вместе с `three`, `@react-three/fiber`, `@react-three/drei`,
+  `@types/three` из package.json. Сэкономили деп-tree.
+
+**3. Hero PNG → WebP** (`33241e3`)
+- `scripts/optimize-hero-images.js` (`npm` через `node scripts/...`).
+  Использует `sharp` (уже в devDependencies).
+- 15 ключевых PNG (hero carousel + 8 модулей теплопункта).
+- 16.72 MB → 2.24 MB (-87%). Самые тяжёлые: special.png 1.4 MB → 225 KB,
+  vpu.png 1.4 MB → 151 KB, bitp.png 1.3 MB → 202 KB.
+- Обновлены 26 файлов references в src/ (.png → .webp).
+- PNG-исходники удалены.
+
+**4. Mobile fixes** (`ca8226b`) — на основе аудита 35 страниц + 90
+компонентов через subagent. Найденные паттерны:
+- Tap targets <44px (WCAG): `QuizNavigation`, `QuizShell` (Success+
+  «Изменить»), `RadioGroupField` rows, `ServiceRequestForm` (step-rail +
+  sticky-nav), `ProjectsFilter` chips → везде `min-h-11`.
+- `text-5xl` H1 в product-page hero без mobile downscale (длинные RU-
+  заголовки разлетались в 5 строк): `ProductHero.tsx` L129 +
+  `heating-unit/[slug]/page.tsx` L197 → `text-4xl md:text-5xl lg:text-7xl`.
+- Sticky bottom-nav без horizontal padding: `QuizNavigation` →
+  `-mx-5 px-5 sm:mx-0 sm:px-0` + `pb-[env(safe-area-inset-bottom)]` для
+  iOS home-indicator.
+- Step-rail из 5-7 шагов с тонкими 6px-точками: `QuizProgress` (5 шагов)
+  переключён на horizontal snap-scroll на <sm (min-w-[32vw] per шаг),
+  `ServiceRequestForm` step-rail (7 шагов) — min-h-11 на каждый столбик.
+- ОК-страницы (не требуют правок per audit): `/products`, `/service`,
+  `/contacts`, `/documents`, `/projects`, `/projects/[slug]`,
+  privacy-policy / personal-data-consent, MobileMenu, Footer, Header.
+  Уже сделано в предыдущих волнах (Hero mobile, batch-2).
+- Аудитор пометил `HowItWorksSection.tsx` hardcoded RU-строки (L102-103,
+  L106 — «03 · Типы АПТ…») — не баг, но отложить в i18n wave-3.
+
+**5. "use client" cleanup** (`0722d92`)
+- 89 файлов с `"use client"` в `src/components/`. Только 3 кандидата без
+  state/handler'ов из них. Удалил из 2: `ScenarioCScene` (orchestrator)
+  и `QuizSection` (composer). `LakhtaScene` оставил — родитель клиентский
+  через GSAP target-by-id, толку нет.
+- Семантическая чистка важнее, чем байтовая.
+
+### Что НЕ сделано (но не критично)
+
+- **Визуальная Lighthouse / WebPageTest сверка** — не запущена. Vercel
+  preview live, пользователь может прогнать сам или сделать в следующей
+  сессии. Ожидаемые улучшения: LCP -1.5/-2.5s (WebP + fonts preload),
+  bundle size -200-300 KB (three deps gone, RSC moved).
+- **CLS-фиксы** — отдельной волной не делал; основной CLS источник
+  (Hero fonts) уже закрыт через preload + self-host.
+
+### Состояние ветки
+
+- Branch: `feat/mobile-adaptation-and-perf`
+- Tag pre-flight: `v1.8-before-mobile-adaptation` (origin/main 338385a)
+- 4 commits ahead of origin/main:
+  - `f901421` perf(fonts): self-host + drop unused three.js
+  - `33241e3` perf(images): hero/product PNG → WebP (-14.5 MB)
+  - `ca8226b` fix(mobile): tap targets, sticky-nav, hero downscale, step-rail
+  - `0722d92` perf(rsc): drop "use client" from ScenarioCScene + QuizSection
+- Diff: 97 файлов, +1475/-163
+
+### Workflow note
+
+Снова использован Desktop Commander MCP — Cowork-mount по-прежнему
+указывает на пустую `~/Desktop/ANHEL/ANHEL  Сайт/` (только handoff из
+прошлой сессии). Реальный репо — `~/Desktop/ANHEL Сайт/ANHEL  Сайт/`.
+
+### Следующий шаг
+
+- Squash-merge PR `feat/mobile-adaptation-and-perf` → main (pre-filled
+  URL выдан в чате).
+- После merge: tag `v1.9-mobile-adaptation-complete` на main.
+- Прогон Lighthouse mobile baseline (главная + 2-3 продуктовые) для
+  фиксации эффекта.
+
+Затем — i18n wave-3 (PDF локализация EN/TR) и финальный pre-launch audit.
