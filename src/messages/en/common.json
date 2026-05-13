@@ -1,0 +1,176 @@
+{
+  "brand": {
+    "name": "ANHEL®",
+    "tagline_footer": "Engineering equipment. Russia."
+  },
+  "nav": {
+    "products": "Products",
+    "documents": "Documentation",
+    "projects": "Projects",
+    "production": "Manufacturing",
+    "service": "Service",
+    "about": "About",
+    "contacts": "Contact"
+  },
+  "aria": {
+    "home_link": "ANHEL® — back to homepage",
+    "main_nav": "Primary navigation",
+    "call_phone": "Call: {phone}",
+    "open_menu": "Open menu",
+    "close_menu": "Close menu",
+    "legal_docs_nav": "Legal documents"
+  },
+  "skip_link": "Skip to main content",
+  "theme_toggle": {
+    "to_light": "Switch to light theme",
+    "to_dark": "Switch to dark theme",
+    "light_label": "Light theme",
+    "dark_label": "Dark theme"
+  },
+  "footer": {
+    "columns": {
+      "products": "Products",
+      "company": "Company",
+      "materials": "Resources",
+      "contacts": "Contact"
+    },
+    "products": {
+      "pumps": "Pumping stations",
+      "heating_unit": "Heat substations",
+      "water_treatment": "Water treatment",
+      "control_systems": "Control cabinets"
+    },
+    "company": {
+      "about": "About us",
+      "production": "Manufacturing",
+      "service": "Service",
+      "projects": "Projects"
+    },
+    "materials": {
+      "questionnaires": "Specification sheets",
+      "catalogs": "Catalogues",
+      "certificates": "Certificates",
+      "requisites": "Company details"
+    },
+    "address_line_1": "6 Politekhnicheskaya str., building 1,",
+    "address_line_2": "office N-7, St. Petersburg, Russia",
+    "copyright": "© {year} Profit LLC (ООО «Профит»). Tax ID (INN) 7802825464. All rights reserved.",
+    "privacy_policy": "Privacy Policy",
+    "personal_data_consent": "Personal Data Consent"
+  },
+  "actions": {
+    "request_quote": "Request a quote",
+    "download_catalog": "Download catalogue",
+    "contact_engineer": "Talk to an engineer",
+    "learn_more": "Learn more",
+    "submit": "Submit",
+    "cancel": "Cancel"
+  },
+  "mega_menu": {
+    "products": {
+      "aria_label": "Products — categories",
+      "pumps": {
+        "title": "Pumping stations",
+        "description": "Five series: water supply, fire protection, heating, pressure boosting, special-purpose"
+      },
+      "heating_unit": {
+        "title": "Heat substations",
+        "description": "Eight block-modular substations: intake, heating, DHW, make-up"
+      },
+      "water_treatment": {
+        "title": "Water treatment",
+        "description": "Filtration and softening units for boiler houses and heat substations"
+      },
+      "control_systems": {
+        "title": "Control cabinets",
+        "description": "Five series: VFD, electric drives, fire alarm, smoke control, sewage pumping"
+      }
+    },
+    "documents": {
+      "aria_label": "Documentation — by type",
+      "questionnaires": {
+        "title": "Specification sheets",
+        "description": "Eight specification sheets across four product lines"
+      },
+      "catalogs": {
+        "title": "Catalogues",
+        "description": "Printed catalogues — coming soon"
+      },
+      "certificates": {
+        "title": "Certificates",
+        "description": "Seven EAEU conformity declarations"
+      }
+    }
+  },
+  "mobile_menu": {
+    "dialog_label": "Primary menu",
+    "section_products": "Products",
+    "section_documents": "Documentation",
+    "section_navigation": "Navigation",
+    "section_contacts": "Contact",
+    "go_to_section": "Go to section",
+    "office_line": "Headquarters — St. Petersburg. Manufacturing — Moscow."
+  },
+  "ui": {
+    "breadcrumbs_aria": "Breadcrumbs",
+    "download": "Download",
+    "open_external": "Open",
+    "tech_specs": {
+      "mono_tag": "02 · Technical specifications",
+      "title": "Series parameters",
+      "lede": "Reference characteristics. The final configuration is sized to the project brief."
+    },
+    "gallery": {
+      "open_photo": "Open photo {n} at full size",
+      "viewer_label": "Full-size photo viewer",
+      "close": "Close",
+      "prev": "Previous photo",
+      "next": "Next photo"
+    },
+    "carousel": {
+      "products_aria": "Product carousel",
+      "open_product": "Open page: {name}",
+      "show_product": "Show: {name}",
+      "pause": "Pause autoplay",
+      "play": "Resume autoplay",
+      "in_use": "in service"
+    },
+    "brands": {
+      "visit_site": "Visit the manufacturer's site: {name}"
+    },
+    "modules": {
+      "content_review_tooltip": "Module content is undergoing review"
+    },
+    "details_more": "Details",
+    "modules_catalog": {
+      "mono_tag": "02 · MODULE LINE-UP",
+      "title": "Eight modules for any heat-substation configuration",
+      "lede": "Heat-substation as a construction kit: heat intake and metering, heating, single- and two-stage DHW, steam-condensate systems."
+    },
+    "brands_tier_pumps": "Pumps",
+    "brands_tier_components": "Automation and components",
+    "case_photo_alt": "Project photo",
+    "gallery_placeholder": "Photo coming soon",
+    "module": {
+      "not_found": "Module not found",
+      "advantages_tag": "05 · ADVANTAGES",
+      "gallery_tag": "06 · GALLERY",
+      "documents_tag": "08 · DOCUMENTATION",
+      "breadcrumbs": {
+        "home": "Home",
+        "catalog": "Catalogue",
+        "heating_unit": "Heat substations"
+      },
+      "module_label": "01 · MODULE {mono}",
+      "quick_request": "Quick request",
+      "back_to_catalog": "← Back to module catalogue",
+      "description_tag": "03 · DESCRIPTION",
+      "description_title": "Purpose and operating principle",
+      "applications_tag": "04 · APPLICATIONS",
+      "applications_title": "Where the module is used",
+      "references_tag": "07 · PROJECTS",
+      "neighbours_tag": "09 · OTHER MODULES",
+      "neighbours_title": "Other modules in the line"
+    }
+  }
+}

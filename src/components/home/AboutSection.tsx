@@ -1,4 +1,5 @@
-import Link from "next/link";
+import { Link } from "@/navigation";
+import { useTranslations } from "next-intl";
 
 /**
  * Секция «О компании» — якорь `#about` на главной.
@@ -18,8 +19,13 @@ import Link from "next/link";
  *
  * Стиль секции согласован с `ProductsShowcase`: max-width 1440,
  * h2 на font-display, lede 60-70 chars, mono-tag сверху.
+ *
+ * i18n: все строки — из `home.about.*`. Все цифры в счётчиках —
+ * презентационные (150 / 12 / 04 / +) и не переводятся: они одинаковы
+ * во всех языках, лишь подписи (`caption`) приходят через t().
  */
 export function AboutSection() {
+  const t = useTranslations("home.about");
   return (
     <section
       id="about"
@@ -27,45 +33,33 @@ export function AboutSection() {
       className="scroll-mt-24 border-t border-[var(--color-hairline)] bg-[var(--color-primary)] text-[var(--color-secondary)]"
     >
       <div className="mx-auto max-w-[1440px] px-6 py-20 md:px-12 md:py-28">
-        <p className="mono-tag mb-6">О компании</p>
+        <p className="mono-tag mb-6">{t("mono_tag")}</p>
         <h2
           id="about-heading"
           className="max-w-3xl font-display text-3xl leading-tight md:text-5xl"
         >
-          Делаем сложное оборудование простым в эксплуатации
+          {t("heading")}
         </h2>
 
         <div className="mt-10 grid gap-8 text-base leading-relaxed text-[var(--color-secondary)]/75 md:grid-cols-2 md:gap-14 md:text-lg">
-          <p>
-            ANHEL® — бренд ООО «Профит». Проектируем и производим модульные
-            насосные станции, блочно-модульные тепловые пункты, системы
-            водоподготовки и шкафы управления. Работаем с промышленными и
-            гражданскими объектами по всей России.
-          </p>
-          <p>
-            Собственное конструкторское бюро и сборочный цех. Каждый модуль
-            проходит гидравлические и электрические испытания на стенде до
-            отгрузки — на объект приезжает оборудование, готовое к
-            пусконаладке.
-          </p>
+          <p>{t("paragraph_1")}</p>
+          <p>{t("paragraph_2")}</p>
         </div>
 
         <p className="mt-8 max-w-3xl text-base leading-relaxed text-[var(--color-secondary)]/60 md:text-lg">
-          Закрываем весь цикл одной командой: расчёт и подбор → проектирование
-          → производство → монтаж и пусконаладка → сервис. Один договор, один
-          ответственный, одни сроки.
+          {t("paragraph_3")}
         </p>
 
         {/* Static stats — без count-up animation. 3 значения горизонтально:
             150+ объектов / 12 лет опыта / 04 направления — реальные цифры
             бренда (бизнес работает с 2014, 150+ объектов сданы). */}
         <div
-          aria-label="Ключевые показатели"
+          aria-label={t("stats_aria")}
           className="mt-16 grid grid-cols-3 gap-6 border-t border-[var(--color-hairline)] pt-10 md:mt-20 md:gap-16 md:pt-14"
         >
-          <Stat value="150" suffix="+" caption="Объектов" />
-          <Stat value="12" suffix="+" caption="Лет опыта" />
-          <Stat value="04" caption="Направления" />
+          <Stat value="150" suffix="+" caption={t("stats.objects_caption")} />
+          <Stat value="12" suffix="+" caption={t("stats.years_caption")} />
+          <Stat value="04" caption={t("stats.directions_caption")} />
         </div>
 
         {/* CTA на якорь #production — секция «Производство» ниже на той
@@ -77,7 +71,7 @@ export function AboutSection() {
             data-cta="about-to-production"
             className="group inline-flex items-center gap-3 rounded-md border-[0.5px] border-[var(--color-secondary)]/40 px-[22px] py-[14px] text-sm font-medium text-[var(--color-secondary)] transition-colors hover:border-[var(--color-secondary)]"
           >
-            О производстве
+            {t("cta")}
             <span
               aria-hidden="true"
               className="inline-block font-mono transition-transform duration-300 ease-out-expo group-hover:translate-x-1"

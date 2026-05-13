@@ -1,0 +1,108 @@
+{
+  "meta": {
+    "title": "Projects — ANHEL® portfolio",
+    "description": "Completed ANHEL® projects: pumping stations and water treatment units in residential complexes and medical centres."
+  },
+  "hero": {
+    "mono_tag": "Projects · {count}",
+    "title": "Where our equipment runs.",
+    "lede": "Completed projects featuring ANHEL® pumping stations and water treatment systems. Residential developments by Setl Group and PIK, medical centres, commercial buildings. Full list — with the equipment supplied to each project."
+  },
+  "note": {
+    "mono_tag": "Note",
+    "title": "Not every site runs entirely on our equipment.",
+    "body": "On larger projects the supply scope often varies by phase — in one phase an ANHEL® pumping station with a control cabinet, in another phase third-party brands per the client's requirements. The card lists exactly what was physically supplied and installed on the specific site."
+  },
+  "filter": {
+    "all": "All",
+    "pumps": "Pumping stations",
+    "water_treatment": "Water treatment",
+    "empty": "No projects in this category yet."
+  },
+  "category_labels": {
+    "pumps": "Pumping stations",
+    "water-treatment": "Water treatment",
+    "mixed": "Pumps + water treatment"
+  },
+  "card": {
+    "remaining": "+{count} more items",
+    "details": "View project"
+  },
+  "detail": {
+    "back_link": "All projects",
+    "equipment_tag": "01 · SUPPLIED",
+    "equipment_title": "Equipment",
+    "equipment_caption": "Supply scope on this site. Engineered and assembled to the project specification.",
+    "other_tag": "02 · OTHER PROJECTS",
+    "other_title": "Similar deliveries",
+    "other_all_link": "All projects",
+    "meta_title_template": "{title} — ANHEL® project",
+    "meta_description_template": "{title} — supplied: {equipment}",
+    "not_found_title": "Project not found"
+  },
+  "equipment_lines": {
+    "pumps_pressure_fire_anhel": "ANHEL pressure-boosting and fire-protection pumping units",
+    "pumps_pressure_fire": "Pressure-boosting and fire-protection pumping units",
+    "water_treatment_anhel": "ANHEL turnkey water treatment unit",
+    "pumps_pressure_anhel": "ANHEL pressure-boosting pumping units"
+  },
+  "cover_alt_suffix": {
+    "facade": "facade",
+    "complex": "complex",
+    "development": "development"
+  },
+  "items": {
+    "sogaz-medical-complex": {
+      "title": "Multifunctional medical complex",
+      "cover_alt_suffix": "facade"
+    },
+    "zhk-imperial-club": {
+      "title": "Imperial Club residential complex",
+      "cover_alt_suffix": "complex"
+    },
+    "zhk-grand-view": {
+      "title": "Grand View residential complex",
+      "cover_alt_suffix": "facade"
+    },
+    "zhk-svetlana-park": {
+      "title": "Svetlana Park residential complex",
+      "cover_alt_suffix": "development"
+    },
+    "zhk-astra-continental": {
+      "title": "Astra Continental residential complex",
+      "cover_alt_suffix": "facade"
+    },
+    "zhk-astra-marine": {
+      "title": "Astra Marine residential complex",
+      "cover_alt_suffix": "facade"
+    },
+    "zhk-titul": {
+      "title": "Titul residential complex",
+      "cover_alt_suffix": "development"
+    },
+    "zhk-amber-club": {
+      "title": "Amber Club residential complex",
+      "cover_alt_suffix": "facade"
+    },
+    "zhk-senat": {
+      "title": "Senat residential complex",
+      "cover_alt_suffix": "facade"
+    },
+    "zhk-panorama-park": {
+      "title": "Panorama Park residential complex",
+      "cover_alt_suffix": "development"
+    },
+    "zhk-vitebsky-park": {
+      "title": "Vitebsky Park residential complex",
+      "cover_alt_suffix": "development"
+    },
+    "zhk-upoint": {
+      "title": "Upoint residential complex",
+      "cover_alt_suffix": "facade"
+    },
+    "zhk-graf-orlov": {
+      "title": "Graf Orlov residential complex",
+      "cover_alt_suffix": "facade"
+    }
+  }
+}

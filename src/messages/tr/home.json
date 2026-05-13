@@ -1,0 +1,88 @@
+{
+  "hero": {
+    "title": "Güvenebileceğiniz endüstriyel ekipman üretiyoruz",
+    "subtitle": "Endüstriyel ve ticari tesisler için modüler pompa istasyonları, ısı istasyonları, su arıtma sistemleri ve kontrol panoları. Hesaplamadan servise kadar tam döngü.",
+    "footer_tagline": "Mühendislik · Üretim · Otomasyon",
+    "scroll_hint": "Kaydır",
+    "cta_primary": "Ürün kataloğu",
+    "cta_secondary": "İletişime geç",
+    "counters": {
+      "objects": "Proje",
+      "years": "Yıllık deneyim",
+      "directions": "Ürün grubu"
+    }
+  },
+  "about": {
+    "mono_tag": "Hakkımızda",
+    "heading": "Karmaşık ekipmanı işletmesi kolay hale getiriyoruz",
+    "paragraph_1": "ANHEL® — Profit LLC markasıdır. Modüler pompa istasyonları, blok-modüler ısı istasyonları, su arıtma sistemleri ve kontrol panoları tasarlıyor ve üretiyoruz. Rusya genelinde endüstriyel ve ticari tesislerle çalışıyoruz.",
+    "paragraph_2": "Kendi mühendislik ofisimiz ve montaj atölyemiz var. Her modül sevkiyat öncesi hidrolik ve elektriksel test tezgâhından geçer — ekipman tesise devreye almaya hazır halde varır.",
+    "paragraph_3": "Tüm döngüyü tek bir ekiple kapatıyoruz: hesaplama ve seçim → tasarım → üretim → montaj ve devreye alma → servis. Tek sözleşme, tek sorumluluk noktası, tek takvim.",
+    "stats_aria": "Temel göstergeler",
+    "stats": {
+      "objects_caption": "Proje",
+      "years_caption": "Yıllık deneyim",
+      "directions_caption": "Ürün grubu"
+    },
+    "cta": "Üretimimiz hakkında"
+  },
+  "production": {
+    "mono_tag": "Üretim",
+    "heading": "Tek bir tesiste tam döngü",
+    "lede": "Mühendislik ofisi, montaj atölyesi ve test tezgâhı tek çatı altında. Hesaplamadan sevkiyata — taşeronlar arasında devir olmadan.",
+    "cards": {
+      "design": {
+        "title": "Mühendislik ofisi",
+        "body": "Tesis parametrelerinize göre hidrolik ve ısıl hesaplamalar, ekipman ve otomasyon seçimi. Çalışma belgeleri DWG, PDF ve IFC formatlarında hazırlanır."
+      },
+      "assembly": {
+        "title": "Montaj atölyesi",
+        "body": "Çerçeve imalatı, pompa ve ısı eşanjörü montajı, boru tesisatı, kablo döşemesi, kontrol panosu montajı. Her modül siparişe özel üretilir — katalog stoğu değildir."
+      },
+      "testing": {
+        "title": "Test tezgâhı",
+        "body": "Her ünite sevkiyat öncesi hidrolik ve elektrik testinden geçer. Çalışma modları simüle edilir, parametreler test raporunda kayıt altına alınır. Sahada modül 1–3 vardiyada devreye alınmaya hazırdır."
+      }
+    },
+    "stats_aria": "Üretim göstergeleri",
+    "stats": {
+      "lead_time_value": "30 günden",
+      "lead_time_unit": "itibaren",
+      "lead_time_caption": "Üretim süresi",
+      "directions_caption": "Ürün grubu",
+      "testing_caption": "Tezgâhta test",
+      "in_house_value": "Kendi",
+      "in_house_caption": "Üretim ve montaj"
+    },
+    "cta": "Fabrika ziyareti talep et"
+  },
+  "showcase": {
+    "mono_tag": "02 · ÜRÜN GRUPLARI",
+    "title": "Dört ürün grubu, tek fabrika",
+    "lede": "Pompa istasyonları, su arıtma, ısı istasyonları ve kontrol panoları. Fabrika montajı, seri üretim, şartnamenize göre yapılandırma.",
+    "coming_soon": "Yakında",
+    "card_aria": "{title} — ürün sayfasını aç"
+  },
+  "hero_carousel": {
+    "pump-water": {
+      "name": "Su temini pompa istasyonu",
+      "alt": "ANHEL® — soğuk su pompa istasyonu, HVS-NU modeli"
+    },
+    "pump-fire": {
+      "name": "Yangın koruma pompa istasyonu",
+      "alt": "ANHEL® — yangın koruma pompa istasyonu, kırmızı HVS-NU muhafazası"
+    },
+    "water-treatment": {
+      "name": "Su arıtma ünitesi",
+      "alt": "ANHEL — çelik filtreli su arıtma ünitesi"
+    },
+    "heating-unit": {
+      "name": "Blok ısı istasyonu",
+      "alt": "ANHEL® — blok ısı istasyonu (BITP)"
+    },
+    "control-systems": {
+      "name": "Kontrol panoları",
+      "alt": "ANHEL® — değişken frekanslı kontrol panosu, HMI ile 4 bölmeli montaj"
+    }
+  }
+}

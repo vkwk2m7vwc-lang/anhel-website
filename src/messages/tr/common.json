@@ -1,0 +1,176 @@
+{
+  "brand": {
+    "name": "ANHEL®",
+    "tagline_footer": "Endüstriyel ekipman. Rusya."
+  },
+  "nav": {
+    "products": "Ürünler",
+    "documents": "Belgeler",
+    "projects": "Projeler",
+    "production": "Üretim",
+    "service": "Servis",
+    "about": "Hakkımızda",
+    "contacts": "İletişim"
+  },
+  "aria": {
+    "home_link": "ANHEL® — ana sayfaya dön",
+    "main_nav": "Ana navigasyon",
+    "call_phone": "Ara: {phone}",
+    "open_menu": "Menüyü aç",
+    "close_menu": "Menüyü kapat",
+    "legal_docs_nav": "Hukuki belgeler"
+  },
+  "skip_link": "Ana içeriğe geç",
+  "theme_toggle": {
+    "to_light": "Açık temaya geç",
+    "to_dark": "Koyu temaya geç",
+    "light_label": "Açık tema",
+    "dark_label": "Koyu tema"
+  },
+  "footer": {
+    "columns": {
+      "products": "Ürünler",
+      "company": "Şirket",
+      "materials": "Kaynaklar",
+      "contacts": "İletişim"
+    },
+    "products": {
+      "pumps": "Pompa istasyonları",
+      "heating_unit": "Isı istasyonları",
+      "water_treatment": "Su arıtma",
+      "control_systems": "Kontrol panoları"
+    },
+    "company": {
+      "about": "Hakkımızda",
+      "production": "Üretim",
+      "service": "Servis",
+      "projects": "Projeler"
+    },
+    "materials": {
+      "questionnaires": "Teknik veri formları",
+      "catalogs": "Kataloglar",
+      "certificates": "Sertifikalar",
+      "requisites": "Şirket bilgileri"
+    },
+    "address_line_1": "Politekhnicheskaya cad. No: 6, blok 1,",
+    "address_line_2": "ofis N-7, St. Petersburg, Rusya",
+    "copyright": "© {year} Profit LLC (ООО «Профит»). Vergi No (INN) 7802825464. Tüm hakları saklıdır.",
+    "privacy_policy": "Gizlilik Politikası",
+    "personal_data_consent": "Kişisel Veri Onayı"
+  },
+  "actions": {
+    "request_quote": "Teklif iste",
+    "download_catalog": "Kataloğu indir",
+    "contact_engineer": "Mühendisle konuş",
+    "learn_more": "Daha fazla",
+    "submit": "Gönder",
+    "cancel": "İptal"
+  },
+  "mega_menu": {
+    "products": {
+      "aria_label": "Ürünler — kategoriler",
+      "pumps": {
+        "title": "Pompa istasyonları",
+        "description": "Beş seri: su temini, yangın koruması, ısıtma, basınç artırma, özel amaçlı"
+      },
+      "heating_unit": {
+        "title": "Isı istasyonları",
+        "description": "Sekiz blok-modüler istasyon: girdi, ısıtma, sıcak kullanım suyu, takviye"
+      },
+      "water_treatment": {
+        "title": "Su arıtma",
+        "description": "Kazan daireleri ve ısı istasyonları için filtreleme ve yumuşatma üniteleri"
+      },
+      "control_systems": {
+        "title": "Kontrol panoları",
+        "description": "Beş seri: VFD, elektrik tahriki, yangın alarmı, duman kontrolü, kanalizasyon pompaları"
+      }
+    },
+    "documents": {
+      "aria_label": "Belgeler — türe göre",
+      "questionnaires": {
+        "title": "Teknik veri formları",
+        "description": "Dört ürün grubu için sekiz teknik veri formu"
+      },
+      "catalogs": {
+        "title": "Kataloglar",
+        "description": "Basılı kataloglar — yakında"
+      },
+      "certificates": {
+        "title": "Sertifikalar",
+        "description": "Yedi EAEU uygunluk beyannamesi"
+      }
+    }
+  },
+  "mobile_menu": {
+    "dialog_label": "Ana menü",
+    "section_products": "Ürünler",
+    "section_documents": "Belgeler",
+    "section_navigation": "Navigasyon",
+    "section_contacts": "İletişim",
+    "go_to_section": "Bölüme git",
+    "office_line": "Merkez — St. Petersburg. Üretim — Moskova."
+  },
+  "ui": {
+    "breadcrumbs_aria": "Yol haritası",
+    "download": "İndir",
+    "open_external": "Aç",
+    "tech_specs": {
+      "mono_tag": "02 · Teknik özellikler",
+      "title": "Seri parametreleri",
+      "lede": "Referans karakteristikler. Nihai konfigürasyon proje şartnamesine göre boyutlandırılır."
+    },
+    "gallery": {
+      "open_photo": "{n} numaralı fotoğrafı tam boyutta aç",
+      "viewer_label": "Tam boyutlu fotoğraf görüntüleyici",
+      "close": "Kapat",
+      "prev": "Önceki fotoğraf",
+      "next": "Sonraki fotoğraf"
+    },
+    "carousel": {
+      "products_aria": "Ürün karuseli",
+      "open_product": "Sayfayı aç: {name}",
+      "show_product": "Göster: {name}",
+      "pause": "Otomatik geçişi duraklat",
+      "play": "Otomatik geçişi başlat",
+      "in_use": "hizmette"
+    },
+    "brands": {
+      "visit_site": "Üretici sitesine git: {name}"
+    },
+    "modules": {
+      "content_review_tooltip": "Modül içeriği inceleme aşamasındadır"
+    },
+    "details_more": "Detaylar",
+    "modules_catalog": {
+      "mono_tag": "02 · MODÜL HATTI",
+      "title": "Her ısı istasyonu konfigürasyonu için sekiz modül",
+      "lede": "Yapı kiti olarak ısı istasyonu: ısı girişi ve sayım, ısıtma, tek ve iki kademeli DHW, buhar-kondensat sistemleri."
+    },
+    "brands_tier_pumps": "Pompalar",
+    "brands_tier_components": "Otomasyon ve bileşenler",
+    "case_photo_alt": "Proje fotoğrafı",
+    "gallery_placeholder": "Fotoğraf yakında",
+    "module": {
+      "not_found": "Modül bulunamadı",
+      "advantages_tag": "05 · AVANTAJLAR",
+      "gallery_tag": "06 · GALERİ",
+      "documents_tag": "08 · BELGELER",
+      "breadcrumbs": {
+        "home": "Ana Sayfa",
+        "catalog": "Katalog",
+        "heating_unit": "Isı istasyonları"
+      },
+      "module_label": "01 · MODÜL {mono}",
+      "quick_request": "Hızlı talep",
+      "back_to_catalog": "← Modül kataloğuna dön",
+      "description_tag": "03 · AÇIKLAMA",
+      "description_title": "Amaç ve çalışma prensibi",
+      "applications_tag": "04 · UYGULAMALAR",
+      "applications_title": "Modülün kullanıldığı yerler",
+      "references_tag": "07 · PROJELER",
+      "neighbours_tag": "09 · DİĞER MODÜLLER",
+      "neighbours_title": "Hattaki diğer modüller"
+    }
+  }
+}

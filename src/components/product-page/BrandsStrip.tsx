@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import type { BrandsContent, BrandItem } from "@/content/products/types";
+import { useTranslations } from "next-intl";
 
 /**
  * Brands strip — section 6.
@@ -20,6 +21,7 @@ import type { BrandsContent, BrandItem } from "@/content/products/types";
  * special mobile layout.
  */
 export function BrandsStrip({ content }: { content: BrandsContent }) {
+  const tUi = useTranslations("common.ui");
   return (
     <section
       id="brands"
@@ -46,9 +48,7 @@ export function BrandsStrip({ content }: { content: BrandsContent }) {
 
         {/* Row 1 — pump brands */}
         <div className="mt-14 md:mt-20">
-          <p className="mb-6 font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/65">
-            Насосы
-          </p>
+          <p className="mb-6 font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/65">{tUi("brands_tier_pumps")}</p>
           <ul className="flex flex-wrap items-baseline gap-x-12 gap-y-8 md:gap-x-16">
             {content.rowPumps.map((b, i) => (
               <BrandWordMark key={b.id} brand={b} tier="pump" index={i} />
@@ -58,9 +58,7 @@ export function BrandsStrip({ content }: { content: BrandsContent }) {
 
         {/* Row 2 — components */}
         <div className="mt-14 border-t border-[var(--color-hairline)] pt-10 md:mt-20 md:pt-14">
-          <p className="mb-6 font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/65">
-            Автоматика и комплектующие
-          </p>
+          <p className="mb-6 font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/65">{tUi("brands_tier_components")}</p>
           <ul className="flex flex-wrap items-baseline gap-x-10 gap-y-6 md:gap-x-12">
             {content.rowComponents.map((b, i) => (
               <BrandWordMark key={b.id} brand={b} tier="component" index={i} />
@@ -95,6 +93,7 @@ function BrandWordMark({
   tier: "pump" | "component";
   index: number;
 }) {
+  const tUi = useTranslations("common.ui");
   const staggerDelay = Math.min(index, 8) * 0.04;
   const nameClass =
     tier === "pump"
@@ -146,7 +145,7 @@ function BrandWordMark({
           target="_blank"
           rel="noreferrer noopener"
           data-cursor="hover"
-          aria-label={`Перейти на сайт производителя: ${brand.name}`}
+          aria-label={tUi("brands.visit_site", { name: brand.name })}
           className="flex flex-col gap-1"
         >
           {inner}

@@ -1,0 +1,74 @@
+{
+  "meta": {
+    "title": "İletişim",
+    "description": "ANHEL® iletişim — telefon, e-posta, Profit LLC şirket bilgileri, St. Petersburg ofis adresi ve iletişim formu."
+  },
+  "hero": {
+    "mono_tag": "İletişim",
+    "heading": "Bizimle iletişime geçin — projeyi ele alalım, çözüm önerelim, teklif hazırlayalım.",
+    "subtitle": "Merkez ofis ve mühendislik — St. Petersburg. Üretim — Moskova. Servis ekibi devreye alınmış tesislerde 7/24 çalışır."
+  },
+  "quick": {
+    "phone_label": "Telefon",
+    "phone_hours": "Pzt–Cum, 09:00–18:00 (MSK)",
+    "email_label": "E-posta",
+    "email_response": "İş günü içinde yanıt veriyoruz"
+  },
+  "requisites": {
+    "mono_tag": "Şirket bilgileri",
+    "card_label": "Şirket kartı",
+    "brand_subtitle": "ANHEL® markasının arkasındaki tüzel kişilik",
+    "sections": {
+      "identification": "Tanım",
+      "address": "Adres",
+      "registration": "Kayıt verileri",
+      "banking": "Banka bilgileri",
+      "leadership": "Yönetim"
+    },
+    "labels": {
+      "full_name": "Tam adı",
+      "short_name": "Kısa adı",
+      "legal_address": "Kayıtlı adres",
+      "actual_address": "Faaliyet adresi",
+      "inn": "Vergi No (INN)",
+      "kpp": "Vergi kayıt kodu (KPP)",
+      "ogrn": "Kayıt numarası (OGRN)",
+      "okpo": "OKPO kodu",
+      "okato": "OKATO kodu",
+      "bank": "Banka",
+      "account": "Cari hesap",
+      "bik": "BIC",
+      "correspondent_account": "Muhabir hesap",
+      "director": "Genel Müdür"
+    },
+    "download_note": "PDF olarak indirip teklif talebine, sözleşmeye veya faturaya ekleyebilirsiniz.",
+    "download_cta": "Şirket kartını indir (PDF)"
+  },
+  "map": {
+    "mono_tag": "Ofis adresi",
+    "iframe_title": "ANHEL® ofis haritası — Politekhnicheskaya cad. No: 6, blok 1"
+  },
+  "form": {
+    "mono_tag": "İletişim formu",
+    "heading": "Projenizi yazın — geçiştirmeden, çözümle yanıt veriyoruz.",
+    "lede": "İhtiyacınızı biliyorsanız — parametreleri gönderin. Henüz değerlendiriyorsanız — tesisi ve görevi kendi sözcüklerinizle anlatın, mühendisimiz size dönüp şartnameyi birlikte şekillendirir.",
+    "fields": {
+      "name": "Ad",
+      "phone": "Telefon",
+      "email": "E-posta",
+      "message": "Mesaj",
+      "message_placeholder": "Görevi, tesisi, zamanlamayı tarif edin"
+    },
+    "consent": {
+      "prefix": "Kişisel verilerimin işlenmesine, aşağıdaki belgelere uygun olarak onay veriyorum:",
+      "privacy_link": "Gizlilik Politikası",
+      "and": "ve",
+      "personal_data_link": "Kişisel Veri Onayı",
+      "dot": "."
+    },
+    "submit": "Talebi gönder",
+    "submitting": "Gönderiliyor…",
+    "sent_title": "Talep gönderildi",
+    "sent_subtitle": "İş günü içinde sizinle iletişime geçeceğiz. Acil durumlar için — şapkadaki numarayı arayın."
+  }
+}

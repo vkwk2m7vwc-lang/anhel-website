@@ -1,9 +1,10 @@
 "use client";
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { Link } from "@/navigation";
+import { usePathname } from "@/navigation";
 import { motion } from "framer-motion";
 import { FileText, BookOpen, FileBadge, type LucideIcon } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 /**
  * Мега-меню «Документация» — выбор сразу по ТИПУ документа.
@@ -24,43 +25,36 @@ import { FileText, BookOpen, FileBadge, type LucideIcon } from "lucide-react";
  * 3 пункта рендерятся горизонтально (grid-cols-3), меню чуть шире
  * чем 4-карточный продуктовый — это намеренный визуальный контраст,
  * чтобы две dropdown'ы в шапке не смотрелись одинаково.
+ *
+ * i18n: title/description приходят из `common.mega_menu.documents.<key>`,
+ * чтобы тот же словарь использовался и в MobileMenu.
  */
 
-type MegaMenuCategory = {
-  title: string;
+type MegaMenuCategoryData = {
+  /**
+   * Key inside `common.mega_menu.documents.*` — resolves title and
+   * description. Stays language-neutral because next-intl handles
+   * resolution per-request.
+   */
+  key: "questionnaires" | "catalogs" | "certificates";
   href: string;
-  description: string;
   Icon: LucideIcon;
 };
 
-const CATEGORIES: readonly MegaMenuCategory[] = [
-  {
-    title: "Опросные листы",
-    href: "/documents#questionnaires",
-    description: "8 опросных листов по 4 направлениям",
-    Icon: FileText,
-  },
-  {
-    title: "Каталоги",
-    href: "/documents#catalogs",
-    description: "Печатные каталоги — в подготовке",
-    Icon: BookOpen,
-  },
-  {
-    title: "Сертификаты",
-    href: "/documents#certificates",
-    description: "7 деклараций ЕАЭС соответствия",
-    Icon: FileBadge,
-  },
+const CATEGORIES: readonly MegaMenuCategoryData[] = [
+  { key: "questionnaires", href: "/documents#questionnaires", Icon: FileText },
+  { key: "catalogs", href: "/documents#catalogs", Icon: BookOpen },
+  { key: "certificates", href: "/documents#certificates", Icon: FileBadge },
 ];
 
 export function DocumentsMegaMenu({ onClose }: { onClose: () => void }) {
+  const t = useTranslations("common.mega_menu.documents");
   const pathname = usePathname();
 
   return (
     <motion.div
       role="menu"
-      aria-label="Документация — по типу"
+      aria-label={t("aria_label")}
       initial={{ opacity: 0, y: -8 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -8 }}
@@ -90,10 +84,10 @@ export function DocumentsMegaMenu({ onClose }: { onClose: () => void }) {
                 </span>
                 <span className="flex flex-col gap-1.5">
                   <span className="font-display text-base font-medium leading-tight text-[var(--color-secondary)]">
-                    {cat.title}
+                    {t(`${cat.key}.title`)}
                   </span>
                   <span className="text-[13px] leading-snug text-[var(--color-secondary)]/65">
-                    {cat.description}
+                    {t(`${cat.key}.description`)}
                   </span>
                 </span>
               </Link>
@@ -106,4 +100,5 @@ export function DocumentsMegaMenu({ onClose }: { onClose: () => void }) {
 }
 
 /** Экспортируем для аккордеона в MobileMenu, чтобы не дублировать данные. */
-export const DOCUMENTS_MEGA_CATEGORIES: readonly MegaMenuCategory[] = CATEGORIES;
+export const DOCUMENTS_MEGA_CATEGORIES: readonly MegaMenuCategoryData[] =
+  CATEGORIES;

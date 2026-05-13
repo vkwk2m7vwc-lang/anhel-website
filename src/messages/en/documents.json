@@ -1,0 +1,75 @@
+{
+  "meta": {
+    "title": "Documentation",
+    "description": "Specification sheets, technical catalogues, conformity certificates and operating manuals for ANHEL® — pumping stations, heat substations, water treatment, control cabinets."
+  },
+  "hero": {
+    "mono_tag": "Documentation",
+    "heading": "Specification sheets, catalogues, certificates — in one place.",
+    "lede_prefix": "Download the specification sheet for your application, fill in the project parameters and send it to",
+    "lede_suffix": ". Our engineer will recalculate the selection and prepare a quote within one working day."
+  },
+  "common_section": {
+    "mono_tag": "General documents"
+  },
+  "common_items": {
+    "anhel_card": "Profit LLC company profile",
+    "service_request": "Service request form"
+  },
+  "sections": {
+    "by_direction": "By product line",
+    "questionnaires": {
+      "title": "Specification sheets",
+      "lede": "Fill in the project parameters in the template — we'll come back with the equipment selection and a quote within one working day."
+    },
+    "catalogs": {
+      "title": "Catalogues",
+      "placeholder_heading": "Printed catalogues by product line — in preparation",
+      "placeholder_lede": "They will appear in this section. Until then, the specification sheets and certificates are enough for selection."
+    },
+    "certificates": {
+      "title": "EAEU Certificates",
+      "lede": "EAEU Technical Regulations Conformity Declarations — the equipment is certified for use on facilities across Russia and Eurasian Economic Union member states."
+    },
+    "manuals": {
+      "title": "Operating manuals",
+      "lede": "Delivered to the client as part of the equipment handover package. Available here for preliminary review."
+    }
+  },
+  "directions": {
+    "pumps": {
+      "title": "Pumping stations"
+    },
+    "heating-unit": {
+      "title": "Heat substations"
+    },
+    "water-treatment": {
+      "title": "Water treatment"
+    },
+    "control-systems": {
+      "title": "Control cabinets"
+    }
+  },
+  "items": {
+    "pumps_water_supply_q": "Water supply (cold & domestic hot water)",
+    "pumps_firefighting_q": "Fire protection (sprinkler, hydrant)",
+    "pumps_heating_cooling_q": "Heating and cooling",
+    "pumps_pressure_boost_q": "Pressure boosting",
+    "pumps_special_q": "Special-purpose configuration",
+    "heating_unit_q": "ANHEL® heat substations",
+    "water_treatment_q": "Water treatment units",
+    "control_systems_q": "ANHEL® control cabinets",
+    "pumps_water_supply_cert": "EAEU declaration — water supply",
+    "pumps_firefighting_cert": "EAEU declaration — fire protection",
+    "pumps_heating_cooling_cert": "EAEU declaration — heating and cooling",
+    "pumps_pressure_boost_cert": "EAEU declaration — pressure boosting",
+    "pumps_special_cert": "EAEU declaration — special-purpose configuration",
+    "heating_unit_cert": "EAEU declaration — heat substations",
+    "water_treatment_cert": "EAEU declaration — water treatment",
+    "pumps_water_supply_manual": "Manual — water supply",
+    "pumps_firefighting_manual": "Manual — fire protection",
+    "pumps_heating_cooling_manual": "Manual — heating and cooling",
+    "pumps_pressure_boost_manual": "Manual — pressure boosting",
+    "pumps_special_manual": "Manual — special-purpose configuration"
+  }
+}

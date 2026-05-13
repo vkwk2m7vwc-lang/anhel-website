@@ -1,8 +1,9 @@
 "use client";
 
-import Link from "next/link";
+import { Link } from "@/navigation";
 import { motion } from "framer-motion";
 import type { FooterCtaContent } from "@/content/products/types";
+import { useTranslations } from "next-intl";
 import {
   TOP_LEVEL_PRODUCTS,
   getTopLevelCategory,
@@ -135,6 +136,8 @@ function NeighbourCard({
     treatment: "var(--accent-treatment)",
     heat: "var(--accent-heat)",
   };
+  const tItems = useTranslations(`products.items.${product.slug}`);
+  const tShowcase = useTranslations("home.showcase");
   const neighbourAccent = ACCENT_VAR[product.accent];
 
   // Inner body — shared by the link branch and the disabled branch so the
@@ -148,14 +151,14 @@ function NeighbourCard({
       />
       <div className="flex items-baseline justify-between gap-4">
         <span className="font-display text-[20px] font-medium text-[var(--color-secondary)] md:text-[22px]">
-          {product.title}
+          {tItems("title")}
         </span>
         {product.comingSoon ? (
           <span
             aria-hidden="true"
             className="font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/65"
           >
-            Скоро
+            {tShowcase("coming_soon")}
           </span>
         ) : (
           <span
@@ -167,7 +170,7 @@ function NeighbourCard({
         )}
       </div>
       <p className="text-[13px] leading-relaxed text-[var(--color-secondary)]/55">
-        {product.tagline}
+        {tItems("tagline")}
       </p>
     </>
   );

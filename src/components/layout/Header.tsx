@@ -1,10 +1,11 @@
 "use client";
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { Link } from "@/navigation";
+import { usePathname } from "@/navigation";
 import { useEffect, useState } from "react";
 import { motion, useMotionValueEvent, useScroll } from "framer-motion";
 import { Menu, Phone } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 import { CONTACTS } from "@/lib/contacts";
 import { PROJECTS_PATH } from "@/lib/routes";
@@ -12,6 +13,7 @@ import { MobileMenu } from "./MobileMenu";
 import { ProductsMenu } from "./ProductsMenu";
 import { DocumentsMenu } from "./DocumentsMenu";
 import { ThemeToggle } from "./ThemeToggle";
+import { LanguageSwitcher } from "./LanguageSwitcher";
 
 /**
  * Fixed header with two behaviours:
@@ -23,27 +25,36 @@ import { ThemeToggle } from "./ThemeToggle";
  * Navigation: гибридная структура — Производство и О компании ведут на
  * якоря секций главной (#production, #about), Контакты — отдельная
  * страница `/contacts` с реквизитами, картой и формой обратной связи.
+ *
+ * i18n: nav labels and aria-strings are pulled from the `common`
+ * namespace. The href targets are locale-agnostic — next-intl's
+ * `Link` from `next/link` is fine here because middleware does the
+ * locale prefix work transparently.
  */
-
-/**
- * Остальные пункты NAV — обычные `<Link>`. Пункты «Продукты» и
- * «Документация» вынесены в отдельные компоненты с dropdown-меню
- * (см. ProductsMenu.tsx, DocumentsMenu.tsx), поэтому в массиве их нет.
- */
-const NAV = [
-  { label: "Объекты", href: PROJECTS_PATH },
-  { label: "Производство", href: "/#production" },
-  { label: "Сервис", href: "/service" },
-  { label: "О компании", href: "/#about" },
-  { label: "Контакты", href: "/contacts" },
-];
 
 export function Header() {
+  const t = useTranslations("common");
   const { scrollY } = useScroll();
   const [hidden, setHidden] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const pathname = usePathname();
+
+  /**
+   * NAV is rebuilt on every render because labels depend on the
+   * translation function `t`. Stable hrefs only — keys come from the
+   * common.nav namespace. Order preserved from the previous
+   * hardcoded array: Objects · Production · Service · About · Contacts.
+   * «Products» and «Documents» live in their own dropdown components
+   * (ProductsMenu, DocumentsMenu) and are inserted around this slice.
+   */
+  const NAV = [
+    { label: t("nav.projects"), href: PROJECTS_PATH },
+    { label: t("nav.production"), href: "/#production" },
+    { label: t("nav.service"), href: "/service" },
+    { label: t("nav.about"), href: "/#about" },
+    { label: t("nav.contacts"), href: "/contacts" },
+  ];
 
   useMotionValueEvent(scrollY, "change", (latest) => {
     const previous = scrollY.getPrevious() ?? 0;
@@ -78,13 +89,13 @@ export function Header() {
             href="/"
             data-cursor="hover"
             className="font-display text-lg tracking-tight text-[var(--color-secondary)]"
-            aria-label="ANHEL® — на главную"
+            aria-label={t("aria.home_link")}
           >
-            ANHEL®
+            {t("brand.name")}
           </Link>
 
           <nav
-            aria-label="Основная навигация"
+            aria-label={t("aria.main_nav")}
             className="hidden items-center gap-6 md:flex lg:gap-8"
           >
             <ProductsMenu />
@@ -115,12 +126,17 @@ export function Header() {
             <Link
               href={`tel:${CONTACTS.phoneTel}`}
               data-cursor="hover"
-              aria-label={`Позвонить: ${CONTACTS.phone}`}
+              aria-label={t("aria.call_phone", { phone: CONTACTS.phone })}
               className="hidden items-center gap-2 text-sm text-[var(--color-secondary)]/80 transition-colors hover:text-[var(--color-secondary)] md:inline-flex"
             >
               <Phone size={14} strokeWidth={1.75} aria-hidden="true" />
               <span className="font-mono tracking-[0.02em]">{CONTACTS.phone}</span>
             </Link>
+
+            {/* Language switcher — `RU/EN/TR` dropdown next to the
+                theme toggle. Same visual cluster, identical h-10 height
+                so the right-hand group reads as one unit. */}
+            <LanguageSwitcher />
 
             {/* Theme toggle — солнце/луна. Кнопка-иконка такого же размера,
                 как mobile-menu trigger; стоит в правой группе после телефона. */}
@@ -130,7 +146,7 @@ export function Header() {
             <button
               type="button"
               onClick={() => setMenuOpen(true)}
-              aria-label="Открыть меню"
+              aria-label={t("aria.open_menu")}
               aria-expanded={menuOpen}
               aria-controls="mobile-menu"
               className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[var(--color-secondary)]/20 text-[var(--color-secondary)] md:hidden"

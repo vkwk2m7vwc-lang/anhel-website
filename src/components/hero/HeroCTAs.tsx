@@ -1,9 +1,10 @@
 "use client";
 
-import Link from "next/link";
+import { Link } from "@/navigation";
 import { useMagnetic } from "@/hooks/useMagnetic";
 import { useIsTouch } from "@/hooks/useIsTouch";
 import { CATALOG_PATH } from "@/lib/routes";
+import { useTranslations } from "next-intl";
 
 /**
  * Two hero CTAs:
@@ -29,6 +30,7 @@ import { CATALOG_PATH } from "@/lib/routes";
  * any residual transform on tap.
  */
 export function HeroCTAs() {
+  const t = useTranslations("home.hero");
   const isTouch = useIsTouch();
   const primaryRef = useMagnetic<HTMLAnchorElement>({ strength: 0.35 });
   const secondaryRef = useMagnetic<HTMLAnchorElement>({ strength: 0.3 });
@@ -42,7 +44,7 @@ export function HeroCTAs() {
         data-cta="catalog"
         className="group inline-flex items-center gap-3 rounded-md bg-[var(--color-secondary)] px-[22px] py-[14px] text-sm font-medium text-[var(--color-primary)]"
       >
-        Каталог продукции
+        {t("cta_primary")}
         <span
           aria-hidden="true"
           className="inline-block font-mono transition-transform duration-300 ease-out-expo group-hover:translate-x-1"
@@ -58,7 +60,7 @@ export function HeroCTAs() {
         data-cta="contacts"
         className="group inline-flex items-center gap-3 rounded-md border-[0.5px] border-[var(--color-secondary)]/40 bg-transparent px-[22px] py-[14px] text-sm font-medium text-[var(--color-secondary)] transition-colors hover:border-[var(--color-secondary)]"
       >
-        Связаться
+        {t("cta_secondary")}
         <span
           aria-hidden="true"
           className="inline-block font-mono transition-transform duration-300 ease-out-expo group-hover:translate-x-1"

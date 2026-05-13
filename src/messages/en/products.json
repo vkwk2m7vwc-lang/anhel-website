@@ -1,0 +1,134 @@
+{
+  "meta": {
+    "title": "Product catalogue",
+    "description": "ANHEL engineering equipment catalogue: pumping stations, water treatment units, block-modular heat substations, control cabinets. Four product lines, factory assembly, serial production, configured to your project parameters.",
+    "og_title": "Product catalogue",
+    "og_description": "Four product lines — pumping stations, water treatment, heat substations and control cabinets. Factory assembly, configured to your project parameters."
+  },
+  "breadcrumbs": {
+    "label": "Breadcrumbs",
+    "home": "Home",
+    "catalog": "Catalogue"
+  },
+  "catalog": {
+    "mono_tag": "01 · PRODUCT CATALOGUE",
+    "heading": "Engineering equipment built around your project",
+    "lede": "Four product lines — pumping stations, water treatment, heat substations and control cabinets. Factory assembly, serial production and individual configuration to project parameters.",
+    "showcase_mono_tag": "02 · PRODUCT LINES",
+    "showcase_title": "Four product lines, one factory",
+    "showcase_lede": "Inside: pumping stations — five series, heat substations — eight modules, control cabinets — five series."
+  },
+  "items": {
+    "pumps": {
+      "title": "Pumping stations",
+      "tagline": "Five series — water supply, fire protection, heating and cooling, pressure boosting, special-purpose configuration.",
+      "image_alt": "ANHEL — pumping stations for building services"
+    },
+    "water-treatment": {
+      "title": "Water treatment",
+      "tagline": "Filtration, softening, iron-removal and reverse-osmosis units.",
+      "image_alt": "ANHEL — water treatment unit"
+    },
+    "heating-unit": {
+      "title": "Heat substations",
+      "tagline": "Block-modular heat substations — heating, DHW, combined.",
+      "image_alt": "ANHEL — block-modular heat substation"
+    },
+    "control-systems": {
+      "title": "Control cabinets",
+      "tagline": "Five series — variable-frequency, fire-protection, smoke-control, sewage pumping and electric-actuator drives.",
+      "image_alt": "ANHEL — control cabinet, variable-frequency series"
+    },
+    "water-supply": {
+      "title": "Water supply",
+      "tagline": "Cold and domestic-hot-water pumping stations with pressure boosting for residential and commercial buildings.",
+      "image_alt": "ANHEL — cold-water pumping station"
+    },
+    "firefighting": {
+      "title": "Fire protection",
+      "tagline": "Sprinkler, hydrant and combined fire-protection systems.",
+      "image_alt": "ANHEL — fire-protection pumping station"
+    },
+    "heating-cooling": {
+      "title": "Heating and cooling",
+      "tagline": "Heating-fluid and chilled-water circulation for building services circuits.",
+      "image_alt": "ANHEL — heating and cooling circulation station"
+    },
+    "pressure-boost": {
+      "title": "Pressure boosting",
+      "tagline": "Automatic pressure-boosting units for closed heating networks.",
+      "image_alt": "ANHEL — automatic pressure-boosting unit"
+    },
+    "special": {
+      "title": "Special-purpose configuration",
+      "tagline": "Container-based assemblies and GRP tanks — no permanent civil works required.",
+      "image_alt": "ANHEL — special-purpose pumping station"
+    },
+    "variable-frequency": {
+      "title": "Variable-frequency",
+      "tagline": "For pressure-boosting pumps in cold/hot water, heating and cooling systems. PID control, soft start, cascade control of up to 6 pumps.",
+      "image_alt": "ANHEL — variable-frequency control cabinet"
+    },
+    "electric-actuators": {
+      "title": "Electric-actuator drives",
+      "tagline": "Control of electric actuators on shut-off and control valves. Up to 5 valves, direct start, manual / automatic mode.",
+      "image_alt": "ANHEL — electric-actuator control cabinet"
+    },
+    "fire-suppression": {
+      "title": "Fire-protection systems",
+      "tagline": "Control of fire pumps in deluge and sprinkler systems, plus class-B foam fire suppression. ATS, supply priority, fire-alarm panel monitoring.",
+      "image_alt": "ANHEL — fire-protection control cabinet"
+    },
+    "smoke-control": {
+      "title": "Smoke control and pressurisation",
+      "tagline": "Smoke-control ventilation. Russian Federal Law 123-FZ fire certificate, IP54+, \"Fire\" indication, high-temperature endurance.",
+      "image_alt": "ANHEL — smoke-control ventilation cabinet"
+    },
+    "sewage-pumping": {
+      "title": "Sewage pumping",
+      "tagline": "Control of drainage and sewage pumps, stormwater pumping. Float switches and level sensors, manual / automatic mode, up to 4 pumps.",
+      "image_alt": "ANHEL — sewage pumping station control cabinet"
+    }
+  },
+  "related_projects": {
+    "heading": "Already in use at",
+    "see_all": "View all projects",
+    "projects_tag": "08 · PROJECTS"
+  },
+  "families": {
+    "pumps": {
+      "meta": {
+        "title": "Pumping stations",
+        "description": "ANHEL pumping stations: water supply, fire protection, heating and cooling, pressure boosting, special-purpose configuration. Factory-assembled to your project parameters.",
+        "og_title": "Pumping stations",
+        "og_description": "Five series of ANHEL pumping stations — factory-assembled to your project parameters.",
+        "breadcrumb": "Pumping stations"
+      },
+      "page": {
+        "mono_tag": "02 · PUMPING STATIONS",
+        "heading": "Five pumping-station series built for your project",
+        "lede": "Water supply, fire protection, heating and cooling, pressure boosting, special-purpose configuration. Each series is built to project parameters — pumps, automation and control modes selected from the hydraulics and the design brief.",
+        "showcase_mono_tag": "03 · SERIES",
+        "showcase_title": "Five series",
+        "showcase_lede": "Open a card to view technical data, applications, advantages and the specification sheet."
+      }
+    },
+    "control-systems": {
+      "meta": {
+        "title": "Control cabinets",
+        "description": "ANHEL® control cabinets — five series for pumping stations, fire-protection systems, smoke control, sewage pumping and electric actuators. Factory assembly, Russian TR TS and 123-FZ certification.",
+        "og_title": "Control cabinets",
+        "og_description": "Five series of ANHEL® control cabinets — factory assembly, Russian TR TS certification, warranty and service.",
+        "breadcrumb": "Control cabinets"
+      },
+      "page": {
+        "mono_tag": "02 · CONTROL CABINETS",
+        "heading": "Five control-cabinet series built for your project",
+        "lede": "Variable-frequency drive, fire protection, smoke control, sewage pumping and electric-actuator control. Factory assembly, Russian TR TS and 123-FZ fire certification, warranty and turnkey commissioning.",
+        "showcase_mono_tag": "03 · SERIES",
+        "showcase_title": "Five series",
+        "showcase_lede": "Open a card to view technical data, applications, advantages and the specification sheet."
+      }
+    }
+  }
+}

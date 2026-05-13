@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
+import { useTranslations } from "next-intl";
 
 /**
  * Theme toggle — солнце/луна, переключает dark ↔ light.
@@ -15,8 +16,13 @@ import { useTheme } from "next-themes";
  * Совпадает по визуалу с другими кнопками-иконками в Header (h-10 w-10
  * круглая обводка). На mobile входит в правую группу шапки рядом с пунктом
  * «Меню».
+ *
+ * i18n: aria-label и title живут в `common.theme_toggle.*` — две формы
+ * (action and label) на каждое состояние, чтобы тон под скринридером и
+ * tooltip-ом был естественным в каждом языке.
  */
 export function ThemeToggle() {
+  const t = useTranslations("common.theme_toggle");
   const [mounted, setMounted] = useState(false);
   const { resolvedTheme, setTheme } = useTheme();
 
@@ -40,17 +46,15 @@ export function ThemeToggle() {
     <button
       type="button"
       onClick={() => setTheme(isDark ? "light" : "dark")}
-      aria-label={
-        isDark ? "Переключить на светлую тему" : "Переключить на тёмную тему"
-      }
-      title={isDark ? "Светлая тема" : "Тёмная тема"}
+      aria-label={isDark ? t("to_light") : t("to_dark")}
+      title={isDark ? t("light_label") : t("dark_label")}
       data-cursor="hover"
       className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[var(--color-secondary)]/20 text-[var(--color-secondary)] transition-colors hover:border-[var(--color-secondary)]/40"
     >
       {isDark ? (
-        <Sun size={16} strokeWidth={1.5} aria-hidden="true" />
+        <Sun size={16} strokeWidth={1.75} aria-hidden="true" />
       ) : (
-        <Moon size={16} strokeWidth={1.5} aria-hidden="true" />
+        <Moon size={16} strokeWidth={1.75} aria-hidden="true" />
       )}
     </button>
   );

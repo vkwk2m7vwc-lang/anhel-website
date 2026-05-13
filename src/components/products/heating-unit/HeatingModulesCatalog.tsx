@@ -1,7 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
+import { useTranslations } from "next-intl";
+import { Link } from "@/navigation";
 import { motion } from "framer-motion";
 import type { HeatingModule } from "@/content/products/heating-unit-modules/types";
 
@@ -27,6 +28,7 @@ export function HeatingModulesCatalog({
 }: {
   modules: readonly HeatingModule[];
 }) {
+  const tCat = useTranslations("common.ui.modules_catalog");
   return (
     <section
       id="modules"
@@ -36,18 +38,16 @@ export function HeatingModulesCatalog({
       <div className="mx-auto w-full max-w-[1440px] px-6 py-20 md:px-12 md:py-28">
         <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
           <div>
-            <p className="mono-tag">02 · ЛИНЕЙКА МОДУЛЕЙ</p>
+            <p className="mono-tag">{tCat("mono_tag")}</p>
             <h2
               id="modules-title"
               className="mt-4 max-w-[640px] font-display text-h2 font-medium text-[var(--color-secondary)]"
             >
-              Восемь модулей под любую конфигурацию ИТП
+              {tCat("title")}
             </h2>
           </div>
           <p className="max-w-[440px] text-sm text-[var(--color-secondary)]/65 md:text-right">
-            Конструктор блочного теплового пункта: ввод и учёт тепла,
-            отопление, ГВС в одно- и двухступенчатых исполнениях,
-            пароконденсатные системы.
+            {tCat("lede")}
           </p>
         </div>
 
@@ -68,6 +68,7 @@ function ModuleCard({
   module: HeatingModule;
   index: number;
 }) {
+  const tUi = useTranslations("common.ui");
   const staggerDelay = Math.min(index, 7) * 0.05;
 
   return (
@@ -104,7 +105,7 @@ function ModuleCard({
           {m.draft ? (
             <span
               className="rounded-pill border border-[var(--color-hairline)] px-2 py-[1px] font-mono text-[9px] uppercase tracking-[0.1em] text-[var(--color-secondary)]/45"
-              title="Контент модуля проходит content-review"
+              title={tUi("modules.content_review_tooltip")}
             >
               draft
             </span>
@@ -128,7 +129,7 @@ function ModuleCard({
             {m.shortTitle}
           </h3>
           <span className="inline-flex items-center gap-1 font-mono text-[10px] uppercase tracking-[0.1em] text-[var(--color-secondary)]/55 [@media(hover:hover)]:group-hover:text-[var(--accent-current)]">
-            Подробно
+            {tUi("details_more")}
             <span
               aria-hidden="true"
               className="inline-block transition-transform duration-300 ease-out-expo [@media(hover:hover)]:group-hover:translate-x-1"

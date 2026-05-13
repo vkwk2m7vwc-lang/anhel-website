@@ -1,0 +1,63 @@
+{
+  "meta": {
+    "title": "Service & Support",
+    "description": "Diagnostics, commissioning and installation supervision for ANHEL pumping units, heat substations and water treatment systems. Online or PDF service request."
+  },
+  "breadcrumbs": {
+    "home": "Home",
+    "service": "Service"
+  },
+  "hero": {
+    "mono_tag": "Service",
+    "heading": "Service & Support",
+    "lede": "Diagnostics, repair, commissioning and installation supervision for ANHEL equipment. Engineer dispatched to site after we receive the completed service request.",
+    "cta_online": "Fill in online",
+    "cta_pdf": "Download PDF form",
+    "footnote": "The decision to dispatch a service engineer is made after we receive the completed and stamped request at info@anhelspb.com."
+  },
+  "services": {
+    "mono_tag": "02 · What we do",
+    "heading": "Four service lines",
+    "cards": {
+      "diagnostics": {
+        "title": "Service and diagnostics",
+        "description": "On-site engineer visit, fault diagnostics, recommendations for repair and replacement of components."
+      },
+      "commissioning": {
+        "title": "Commissioning",
+        "description": "Bringing the equipment online: parameter checks, automation setup, test runs."
+      },
+      "supervision": {
+        "title": "Installation supervision",
+        "description": "Technical oversight of installation carried out by the client's team. Checking compliance with the design."
+      },
+      "software": {
+        "title": "Firmware and technical documentation",
+        "description": "Controller reflashing, settings recovery, provision of service documentation."
+      }
+    }
+  },
+  "requirements": {
+    "mono_tag": "03 · What we need for the visit",
+    "heading": "To make sure the visit goes ahead on time",
+    "items": {
+      "representative": {
+        "title": "On-site representative",
+        "description": "Authorised to sign the Service Protocol and apply the company stamp on the Work Completion Act."
+      },
+      "readiness": {
+        "title": "Equipment readiness",
+        "description": "Access to the equipment, ability to switch power on and off at the control cabinet, ability to open and shut off the water supply, ability to draw water at the test points."
+      },
+      "request": {
+        "title": "Completed request form",
+        "description": "Submitted to info@anhelspb.com — filled in and stamped."
+      }
+    }
+  },
+  "request_page": {
+    "meta_title": "Service request",
+    "meta_description": "Online service request form for ANHEL equipment.",
+    "ru_only_note": "This form is in Russian. For requests in other languages, please use the form on the Contact page."
+  }
+}

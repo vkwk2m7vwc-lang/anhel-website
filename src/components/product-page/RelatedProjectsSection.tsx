@@ -1,5 +1,6 @@
 import Image from "next/image";
-import Link from "next/link";
+import { Link } from "@/navigation";
+import { useTranslations } from "next-intl";
 import {
   getRelatedProjects,
   getRelatedProjectsCategoryFilter,
@@ -15,6 +16,10 @@ import {
  *
  * UX-приём из ИТП-направления: подзаголовок справа, грид-карточки с
  * cover-фото, мини-CTA «Смотреть все объекты» в правом углу заголовка.
+ *
+ * i18n: section heading/CTA из `products.related_projects`; project
+ * title/coverAlt резолвятся по slug из `projects.items.<slug>`
+ * (общий источник правды с /projects).
  */
 export function RelatedProjectsSection({
   productSlug,
@@ -25,6 +30,9 @@ export function RelatedProjectsSection({
   /** Mono-tag слева вверху, e.g. «08 · ОБЪЕКТЫ». */
   tag: string;
 }) {
+  const t = useTranslations("products.related_projects");
+  const tItems = useTranslations("projects.items");
+  const tCovers = useTranslations("projects.cover_alt_suffix");
   const projects = getRelatedProjects(productSlug, 3);
   if (projects.length === 0) return null;
 
@@ -48,7 +56,7 @@ export function RelatedProjectsSection({
               id="references-title"
               className="mt-4 max-w-[640px] font-display text-h2 font-medium text-[var(--color-secondary)]"
             >
-              Где уже работает
+              {t("heading")}
             </h2>
           </div>
           <Link
@@ -56,43 +64,48 @@ export function RelatedProjectsSection({
             data-cursor="hover"
             className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.14em] text-[var(--color-secondary)]/65 transition-colors hover:text-[var(--color-secondary)]"
           >
-            Смотреть все объекты
+            {t("see_all")}
             <span aria-hidden="true">→</span>
           </Link>
         </div>
 
         {/* Grid — 1×3 на mobile, 2×2 на sm, 3×1 на lg. До трёх объектов. */}
         <ul className="mt-12 grid grid-cols-1 gap-px bg-[var(--color-hairline)] sm:grid-cols-2 md:mt-16 lg:grid-cols-3">
-          {projects.map((p) => (
-            <li key={p.slug} className="bg-[var(--color-primary)]">
-              <Link
-                href={`/projects/${p.slug}`}
-                data-cursor="hover"
-                className="group flex h-full flex-col"
-              >
-                <div className="relative aspect-[4/3] w-full overflow-hidden bg-[var(--color-image-placeholder)]">
-                  <Image
-                    src={p.cover}
-                    alt={p.coverAlt}
-                    fill
-                    sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-                    className="object-cover transition-transform duration-700 ease-out-expo group-hover:scale-[1.04]"
-                  />
-                </div>
-                <div className="flex flex-1 flex-col gap-2 p-5 md:p-6">
-                  <p className="font-display text-[18px] font-medium leading-snug text-[var(--color-secondary)] md:text-[20px]">
-                    {p.title}
-                  </p>
-                  {p.location ? (
-                    <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/55">
-                      {p.location}
-                      {p.year ? ` · ${p.year}` : ""}
+          {projects.map((p) => {
+            const title = tItems(`${p.slug}.title` as never) as string;
+            const suffix = tItems(`${p.slug}.cover_alt_suffix` as never) as string;
+            const alt = `${title} — ${tCovers(suffix as never)}`;
+            return (
+              <li key={p.slug} className="bg-[var(--color-primary)]">
+                <Link
+                  href={`/projects/${p.slug}`}
+                  data-cursor="hover"
+                  className="group flex h-full flex-col"
+                >
+                  <div className="relative aspect-[4/3] w-full overflow-hidden bg-[var(--color-image-placeholder)]">
+                    <Image
+                      src={p.cover}
+                      alt={alt}
+                      fill
+                      sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                      className="object-cover transition-transform duration-700 ease-out-expo group-hover:scale-[1.04]"
+                    />
+                  </div>
+                  <div className="flex flex-1 flex-col gap-2 p-5 md:p-6">
+                    <p className="font-display text-[18px] font-medium leading-snug text-[var(--color-secondary)] md:text-[20px]">
+                      {title}
                     </p>
-                  ) : null}
-                </div>
-              </Link>
-            </li>
-          ))}
+                    {p.location ? (
+                      <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/55">
+                        {p.location}
+                        {p.year ? ` · ${p.year}` : ""}
+                      </p>
+                    ) : null}
+                  </div>
+                </Link>
+              </li>
+            );
+          })}
         </ul>
       </div>
     </section>

@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 import { motion } from "framer-motion";
 import type { CasesContent, CaseItem } from "@/content/products/types";
 
@@ -22,7 +23,7 @@ import type { CasesContent, CaseItem } from "@/content/products/types";
 export function CasesCarousel({ content }: { content: CasesContent }) {
   // Скрываем секцию полностью, если у всех элементов нет реального фото
   // (placeholder-only кейсы). Раньше CaseSkeleton рисовал серый штрих с
-  // надписью «Фото объекта» — это читается как заглушка / битый билд.
+  // надписью «case-photo placeholder» — это читается как заглушка / битый билд.
   // Когда фото появятся, секция вернётся автоматически.
   const itemsWithPhoto = content.items.filter((it) => Boolean(it.photo?.src));
   if (itemsWithPhoto.length === 0) return null;
@@ -124,6 +125,7 @@ function CaseCard({ item, index }: { item: CaseItem; index: number }) {
 }
 
 function CaseSkeleton() {
+  const tUi = useTranslations("common.ui");
   return (
     <>
       <div
@@ -137,7 +139,7 @@ function CaseSkeleton() {
       />
       <div className="absolute inset-0 flex items-center justify-center">
         <span className="font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/55">
-          Фото объекта
+          {tUi("case_photo_alt")}
         </span>
       </div>
     </>

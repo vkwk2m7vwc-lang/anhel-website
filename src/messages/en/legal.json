@@ -1,0 +1,157 @@
+{
+  "privacy": {
+    "meta": {
+      "title": "Personal Data Processing Policy",
+      "description": "Personal Data Processing Policy of ANHEL® (Profit LLC). Processing purposes, data categories, data subject rights, contact details for requests under Russian Federal Law 152-FZ."
+    },
+    "mono_tag": "Document",
+    "title": "Personal Data Processing Policy",
+    "effective": "In effect from {date}",
+    "effective_date": "12 May 2026",
+    "s1": {
+      "title": "General provisions",
+      "p1": "This Personal Data Processing Policy (the \"Policy\") has been drawn up in accordance with Russian Federal Law No. 152-FZ of 27 July 2006 \"On Personal Data\" and sets out the procedure for processing personal data and the measures for ensuring their security at {operator} (the \"Operator\").",
+      "p2_before": "The Policy applies to all processes of collection, storage, use, transfer, depersonalisation and destruction of personal data carried out by the Operator in connection with the operation of the website",
+      "p2_after": "."
+    },
+    "s2": {
+      "title": "The Operator",
+      "labels": {
+        "full_name": "Full name",
+        "short_name": "Short name",
+        "inn": "Tax ID (INN)",
+        "ogrn": "Registration number (OGRN)",
+        "legal_address": "Registered address",
+        "email": "Email for requests"
+      }
+    },
+    "s3": {
+      "title": "Purposes of personal data processing",
+      "intro": "The Operator processes the personal data of website users for the following purposes:",
+      "i1": "responding to enquiries, requests and quotation requests;",
+      "i2": "preparing technical proposals and calculations based on specification sheets submitted via the website;",
+      "i3": "concluding, performing and administering equipment supply, installation and service contracts;",
+      "i4": "notifying users of request status, order updates and service notices;",
+      "i5": "fulfilling obligations under the legislation of the Russian Federation (accounting and tax records, responding to enquiries from public authorities)."
+    },
+    "s4": {
+      "title": "Categories of personal data processed",
+      "intro": "The Operator processes the following categories of personal data, which the data subject provides voluntarily through forms on the website:",
+      "i1": "surname, first name and patronymic;",
+      "i2": "contact phone number;",
+      "i3": "email address;",
+      "i4": "organisation name and job title (when submitting requests on behalf of a legal entity);",
+      "i5": "organisation Tax ID / INN (when preparing a commercial offer);",
+      "i6": "message content, equipment site parameters, task description — information voluntarily provided by the data subject in free-form text.",
+      "footer": "The Operator does not process special categories of personal data (race, political views, health status, intimate life) or biometric personal data."
+    },
+    "s5": {
+      "title": "Legal basis for processing",
+      "p1": "The Operator processes personal data on the basis of the data subject's consent, given by ticking the \"I consent to the processing of my personal data\" checkbox when submitting any form on the website, and on the grounds set out in paragraphs 2 and 5 of part 1 of Article 6 of Federal Law No. 152-FZ."
+    },
+    "s6": {
+      "title": "Methods and periods of processing",
+      "p1": "Personal data is processed both with and without the use of automation tools. The Operator stores personal data on servers located in the Russian Federation.",
+      "p2": "The personal data processing period is 5 (five) years from the date of receipt, unless otherwise required by Russian Federation legislation or by a contract with the data subject. Upon expiry of the processing period the personal data is destroyed or depersonalised.",
+      "p3_before": "The data subject may withdraw consent at any time by sending a request to",
+      "p3_after": ". Withdrawal of consent does not prevent processing carried out on grounds that do not require consent."
+    },
+    "s7": {
+      "title": "Transfer of personal data",
+      "intro": "The Operator does not transfer personal data to third parties except where such transfer is necessary in order to:",
+      "i1": "perform contractual obligations towards the data subject (equipment delivery, installation and service work);",
+      "i2": "comply with the legislation of the Russian Federation, including requests from public authorities in the manner prescribed by law;",
+      "i3": "handle correspondence through email and mailing services that ensure data confidentiality in accordance with their terms of service.",
+      "footer": "The Operator does not carry out cross-border transfer of personal data to foreign jurisdictions."
+    },
+    "s8": {
+      "title": "Security measures",
+      "intro": "The Operator takes the legal, organisational and technical measures necessary to protect personal data from unauthorised access, destruction, modification, blocking, copying, distribution and other unlawful acts, including:",
+      "i1": "appointment of staff responsible for organising personal data processing;",
+      "i2": "limiting access of the Operator's employees to personal data on a need-to-know basis;",
+      "i3": "use of secure data transmission channels (HTTPS);",
+      "i4": "back-up and integrity control of databases;",
+      "i5": "regular assessment of the effectiveness of the security measures in place."
+    },
+    "s9": {
+      "title": "Rights of the data subject",
+      "intro": "The data subject has the right to:",
+      "i1": "obtain information about the processing of their personal data by the Operator;",
+      "i2": "request the correction, blocking or destruction of their personal data if it is incomplete, outdated, inaccurate or has been obtained unlawfully;",
+      "i3": "withdraw previously given consent to the processing of personal data;",
+      "i4": "lodge a complaint about the Operator's acts or omissions with the supervisory authority for data subjects' rights (Roskomnadzor) or in court.",
+      "footer_before": "Requests to exercise these rights must be submitted in writing to:",
+      "footer_after": ". The response time is 30 days from receipt of the request."
+    },
+    "s10": {
+      "title": "Changes to the Policy",
+      "p1_before": "The Operator may amend this Policy. The current version of the Policy is published at",
+      "p1_after": ". The date of the current version is shown at the top of the document."
+    },
+    "footer": {
+      "to_consent": "Personal Data Consent →"
+    }
+  },
+  "consent": {
+    "meta": {
+      "title": "Personal Data Processing Consent",
+      "description": "Personal data subject's consent to processing, provided to ANHEL® (Profit LLC) when submitting forms on the anhelspb.com website."
+    },
+    "mono_tag": "Document",
+    "title": "Personal Data Processing Consent",
+    "effective": "In effect from {date}",
+    "effective_date": "12 May 2026",
+    "intro_before": "By submitting any form on the website",
+    "intro_after": " and ticking the \"I consent to the processing of my personal data\" checkbox, I (the \"Data Subject\"), in accordance with the requirements of Russian Federal Law No. 152-FZ of 27 July 2006 \"On Personal Data\", freely, of my own will and in my own interest, give my consent to {operator} (INN {inn}, OGRN {ogrn}, registered address: {address}; the \"Operator\") to process the personal data set out below.",
+    "s1": {
+      "title": "Categories of personal data",
+      "intro": "The list of personal data of the Data Subject being processed:",
+      "i1": "surname, first name and patronymic;",
+      "i2": "contact phone number;",
+      "i3": "email address;",
+      "i4": "organisation name and job title;",
+      "i5": "organisation Tax ID (INN);",
+      "i6": "message content and equipment site parameters provided by the Data Subject in free-form text."
+    },
+    "s2": {
+      "title": "Purposes of processing",
+      "intro": "The consent is given for the following purposes:",
+      "i1": "processing the enquiry and responding to it;",
+      "i2": "preparing a commercial offer and technical calculations;",
+      "i3": "concluding, performing and administering equipment supply, installation or service contracts;",
+      "i4": "notifying of order status and service notices through agreed communication channels;",
+      "i5": "fulfilling obligations under the legislation of the Russian Federation."
+    },
+    "s3": {
+      "title": "Actions with personal data",
+      "intro": "The consent applies to the following actions by the Operator:",
+      "i1": "collection, recording, systematisation and accumulation;",
+      "i2": "storage, refinement (updating, modification), retrieval;",
+      "i3": "use, transfer (provision, access);",
+      "i4": "depersonalisation, blocking, deletion and destruction.",
+      "footer": "Processing may be carried out with or without automation tools (including processing in paper documents when executing contracts and work completion acts)."
+    },
+    "s4": {
+      "title": "Term of the consent",
+      "p1": "This consent is valid for 5 (five) years from the date it is given, or until it is withdrawn by the Data Subject.",
+      "p2_before": "The consent may be withdrawn by the Data Subject at any time by sending a written request to the Operator's email address:",
+      "p2_after": ". The request must include the surname, first name, patronymic and contact details so that the Operator can identify the Data Subject.",
+      "p3": "The Operator stops processing the Data Subject's personal data within 30 days of receiving the withdrawal, except for data the processing of which is mandatory by law."
+    },
+    "s5": {
+      "title": "Transfer of personal data",
+      "p1_before": "The Data Subject agrees that personal data may be transferred to third parties within the scope and on the grounds set out in the",
+      "p1_link": "Personal Data Processing Policy",
+      "p1_after": ". Personal data is not transferred to foreign jurisdictions."
+    },
+    "s6": {
+      "title": "Confirmation by the Data Subject",
+      "p1_before": "The Data Subject confirms that they are providing their personal data voluntarily, are aware of the rights set out in Articles 14–16 of Federal Law No. 152-FZ, and agree with the provisions of the Operator's",
+      "p1_link": "Personal Data Processing Policy",
+      "p1_after": "."
+    },
+    "footer": {
+      "to_privacy": "← Personal Data Processing Policy"
+    }
+  }
+}

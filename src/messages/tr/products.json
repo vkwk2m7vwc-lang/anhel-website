@@ -1,0 +1,134 @@
+{
+  "meta": {
+    "title": "Ürün kataloğu",
+    "description": "ANHEL endüstriyel ekipman kataloğu: pompa istasyonları, su arıtma üniteleri, blok-modüler ısı istasyonları, kontrol panoları. Dört ürün grubu, fabrika montajı, seri üretim, proje parametrelerinize göre yapılandırma.",
+    "og_title": "Ürün kataloğu",
+    "og_description": "Dört ürün grubu — pompa istasyonları, su arıtma, ısı istasyonları ve kontrol panoları. Fabrika montajı, proje parametrelerinize göre yapılandırma."
+  },
+  "breadcrumbs": {
+    "label": "Yol haritası",
+    "home": "Ana Sayfa",
+    "catalog": "Katalog"
+  },
+  "catalog": {
+    "mono_tag": "01 · ÜRÜN KATALOĞU",
+    "heading": "Projeniz için endüstriyel ekipman",
+    "lede": "Dört ürün grubu — pompa istasyonları, su arıtma, ısı istasyonları ve kontrol panoları. Fabrika montajı, seri üretim ve proje parametrelerine göre özel yapılandırma.",
+    "showcase_mono_tag": "02 · ÜRÜN GRUPLARI",
+    "showcase_title": "Dört ürün grubu, tek fabrika",
+    "showcase_lede": "İçinde: pompa istasyonları — beş seri, ısı istasyonları — sekiz modül, kontrol panoları — beş seri."
+  },
+  "items": {
+    "pumps": {
+      "title": "Pompa istasyonları",
+      "tagline": "Beş seri — su temini, yangın koruması, ısıtma ve soğutma, basınç artırma, özel amaçlı konfigürasyon.",
+      "image_alt": "ANHEL — bina hizmetleri için pompa istasyonları"
+    },
+    "water-treatment": {
+      "title": "Su arıtma",
+      "tagline": "Filtreleme, yumuşatma, demir giderme ve ters osmoz üniteleri.",
+      "image_alt": "ANHEL — su arıtma ünitesi"
+    },
+    "heating-unit": {
+      "title": "Isı istasyonları",
+      "tagline": "Blok-modüler ısı istasyonları — ısıtma, sıcak kullanım suyu, kombine.",
+      "image_alt": "ANHEL — blok-modüler ısı istasyonu"
+    },
+    "control-systems": {
+      "title": "Kontrol panoları",
+      "tagline": "Beş seri — değişken frekanslı, yangın koruma, duman kontrolü, kanalizasyon pompası ve elektrik tahrikli vana sürücüleri.",
+      "image_alt": "ANHEL — kontrol panosu, değişken frekanslı seri"
+    },
+    "water-supply": {
+      "title": "Su temini",
+      "tagline": "Konut ve ticari binalar için soğuk ve sıcak kullanım suyu pompa istasyonları, basınç artırma dahil.",
+      "image_alt": "ANHEL — soğuk su pompa istasyonu"
+    },
+    "firefighting": {
+      "title": "Yangın koruması",
+      "tagline": "Sprinkler, hidrant ve kombine yangın koruma sistemleri.",
+      "image_alt": "ANHEL — yangın koruma pompa istasyonu"
+    },
+    "heating-cooling": {
+      "title": "Isıtma ve soğutma",
+      "tagline": "Bina hizmet devreleri için ısıtma akışkanı ve soğutucu sirkülasyonu.",
+      "image_alt": "ANHEL — ısıtma ve soğutma sirkülasyon istasyonu"
+    },
+    "pressure-boost": {
+      "title": "Basınç artırma",
+      "tagline": "Kapalı ısıtma şebekeleri için otomatik basınç artırma üniteleri.",
+      "image_alt": "ANHEL — otomatik basınç artırma ünitesi"
+    },
+    "special": {
+      "title": "Özel amaçlı konfigürasyon",
+      "tagline": "Konteyner tabanlı montajlar ve CTP tanklar — kalıcı yapısal işler gerektirmez.",
+      "image_alt": "ANHEL — özel amaçlı pompa istasyonu"
+    },
+    "variable-frequency": {
+      "title": "Değişken frekanslı",
+      "tagline": "Soğuk/sıcak su, ısıtma ve soğutma sistemlerindeki basınç artırma pompaları için. PID kontrol, yumuşak yol verme, 6 pompaya kadar kademe kontrolü.",
+      "image_alt": "ANHEL — değişken frekanslı kontrol panosu"
+    },
+    "electric-actuators": {
+      "title": "Elektrik tahrikli vana sürücüleri",
+      "tagline": "Kapatma ve kontrol vanalarındaki elektrik tahriklerin kontrolü. 5 vanaya kadar, doğrudan yol verme, manuel / otomatik mod.",
+      "image_alt": "ANHEL — elektrik tahrikli vana kontrol panosu"
+    },
+    "fire-suppression": {
+      "title": "Yangın koruma sistemleri",
+      "tagline": "Deluge ve sprinkler sistemlerinde, B sınıfı köpük yangın söndürmede yangın pompalarının kontrolü. ATS, besleme önceliği, yangın alarm paneli izleme.",
+      "image_alt": "ANHEL — yangın koruma kontrol panosu"
+    },
+    "smoke-control": {
+      "title": "Duman kontrolü ve basınçlandırma",
+      "tagline": "Duman kontrol havalandırması. Rusya 123-FZ sayılı Federal Yasa yangın sertifikası, IP54+, \"Yangın\" göstergesi, yüksek sıcaklığa dayanıklılık.",
+      "image_alt": "ANHEL — duman kontrol havalandırma panosu"
+    },
+    "sewage-pumping": {
+      "title": "Kanalizasyon pompası",
+      "tagline": "Drenaj ve kanalizasyon pompaları, yağmur suyu pompalama kontrolü. Şamandıralar ve seviye sensörleri, manuel / otomatik mod, 4 pompaya kadar.",
+      "image_alt": "ANHEL — kanalizasyon pompa istasyonu kontrol panosu"
+    }
+  },
+  "related_projects": {
+    "heading": "Şu anda çalıştığı yerler",
+    "see_all": "Tüm projeleri gör",
+    "projects_tag": "08 · PROJELER"
+  },
+  "families": {
+    "pumps": {
+      "meta": {
+        "title": "Pompa istasyonları",
+        "description": "ANHEL pompa istasyonları: su temini, yangın koruması, ısıtma ve soğutma, basınç artırma, özel amaçlı konfigürasyon. Proje parametrelerinize göre fabrika montajı.",
+        "og_title": "Pompa istasyonları",
+        "og_description": "Beş seri ANHEL pompa istasyonu — proje parametrelerinize göre fabrika montajı.",
+        "breadcrumb": "Pompa istasyonları"
+      },
+      "page": {
+        "mono_tag": "02 · POMPA İSTASYONLARI",
+        "heading": "Projeniz için beş pompa istasyonu serisi",
+        "lede": "Su temini, yangın koruması, ısıtma ve soğutma, basınç artırma, özel amaçlı konfigürasyon. Her seri projenin parametrelerine göre üretilir — pompalar, otomasyon ve kontrol modları hidrolik ve tasarım şartnamesinden seçilir.",
+        "showcase_mono_tag": "03 · SERİLER",
+        "showcase_title": "Beş seri",
+        "showcase_lede": "Teknik veriler, uygulama, avantajlar ve teknik veri formu için karta tıklayın."
+      }
+    },
+    "control-systems": {
+      "meta": {
+        "title": "Kontrol panoları",
+        "description": "ANHEL® kontrol panoları — pompa istasyonları, yangın koruma sistemleri, duman kontrolü, kanalizasyon pompası ve elektrik tahrikli vanalar için beş seri. Fabrika montajı, Rusya TR TS ve 123-FZ sertifikası.",
+        "og_title": "Kontrol panoları",
+        "og_description": "Beş seri ANHEL® kontrol panosu — fabrika montajı, Rusya TR TS sertifikası, garanti ve servis.",
+        "breadcrumb": "Kontrol panoları"
+      },
+      "page": {
+        "mono_tag": "02 · KONTROL PANOLARI",
+        "heading": "Projeniz için beş kontrol panosu serisi",
+        "lede": "Değişken frekanslı sürücü, yangın koruma, duman kontrolü, kanalizasyon pompası ve elektrik tahrikli vana kontrolü. Fabrika montajı, yangın panoları için Rusya TR TS ve 123-FZ yangın sertifikası, garanti ve anahtar teslim devreye alma.",
+        "showcase_mono_tag": "03 · SERİLER",
+        "showcase_title": "Beş seri",
+        "showcase_lede": "Teknik veriler, uygulama, avantajlar ve teknik veri formu için karta tıklayın."
+      }
+    }
+  }
+}

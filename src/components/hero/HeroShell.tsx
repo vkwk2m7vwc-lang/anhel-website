@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useTranslations } from "next-intl";
 import type { ReactNode } from "react";
 import { HeroTitle } from "./HeroTitle";
 import { HeroCTAs } from "./HeroCTAs";
@@ -31,6 +32,7 @@ export function HeroShell({
   foreground?: ReactNode;
   variantLabel: string;
 }) {
+  const t = useTranslations("home.hero");
   return (
     <section
       id="hero"
@@ -78,9 +80,7 @@ export function HeroShell({
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.6 }}
             className="mt-8 max-w-[640px] text-base leading-relaxed text-[var(--color-secondary)]/70 md:mt-10 md:text-lg"
           >
-            Модульные насосные станции, тепловые пункты, водоподготовка и
-            шкафы управления для промышленных и гражданских объектов. Полный
-            цикл — от расчёта до сервиса.
+            {t("subtitle")}
           </motion.p>
 
           <HeroCTAs />
@@ -94,7 +94,7 @@ export function HeroShell({
 
           <div className="flex flex-col gap-3 text-right md:items-end">
             <p className="font-mono text-[10px] uppercase tracking-[0.1em] text-[var(--color-secondary)]/40">
-              Проектирование · Производство · Автоматизация
+              {t("footer_tagline")}
             </p>
             <p className="font-mono text-[10px] uppercase tracking-[0.1em] text-[var(--color-secondary)]/50">
               {variantLabel}
@@ -105,7 +105,7 @@ export function HeroShell({
               transition={{ duration: 1, delay: 1.4 }}
               className="flex items-center justify-end gap-2 font-mono text-[10px] uppercase tracking-[0.1em] text-[var(--color-secondary)]/60"
             >
-              Прокрутить
+              {t("scroll_hint")}
               <motion.span
                 aria-hidden="true"
                 animate={{ y: [0, 4, 0] }}

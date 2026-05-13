@@ -1,68 +1,29 @@
 /**
- * Контент страницы /service.
+ * Структурные данные страницы /service.
  *
- * Тексты собраны в один файл, чтобы page.tsx был чистой сборкой секций.
- * Тарифы и сроки сознательно не хранятся — они подвижны, держать в коде
- * рискованно, обсуждаются с клиентом устно.
+ * Хранит только icon-маппинги и ключи. Тексты (title, description) —
+ * в `messages/<locale>/service.json`, резолвятся при рендере через
+ * useTranslations('service.*'). Тарифы и сроки сознательно не хранятся —
+ * они подвижны, держать в коде рискованно, обсуждаются с клиентом устно.
  */
 
 import type { LucideIcon } from 'lucide-react';
 import { Wrench, Zap, ClipboardCheck, FileCode } from 'lucide-react';
 
-export type ServiceCard = {
-  title: string;
-  description: string;
-  icon: LucideIcon;
-};
+export type ServiceCardKey = 'diagnostics' | 'commissioning' | 'supervision' | 'software';
+export type RequirementKey = 'representative' | 'readiness' | 'request';
 
-export type RequirementItem = {
-  title: string;
-  description: string;
-};
-
-export const SERVICE_CARDS: readonly ServiceCard[] = [
-  {
-    title: 'Сервис и диагностика',
-    description:
-      'Выезд инженера на объект, диагностика неисправностей, рекомендации по ремонту и замене комплектующих.',
-    icon: Wrench,
-  },
-  {
-    title: 'Пусконаладочные работы',
-    description:
-      'Запуск оборудования в эксплуатацию: проверка параметров, настройка автоматики, тестовые режимы.',
-    icon: Zap,
-  },
-  {
-    title: 'Шефмонтажные работы',
-    description:
-      'Технический надзор за монтажом оборудования силами заказчика. Контроль соответствия проекту.',
-    icon: ClipboardCheck,
-  },
-  {
-    title: 'Восстановление ПО и техдокументация',
-    description:
-      'Перепрошивка контроллеров, восстановление настроек, предоставление сервисной документации.',
-    icon: FileCode,
-  },
+export const SERVICE_CARDS: readonly { key: ServiceCardKey; icon: LucideIcon }[] = [
+  { key: 'diagnostics', icon: Wrench },
+  { key: 'commissioning', icon: Zap },
+  { key: 'supervision', icon: ClipboardCheck },
+  { key: 'software', icon: FileCode },
 ];
 
-export const REQUIREMENTS: readonly RequirementItem[] = [
-  {
-    title: 'Представитель на объекте',
-    description:
-      'С правом подписи в Сервисном протоколе и печати на Акте выполненных работ.',
-  },
-  {
-    title: 'Готовность оборудования',
-    description:
-      'Доступ к оборудованию, возможность включения/отключения электропитания на ШУ, возможность подачи и перекрытия воды, возможность расхода воды на отметках.',
-  },
-  {
-    title: 'Заполненная заявка',
-    description:
-      'Направленная на info@anhelspb.com — заполненная и пропечатанная.',
-  },
+export const REQUIREMENTS: readonly { key: RequirementKey }[] = [
+  { key: 'representative' },
+  { key: 'readiness' },
+  { key: 'request' },
 ];
 
 export const SERVICE_PDF_HREF = '/documents/service-request-anhel.pdf';

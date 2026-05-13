@@ -1,0 +1,176 @@
+{
+  "brand": {
+    "name": "ANHEL®",
+    "tagline_footer": "Инженерное оборудование. Россия."
+  },
+  "nav": {
+    "products": "Продукты",
+    "documents": "Документация",
+    "projects": "Объекты",
+    "production": "Производство",
+    "service": "Сервис",
+    "about": "О компании",
+    "contacts": "Контакты"
+  },
+  "aria": {
+    "home_link": "ANHEL® — на главную",
+    "main_nav": "Основная навигация",
+    "call_phone": "Позвонить: {phone}",
+    "open_menu": "Открыть меню",
+    "close_menu": "Закрыть меню",
+    "legal_docs_nav": "Юридические документы"
+  },
+  "skip_link": "Перейти к содержимому",
+  "theme_toggle": {
+    "to_light": "Переключить на светлую тему",
+    "to_dark": "Переключить на тёмную тему",
+    "light_label": "Светлая тема",
+    "dark_label": "Тёмная тема"
+  },
+  "footer": {
+    "columns": {
+      "products": "Продукция",
+      "company": "Компания",
+      "materials": "Материалы",
+      "contacts": "Контакты"
+    },
+    "products": {
+      "pumps": "Насосные станции",
+      "heating_unit": "Тепловые пункты",
+      "water_treatment": "Водоподготовка",
+      "control_systems": "Шкафы управления"
+    },
+    "company": {
+      "about": "О компании",
+      "production": "Производство",
+      "service": "Сервис",
+      "projects": "Проекты"
+    },
+    "materials": {
+      "questionnaires": "Опросные листы",
+      "catalogs": "Каталоги",
+      "certificates": "Сертификаты",
+      "requisites": "Реквизиты"
+    },
+    "address_line_1": "Политехническая ул., д. 6, стр. 1,",
+    "address_line_2": "пом. Н-7, Санкт-Петербург",
+    "copyright": "© {year} ООО «Профит». ИНН 7802825464. Все права защищены.",
+    "privacy_policy": "Политика конфиденциальности",
+    "personal_data_consent": "Согласие на обработку данных"
+  },
+  "actions": {
+    "request_quote": "Запросить КП",
+    "download_catalog": "Скачать каталог",
+    "contact_engineer": "Связаться с инженером",
+    "learn_more": "Подробнее",
+    "submit": "Отправить",
+    "cancel": "Отмена"
+  },
+  "mega_menu": {
+    "products": {
+      "aria_label": "Продукты — категории",
+      "pumps": {
+        "title": "Насосные станции",
+        "description": "5 серий: водоснабжение, пожаротушение, отопление, повысительные, специальные"
+      },
+      "heating_unit": {
+        "title": "Тепловые пункты",
+        "description": "8 модулей ИТП: ввод, отопление, ГВС, подпитка"
+      },
+      "water_treatment": {
+        "title": "Водоподготовка",
+        "description": "Установки фильтрации и умягчения для котельных и ИТП"
+      },
+      "control_systems": {
+        "title": "Шкафы управления",
+        "description": "5 серий: ЧРП, электропривода, ППА, ПДВ, КНС"
+      }
+    },
+    "documents": {
+      "aria_label": "Документация — по типу",
+      "questionnaires": {
+        "title": "Опросные листы",
+        "description": "8 опросных листов по 4 направлениям"
+      },
+      "catalogs": {
+        "title": "Каталоги",
+        "description": "Печатные каталоги — в подготовке"
+      },
+      "certificates": {
+        "title": "Сертификаты",
+        "description": "7 деклараций ЕАЭС соответствия"
+      }
+    }
+  },
+  "mobile_menu": {
+    "dialog_label": "Основное меню",
+    "section_products": "Продукты",
+    "section_documents": "Документация",
+    "section_navigation": "Навигация",
+    "section_contacts": "Контакты",
+    "go_to_section": "Перейти к разделу",
+    "office_line": "Офис — Санкт-Петербург, производство — Москва."
+  },
+  "ui": {
+    "breadcrumbs_aria": "Хлебные крошки",
+    "download": "Скачать",
+    "open_external": "Открыть",
+    "tech_specs": {
+      "mono_tag": "02 · Технические характеристики",
+      "title": "Параметры серии",
+      "lede": "Базовые характеристики. Итоговая конфигурация рассчитывается под ТЗ объекта."
+    },
+    "gallery": {
+      "open_photo": "Открыть фото {n} в полном размере",
+      "viewer_label": "Просмотр фото в полном размере",
+      "close": "Закрыть",
+      "prev": "Предыдущее фото",
+      "next": "Следующее фото"
+    },
+    "carousel": {
+      "products_aria": "Карусель продуктов",
+      "open_product": "Открыть страницу: {name}",
+      "show_product": "Показать: {name}",
+      "pause": "Пауза автосмены",
+      "play": "Запустить автосмену",
+      "in_use": "в работе"
+    },
+    "brands": {
+      "visit_site": "Перейти на сайт производителя: {name}"
+    },
+    "modules": {
+      "content_review_tooltip": "Контент модуля проходит content-review"
+    },
+    "details_more": "Подробно",
+    "modules_catalog": {
+      "mono_tag": "02 · ЛИНЕЙКА МОДУЛЕЙ",
+      "title": "Восемь модулей под любую конфигурацию ИТП",
+      "lede": "Конструктор блочного теплового пункта: ввод и учёт тепла, отопление, ГВС в одно- и двухступенчатых исполнениях, пароконденсатные системы."
+    },
+    "brands_tier_pumps": "Насосы",
+    "brands_tier_components": "Автоматика и комплектующие",
+    "case_photo_alt": "Фото объекта",
+    "gallery_placeholder": "Фото появится",
+    "module": {
+      "not_found": "Модуль не найден",
+      "advantages_tag": "05 · ПРЕИМУЩЕСТВА",
+      "gallery_tag": "06 · ГАЛЕРЕЯ",
+      "documents_tag": "08 · ДОКУМЕНТАЦИЯ",
+      "breadcrumbs": {
+        "home": "Главная",
+        "catalog": "Каталог",
+        "heating_unit": "Тепловые пункты"
+      },
+      "module_label": "01 · {mono} МОДУЛЬ",
+      "quick_request": "Быстрый запрос",
+      "back_to_catalog": "← К каталогу модулей",
+      "description_tag": "03 · ОПИСАНИЕ",
+      "description_title": "Назначение и принцип работы",
+      "applications_tag": "04 · ПРИМЕНЕНИЕ",
+      "applications_title": "Где используется модуль",
+      "references_tag": "07 · ОБЪЕКТЫ",
+      "neighbours_tag": "09 · ДРУГИЕ МОДУЛИ",
+      "neighbours_title": "Другие модули линейки"
+    }
+  }
+}

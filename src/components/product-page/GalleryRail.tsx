@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import type { GalleryContent, GalleryPhoto } from "@/content/products/types";
@@ -137,6 +138,7 @@ function GalleryTile({
   index: number;
   onOpen: () => void;
 }) {
+  const tUi = useTranslations("common.ui");
   const aspect = photo.aspect ?? "4/5";
 
   return (
@@ -155,7 +157,7 @@ function GalleryTile({
         type="button"
         onClick={onOpen}
         data-cursor="hover"
-        aria-label={`Открыть фото ${index + 1} в полном размере`}
+        aria-label={tUi("gallery.open_photo", { n: index + 1 })}
         className="block w-full text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-secondary)]/60"
       >
         {/* Tile widths match CasesCarousel below (200/280/340) — keeps
@@ -221,6 +223,7 @@ function Lightbox({
   onNext: () => void;
   onPrev: () => void;
 }) {
+  const tUi = useTranslations("common.ui");
   return (
     <AnimatePresence>
       {index !== null ? (
@@ -233,14 +236,14 @@ function Lightbox({
           onClick={onClose}
           role="dialog"
           aria-modal="true"
-          aria-label="Просмотр фото в полном размере"
+          aria-label={tUi("gallery.viewer_label")}
         >
           {/* Close button — top right */}
           <button
             type="button"
             onClick={onClose}
             data-cursor="hover"
-            aria-label="Закрыть"
+            aria-label={tUi("gallery.close")}
             className="absolute right-6 top-6 z-10 flex h-12 w-12 items-center justify-center rounded-full border border-[var(--color-secondary)]/20 bg-[var(--color-primary)]/60 text-[var(--color-secondary)] transition-colors hover:border-[var(--color-secondary)]/60 md:right-10 md:top-10"
           >
             <span aria-hidden="true" className="text-xl leading-none">×</span>
@@ -260,7 +263,7 @@ function Lightbox({
                 onPrev();
               }}
               data-cursor="hover"
-              aria-label="Предыдущее фото"
+              aria-label={tUi("gallery.prev")}
               className="absolute left-4 top-1/2 z-10 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border border-[var(--color-secondary)]/20 bg-[var(--color-primary)]/60 font-mono text-[var(--color-secondary)] transition-colors hover:border-[var(--color-secondary)]/60 md:left-10"
             >
               <span aria-hidden="true">←</span>
@@ -304,7 +307,7 @@ function Lightbox({
                 onNext();
               }}
               data-cursor="hover"
-              aria-label="Следующее фото"
+              aria-label={tUi("gallery.next")}
               className="absolute right-4 top-1/2 z-10 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border border-[var(--color-secondary)]/20 bg-[var(--color-primary)]/60 font-mono text-[var(--color-secondary)] transition-colors hover:border-[var(--color-secondary)]/60 md:right-10"
             >
               <span aria-hidden="true">→</span>
@@ -323,6 +326,7 @@ function Lightbox({
  * no images.
  */
 function GallerySkeleton() {
+  const tUi = useTranslations("common.ui");
   return (
     <>
       {/* Diagonal hatch — reads as "draft / awaiting content" */}
@@ -338,7 +342,7 @@ function GallerySkeleton() {
       {/* Centre label so the skeleton is unambiguous at a glance */}
       <div className="absolute inset-0 flex items-center justify-center">
         <span className="font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/55">
-          Фото появится
+          {tUi("gallery_placeholder")}
         </span>
       </div>
     </>

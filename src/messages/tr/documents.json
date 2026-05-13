@@ -1,0 +1,75 @@
+{
+  "meta": {
+    "title": "Belgeler",
+    "description": "ANHEL® için teknik veri formları, kataloglar, uygunluk sertifikaları ve kullanım kılavuzları — pompa istasyonları, ısı istasyonları, su arıtma, kontrol panoları."
+  },
+  "hero": {
+    "mono_tag": "Belgeler",
+    "heading": "Teknik veri formları, kataloglar, sertifikalar — tek bir yerde.",
+    "lede_prefix": "Ürün grubunuzun teknik veri formunu indirin, tesis parametrelerini doldurun ve şu adrese gönderin:",
+    "lede_suffix": ". Mühendisimiz seçimi yeniden hesaplayıp bir iş günü içinde teklif hazırlayacak."
+  },
+  "common_section": {
+    "mono_tag": "Genel belgeler"
+  },
+  "common_items": {
+    "anhel_card": "Profit LLC şirket kartı",
+    "service_request": "Servis talep formu"
+  },
+  "sections": {
+    "by_direction": "Ürün grubuna göre",
+    "questionnaires": {
+      "title": "Teknik veri formları",
+      "lede": "Tesis parametrelerini şablona yazın — bir iş günü içinde ekipman seçimi ve teklifle döneriz."
+    },
+    "catalogs": {
+      "title": "Kataloglar",
+      "placeholder_heading": "Ürün gruplarına göre basılı kataloglar — hazırlık aşamasında",
+      "placeholder_lede": "Bu bölümde yayınlanacak. O zamana kadar seçim için teknik veri formları ve sertifikalar yeterlidir."
+    },
+    "certificates": {
+      "title": "EAEU Sertifikaları",
+      "lede": "EAEU Teknik Düzenlemelerine Uygunluk Beyannameleri — ekipman, Rusya ve Avrasya Ekonomik Birliği üyesi ülkelerdeki tesislerde kullanım için sertifikalıdır."
+    },
+    "manuals": {
+      "title": "Kullanım kılavuzları",
+      "lede": "Ekipman teslim paketinin bir parçası olarak müşteriye verilir. Burada ön inceleme için sunulur."
+    }
+  },
+  "directions": {
+    "pumps": {
+      "title": "Pompa istasyonları"
+    },
+    "heating-unit": {
+      "title": "Isı istasyonları"
+    },
+    "water-treatment": {
+      "title": "Su arıtma"
+    },
+    "control-systems": {
+      "title": "Kontrol panoları"
+    }
+  },
+  "items": {
+    "pumps_water_supply_q": "Su temini (soğuk ve sıcak kullanım suyu)",
+    "pumps_firefighting_q": "Yangın koruması (sprinkler, hidrant)",
+    "pumps_heating_cooling_q": "Isıtma ve soğutma",
+    "pumps_pressure_boost_q": "Basınç artırma",
+    "pumps_special_q": "Özel amaçlı konfigürasyon",
+    "heating_unit_q": "ANHEL® ısı istasyonları",
+    "water_treatment_q": "Su arıtma üniteleri",
+    "control_systems_q": "ANHEL® kontrol panoları",
+    "pumps_water_supply_cert": "EAEU beyannamesi — su temini",
+    "pumps_firefighting_cert": "EAEU beyannamesi — yangın koruması",
+    "pumps_heating_cooling_cert": "EAEU beyannamesi — ısıtma ve soğutma",
+    "pumps_pressure_boost_cert": "EAEU beyannamesi — basınç artırma",
+    "pumps_special_cert": "EAEU beyannamesi — özel amaçlı konfigürasyon",
+    "heating_unit_cert": "EAEU beyannamesi — ısı istasyonları",
+    "water_treatment_cert": "EAEU beyannamesi — su arıtma",
+    "pumps_water_supply_manual": "Kılavuz — su temini",
+    "pumps_firefighting_manual": "Kılavuz — yangın koruması",
+    "pumps_heating_cooling_manual": "Kılavuz — ısıtma ve soğutma",
+    "pumps_pressure_boost_manual": "Kılavuz — basınç artırma",
+    "pumps_special_manual": "Kılavuz — özel amaçlı konfigürasyon"
+  }
+}
