@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslations } from 'next-intl';
 import { ArrowLeft, ArrowRight, Send, Check } from 'lucide-react';
 import {
   FORM_STEPS,
@@ -12,6 +13,21 @@ import {
   type FormField,
   type FormStep,
 } from '@/content/products/control-systems/quiz-config';
+import { useTranslatedControlSystemsSteps } from './useTranslatedControlSystemsSteps';
+
+/**
+ * Reusable validation factory — captures the active locale's
+ * `t` so messages render in the chosen language. Mirrors the
+ * shared QuizShell schema-factory pattern.
+ *
+ * Field-level rules:
+ *   - checkbox + required        → consent_required
+ *   - text + required + empty    → field_required
+ *   - tel + bad pattern          → phone_format
+ *   - email + bad pattern        → email_format
+ *   - textarea + minLength miss  → min_length (template with {min}, {actual})
+ */
+type Tfn = (key: string, vars?: Record<string, string | number>) => string;
 
 /**
  * Multistep-форма опросного листа для шкафов управления.
@@ -51,32 +67,41 @@ function emptyValues(): Values {
 function validateField(
   field: FormField,
   value: string | boolean,
+  tValidation: Tfn,
 ): string | undefined {
   if (field.kind === 'checkbox') {
-    if (field.required && value !== true) return 'Необходимо согласие';
+    if (field.required && value !== true)
+      return tValidation('consent_required');
     return undefined;
   }
   const str = typeof value === 'string' ? value.trim() : '';
-  if (field.required && !str) return 'Поле обязательно';
+  if (field.required && !str) return tValidation('field_required');
   if (!str) return undefined;
   if (field.kind === 'tel' && !TEL_REGEX.test(str))
-    return 'Похоже на некорректный номер';
+    return tValidation('phone_format');
   if (field.kind === 'email' && !EMAIL_REGEX.test(str))
-    return 'Некорректный e-mail';
+    return tValidation('email_format');
   if (
     field.kind === 'textarea' &&
     field.minLength &&
     str.length < field.minLength
   ) {
-    return `Минимум ${field.minLength} символов (введено ${str.length})`;
+    return tValidation('min_length', {
+      min: field.minLength,
+      actual: str.length,
+    });
   }
   return undefined;
 }
 
-function validateStep(step: FormStep, values: Values): Errors {
+function validateStep(
+  step: FormStep,
+  values: Values,
+  tValidation: Tfn,
+): Errors {
   const errs: Errors = {};
   for (const f of step.fields) {
-    const e = validateField(f, values[f.name]);
+    const e = validateField(f, values[f.name], tValidation);
     if (e) errs[f.name] = e;
   }
   return errs;
@@ -106,6 +131,9 @@ function computeProgress(
 
 export function QuizControlSystemsForm() {
   const router = useRouter();
+  const t = useTranslations('quiz.control_systems');
+  const tValidation = useTranslations('quiz.shell.validation') as unknown as Tfn;
+  const localizedSteps = useTranslatedControlSystemsSteps();
   const [values, setValues] = useState<Values>(emptyValues);
   const [stepIdx, setStepIdx] = useState(0);
   const [errors, setErrors] = useState<Errors>({});
@@ -154,8 +182,8 @@ export function QuizControlSystemsForm() {
     }
   }, [values, stepIdx]);
 
-  const step = FORM_STEPS[stepIdx];
-  const isLast = stepIdx === FORM_STEPS.length - 1;
+  const step = localizedSteps[stepIdx];
+  const isLast = stepIdx === localizedSteps.length - 1;
   const pct = computeProgress(stepIdx, step, values);
 
   const setFieldValue = useCallback((name: string, value: string | boolean) => {
@@ -169,7 +197,7 @@ export function QuizControlSystemsForm() {
   }, []);
 
   const handleNext = useCallback(() => {
-    const errs = validateStep(step, values);
+    const errs = validateStep(step, values, tValidation);
     if (Object.keys(errs).length > 0) {
       setErrors(errs);
       return;
@@ -181,7 +209,7 @@ export function QuizControlSystemsForm() {
     setStepIdx(nextIdx);
     if (typeof window !== 'undefined')
       window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, [step, stepIdx, values]);
+  }, [step, stepIdx, values, tValidation]);
 
   const handlePrev = useCallback(() => {
     if (stepIdx === 0) return;
@@ -193,11 +221,11 @@ export function QuizControlSystemsForm() {
 
   const handleSubmit = useCallback(() => {
     const allErrs: Errors = {};
-    for (const s of FORM_STEPS)
-      Object.assign(allErrs, validateStep(s, values));
+    for (const s of localizedSteps)
+      Object.assign(allErrs, validateStep(s, values, tValidation));
     if (Object.keys(allErrs).length > 0) {
       setErrors(allErrs);
-      const firstErrStep = FORM_STEPS.find((s) =>
+      const firstErrStep = localizedSteps.find((s) =>
         s.fields.some((f) => allErrs[f.name]),
       );
       if (firstErrStep) setStepIdx(firstErrStep.index);
@@ -216,7 +244,7 @@ export function QuizControlSystemsForm() {
         1600,
       );
     }, 700);
-  }, [values, router]);
+  }, [values, router, localizedSteps, tValidation]);
 
   const goToStep = useCallback(
     (idx: number) => {
@@ -230,13 +258,12 @@ export function QuizControlSystemsForm() {
   return (
     <div className="mx-auto w-full max-w-[840px] px-6 pb-32 pt-24 md:px-12 md:pt-28">
       {/* Header */}
-      <p className="mono-tag">Опросный лист</p>
+      <p className="mono-tag">{t('tag')}</p>
       <h1 className="mt-6 font-display text-4xl font-medium leading-[1.1] md:text-5xl">
-        Подбор шкафа управления ANHEL®
+        {t('title')}
       </h1>
       <p className="mt-4 max-w-[600px] text-sm leading-relaxed text-[var(--color-secondary)]/65 md:mt-5 md:text-[15px]">
-        Шесть шагов — от контактов до особых требований. Отвечаем коммерческим
-        предложением в течение рабочего дня.
+        {t('subtitle')}
       </p>
 
       {/* Progress */}
@@ -249,7 +276,7 @@ export function QuizControlSystemsForm() {
         </div>
 
         <div className="mt-5 flex items-start justify-between gap-1">
-          {FORM_STEPS.map((s, i) => {
+          {localizedSteps.map((s, i) => {
             const active = i === stepIdx;
             const isVisited = visited.has(i);
             const clickable = isVisited && !active;
@@ -260,7 +287,7 @@ export function QuizControlSystemsForm() {
                 disabled={!clickable}
                 onClick={() => clickable && goToStep(i)}
                 aria-current={active ? 'step' : undefined}
-                aria-label={`Шаг ${i + 1}: ${s.title}`}
+                aria-label={t('step_aria', { current: i + 1, title: s.title })}
                 className={
                   'group relative flex flex-1 flex-col items-start text-left transition-colors ' +
                   (clickable ? 'cursor-pointer' : 'cursor-default')
@@ -296,7 +323,10 @@ export function QuizControlSystemsForm() {
 
         <div className="mt-3 flex items-center justify-between font-mono text-[11px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/55">
           <span>
-            Шаг {stepIdx + 1} из {FORM_STEPS.length}
+            {t('step_of', {
+              current: stepIdx + 1,
+              total: localizedSteps.length,
+            })}
           </span>
           <span className="text-[var(--color-secondary)]/85">{pct}%</span>
         </div>
@@ -320,11 +350,10 @@ export function QuizControlSystemsForm() {
               </span>
               <div>
                 <p className="font-display text-2xl font-medium">
-                  Опросный лист отправлен
+                  {t('success_title')}
                 </p>
                 <p className="mt-3 max-w-[520px] text-sm leading-relaxed text-[var(--color-secondary)]/70 md:text-[15px]">
-                  Мы свяжемся с вами в течение рабочего дня. Сейчас вернём на
-                  раздел «Шкафы управления».
+                  {t('success_body')}
                 </p>
               </div>
             </div>
@@ -344,7 +373,12 @@ export function QuizControlSystemsForm() {
             className="mt-14 border-t border-[var(--color-hairline)] pt-10 md:mt-16 md:pt-12"
             aria-labelledby={`step-${step.index}-title`}
           >
-            <p className="mono-tag">{`Шаг ${stepIdx + 1} / ${FORM_STEPS.length}`}</p>
+            <p className="mono-tag">
+              {t('step_short', {
+                current: stepIdx + 1,
+                total: localizedSteps.length,
+              })}
+            </p>
             <h2
               id={`step-${step.index}-title`}
               className="mt-4 font-display text-3xl font-medium leading-tight md:text-4xl"
@@ -371,7 +405,9 @@ export function QuizControlSystemsForm() {
               </div>
             )}
 
-            {isLast && <ReviewSummary values={values} />}
+            {isLast && (
+              <ReviewSummary values={values} steps={localizedSteps} />
+            )}
           </motion.section>
         </AnimatePresence>
       )}
@@ -391,7 +427,7 @@ export function QuizControlSystemsForm() {
             }
           >
             <ArrowLeft size={16} strokeWidth={1.5} aria-hidden="true" />
-            Назад
+            {t('back')}
           </button>
 
           {!isLast ? (
@@ -401,7 +437,7 @@ export function QuizControlSystemsForm() {
               data-cursor="hover"
               className="group inline-flex items-center gap-2 border border-[var(--color-secondary)] bg-[var(--color-secondary)] px-5 py-2.5 text-sm font-medium text-[var(--color-primary)] transition-colors hover:bg-transparent hover:text-[var(--color-secondary)]"
             >
-              Далее
+              {t('next')}
               <ArrowRight size={16} strokeWidth={1.5} aria-hidden="true" />
             </button>
           ) : (
@@ -412,7 +448,7 @@ export function QuizControlSystemsForm() {
               data-cursor="hover"
               className="group inline-flex items-center gap-2 border border-[var(--color-secondary)] bg-[var(--color-secondary)] px-5 py-2.5 text-sm font-medium text-[var(--color-primary)] transition-colors hover:bg-transparent hover:text-[var(--color-secondary)] disabled:cursor-not-allowed disabled:opacity-50"
             >
-              {submitState === 'submitting' ? 'Отправка…' : 'Отправить'}
+              {submitState === 'submitting' ? t('submitting') : t('submit')}
               <Send size={16} strokeWidth={1.5} aria-hidden="true" />
             </button>
           )}
@@ -422,12 +458,12 @@ export function QuizControlSystemsForm() {
       {/* Cancel link */}
       {submitState === 'idle' && (
         <p className="mt-6 text-center text-xs text-[var(--color-secondary)]/55">
-          Передумали?{' '}
+          {t('cancel_pre')}
           <Link
             href="/products/control-systems"
             className="underline-offset-2 hover:text-[var(--color-secondary)] hover:underline"
           >
-            Вернуться к описанию шкафов
+            {t('cancel_link')}
           </Link>
         </p>
       )}
@@ -586,24 +622,33 @@ function FieldError({
   );
 }
 
-function ReviewSummary({ values }: { values: Values }) {
+function ReviewSummary({
+  values,
+  steps,
+}: {
+  values: Values;
+  steps: readonly FormStep[];
+}) {
+  const tShell = useTranslations('quiz.shell');
+  const yesLabel = tShell('yes_short');
   const grouped = useMemo(
     () =>
-      FORM_STEPS.filter((s) => s.fields.length > 0).map((s) => ({
-        step: s,
-        rows: s.fields.map((f) => {
-          const raw = values[f.name];
-          let display = '';
-          if (f.kind === 'checkbox') {
-            display = raw === true ? 'Да' : '—';
-          } else {
-            display =
-              typeof raw === 'string' && raw.trim() ? raw : '—';
-          }
-          return { field: f, display };
-        }),
-      })),
-    [values],
+      steps
+        .filter((s) => s.fields.length > 0)
+        .map((s) => ({
+          step: s,
+          rows: s.fields.map((f) => {
+            const raw = values[f.name];
+            let display = '';
+            if (f.kind === 'checkbox') {
+              display = raw === true ? yesLabel : '—';
+            } else {
+              display = typeof raw === 'string' && raw.trim() ? raw : '—';
+            }
+            return { field: f, display };
+          }),
+        })),
+    [steps, values, yesLabel],
   );
 
   return (
@@ -614,7 +659,7 @@ function ReviewSummary({ values }: { values: Values }) {
           className="border-t border-[var(--color-hairline)] pt-6"
         >
           <p className="font-mono text-[11px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/55">
-            Шаг {step.index + 1} · {step.title}
+            {step.index + 1} · {step.title}
           </p>
           <dl className="mt-4 grid grid-cols-1 gap-x-8 gap-y-4 md:grid-cols-2">
             {rows.map(({ field, display }) => (

@@ -38,7 +38,71 @@
       },
       "email_format": "Please enter a valid email",
       "phone_format": "Please check the phone number",
-      "consent_required": "Consent to personal data processing is required"
+      "consent_required": "Consent to personal data processing is required",
+      "field_required": "This field is required",
+      "min_length": "At least {min} characters ({actual} entered)"
+    }
+  },
+  "control_systems": {
+    "meta_title": "Questionnaire · Control Cabinets",
+    "meta_description": "Online questionnaire to size an ANHEL® control cabinet.",
+    "tag": "Questionnaire",
+    "title": "ANHEL® Control Cabinet Sizing",
+    "subtitle": "Six steps — from contacts to special requirements. We respond with a quote within one business day.",
+    "step_aria": "Step {current}: {title}",
+    "step_of": "Step {current} of {total}",
+    "step_short": "Step {current} / {total}",
+    "back": "Back",
+    "next": "Next",
+    "submit": "Submit",
+    "submitting": "Sending…",
+    "success_title": "Questionnaire sent",
+    "success_body": "We will contact you within one business day. Returning to the Control Cabinets section now.",
+    "cancel_pre": "Changed your mind? ",
+    "cancel_link": "Back to control cabinets",
+    "steps": {
+      "0": { "title": "Contacts", "description": "Where to send the quote." },
+      "1": { "title": "Facility", "description": "Where the control cabinet will be installed." },
+      "2": { "title": "Cabinet purpose", "description": "Which system the cabinet will serve." },
+      "3": { "title": "Technical parameters", "description": "Headline parameters — exact values can be refined later." },
+      "4": { "title": "Special requirements", "description": "Climate class, communication protocols, certification, dispatching." },
+      "5": { "title": "Review and submit", "description": "Review your entries. After submitting, the request will reach info@anhelspb.com — we'll respond within one business day." }
+    },
+    "fields": {
+      "company_name": { "label": "Company", "placeholder": "Acme Ltd." },
+      "contact_full_name": { "label": "Full name", "placeholder": "John A. Smith" },
+      "contact_phone": { "label": "Phone", "placeholder": "+7 (___) ___-__-__" },
+      "contact_email": { "label": "Email", "placeholder": "name@company.com" },
+      "contact_position": { "label": "Position", "placeholder": "chief engineer / designer / procurement" },
+      "object_name": { "label": "Facility name", "placeholder": "Baltic Pearl Residential Complex" },
+      "object_address": { "label": "Facility address", "placeholder": "28 Nevsky Prospect, Saint Petersburg" },
+      "object_type": { "label": "Building type", "placeholder": "residential / commercial / industrial" },
+      "project_stage": { "label": "Project stage", "placeholder": "design / construction / refurbishment" },
+      "cabinet_type": {
+        "label": "Cabinet type",
+        "placeholder": "VFD control / firefighting / smoke control / sewage pumping / motorized valves",
+        "hint": "Unsure? Just write 'undecided' — we'll figure it out together."
+      },
+      "application_details": {
+        "label": "System purpose",
+        "placeholder": "For example: cold-water supply for a multi-storey residential complex, warehouse sprinkler system, sewage pumping for domestic effluent"
+      },
+      "pumps_count": { "label": "Number of pumps / valves", "placeholder": "1 – 6 (valve cabinet — up to 5 valves)" },
+      "pump_power": { "label": "Power per unit, kW", "placeholder": "0.37 – 500" },
+      "current_value": { "label": "Current, A", "placeholder": "1 – 4000" },
+      "voltage": { "label": "Supply voltage, V", "placeholder": "3×380 / 660 / 6 kV / 10 kV" },
+      "start_method": { "label": "Starting method", "placeholder": "DOL / soft start / VFD / soft starter" },
+      "power_input": { "label": "Power input", "placeholder": "single / dual with ATS" },
+      "climate_class": { "label": "Climate class", "placeholder": "UKHL4 (standard) / UKHL1 / UKHL2" },
+      "control_type": { "label": "Control type", "placeholder": "local / remote / combined" },
+      "protocols": { "label": "Communication protocols", "placeholder": "Modbus RTU/TCP, ProfibusDP, EasyAccess, VNC" },
+      "certification": { "label": "Certification", "placeholder": "FZ-123 / TR TS / no special requirements" },
+      "extra_options": {
+        "label": "Additional options and requirements",
+        "placeholder": "Integration with Orion / Rubezh fire-alarm systems, IP69, GSM dispatching, remote access, RTD sensor inputs…"
+      },
+      "deadline": { "label": "Requested delivery timeline", "placeholder": "e.g. 8 weeks after specification approval" },
+      "consent_pd": { "label": "I consent to personal data processing under FZ-152." }
     }
   },
   "aupd": {

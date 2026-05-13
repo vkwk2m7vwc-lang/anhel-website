@@ -38,7 +38,71 @@
       },
       "email_format": "Geçerli bir e-posta adresi girin",
       "phone_format": "Telefon numarasını kontrol edin",
-      "consent_required": "Kişisel veri işleme onayı gerekli"
+      "consent_required": "Kişisel veri işleme onayı gerekli",
+      "field_required": "Bu alan zorunlu",
+      "min_length": "En az {min} karakter ({actual} girildi)"
+    }
+  },
+  "control_systems": {
+    "meta_title": "Soru formu · Kontrol panoları",
+    "meta_description": "ANHEL® kontrol panosu boyutlandırması için çevrimiçi soru formu.",
+    "tag": "Soru formu",
+    "title": "ANHEL® Kontrol Panosu Boyutlandırma",
+    "subtitle": "Altı adım — iletişimden özel gereksinimlere kadar. Bir iş günü içinde teklif gönderiyoruz.",
+    "step_aria": "Adım {current}: {title}",
+    "step_of": "{total} adımdan {current}.",
+    "step_short": "Adım {current} / {total}",
+    "back": "Geri",
+    "next": "İleri",
+    "submit": "Gönder",
+    "submitting": "Gönderiliyor…",
+    "success_title": "Soru formu gönderildi",
+    "success_body": "Bir iş günü içinde sizinle iletişime geçeceğiz. Şimdi Kontrol Panoları bölümüne dönüyoruz.",
+    "cancel_pre": "Vazgeçtiniz mi? ",
+    "cancel_link": "Kontrol panolarına dön",
+    "steps": {
+      "0": { "title": "İletişim", "description": "Teklifi kime ve nereye göndereceğimiz." },
+      "1": { "title": "Tesis", "description": "Kontrol panosunun kurulacağı yer." },
+      "2": { "title": "Pano amacı", "description": "Pano hangi sistem için boyutlandırılacak." },
+      "3": { "title": "Teknik parametreler", "description": "Temel parametreler — kesin değerleri sonradan netleştirebiliriz." },
+      "4": { "title": "Özel gereksinimler", "description": "İklim sınıfı, haberleşme protokolleri, sertifikasyon, dispeçer." },
+      "5": { "title": "Gözden geçirme ve gönderme", "description": "Verileri kontrol edin. Gönderdikten sonra talep info@anhelspb.com adresine ulaşacak — bir iş günü içinde yanıtlayacağız." }
+    },
+    "fields": {
+      "company_name": { "label": "Firma", "placeholder": "ABC Ltd. Şti." },
+      "contact_full_name": { "label": "Ad-soyad", "placeholder": "Ahmet Yılmaz" },
+      "contact_phone": { "label": "Telefon", "placeholder": "+90 (___) ___ __ __" },
+      "contact_email": { "label": "E-posta", "placeholder": "isim@firma.com" },
+      "contact_position": { "label": "Görev / Pozisyon", "placeholder": "baş mühendis / tasarımcı / satın alma" },
+      "object_name": { "label": "Tesis adı", "placeholder": "Baltic Pearl Konut Kompleksi" },
+      "object_address": { "label": "Tesis adresi", "placeholder": "28 Nevsky Prospect, Saint Petersburg" },
+      "object_type": { "label": "Bina tipi", "placeholder": "konut / ticari / endüstriyel" },
+      "project_stage": { "label": "Proje aşaması", "placeholder": "tasarım / inşaat / modernizasyon" },
+      "cabinet_type": {
+        "label": "Pano tipi",
+        "placeholder": "frekans kontrolü / yangın söndürme / duman tahliyesi / atık su pompası / motorlu vana",
+        "hint": "Emin değil misiniz? «kararsız» yazın — birlikte belirleriz."
+      },
+      "application_details": {
+        "label": "Sistem amacı",
+        "placeholder": "Örneğin: çok katlı konut için soğuk su, depo için sprinkler sistemi, evsel atık su pompalaması"
+      },
+      "pumps_count": { "label": "Pompa / vana sayısı", "placeholder": "1 – 6 (vana panosu için en fazla 5 vana)" },
+      "pump_power": { "label": "Birim başına güç, kW", "placeholder": "0,37 – 500" },
+      "current_value": { "label": "Akım, A", "placeholder": "1 – 4000" },
+      "voltage": { "label": "Besleme gerilimi, V", "placeholder": "3×380 / 660 / 6 kV / 10 kV" },
+      "start_method": { "label": "Yol verme yöntemi", "placeholder": "DOL / yumuşak yol verme / VFD / yumuşak yol verici" },
+      "power_input": { "label": "Güç girişi", "placeholder": "tek / ATS'li çift" },
+      "climate_class": { "label": "İklim sınıfı", "placeholder": "UKHL4 (standart) / UKHL1 / UKHL2" },
+      "control_type": { "label": "Kontrol tipi", "placeholder": "yerel / uzaktan / karma" },
+      "protocols": { "label": "Veri iletişim protokolleri", "placeholder": "Modbus RTU/TCP, ProfibusDP, EasyAccess, VNC" },
+      "certification": { "label": "Sertifikasyon", "placeholder": "FZ-123 / TR TS / özel gereksinim yok" },
+      "extra_options": {
+        "label": "Ek seçenekler ve gereksinimler",
+        "placeholder": "Orion / Rubezh yangın alarmı entegrasyonu, IP69, GSM dispeçer, uzaktan erişim, RTD sensör girişleri…"
+      },
+      "deadline": { "label": "İstenen teslim süresi", "placeholder": "örn. şartname onayından 8 hafta sonra" },
+      "consent_pd": { "label": "FZ-152 uyarınca kişisel veri işlemeye onay veriyorum." }
     }
   },
   "aupd": {
