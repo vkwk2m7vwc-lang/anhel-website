@@ -15,7 +15,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslations } from 'next-intl';
 import type { ZodTypeAny } from 'zod';
 import { type QuizStep } from '@/content/quiz/pumps-fields';
-import { pumpsQuizSchema } from '@/content/quiz/pumps-schema';
+import { makePumpsQuizSchema, pumpsQuizSchema } from '@/content/quiz/pumps-schema';
 import { makeVpuQuizSchema, vpuQuizSchema } from '@/content/quiz/vpu-schema';
 import { itpQuizSchema } from '@/content/quiz/itp-schema';
 import { aupdQuizSchema } from '@/content/quiz/aupd-schema';
@@ -66,6 +66,7 @@ export function QuizShell({ config: rawConfig, prefill }: Props) {
    * locale the schema reference stays stable for `useForm`.
    */
   const schema = useMemo<ZodTypeAny>(() => {
+    if (rawConfig.kind === 'pumps') return makePumpsQuizSchema(tValidation);
     if (rawConfig.kind === 'vpu') return makeVpuQuizSchema(tValidation);
     return STATIC_SCHEMAS[rawConfig.kind];
   }, [rawConfig.kind, tValidation]);
