@@ -57,7 +57,57 @@
   },
   "request_page": {
     "meta_title": "Servis talebi",
-    "meta_description": "ANHEL ekipmanları için çevrimiçi servis talep formu.",
-    "ru_only_note": "Bu form Rusça'dır. Diğer dillerdeki talepler için lütfen İletişim sayfasındaki formu kullanın."
+    "meta_description": "ANHEL ekipmanları için çevrimiçi servis talep formu."
+  },
+  "request_form": {
+    "meta_title": "Servis talebi",
+    "meta_description": "ANHEL® ekipmanları için çevrimiçi servis talep formu.",
+    "tag": "Servis talebi",
+    "title": "ANHEL® Servis Talebi",
+    "subtitle": "Formu doldurun, mühendis ziyaretini birlikte planlayalım. Görevlendirme kararı, doldurulmuş ve kaşeli talep alındıktan sonra verilir.",
+    "step_aria": "Adım {current}: {title}",
+    "step_of": "{total} adımdan {current}.",
+    "step_short": "Adım {current} / {total}",
+    "back": "Geri",
+    "next": "İleri",
+    "submit": "Talebi gönder",
+    "submitting": "Gönderiliyor…",
+    "success_title": "Talep gönderildi",
+    "success_body": "Bir iş günü içinde sizinle iletişime geçeceğiz. Şimdi Servis sayfasına dönüyoruz.",
+    "cancel_pre": "Vazgeçtiniz mi? ",
+    "cancel_link": "Servis sayfasına dön",
+    "steps": {
+      "0": { "title": "Tesis ve talep", "description": "Ekipmanın bulunduğu yer ve hangi belgeyle tedarik edildiği." },
+      "1": { "title": "Ekipman ve belgeler", "description": "Hangi ekipmana servis veriyoruz ve hangi belgeyle tedarik edildi." },
+      "2": { "title": "İletişim kişisi", "description": "Servis mühendisinin sahada görüşeceği kişi." },
+      "3": { "title": "Arıza ve onaylar", "description": "Sorunu açıklayın — ne kadar ayrıntılı, o kadar iyi hazırlanırız. Ziyaret koşullarını onaylayın." },
+      "4": { "title": "Gözden geçirme ve gönderme", "description": "Verileri kontrol edin. Gönderdikten sonra talep info@anhelspb.com adresine ulaşacak — ziyareti birlikte planlayacağız." }
+    },
+    "fields": {
+      "request_number": { "label": "Talep numarası (ürün seri numarası)", "placeholder": "örn. 24S574 — yıl ve seri kodu" },
+      "company_name": { "label": "Firma adı", "placeholder": "ABC Ltd. Şti." },
+      "object_name": { "label": "Tesis adı", "placeholder": "Baltic Pearl Konut Kompleksi" },
+      "object_address": { "label": "Tesis adresi", "placeholder": "28 Nevsky Prospect, Saint Petersburg" },
+      "equipment_type": { "label": "Ekipman tipi", "placeholder": "pompa istasyonu / ısı merkezi / su arıtma ünitesi" },
+      "equipment_name": { "label": "Ürün adı", "placeholder": "yangın söndürme ünitesi HVS-NU 60-90" },
+      "equipment_serial": { "label": "Ürün seri numarası", "placeholder": "24S574" },
+      "equipment_commissioning_date": { "label": "Devreye alma tarihi" },
+      "invoice_number_date": { "label": "Fatura numarası ve tarihi", "placeholder": "No. 123, 12.05.2024" },
+      "upd_number_date": { "label": "UPD numarası ve tarihi", "placeholder": "No. 456, 18.05.2024" },
+      "synteka_number": { "label": "Synteka talep numarası", "placeholder": "varsa — yoksa atlayın" },
+      "contact_full_name": { "label": "Ad-soyad", "placeholder": "Ahmet Yılmaz" },
+      "contact_position": { "label": "Görev", "placeholder": "baş mühendis" },
+      "contact_phone": { "label": "Cep telefonu", "placeholder": "+90 (___) ___ __ __" },
+      "contact_email": { "label": "E-posta", "placeholder": "isim@firma.com" },
+      "problem_description": {
+        "label": "Ayrıntılı arıza açıklaması",
+        "placeholder": "Örneğin: rutin devreye alma sonrası 1 numaralı pompa çalışma basıncına ulaşmıyor, ilk hareket sırasında metalik ses duyuluyor…",
+        "hint": "Video malzemeleri talep gönderildikten sonra info@anhelspb.com adresine ek olarak iletilebilir."
+      },
+      "commit_representative": { "label": "Servis Tutanağını imzalama ve İş Bitirme Tutanağına firma kaşesi basma yetkisine sahip bir temsilcinin sahada bulunmasını sağlamayı taahhüt ederim." },
+      "commit_equipment_ready": { "label": "Ekipmanın teşhise hazır olmasını sağlamayı taahhüt ederim (erişim, kontrol panosu için güç beslemesi, su temini ve çekim)." },
+      "commit_decision_after_request": { "label": "Görevlendirme kararının, doldurulmuş ve kaşeli talep alındıktan sonra verildiğini anlıyorum." },
+      "consent_pd": { "label": "Kişisel verilerin işlenmesine onay (FZ-152)." }
+    }
   }
 }
