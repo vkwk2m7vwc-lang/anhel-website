@@ -126,7 +126,12 @@ export function ProductHero({
                 ease: [0.16, 1, 0.3, 1],
                 delay: 0.2,
               }}
-              className="mt-6 font-display text-5xl font-medium leading-[1.05] text-[var(--color-secondary)] md:mt-8 lg:text-7xl"
+              // На mobile 360-414 px заголовок типа «ШКАФ УПРАВЛЕНИЯ С
+              // ЧАСТОТНЫМ РЕГУЛИРОВАНИЕМ» в text-5xl (48px) разлетается
+              // в 5 строк и стирает hero-визуал. text-4xl (36px) даёт
+              // тот же ритм при 2-3 строках. Переходы text-5xl на md+,
+              // text-7xl на lg+ — как раньше.
+              className="mt-6 font-display text-4xl font-medium leading-[1.05] text-[var(--color-secondary)] md:mt-8 md:text-5xl lg:text-7xl"
             >
               {content.title}
             </motion.h1>

@@ -20,7 +20,7 @@ export const content: ProductContent = {
     subtitle:
       "Otomatik basınç koruma ünitesi (APBU) — pompalı, genleşme tanklı ve akıllı otomasyonlu hidrolik modül. Sistem basıncını ±0,01 bar'a kadar sabit tutar, otomatik hava giderme ve ısıl genleşmeyi telafi eder.",
     image: {
-      src: "/assets/products/pressure-boost.png",
+      src: "/assets/products/pressure-boost.webp",
       alt: "ANHEL — otomatik basınç koruma ünitesi: kontrol panosu, pompa grubu ve membranlı genleşme tankı",
     },
     primaryCta: { label: "Çevrimiçi doldur", href: "/quiz/pumps?from=pressure-boost", variant: "primary" },

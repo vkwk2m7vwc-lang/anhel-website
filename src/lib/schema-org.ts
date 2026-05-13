@@ -44,7 +44,7 @@ export function organizationLd(): JsonLd {
     legalName: "ООО «Профит»",
     alternateName: ["ANHEL®"],
     url: SITE_URL,
-    logo: `${SITE_URL}/assets/products/hvs-nu.png`,
+    logo: `${SITE_URL}/assets/products/hvs-nu.webp`,
     description:
       "Проектирование и производство модульного инженерного оборудования: насосные станции (водоснабжение, пожаротушение), блочные тепловые пункты, установки водоподготовки.",
     address: {

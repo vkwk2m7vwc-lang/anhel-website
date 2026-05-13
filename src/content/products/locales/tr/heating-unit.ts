@@ -25,7 +25,7 @@ export const content: ProductContent = {
     subtitle:
       "Isıtma, sıcak kullanım suyu ve soğutma için modüler ekipman. Fabrika montajı, hava durumuna bağlı kontrol ve eksiksiz mevzuat belgeleri.",
     image: {
-      src: "/assets/products/bitp.png",
+      src: "/assets/products/bitp.webp",
       alt: "ANHEL® — blok ısı istasyonu, modüler konfigürasyon",
     },
     primaryCta: {

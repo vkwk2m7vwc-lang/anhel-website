@@ -11,7 +11,7 @@ import type { ProductContent } from "../../types";
  * working draft по аналогии с HVS-NU/BITP-NU. Финальное
  * обозначение подтвердит заказчик.
  *
- * Image: /assets/products/vpu.png — тот же render что на home hero
+ * Image: /assets/products/vpu.webp — тот же render что на home hero
  * carousel (water-treatment slide).
  *
  * Структура как у water-supply — 10 секций без «Как срабатывает».
@@ -44,7 +44,7 @@ export const content: ProductContent = {
     subtitle:
       "Высокотехнологичное оборудование с лучшими технологическими, конструкционными и энергосберегающими решениями. Фильтрация, умягчение, обезжелезивание, обратный осмос — комплексно с автоматикой и комплектующими ведущих мировых производителей.",
     image: {
-      src: "/assets/products/vpu.png",
+      src: "/assets/products/vpu.webp",
       alt: "ANHEL — установка водоподготовки со стальными фильтрами",
     },
     // Pair of hero CTAs:

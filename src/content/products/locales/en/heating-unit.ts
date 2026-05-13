@@ -27,7 +27,7 @@ export const content: ProductContent = {
     subtitle:
       "Modular equipment for heating, domestic hot water and cooling. Factory assembly, weather-compensated control and a complete set of regulatory documentation.",
     image: {
-      src: "/assets/products/bitp.png",
+      src: "/assets/products/bitp.webp",
       alt: "ANHEL® — block heat substation, modular configuration",
     },
     primaryCta: {

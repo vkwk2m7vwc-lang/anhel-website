@@ -20,7 +20,7 @@ export const content: ProductContent = {
     subtitle:
       "High-tech equipment for sites that need rapid adaptation to operating conditions. Two formats — insulated container or GRP vessel. Universal solution for water supply, fire protection, heating and cooling.",
     image: {
-      src: "/assets/products/special.png",
+      src: "/assets/products/special.webp",
       alt: "ANHEL — special-configuration pumping station: modular manifolds and pump-group assembly",
     },
     primaryCta: { label: "Fill in online", href: "/quiz/pumps?from=special", variant: "primary" },

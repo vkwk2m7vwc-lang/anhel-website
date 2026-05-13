@@ -232,7 +232,11 @@ export function ServiceRequestForm() {
           />
         </div>
 
-        {/* Маркеры */}
+        {/* Маркеры.
+            7 шагов в 360 px — каждая метка едва ли 50 px шириной, точка
+            6 px ловится только в перчатках. Увеличиваем min-h до 44 px,
+            а сам пятачок остаётся декоративным — фактический tap-target
+            теперь весь столбик. */}
         <div className="mt-5 flex items-start justify-between gap-1">
           {FORM_STEPS.map((s, i) => {
             const active = i === stepIdx;
@@ -247,7 +251,7 @@ export function ServiceRequestForm() {
                 aria-current={active ? 'step' : undefined}
                 aria-label={`Шаг ${i + 1}: ${s.title}`}
                 className={
-                  'group relative flex flex-1 flex-col items-start text-left transition-colors ' +
+                  'group relative flex min-h-11 flex-1 flex-col items-start py-1 text-left transition-colors ' +
                   (clickable ? 'cursor-pointer' : 'cursor-default')
                 }
               >
@@ -371,7 +375,9 @@ export function ServiceRequestForm() {
             onClick={handlePrev}
             disabled={stepIdx === 0}
             className={
-              'inline-flex items-center gap-2 px-3 py-2 text-sm transition-colors ' +
+              // min-h-11 — кнопка «Назад» в sticky-нав уходила в ~32px,
+              // на 360 px дельта между Назад и Далее визуально кричала.
+              'inline-flex min-h-11 items-center gap-2 px-3 py-2 text-sm transition-colors ' +
               (stepIdx === 0
                 ? 'cursor-not-allowed text-[var(--color-secondary)]/30'
                 : 'text-[var(--color-secondary)]/75 hover:text-[var(--color-secondary)]')
@@ -386,7 +392,7 @@ export function ServiceRequestForm() {
               type="button"
               onClick={handleNext}
               data-cursor="hover"
-              className="group inline-flex items-center gap-2 border border-[var(--color-secondary)] bg-[var(--color-secondary)] px-5 py-2.5 text-sm font-medium text-[var(--color-primary)] transition-colors hover:bg-transparent hover:text-[var(--color-secondary)]"
+              className="group inline-flex min-h-11 items-center gap-2 border border-[var(--color-secondary)] bg-[var(--color-secondary)] px-5 py-2.5 text-sm font-medium text-[var(--color-primary)] transition-colors hover:bg-transparent hover:text-[var(--color-secondary)]"
             >
               Далее
               <ArrowRight size={16} strokeWidth={1.5} aria-hidden="true" />
@@ -397,7 +403,7 @@ export function ServiceRequestForm() {
               onClick={handleSubmit}
               disabled={submitState === 'submitting'}
               data-cursor="hover"
-              className="group inline-flex items-center gap-2 border border-[var(--color-secondary)] bg-[var(--color-secondary)] px-5 py-2.5 text-sm font-medium text-[var(--color-primary)] transition-colors hover:bg-transparent hover:text-[var(--color-secondary)] disabled:cursor-not-allowed disabled:opacity-50"
+              className="group inline-flex min-h-11 items-center gap-2 border border-[var(--color-secondary)] bg-[var(--color-secondary)] px-5 py-2.5 text-sm font-medium text-[var(--color-primary)] transition-colors hover:bg-transparent hover:text-[var(--color-secondary)] disabled:cursor-not-allowed disabled:opacity-50"
             >
               {submitState === 'submitting' ? 'Отправка…' : 'Отправить заявку'}
               <Send size={16} strokeWidth={1.5} aria-hidden="true" />

@@ -1,42 +1,40 @@
-import { Inter, Inter_Tight, JetBrains_Mono } from "next/font/google";
-
 /**
- * ANHEL typography stack.
+ * ANHEL typography stack — self-hosted edition.
  *
  * BRAND.md asks for Neue Haas Grotesk Display + Söhne (paid). We use the
- * documented fallbacks so the project stays self-contained on Vercel.
+ * documented fallbacks (Inter Tight / Inter / JetBrains Mono).
  *
- * Each font is exposed as a CSS variable so Tailwind `font-display` /
- * `font-body` / `font-mono` pick it up via `tailwind.config.ts`.
+ * Перформанс-история этого файла: раньше тут жил `next/font/google` —
+ * Next подтягивал woff2-файлы с fonts.gstatic.com на билде, кэшировал
+ * их у себя и оборачивал в className. С точки зрения RU-аудитории это
+ * было проблемой: Роскомнадзор блокирует google-домены ровно из-за
+ * fonts.googleapis.com / fonts.gstatic.com, и Next в production пытается
+ * проксировать через тот же CDN-путь. Эпизодически у пользователей
+ * шрифт «прыгал» на системный.
+ *
+ * Решение — раздать те же woff2-файлы с собственного origin:
+ *   public/fonts/inter/*.woff2
+ *   public/fonts/inter-tight/*.woff2
+ *   public/fonts/jetbrains-mono/*.woff2
+ *
+ * @font-face блоки сгенерированы из Google Fonts API и лежат в
+ * public/fonts/fonts.css. Этот файл подключается тегом <link> в
+ * `src/app/[locale]/layout.tsx` <head>, плюс preload критических
+ * подмножеств (Cyrillic 400) — это даёт ту же latency, что и
+ * Google CDN, но без блокировок и без зависимости от внешнего сервиса.
+ *
+ * Tailwind config продолжает читать font-family через CSS-переменные
+ * --font-display / --font-body / --font-mono — их теперь декларирует
+ * `globals.css` (раньше их вписывал next/font в className на <html>).
+ *
+ * Регенерация шрифтов — `npm run fonts:fetch` (см. scripts/fetch-fonts.sh).
  */
 
-export const fontDisplay = Inter_Tight({
-  subsets: ["latin", "cyrillic"],
-  // 200 (extralight) added for K1 hero-title mix: the muted half of the
-  // headline renders at font-extralight; without weight 200 in the loaded
-  // set the browser falls back to 400 and the visual contrast collapses.
-  weight: ["200", "400", "500", "600"],
-  variable: "--font-display",
-  display: "swap",
-});
-
-export const fontBody = Inter({
-  subsets: ["latin", "cyrillic"],
-  weight: ["400", "500", "600"],
-  variable: "--font-body",
-  display: "swap",
-});
-
-export const fontMono = JetBrains_Mono({
-  subsets: ["latin"],
-  weight: ["400", "500"],
-  variable: "--font-mono",
-  display: "swap",
-});
-
-/** Combined className for <html> — attaches all three CSS variables at once. */
-export const fontVariables = [
-  fontDisplay.variable,
-  fontBody.variable,
-  fontMono.variable,
-].join(" ");
+/**
+ * Compatibility shim — раньше `fontVariables` шёл в className на <html>,
+ * чтобы next/font's runtime CSS-variables подцепились к корню. Сейчас
+ * переменные сидят в globals.css :root, и className пуст. Оставлен
+ * экспорт для обратной совместимости — layout.tsx по-прежнему может
+ * передавать его в className без эффекта.
+ */
+export const fontVariables = "";

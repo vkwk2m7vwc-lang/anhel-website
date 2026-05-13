@@ -27,7 +27,7 @@ export const content: ProductContent = {
     subtitle:
       "Units for boosting and maintaining constant pressure or generating a required pressure differential. Built around multi-stage vertical, end-suction or close-coupled horizontal pumps, configured to the project parameters.",
     image: {
-      src: "/assets/products/hvs-nu.png",
+      src: "/assets/products/hvs-nu.webp",
       alt: "ANHEL® — cold-water pumping station, HVS-NU series",
     },
     primaryCta: {

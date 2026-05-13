@@ -3,6 +3,16 @@
 @tailwind utilities;
 
 /*
+ * Self-hosted font @font-face declarations — see public/fonts/fonts.css.
+ * Раньше шрифты шли через next/font/google, который проксировал woff2
+ * через fonts.gstatic.com на билде. Эта связка ломалась у RU-аудитории
+ * (Роскомнадзор блокирует google-домены), поэтому шрифты теперь лежат
+ * в public/fonts/ и подключаются собственным CSS-файлом. См.
+ * src/lib/fonts.ts — там полная история и инструкция по регенерации.
+ */
+@import url("/fonts/fonts.css");
+
+/*
  * ANHEL design tokens — light + dark.
  *
  * `:root` — light theme (default).
@@ -49,6 +59,17 @@
   /* Image placeholder фон — для cover-картинок проектов и т.п., чтобы
      до загрузки контейнер не выглядел как рваная дыра в теме. */
   --color-image-placeholder: rgba(10, 10, 10, 0.06);
+
+  /*
+   * Font stack CSS-variables.
+   * Раньше эти переменные приходили из next/font/google className на
+   * <html>. После перехода на self-host задаём их явно здесь — Tailwind
+   * config читает их через `var(--font-display)` и т.д. (см. tailwind.config.ts).
+   * Имена соответствуют font-family из public/fonts/fonts.css.
+   */
+  --font-display: "Inter Tight", "Inter", system-ui, sans-serif;
+  --font-body: "Inter", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
 
   /* Motion */
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);

@@ -20,7 +20,7 @@ export const content: ProductContent = {
     subtitle:
       "Çalışma koşullarına hızlı adaptasyon gerektiren tesisler için yüksek teknolojili ekipman. İki format — yalıtımlı konteyner veya CTP tank. Su temini, yangın koruma, ısıtma ve soğutma için evrensel çözüm.",
     image: {
-      src: "/assets/products/special.png",
+      src: "/assets/products/special.webp",
       alt: "ANHEL — özel konfigürasyonlu pompa istasyonu: modüler kolektörler ve pompa grubu montajı",
     },
     primaryCta: { label: "Çevrimiçi doldur", href: "/quiz/pumps?from=special", variant: "primary" },

@@ -20,7 +20,14 @@ export function QuizNavigation({ current, total, onBack, onNext, isSubmitting, d
     <div
       className={cn(
         'sticky bottom-0 mt-10 flex items-center justify-between gap-4',
-        'border-t border-[color:var(--color-hairline)] bg-primary/85 py-4 backdrop-blur',
+        // -mx-5 px-5 — на mobile QuizShell даёт контейнеру px-5, и
+        // sticky-нав должна растягиваться edge-to-edge, иначе backdrop-
+        // blur стрижётся по контенту. На sm+ возвращаем 0 inset.
+        '-mx-5 px-5 sm:mx-0 sm:px-0',
+        // safe-area для iOS — на iPhone X+ snake-bar занимает ~34px,
+        // без env() sticky-нав налезает на «домашний» indicator.
+        'pb-[env(safe-area-inset-bottom)]',
+        'border-t border-[color:var(--color-hairline)] bg-primary/85 py-3 backdrop-blur sm:py-4',
       )}
     >
       <button
@@ -28,7 +35,11 @@ export function QuizNavigation({ current, total, onBack, onNext, isSubmitting, d
         onClick={onBack}
         disabled={isFirst}
         className={cn(
-          'inline-flex items-center gap-2 px-3 py-2 text-sm transition-colors',
+          // min-h-11 (44px) — WCAG-минимум для тачдтаргета. Раньше
+          // py-2 px-3 даёт ~32px высоту, в перчатках на iPhone попасть
+          // нереально. text-sm и небольшой horizontal padding оставлены —
+          // увеличиваем только tap-area через min-h.
+          'inline-flex min-h-11 items-center gap-2 px-3 py-2 text-sm transition-colors',
           isFirst
             ? 'cursor-not-allowed text-secondary/30'
             : 'text-secondary/75 hover:text-secondary',
@@ -42,7 +53,7 @@ export function QuizNavigation({ current, total, onBack, onNext, isSubmitting, d
         onClick={isLast ? undefined : onNext}
         disabled={disableNext || isSubmitting}
         className={cn(
-          'group inline-flex items-center gap-2 px-5 py-2.5 text-sm font-medium transition-all',
+          'group inline-flex min-h-11 items-center gap-2 px-5 py-2.5 text-sm font-medium transition-all',
           'border border-secondary bg-secondary text-primary',
           'hover:bg-transparent hover:text-secondary',
           'disabled:cursor-not-allowed disabled:opacity-50',

@@ -23,7 +23,7 @@ export const content: ProductContent = {
     subtitle:
       "Merkezi ısıtma, soğutma ve iklimlendirme sistemlerinde ısıtma akışkanı veya soğutulmuş su sirkülasyonu sağlayan üniteler. Hassas basınç kontrolü, motor koruması ve asgari enerji tüketimi için ayarlanmış kontrol algoritmaları.",
     image: {
-      src: "/assets/products/heating-cooling.png",
+      src: "/assets/products/heating-cooling.webp",
       alt: "ANHEL — ısıtma ve soğutma sistemleri için pompa istasyonu: genleşme tankı, pompa grubu ve kontrol panosu",
     },
     primaryCta: { label: "Çevrimiçi doldur", href: "/quiz/pumps?from=heating-cooling", variant: "primary" },
