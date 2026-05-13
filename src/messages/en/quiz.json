@@ -26,7 +26,20 @@
     "restored": "Data from your previous session has been restored. You can continue from where you left off.",
     "error_default": "We could not send your request. Please try again later.",
     "error_network": "Network error. Please download the PDF version and email it to info@anhelspb.com — we will process your request.",
-    "step_of": "Step {current} of {total}"
+    "step_of": "Step {current} of {total}",
+    "validation": {
+      "required": {
+        "organization": "Company is required",
+        "fullname": "Full name is required",
+        "position": "Position is required",
+        "city": "City is required",
+        "email": "Email is required",
+        "phone": "Phone is required"
+      },
+      "email_format": "Please enter a valid email",
+      "phone_format": "Please check the phone number",
+      "consent_required": "Consent to personal data processing is required"
+    }
   },
   "vpu": {
     "meta_title": "Questionnaire — Water Treatment Unit",

@@ -26,7 +26,20 @@
     "restored": "Önceki oturumun verileri geri yüklendi. Kaldığınız yerden devam edebilirsiniz.",
     "error_default": "Talebiniz gönderilemedi. Lütfen daha sonra tekrar deneyin.",
     "error_network": "Ağ hatası. PDF sürümünü indirip info@anhelspb.com adresine gönderin — talebinizi işleme alacağız.",
-    "step_of": "{total} adımdan {current}."
+    "step_of": "{total} adımdan {current}.",
+    "validation": {
+      "required": {
+        "organization": "Şirket adı gerekli",
+        "fullname": "Ad-soyad gerekli",
+        "position": "Görev gerekli",
+        "city": "Şehir gerekli",
+        "email": "E-posta gerekli",
+        "phone": "Telefon gerekli"
+      },
+      "email_format": "Geçerli bir e-posta adresi girin",
+      "phone_format": "Telefon numarasını kontrol edin",
+      "consent_required": "Kişisel veri işleme onayı gerekli"
+    }
   },
   "vpu": {
     "meta_title": "Soru formu — Su arıtma ünitesi",

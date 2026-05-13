@@ -16,18 +16,22 @@ import { useTranslations } from 'next-intl';
 import type { ZodTypeAny } from 'zod';
 import { type QuizStep } from '@/content/quiz/pumps-fields';
 import { pumpsQuizSchema } from '@/content/quiz/pumps-schema';
-import { vpuQuizSchema } from '@/content/quiz/vpu-schema';
+import { makeVpuQuizSchema, vpuQuizSchema } from '@/content/quiz/vpu-schema';
 import { itpQuizSchema } from '@/content/quiz/itp-schema';
 import { aupdQuizSchema } from '@/content/quiz/aupd-schema';
 import type { QuizConfig, QuizKind } from '@/content/quiz/quiz-config';
 import { useTranslatedConfig } from './useTranslatedConfig';
 
 /**
- * Map kind→schema. Resolved here in the client component, not passed via
- * config props. Zod schemas are class instances and cannot be serialized
- * across the server↔client boundary.
+ * Static schemas (RU messages) used as a fallback for quizzes whose
+ * schema factory is not yet migrated to the locale-aware variant.
+ * Vpu is migrated and built per-render via `makeVpuQuizSchema(t)` inside
+ * the component body — see the `schemas` memo below.
+ *
+ * Zod schemas are class instances and cannot be serialized across the
+ * server↔client boundary, so we always resolve them in the client.
  */
-const SCHEMAS: Record<QuizKind, ZodTypeAny> = {
+const STATIC_SCHEMAS: Record<QuizKind, ZodTypeAny> = {
   pumps: pumpsQuizSchema,
   vpu: vpuQuizSchema,
   itp: itpQuizSchema,
@@ -49,6 +53,23 @@ type Props = {
 export function QuizShell({ config: rawConfig, prefill }: Props) {
   const config = useTranslatedConfig(rawConfig);
   const t = useTranslations('quiz.shell');
+  const tValidation = useTranslations('quiz.shell.validation');
+
+  /**
+   * Build the active zod schema for this quiz kind. Vpu uses the
+   * locale-aware factory; the other three fall back to the static
+   * RU-message schema until their schema files are migrated in the
+   * follow-up commits (pumps / itp / aupd / control-systems).
+   *
+   * Re-memoizes only when the locale's `t` instance changes, which
+   * effectively means once per locale switch. Within a render-stable
+   * locale the schema reference stays stable for `useForm`.
+   */
+  const schema = useMemo<ZodTypeAny>(() => {
+    if (rawConfig.kind === 'vpu') return makeVpuQuizSchema(tValidation);
+    return STATIC_SCHEMAS[rawConfig.kind];
+  }, [rawConfig.kind, tValidation]);
+
   const [stepIdx, setStepIdx] = useState(0);
   const [visited, setVisited] = useState<Set<number>>(new Set([0]));
   const [submitted, setSubmitted] = useState<null | { ok: true } | { ok: false; message: string }>(
@@ -63,7 +84,7 @@ export function QuizShell({ config: rawConfig, prefill }: Props) {
   );
 
   const methods = useForm<Record<string, unknown>>({
-    resolver: zodResolver(SCHEMAS[config.kind]),
+    resolver: zodResolver(schema),
     defaultValues: initialValues,
     mode: 'onBlur',
   });
