@@ -931,3 +931,145 @@ git push origin main --force-with-lease
 ### Следующий шаг
 
 Волна 2 — продуктовые страницы (`/products/*`): копирайтинг + чистка «Москва» в галереях.
+
+
+---
+
+## Сессия 2026-05-13 — i18n wave 2 (ветка feat/i18n-wave-2-and-mobile-adaptation)
+
+Восстановление прерванной сессии 2026-05-12 (умерла от no-space-left-on-device
+после написания A.1, но до коммита). Recovery-kit `~/Desktop/ANHEL Сайт/
+ANHEL  Сайт/i18n-wave-2-recovery/` содержал только 1 из 12 файлов (electric-
+actuators.en.ts); остальные 11 файлов перегенерированы с нуля в этой сессии
+по RU-исходникам с использованием existing `variable-frequency.ts` EN/TR как
+эталона тона и формата.
+
+Работа велась через Desktop Commander (макбук пользователя напрямую) на git
+worktree `/tmp/anhel-wave2` от ветки `feat/i18n-wave-2-and-mobile-adaptation`,
+не трогая основной рабочий клон в `~/Desktop/ANHEL Сайт/ANHEL  Сайт/` (там
+осталась активная ветка audit/pre-launch-2026-05).
+
+Pre-flight tag: `v1.5-before-i18n-wave-2-and-mobile` на main 1aea96a.
+
+### A.1 — 4 шкафа управления (commit bd9b550)
+
+Перевод 4 продуктовых страниц control-systems на EN/TR:
+- electric-actuators (для электрифицированной арматуры)
+- fire-suppression (для систем пожаротушения)
+- smoke-control (для дымоудаления и подпора)
+- sewage-pumping (для КНС)
+
+12 файлов, 1246 + insertions, 28 - deletions:
+- 4 dispatcher в `src/content/products/control-systems/` переключены с RU-only
+  на RU+EN+TR (по образцу variable-frequency.ts)
+- 4 EN locale в `src/content/products/locales/en/control-systems/`
+- 4 TR locale в `src/content/products/locales/tr/control-systems/`
+
+Тон переводов:
+- EN — Grundfos / Wilo / Schneider register (clean B2B, declarative)
+- TR — Vansan / Sempa register (formal industrial)
+- Бренды `ANHEL®`, `FZ-123`, `GOST`, `TR TS`, `INSTART`, `Bolid (Orion)`,
+  `Rubezh`, `OWEN` (ОВЕН-транслит) — латиницей без перевода
+
+Кейсы локализованы по транслитерации (Tulachermet-Stal, Mriya Resort &
+SPA, Evolution Tower, Arcus 4, Nasedkino).
+
+tsc на 12 файлах — pass.
+
+### A.2 — no-op (already done in main)
+
+«8 теплопунктов» из плана пользователя — на самом деле уже сделаны в main
+коммитом 0a2556c «feat(i18n): deep translation of 8 heating-unit modules
+(EN/TR)». Все 8 heating-unit-modules имеют полные EN_OVERRIDES и TR_OVERRIDES
+(title, shortTitle, tagline, imageAlt, description, techSpecs, applications)
+в `src/content/products/heating-unit-modules/data.ts`. Дополнительной работы
+не нужно.
+
+Реальный оставшийся i18n-gap (отложен как A.2-ext): 4 firefighting-scenario
++ firefighting-systems — RU-only narrative content для иммерсивных сцен «Как
+срабатывает». Это 5 RU-файлов без EN/TR соответствий — отдельная задача.
+
+### A.3 — /contacts disclosure для RU-реквизитов (commit ebec990)
+
+На EN/TR-локалях карточка ООО «Профит» свёрнута по умолчанию под нативным
+`<details>`. Заголовок (ООО «Профит» + brand_subtitle + card_label) виден
+всегда. Ниже — clickable summary с переводом:
+- RU: не показывается (карточка раскрыта по умолчанию)
+- EN: «Russian legal and banking details — click to expand»
+- TR: «Rus yasal kayıt ve banka bilgileri — genişletmek için tıklayın»
+
+Маркер `+` поворачивается в `×` через `group-open:rotate-45`.
+
+Значения реквизитов (ИНН, ОГРН, банк, расчётный счёт и т.д.) остаются на
+русском во всех локалях — это юр.факты, не переводимые. Лейблы переведены
+ранее (Tax ID (INN) / Vergi No (INN)).
+
+Body карточки вынесен в `const requisitesBody` внутри функции страницы
+чтобы избежать дублирования JSX.
+
+Новые i18n-ключи в `contacts.json` (ru/en/tr): `requisites.disclosure_summary`,
+`requisites.disclosure_hint`.
+
+### A.4 — сертификаты RU only с подписью (commit 722aa27)
+
+Под каждой карточкой сертификата ЕАЭС на не-RU локалях теперь курсивная
+подпись 11px:
+- EN: «Original document (Russian)»
+- TR: «Orijinal belge (Rusça)»
+- RU: подпись не показывается (избыточно)
+
+Сертификаты ЕАЭС юридически выпускаются на русском (документ РФ/ЕАЭС),
+перевод недопустим. Подпись предупреждает EN/TR-читателя.
+
+Реализация:
+- DocCard принимает optional prop `note?: string`. Рендерится italic-line
+  под `PDF · size`.
+- DirectionGroup пробрасывает note через items в DocCard.
+- `/documents/page.tsx` вычисляет `certNote = locale === "ru" ? undefined
+  : t("sections.certificates.original_note")` и передаёт только в карточки
+  секции `#certificates`. Опросные листы, общие документы и manuals подписи
+  не получают (юр-документы у них необязательно RU-only — будут переводиться
+  отдельным PR `feat/pdf-localization-wave-1` по политике
+  `project_anhel_i18n_pdf_policy`).
+
+Новый i18n-ключ `documents.sections.certificates.original_note` во всех
+трёх локалях.
+
+### B — мобильная адаптация всех страниц + perf-фиксы — НЕ НАЧАТО
+
+Не было конкретной спеки (audit/screenshots/perf-traces) — отложено на
+отдельную сессию. Полный handoff в `~/Desktop/ANHEL Сайт/ANHEL  Сайт/
+i18n-wave-2-recovery/README.md` v2 (обновлён в этой сессии).
+
+### Состояние ветки
+
+- Branch: `feat/i18n-wave-2-and-mobile-adaptation`
+- Tag pre-flight: `v1.5-before-i18n-wave-2-and-mobile` (main 1aea96a)
+- Last commit: `722aa27 feat(i18n/documents): flag EAEU certificates as
+  Russian-original on EN/TR`
+- 3 коммита поверх main: bd9b550 → ebec990 → 722aa27
+- Vercel preview (A.1): https://anhel-website-git-feat-i18n-wave-871d98-
+  anurin7-5494s-projects.vercel.app
+
+### Workflow note
+
+Эта сессия использовала Desktop Commander MCP — работа велась НАПРЯМУЮ на
+mac пользователя (вне sandbox Cowork), так как mount Cowork указывал на
+неправильную папку (`~/Desktop/ANHEL/ANHEL  Сайт/` — только recovery-kit
++ multi-lang.md, без src). Реальный репо лежит в `~/Desktop/ANHEL Сайт/
+ANHEL  Сайт/` (outer ANHEL Сайт с пробелом). При следующей сессии лучше
+сразу выбрать правильную папку — будет быстрее.
+
+Worktree использовался `/tmp/anhel-wave2` чтобы не дёргать активную ветку
+audit/pre-launch-2026-05 в основном clone-е. Worktree остался — следующая
+сессия может его переиспользовать или сделать новый.
+
+### Следующий шаг
+
+Задача B (мобильная адаптация + perf) — требует от пользователя:
+1. Аудит-скриншотов проблемных мест на mobile (или зелёный свет на широкий
+   аудит)
+2. Lighthouse / WebPageTest baseline для LCP/CLS/INP — что именно фиксить
+3. Если нужно — конкретный список страниц с проблемами
+
+См. recovery-kit README v2 для возможных направлений B-работы.

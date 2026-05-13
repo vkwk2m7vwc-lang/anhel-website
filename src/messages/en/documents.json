@@ -29,7 +29,8 @@
     },
     "certificates": {
       "title": "EAEU Certificates",
-      "lede": "EAEU Technical Regulations Conformity Declarations — the equipment is certified for use on facilities across Russia and Eurasian Economic Union member states."
+      "lede": "EAEU Technical Regulations Conformity Declarations — the equipment is certified for use on facilities across Russia and Eurasian Economic Union member states.",
+      "original_note": "Original document (Russian)"
     },
     "manuals": {
       "title": "Operating manuals",

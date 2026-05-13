@@ -4,7 +4,6 @@ import { Mail, Phone } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { CONTACTS } from "@/lib/contacts";
-import { LEGAL_ENTITY } from "@/lib/legal";
 import { ContactForm } from "@/components/contacts/ContactForm";
 
 /**
@@ -13,16 +12,22 @@ import { ContactForm } from "@/components/contacts/ContactForm";
  * Структура (сверху вниз):
  *   1. Hero-блок — h1 + lede
  *   2. Quick contacts — телефон + email (крупно, кликабельно)
- *   3. Реквизиты ООО «Профит» — полная карточка для счёта/договора
+ *   3. Карточка организации — информативный блок «с кем имеете дело»
  *   4. Яндекс-карта офиса (iframe)
  *   5. Форма обратной связи (с обязательным чекбоксом согласия на ПД)
  *
  * Карта: координаты Политехническая ул., 6/1 — 60.0048, 30.3724.
  *
- * i18n: вся UI-обвязка из `contacts.*`. Юридические значения
- * (полное наименование, ИНН, ОГРН, банк, расчётный счёт и т.п.)
- * остаются на RU во всех локалях — это юр.факты, не переводимые.
- * Меняются только лейблы (labels.inn → 'Tax ID (INN)' / 'Vergi No (INN)').
+ * i18n: вся карточка организации (включая значения — полное название,
+ * адрес, банк, числовые идентификаторы) хранится в contacts.json под
+ * `requisites.values.*`. На EN/TR — международный B2B-формат
+ * (Profit LLC, transliterated address, Alfa-Bank JSC). Числовые
+ * идентификаторы (ИНН, ОГРН, BIK, счёт) одинаковы во всех локалях.
+ * Это информативный блок, не юр.документ — договор и юр.документы
+ * пересылаются юристами отдельно по почте.
+ *
+ * Юр.факты для документов (privacy-policy, personal-data-consent)
+ * по-прежнему берутся из `@/lib/legal` LEGAL_ENTITY (RU-only).
  */
 export async function generateMetadata({
   params: { locale },
@@ -48,6 +53,7 @@ export default function ContactsPage({
 }) {
   setRequestLocale(locale);
   const t = useTranslations("contacts");
+
   return (
     <main className="pt-24 md:pt-32">
       {/* Hero */}
@@ -122,9 +128,9 @@ export default function ContactsPage({
           <article className="rounded-md border border-[var(--color-hairline)] bg-[var(--color-primary)] p-8 shadow-sm md:p-14">
             <header className="flex flex-col gap-3 border-b border-[var(--color-hairline)] pb-8 md:flex-row md:items-end md:justify-between md:pb-10">
               <div>
-                {/* Юр.лицо ВСЕГДА в кириллице — это юр.факт. */}
+                {/* Локалезависимое короткое имя: ООО «Профит» / Profit LLC. */}
                 <p className="font-display text-3xl tracking-[0.02em] md:text-4xl">
-                  ООО «Профит»
+                  {t("requisites.values.short_name")}
                 </p>
                 <p className="mt-2 text-sm text-[var(--color-secondary)]/60">
                   {t("requisites.brand_subtitle")}
@@ -138,41 +144,41 @@ export default function ContactsPage({
             <RekvSection title={t("requisites.sections.identification")}>
               <RekvRow
                 label={t("requisites.labels.full_name")}
-                value={LEGAL_ENTITY.fullName}
+                value={t("requisites.values.full_name")}
               />
               <RekvRow
                 label={t("requisites.labels.short_name")}
-                value={LEGAL_ENTITY.shortName}
+                value={t("requisites.values.short_name")}
               />
             </RekvSection>
 
             <RekvSection title={t("requisites.sections.address")}>
               <RekvRow
                 label={t("requisites.labels.legal_address")}
-                value={LEGAL_ENTITY.legalAddressLine}
+                value={t("requisites.values.legal_address")}
               />
               <RekvRow
                 label={t("requisites.labels.actual_address")}
-                value={LEGAL_ENTITY.actualAddressLine}
+                value={t("requisites.values.actual_address")}
               />
             </RekvSection>
 
             <RekvSection title={t("requisites.sections.registration")} cols={2}>
-              <RekvRow label={t("requisites.labels.inn")} value={LEGAL_ENTITY.inn} mono />
-              <RekvRow label={t("requisites.labels.kpp")} value={LEGAL_ENTITY.kpp} mono />
-              <RekvRow label={t("requisites.labels.ogrn")} value={LEGAL_ENTITY.ogrn} mono />
-              <RekvRow label={t("requisites.labels.okpo")} value={LEGAL_ENTITY.okpo} mono />
-              <RekvRow label={t("requisites.labels.okato")} value={LEGAL_ENTITY.okato} mono />
+              <RekvRow label={t("requisites.labels.inn")} value={t("requisites.values.inn")} mono />
+              <RekvRow label={t("requisites.labels.kpp")} value={t("requisites.values.kpp")} mono />
+              <RekvRow label={t("requisites.labels.ogrn")} value={t("requisites.values.ogrn")} mono />
+              <RekvRow label={t("requisites.labels.okpo")} value={t("requisites.values.okpo")} mono />
+              <RekvRow label={t("requisites.labels.okato")} value={t("requisites.values.okato")} mono />
             </RekvSection>
 
             <RekvSection title={t("requisites.sections.banking")}>
-              <RekvRow label={t("requisites.labels.bank")} value={LEGAL_ENTITY.bank} />
+              <RekvRow label={t("requisites.labels.bank")} value={t("requisites.values.bank")} />
               <div className="grid gap-x-10 gap-y-6 md:grid-cols-2">
-                <RekvRow label={t("requisites.labels.account")} value={LEGAL_ENTITY.account} mono />
-                <RekvRow label={t("requisites.labels.bik")} value={LEGAL_ENTITY.bik} mono />
+                <RekvRow label={t("requisites.labels.account")} value={t("requisites.values.account")} mono />
+                <RekvRow label={t("requisites.labels.bik")} value={t("requisites.values.bik")} mono />
                 <RekvRow
                   label={t("requisites.labels.correspondent_account")}
-                  value={LEGAL_ENTITY.correspondentAccount}
+                  value={t("requisites.values.correspondent_account")}
                   mono
                 />
               </div>
@@ -181,7 +187,7 @@ export default function ContactsPage({
             <RekvSection title={t("requisites.sections.leadership")} last>
               <RekvRow
                 label={t("requisites.labels.director")}
-                value={LEGAL_ENTITY.director}
+                value={t("requisites.values.director")}
               />
             </RekvSection>
 
@@ -208,7 +214,7 @@ export default function ContactsPage({
         <div className="mx-auto max-w-[1440px] px-6 py-16 md:px-12 md:py-20">
           <p className="mono-tag mb-6">{t("map.mono_tag")}</p>
           <p className="max-w-2xl font-display text-2xl leading-tight md:text-3xl">
-            {LEGAL_ENTITY.legalAddressLine}
+            {t("requisites.values.legal_address")}
           </p>
           <div className="mt-10 overflow-hidden rounded-sm border border-[var(--color-hairline)]">
             <iframe

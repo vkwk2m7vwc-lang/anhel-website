@@ -129,6 +129,12 @@ export default function DocumentsPage({
   const certificateCats = CATEGORIES.filter((cat) => cat.certificates.length > 0);
   const manualCats = CATEGORIES.filter((cat) => cat.manuals && cat.manuals.length > 0);
 
+  // Подпись «Original document (Russian)» / «Orijinal belge (Rusça)»
+  // показывается под каждым сертификатом ТОЛЬКО на не-RU локалях,
+  // чтобы EN/TR-читатели понимали, что PDF откроется на русском.
+  // На RU подпись избыточна, поэтому не рендерим.
+  const certNote = locale === "ru" ? undefined : t("sections.certificates.original_note");
+
   return (
     <main className="pt-24 md:pt-32">
       {/* Hero */}
@@ -236,6 +242,7 @@ export default function DocumentsPage({
                   title: tItems(c.key),
                   href: c.href,
                   size: c.size,
+                  note: certNote,
                 }))}
                 icon={FileBadge}
               />
@@ -312,7 +319,7 @@ function DirectionGroup({
 }: {
   id?: string;
   title: string;
-  items: { title: string; href: string; size: string }[];
+  items: { title: string; href: string; size: string; note?: string }[];
   icon: typeof FileText;
 }) {
   if (items.length === 0) return null;
@@ -328,6 +335,7 @@ function DirectionGroup({
             title={doc.title}
             href={doc.href}
             size={doc.size}
+            note={doc.note}
             icon={icon}
           />
         ))}
@@ -340,11 +348,15 @@ function DocCard({
   title,
   href,
   size,
+  note,
   icon: Icon,
 }: {
   title: string;
   href: string;
   size: string;
+  /** Optional subtle line under the metadata — used to flag certificates
+   *  whose PDF body is in Russian only ("Original document (Russian)"). */
+  note?: string;
   icon: typeof FileText;
 }) {
   return (
@@ -365,6 +377,11 @@ function DocCard({
           <span className="mt-1 font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/50">
             PDF · {size}
           </span>
+          {note ? (
+            <span className="mt-1 text-[11px] italic text-[var(--color-secondary)]/45">
+              {note}
+            </span>
+          ) : null}
         </span>
         <Download
           size={16}

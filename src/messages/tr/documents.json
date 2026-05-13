@@ -29,7 +29,8 @@
     },
     "certificates": {
       "title": "EAEU Sertifikaları",
-      "lede": "EAEU Teknik Düzenlemelerine Uygunluk Beyannameleri — ekipman, Rusya ve Avrasya Ekonomik Birliği üyesi ülkelerdeki tesislerde kullanım için sertifikalıdır."
+      "lede": "EAEU Teknik Düzenlemelerine Uygunluk Beyannameleri — ekipman, Rusya ve Avrasya Ekonomik Birliği üyesi ülkelerdeki tesislerde kullanım için sertifikalıdır.",
+      "original_note": "Orijinal belge (Rusça)"
     },
     "manuals": {
       "title": "Kullanım kılavuzları",
