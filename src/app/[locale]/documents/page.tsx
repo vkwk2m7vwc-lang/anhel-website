@@ -26,9 +26,18 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
  * `documents.items.<key>` по стабильному ключу. Размер файла (МБ)
  * остаётся как есть в TS — это технический факт, не контент.
  *
- * PDF-файлы: сертификаты всегда RU (юр.документ РФ). Опросники и
- * каталоги — в текущей версии тоже только RU; per-locale PDF — в
- * отдельном PR `feat/pdf-localization-wave-1`.
+ * Locale-aware PDF policy (PR feat/pdf-localization-wave-1):
+ *   - Опросные листы — есть RU/EN/TR (`oprosnyi-list-<locale>.pdf`).
+ *     На EN/TR href и size swap'ятся в `localizedQuestionnaire()`.
+ *   - Карточка организации — есть RU/EN/TR
+ *     (`company-profile-<locale>.pdf`), swap в COMMON_DOCS.
+ *   - Заявка на сервис — есть RU/EN/TR
+ *     (`service-request-anhel-<locale>.pdf`), swap в COMMON_DOCS.
+ *   - Руководства по эксплуатации — есть RU + EN/TR для всех 5
+ *     насосных категорий (`manual-<locale>.pdf`).
+ *   - Сертификаты и декларации ЕАЭС — ТОЛЬКО RU (юр. документы РФ).
+ *     На EN/TR показывается «Original document (Russian)».
+ *   - Каталоги МФМК — отдельная задача, переверстка нужна.
  */
 export async function generateMetadata({
   params: { locale },
@@ -110,31 +119,66 @@ const CATEGORIES: readonly DocCategoryData[] = [
 ];
 
 /**
- * COMMON_DOCS entries with locale-aware href.
+ * COMMON_DOCS entries — every URL is now locale-aware.
  *
- * `anhel_card` — replaced the legacy single-locale /anhel-card.pdf
- * (deleted in 91873dc) with the three new locale variants
- * /company-profile-{ru,en,tr}.pdf produced by
- * _scripts/build_company_profile.py. The href is resolved per locale
- * inside the component below, mirroring the same swap on /contacts.
+ * `anhel_card` — three locale variants /company-profile-{ru,en,tr}.pdf
+ * produced by _scripts/build_company_profile.py. Different sizes per
+ * locale are negligible (~40 KB each) so we display a single rounded
+ * value.
  *
- * `service_request` — RU-only PDF for now. On EN/TR locales the
- * download still works (lands on RU PDF), and we surface a small
- * "Original document (Russian)" note under the card so the visitor
- * isn't surprised when the file opens. Same pattern used for the
- * EAEU certificates.
+ * `service_request` — three locale variants
+ * /documents/service-request-anhel{,-en,-tr}.pdf produced by
+ * _scripts/build_service_request_translations.py. RU is the original
+ * AcroForm (60 KB); EN/TR are ReportLab re-renders (~37 KB each).
  */
+type CommonDocLocaleResolver = (locale: string) => string;
+
 const COMMON_DOCS: readonly {
   key: "anhel_card" | "service_request";
   size: string;
-  /** href base — `anhel_card` is locale-swapped, `service_request` is static. */
-  baseHref: string;
-  /** When true, the href becomes `${baseHref}-${locale}.pdf` (stem swap). */
-  localeAware: boolean;
+  href: CommonDocLocaleResolver;
 }[] = [
-  { key: "anhel_card", baseHref: "/company-profile", size: "0.04 MB", localeAware: true },
-  { key: "service_request", baseHref: "/documents/service-request-anhel.pdf", size: "0.06 MB", localeAware: false },
+  {
+    key: "anhel_card",
+    size: "0.04 MB",
+    href: (locale) => `/company-profile-${locale}.pdf`,
+  },
+  {
+    key: "service_request",
+    size: "0.06 MB",
+    href: (locale) =>
+      locale === "ru"
+        ? "/documents/service-request-anhel.pdf"
+        : `/documents/service-request-anhel-${locale}.pdf`,
+  },
 ];
+
+/**
+ * Localised questionnaire size table.
+ *
+ * RU originals are AcroForm-based and range 0.29–2.17 MB. EN/TR PDFs
+ * are ReportLab re-renders (sectioned printable forms) and are
+ * uniformly compact. The values below are pulled from disk and never
+ * vary across the four pump categories (file is shared) — we keep a
+ * lookup keyed by the «documents.items.<key>» stable id.
+ */
+const LOCALISED_Q_SIZE: Record<"en" | "tr", string> = {
+  en: "0.04 MB",
+  tr: "0.04 MB",
+};
+
+/**
+ * Swap a questionnaire entry's href / size for a non-RU locale.
+ */
+function localizedQuestionnaire(
+  q: DocItem,
+  locale: string,
+): { href: string; size: string } {
+  if (locale === "ru") return { href: q.href, size: q.size };
+  const stem = locale as "en" | "tr";
+  const href = q.href.replace(/oprosnyi-list\.pdf$/, `oprosnyi-list-${stem}.pdf`);
+  return { href, size: LOCALISED_Q_SIZE[stem] };
+}
 
 export default function DocumentsPage({
   params: { locale },
@@ -152,15 +196,12 @@ export default function DocumentsPage({
   const manualCats = CATEGORIES.filter((cat) => cat.manuals && cat.manuals.length > 0);
 
   // Подпись «Original document (Russian)» / «Orijinal belge (Rusça)»
-  // показывается под каждым сертификатом ТОЛЬКО на не-RU локалях,
-  // чтобы EN/TR-читатели понимали, что PDF откроется на русском.
-  // На RU подпись избыточна, поэтому не рендерим.
+  // показывается ТОЛЬКО под сертификатами и декларациями ЕАЭС на не-RU
+  // локалях — это юр. документы РФ, перевод не предусмотрен.
   //
-  // The same note is reused under the questionnaire PDF cards (single
-  // RU master per direction) and under the service-request PDF in
-  // COMMON_DOCS — both of those are still RU-only today. Translated
-  // online flows live at /quiz/* and /service/request; the PDF download
-  // is a fallback for offline / email-attachment workflows.
+  // Опросные листы, карточка организации, сервисная заявка и
+  // руководства имеют локализованные варианты — note для них больше
+  // не выводится.
   const ruNote = locale === "ru" ? undefined : t("sections.certificates.original_note");
 
   return (
@@ -191,20 +232,14 @@ export default function DocumentsPage({
           <p className="mono-tag mb-8">{t("common_section.mono_tag")}</p>
           <ul className="grid gap-3 md:grid-cols-2">
             {COMMON_DOCS.map((doc) => {
-              // anhel_card is locale-aware — base + `-${locale}.pdf`.
-              // service_request is RU-only, so on EN/TR we surface the
-              // "Original document (Russian)" note.
-              const href = doc.localeAware
-                ? `${doc.baseHref}-${locale}.pdf`
-                : doc.baseHref;
-              const note = doc.localeAware ? undefined : ruNote;
+              // Every COMMON_DOCS entry now has a locale-specific PDF
+              // — note about Russian-only is no longer needed here.
               return (
                 <DocCard
                   key={doc.key}
                   title={tCommon(doc.key)}
-                  href={href}
+                  href={doc.href(locale)}
                   size={doc.size}
-                  note={note}
                   icon={Building2}
                 />
               );
@@ -230,15 +265,17 @@ export default function DocumentsPage({
                 key={cat.slug}
                 id={cat.slug}
                 title={tDirections(`${cat.slug}.title`)}
-                items={cat.questionnaires.map((q) => ({
-                  title: tItems(q.key),
-                  href: q.href,
-                  size: q.size,
-                  // PDF master is RU-only; the translated online flow
-                  // lives at /quiz/<kind>. Show the same RU note as on
-                  // certificates so non-RU visitors aren't surprised.
-                  note: ruNote,
-                }))}
+                items={cat.questionnaires.map((q) => {
+                  // EN/TR questionnaires live alongside the RU master
+                  // as `oprosnyi-list-<locale>.pdf`. Generated by
+                  // _scripts/build_questionnaire_translations.py.
+                  const swapped = localizedQuestionnaire(q, locale);
+                  return {
+                    title: tItems(q.key),
+                    href: swapped.href,
+                    size: swapped.size,
+                  };
+                })}
                 icon={FileText}
               />
             ))}

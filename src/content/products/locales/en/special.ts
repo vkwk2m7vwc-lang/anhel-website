@@ -24,7 +24,7 @@ export const content: ProductContent = {
       alt: "ANHEL — special-configuration pumping station: modular manifolds and pump-group assembly",
     },
     primaryCta: { label: "Fill in online", href: "/quiz/pumps?from=special", variant: "primary" },
-    secondaryCta: { label: "Specification sheet", href: "/docs/special/oprosnyi-list.pdf", variant: "ghost" },
+    secondaryCta: { label: "Specification sheet", href: "/docs/special/oprosnyi-list-en.pdf", variant: "ghost" },
   },
 
   techSpecs: [
@@ -133,7 +133,7 @@ export const content: ProductContent = {
     title: "Documents and certificates",
     lede: "Specification sheet, certificates and manual — for design and acceptance.",
     items: [
-      { id: "oprosnik", title: "Pumping-station specification sheet", size: "1.49 MB", href: "/docs/special/oprosnyi-list.pdf" },
+      { id: "oprosnik", title: "Pumping-station specification sheet", size: "40 KB", href: "/docs/special/oprosnyi-list-en.pdf" },
       { id: "cert-deklaratsiya", title: "EAEU Conformity Declaration — ANHEL® special-configuration pumping stations", size: "0.86 MB", href: "/docs/special/cert-deklaratsiya.pdf" },
       { id: "manual", title: "Operating manual — ANHEL® SPD-type pumping stations", size: "61 KB", href: "/docs/special/manual-en.pdf" },
     ],

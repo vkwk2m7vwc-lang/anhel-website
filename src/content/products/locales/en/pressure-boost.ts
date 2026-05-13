@@ -24,7 +24,7 @@ export const content: ProductContent = {
       alt: "ANHEL — automatic pressure-boosting unit: control cabinet, pump group and membrane expansion vessel",
     },
     primaryCta: { label: "Fill in online", href: "/quiz/pumps?from=pressure-boost", variant: "primary" },
-    secondaryCta: { label: "Specification sheet", href: "/docs/pressure-boost/oprosnyi-list.pdf", variant: "ghost" },
+    secondaryCta: { label: "Specification sheet", href: "/docs/pressure-boost/oprosnyi-list-en.pdf", variant: "ghost" },
   },
 
   techSpecs: [
@@ -133,7 +133,7 @@ export const content: ProductContent = {
     title: "Documents and certificates",
     lede: "Specification sheet, certificates and manual — for design and acceptance.",
     items: [
-      { id: "oprosnik", title: "Pumping-station specification sheet", size: "1.49 MB", href: "/docs/pressure-boost/oprosnyi-list.pdf" },
+      { id: "oprosnik", title: "Pumping-station specification sheet", size: "38 KB", href: "/docs/pressure-boost/oprosnyi-list-en.pdf" },
       { id: "cert-deklaratsiya", title: "EAEU Conformity Declaration — ANHEL® pressure-boosting units", size: "0.86 MB", href: "/docs/pressure-boost/cert-deklaratsiya.pdf" },
       { id: "manual", title: "Operating manual — ANHEL® SPD-type pumping stations", size: "61 KB", href: "/docs/pressure-boost/manual-en.pdf" },
     ],

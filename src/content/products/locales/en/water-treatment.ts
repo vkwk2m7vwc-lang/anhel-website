@@ -36,7 +36,7 @@ export const content: ProductContent = {
     },
     secondaryCta: {
       label: "Specification sheet",
-      href: "/docs/water-treatment/oprosnyi-list.pdf",
+      href: "/docs/water-treatment/oprosnyi-list-en.pdf",
       variant: "ghost",
     },
   },
@@ -150,7 +150,7 @@ export const content: ProductContent = {
     title: "Documents and certificates",
     lede: "EAEU Conformity Declaration, specification sheet and manual — for design and acceptance.",
     items: [
-      { id: "oprosnik", title: "Water-treatment unit specification sheet", size: "2.23 MB", href: "/docs/water-treatment/oprosnyi-list.pdf" },
+      { id: "oprosnik", title: "Water-treatment unit specification sheet", size: "37 KB", href: "/docs/water-treatment/oprosnyi-list-en.pdf" },
       { id: "cert-deklaratsiya", title: "EAEU Conformity Declaration — ANHEL® water-treatment units", size: "0.49 MB", href: "/docs/water-treatment/cert-deklaratsiya.pdf" },
     ],
   },

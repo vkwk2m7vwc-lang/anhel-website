@@ -36,7 +36,7 @@ export const content: ProductContent = {
     },
     secondaryCta: {
       label: "Teknik veri formu",
-      href: "/docs/water-supply/oprosnyi-list.pdf",
+      href: "/docs/water-supply/oprosnyi-list-tr.pdf",
       variant: "ghost",
     },
   },
@@ -158,7 +158,7 @@ export const content: ProductContent = {
     title: "Belgeler ve sertifikalar",
     lede: "EAEU Uygunluk Beyannamesi, teknik veri formu ve kılavuz — tasarım ve kabul için.",
     items: [
-      { id: "oprosnik", title: "Pompa istasyonu teknik veri formu", size: "1,49 MB", href: "/docs/water-supply/oprosnyi-list.pdf" },
+      { id: "oprosnik", title: "Pompa istasyonu teknik veri formu", size: "42 KB", href: "/docs/water-supply/oprosnyi-list-tr.pdf" },
       { id: "cert-deklaratsiya", title: "EAEU Uygunluk Beyannamesi — ANHEL® su temini pompa istasyonları", size: "0,86 MB", href: "/docs/water-supply/cert-deklaratsiya.pdf" },
       { id: "manual", title: "Kullanım kılavuzu — ANHEL® SPD tipi pompa istasyonları", size: "63 KB", href: "/docs/water-supply/manual-tr.pdf" },
     ],

@@ -37,7 +37,7 @@ export const content: ProductContent = {
     },
     secondaryCta: {
       label: "Specification sheet",
-      href: "/docs/heating-unit/oprosnyi-list.pdf",
+      href: "/docs/heating-unit/oprosnyi-list-en.pdf",
       variant: "ghost",
     },
   },
@@ -146,7 +146,7 @@ export const content: ProductContent = {
     title: "Documents and certificates",
     lede: "Specification sheet and certificate — for design and acceptance.",
     items: [
-      { id: "oprosnik", title: "Heat-substation specification sheet", size: "0.54 MB", href: "/docs/heating-unit/oprosnyi-list.pdf" },
+      { id: "oprosnik", title: "Heat-substation specification sheet", size: "50 KB", href: "/docs/heating-unit/oprosnyi-list-en.pdf" },
       { id: "cert-deklaratsiya", title: "Certificate — ANHEL® block heat substations", size: "2.32 MB", href: "/docs/heating-unit/cert-deklaratsiya.pdf" },
     ],
   },

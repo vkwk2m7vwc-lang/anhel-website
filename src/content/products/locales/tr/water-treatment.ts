@@ -35,7 +35,7 @@ export const content: ProductContent = {
     },
     secondaryCta: {
       label: "Teknik veri formu",
-      href: "/docs/water-treatment/oprosnyi-list.pdf",
+      href: "/docs/water-treatment/oprosnyi-list-tr.pdf",
       variant: "ghost",
     },
   },
@@ -149,7 +149,7 @@ export const content: ProductContent = {
     title: "Belgeler ve sertifikalar",
     lede: "EAEU Uygunluk Beyannamesi, teknik veri formu ve kılavuz — tasarım ve kabul için.",
     items: [
-      { id: "oprosnik", title: "Su arıtma ünitesi teknik veri formu", size: "2,23 MB", href: "/docs/water-treatment/oprosnyi-list.pdf" },
+      { id: "oprosnik", title: "Su arıtma ünitesi teknik veri formu", size: "39 KB", href: "/docs/water-treatment/oprosnyi-list-tr.pdf" },
       { id: "cert-deklaratsiya", title: "EAEU Uygunluk Beyannamesi — ANHEL® su arıtma üniteleri", size: "0,49 MB", href: "/docs/water-treatment/cert-deklaratsiya.pdf" },
     ],
   },
