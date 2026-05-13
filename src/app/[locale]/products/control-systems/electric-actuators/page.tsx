@@ -68,7 +68,7 @@ export default function ElectricActuatorsPage({
 
   const productJsonLd = productLd({
     slug,
-    name: "Шкаф управления ANHEL® для электрифицированной арматуры",
+    name: content.metaTitle,
     description: content.metaDescription,
     image: content.hero.image.src,
     category: "Control cabinets / Electric actuators",

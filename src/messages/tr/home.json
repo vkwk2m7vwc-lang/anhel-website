@@ -62,5 +62,27 @@
     "lede": "Pompa istasyonları, su arıtma, ısı istasyonları ve kontrol panoları. Fabrika montajı, seri üretim, şartnamenize göre yapılandırma.",
     "coming_soon": "Yakında",
     "card_aria": "{title} — ürün sayfasını aç"
+  },
+  "hero_carousel": {
+    "pump-water": {
+      "name": "Su temini pompa istasyonu",
+      "alt": "ANHEL® — soğuk su pompa istasyonu, HVS-NU modeli"
+    },
+    "pump-fire": {
+      "name": "Yangın koruma pompa istasyonu",
+      "alt": "ANHEL® — yangın koruma pompa istasyonu, kırmızı HVS-NU muhafazası"
+    },
+    "water-treatment": {
+      "name": "Su arıtma ünitesi",
+      "alt": "ANHEL — çelik filtreli su arıtma ünitesi"
+    },
+    "heating-unit": {
+      "name": "Blok ısı istasyonu",
+      "alt": "ANHEL® — blok ısı istasyonu (BITP)"
+    },
+    "control-systems": {
+      "name": "Kontrol panoları",
+      "alt": "ANHEL® — değişken frekanslı kontrol panosu, HMI ile 4 bölmeli montaj"
+    }
   }
 }

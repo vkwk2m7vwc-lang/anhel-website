@@ -69,7 +69,7 @@ export default function SmokeControlPage({
 
   const productJsonLd = productLd({
     slug,
-    name: "Шкаф управления ANHEL® противодымной вентиляцией",
+    name: content.metaTitle,
     description: content.metaDescription,
     image: content.hero.image.src,
     category: "Control cabinets / Smoke control",

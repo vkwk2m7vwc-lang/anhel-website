@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import { Link } from "@/navigation";
 import { ChevronRight } from "lucide-react";
 import type { BreadcrumbLink } from "@/content/products/types";
@@ -17,8 +18,9 @@ import type { BreadcrumbLink } from "@/content/products/types";
  * announce the full trail and skip straight to the current page.
  */
 export function Breadcrumbs({ items }: { items: readonly BreadcrumbLink[] }) {
+  const t = useTranslations("common.ui");
   return (
-    <nav aria-label="Хлебные крошки" className="font-mono text-[11px]">
+    <nav aria-label={t("breadcrumbs_aria")} className="font-mono text-[11px]">
       <ol className="flex flex-wrap items-center gap-x-1.5 gap-y-1 uppercase tracking-[0.08em]">
         {items.map((item, i) => {
           const isLast = i === items.length - 1;

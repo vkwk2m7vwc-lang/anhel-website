@@ -62,5 +62,27 @@
     "lede": "Pumping stations, water treatment, heat substations and control cabinets. Factory assembly, serial production, configured to your specification.",
     "coming_soon": "Coming soon",
     "card_aria": "{title} — open product page"
+  },
+  "hero_carousel": {
+    "pump-water": {
+      "name": "Water-supply pumping station",
+      "alt": "ANHEL® — cold-water pumping station, HVS-NU model"
+    },
+    "pump-fire": {
+      "name": "Fire-protection pumping station",
+      "alt": "ANHEL® — fire-protection pumping station, red HVS-NU enclosure"
+    },
+    "water-treatment": {
+      "name": "Water-treatment unit",
+      "alt": "ANHEL — water-treatment unit with steel filters"
+    },
+    "heating-unit": {
+      "name": "Block heat substation",
+      "alt": "ANHEL® — block heat substation (BITP)"
+    },
+    "control-systems": {
+      "name": "Control cabinets",
+      "alt": "ANHEL® — variable-frequency control cabinet, 4-section assembly with HMI"
+    }
   }
 }

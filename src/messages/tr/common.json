@@ -110,5 +110,36 @@
     "section_contacts": "İletişim",
     "go_to_section": "Bölüme git",
     "office_line": "Merkez — St. Petersburg. Üretim — Moskova."
+  },
+  "ui": {
+    "breadcrumbs_aria": "Yol haritası",
+    "download": "İndir",
+    "open_external": "Aç",
+    "tech_specs": {
+      "mono_tag": "02 · Teknik özellikler",
+      "title": "Seri parametreleri",
+      "lede": "Referans karakteristikler. Nihai konfigürasyon proje şartnamesine göre boyutlandırılır."
+    },
+    "gallery": {
+      "open_photo": "{n} numaralı fotoğrafı tam boyutta aç",
+      "viewer_label": "Tam boyutlu fotoğraf görüntüleyici",
+      "close": "Kapat",
+      "prev": "Önceki fotoğraf",
+      "next": "Sonraki fotoğraf"
+    },
+    "carousel": {
+      "products_aria": "Ürün karuseli",
+      "open_product": "Sayfayı aç: {name}",
+      "show_product": "Göster: {name}",
+      "pause": "Otomatik geçişi duraklat",
+      "play": "Otomatik geçişi başlat",
+      "in_use": "hizmette"
+    },
+    "brands": {
+      "visit_site": "Üretici sitesine git: {name}"
+    },
+    "modules": {
+      "content_review_tooltip": "Modül içeriği inceleme aşamasındadır"
+    }
   }
 }

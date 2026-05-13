@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { motion } from "framer-motion";
 import type { TechSpecTile } from "@/content/products/types";
 
@@ -29,6 +30,7 @@ import type { TechSpecTile } from "@/content/products/types";
  * every product.
  */
 export function TechSpecsGrid({ specs }: { specs: readonly TechSpecTile[] }) {
+  const tUi = useTranslations("common.ui");
   // Фильтруем пустые параметры (без value) — чтобы сетка не имела
   // светлых заглушек с пустотой и адаптивно перестраивалась под
   // реальное число строк.
@@ -48,17 +50,14 @@ export function TechSpecsGrid({ specs }: { specs: readonly TechSpecTile[] }) {
             every section. */}
         <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
           <div>
-            <p className="mono-tag">02 · Технические характеристики</p>
+            <p className="mono-tag">{tUi("tech_specs.mono_tag")}</p>
             <h2
               id="tech-specs-title"
               className="mt-4 max-w-[640px] font-display text-h2 font-medium text-[var(--color-secondary)]"
-            >
-              Параметры серии
-            </h2>
+            >{tUi("tech_specs.title")}</h2>
           </div>
           <p className="max-w-[380px] text-sm text-[var(--color-secondary)]/60 md:text-right">
-            Базовые характеристики. Итоговая конфигурация рассчитывается под ТЗ
-            объекта.
+            {tUi('tech_specs.lede')}
           </p>
         </div>
 

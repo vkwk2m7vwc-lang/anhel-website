@@ -61,57 +61,57 @@ const CATEGORIES: readonly DocCategoryData[] = [
   {
     slug: "pumps",
     questionnaires: [
-      { key: "pumps_water_supply_q", href: "/docs/water-supply/oprosnyi-list.pdf", size: "1.45 МБ" },
-      { key: "pumps_firefighting_q", href: "/docs/firefighting/oprosnyi-list.pdf", size: "1.45 МБ" },
-      { key: "pumps_heating_cooling_q", href: "/docs/heating-cooling/oprosnyi-list.pdf", size: "1.45 МБ" },
-      { key: "pumps_pressure_boost_q", href: "/docs/pressure-boost/oprosnyi-list.pdf", size: "0.29 МБ" },
-      { key: "pumps_special_q", href: "/docs/special/oprosnyi-list.pdf", size: "1.45 МБ" },
+      { key: "pumps_water_supply_q", href: "/docs/water-supply/oprosnyi-list.pdf", size: "1.45 MB" },
+      { key: "pumps_firefighting_q", href: "/docs/firefighting/oprosnyi-list.pdf", size: "1.45 MB" },
+      { key: "pumps_heating_cooling_q", href: "/docs/heating-cooling/oprosnyi-list.pdf", size: "1.45 MB" },
+      { key: "pumps_pressure_boost_q", href: "/docs/pressure-boost/oprosnyi-list.pdf", size: "0.29 MB" },
+      { key: "pumps_special_q", href: "/docs/special/oprosnyi-list.pdf", size: "1.45 MB" },
     ],
     certificates: [
-      { key: "pumps_water_supply_cert", href: "/docs/water-supply/cert-deklaratsiya.pdf", size: "0.86 МБ" },
-      { key: "pumps_firefighting_cert", href: "/docs/firefighting/cert-deklaratsiya.pdf", size: "0.86 МБ" },
-      { key: "pumps_heating_cooling_cert", href: "/docs/heating-cooling/cert-deklaratsiya.pdf", size: "0.86 МБ" },
-      { key: "pumps_pressure_boost_cert", href: "/docs/pressure-boost/cert-deklaratsiya.pdf", size: "0.86 МБ" },
-      { key: "pumps_special_cert", href: "/docs/special/cert-deklaratsiya.pdf", size: "0.86 МБ" },
+      { key: "pumps_water_supply_cert", href: "/docs/water-supply/cert-deklaratsiya.pdf", size: "0.86 MB" },
+      { key: "pumps_firefighting_cert", href: "/docs/firefighting/cert-deklaratsiya.pdf", size: "0.86 MB" },
+      { key: "pumps_heating_cooling_cert", href: "/docs/heating-cooling/cert-deklaratsiya.pdf", size: "0.86 MB" },
+      { key: "pumps_pressure_boost_cert", href: "/docs/pressure-boost/cert-deklaratsiya.pdf", size: "0.86 MB" },
+      { key: "pumps_special_cert", href: "/docs/special/cert-deklaratsiya.pdf", size: "0.86 MB" },
     ],
     manuals: [
-      { key: "pumps_water_supply_manual", href: "/docs/water-supply/manual.pdf", size: "1.38 МБ" },
-      { key: "pumps_firefighting_manual", href: "/docs/firefighting/manual.pdf", size: "1.38 МБ" },
-      { key: "pumps_heating_cooling_manual", href: "/docs/heating-cooling/manual.pdf", size: "1.38 МБ" },
-      { key: "pumps_pressure_boost_manual", href: "/docs/pressure-boost/manual.pdf", size: "1.38 МБ" },
-      { key: "pumps_special_manual", href: "/docs/special/manual.pdf", size: "1.38 МБ" },
+      { key: "pumps_water_supply_manual", href: "/docs/water-supply/manual.pdf", size: "1.38 MB" },
+      { key: "pumps_firefighting_manual", href: "/docs/firefighting/manual.pdf", size: "1.38 MB" },
+      { key: "pumps_heating_cooling_manual", href: "/docs/heating-cooling/manual.pdf", size: "1.38 MB" },
+      { key: "pumps_pressure_boost_manual", href: "/docs/pressure-boost/manual.pdf", size: "1.38 MB" },
+      { key: "pumps_special_manual", href: "/docs/special/manual.pdf", size: "1.38 MB" },
     ],
   },
   {
     slug: "heating-unit",
     questionnaires: [
-      { key: "heating_unit_q", href: "/docs/heating-unit/oprosnyi-list.pdf", size: "0.52 МБ" },
+      { key: "heating_unit_q", href: "/docs/heating-unit/oprosnyi-list.pdf", size: "0.52 MB" },
     ],
     certificates: [
-      { key: "heating_unit_cert", href: "/docs/heating-unit/cert-deklaratsiya.pdf", size: "2.22 МБ" },
+      { key: "heating_unit_cert", href: "/docs/heating-unit/cert-deklaratsiya.pdf", size: "2.22 MB" },
     ],
   },
   {
     slug: "water-treatment",
     questionnaires: [
-      { key: "water_treatment_q", href: "/docs/water-treatment/oprosnyi-list.pdf", size: "2.17 МБ" },
+      { key: "water_treatment_q", href: "/docs/water-treatment/oprosnyi-list.pdf", size: "2.17 MB" },
     ],
     certificates: [
-      { key: "water_treatment_cert", href: "/docs/water-treatment/cert-deklaratsiya.pdf", size: "0.49 МБ" },
+      { key: "water_treatment_cert", href: "/docs/water-treatment/cert-deklaratsiya.pdf", size: "0.49 MB" },
     ],
   },
   {
     slug: "control-systems",
     questionnaires: [
-      { key: "control_systems_q", href: "/docs/control-systems/oprosnyi-list.pdf", size: "1.80 МБ" },
+      { key: "control_systems_q", href: "/docs/control-systems/oprosnyi-list.pdf", size: "1.80 MB" },
     ],
     certificates: [],
   },
 ];
 
 const COMMON_DOCS: readonly { key: "anhel_card" | "service_request"; href: string; size: string }[] = [
-  { key: "anhel_card", href: "/anhel-card.pdf", size: "0.07 МБ" },
-  { key: "service_request", href: "/documents/service-request-anhel.pdf", size: "0.06 МБ" },
+  { key: "anhel_card", href: "/anhel-card.pdf", size: "0.07 MB" },
+  { key: "service_request", href: "/documents/service-request-anhel.pdf", size: "0.06 MB" },
 ];
 
 export default function DocumentsPage({

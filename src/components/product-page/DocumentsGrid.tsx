@@ -2,6 +2,7 @@
 
 import { Link } from "@/navigation";
 import { motion } from "framer-motion";
+import { useTranslations } from "next-intl";
 import type {
   DocumentsContent,
   DocumentItem,
@@ -74,6 +75,7 @@ export function DocumentsGrid({ content }: { content: DocumentsContent }) {
 }
 
 function DocCard({ doc, index }: { doc: DocumentItem; index: number }) {
+  const tUi = useTranslations("common.ui");
   return (
     <motion.li
       initial={{ opacity: 0, y: 16 }}
@@ -135,7 +137,7 @@ function DocCard({ doc, index }: { doc: DocumentItem; index: number }) {
           ) : null}
           {/* На sm+ — отдельный CTA «Скачать →»; на mobile это место занимает arrow справа от строки. */}
           <span className="hidden items-center gap-2 font-mono text-[11px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/55 transition-colors [@media(hover:hover)]:group-hover:text-[var(--color-secondary)] sm:inline-flex">
-            {doc.external ? "Открыть" : "Скачать"}
+            {doc.external ? tUi("open_external") : tUi("download")}
             <span
               aria-hidden="true"
               className="inline-block transition-transform duration-300 ease-out-expo [@media(hover:hover)]:group-hover:translate-x-1"

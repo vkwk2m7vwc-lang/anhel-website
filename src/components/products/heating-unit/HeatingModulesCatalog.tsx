@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 import { Link } from "@/navigation";
 import { motion } from "framer-motion";
 import type { HeatingModule } from "@/content/products/heating-unit-modules/types";
@@ -68,6 +69,7 @@ function ModuleCard({
   module: HeatingModule;
   index: number;
 }) {
+  const tUi = useTranslations("common.ui");
   const staggerDelay = Math.min(index, 7) * 0.05;
 
   return (
@@ -104,7 +106,7 @@ function ModuleCard({
           {m.draft ? (
             <span
               className="rounded-pill border border-[var(--color-hairline)] px-2 py-[1px] font-mono text-[9px] uppercase tracking-[0.1em] text-[var(--color-secondary)]/45"
-              title="Контент модуля проходит content-review"
+              title={tUi("modules.content_review_tooltip")}
             >
               draft
             </span>

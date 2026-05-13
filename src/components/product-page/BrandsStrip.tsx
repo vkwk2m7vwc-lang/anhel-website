@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import type { BrandsContent, BrandItem } from "@/content/products/types";
+import { useTranslations } from "next-intl";
 
 /**
  * Brands strip — section 6.
@@ -95,6 +96,7 @@ function BrandWordMark({
   tier: "pump" | "component";
   index: number;
 }) {
+  const tUi = useTranslations("common.ui");
   const staggerDelay = Math.min(index, 8) * 0.04;
   const nameClass =
     tier === "pump"
@@ -146,7 +148,7 @@ function BrandWordMark({
           target="_blank"
           rel="noreferrer noopener"
           data-cursor="hover"
-          aria-label={`Перейти на сайт производителя: ${brand.name}`}
+          aria-label={tUi("brands.visit_site", { name: brand.name })}
           className="flex flex-col gap-1"
         >
           {inner}

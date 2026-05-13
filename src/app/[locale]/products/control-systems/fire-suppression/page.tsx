@@ -69,7 +69,7 @@ export default function FireSuppressionPage({
 
   const productJsonLd = productLd({
     slug,
-    name: "Шкаф управления ANHEL® для систем пожаротушения",
+    name: content.metaTitle,
     description: content.metaDescription,
     image: content.hero.image.src,
     category: "Control cabinets / Fire suppression",

@@ -69,7 +69,7 @@ export default function SewagePumpingPage({
 
   const productJsonLd = productLd({
     slug,
-    name: "Шкаф управления ANHEL® для КНС",
+    name: content.metaTitle,
     description: content.metaDescription,
     image: content.hero.image.src,
     category: "Control cabinets / Sewage pumping",

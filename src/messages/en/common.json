@@ -110,5 +110,36 @@
     "section_contacts": "Contact",
     "go_to_section": "Go to section",
     "office_line": "Headquarters — St. Petersburg. Manufacturing — Moscow."
+  },
+  "ui": {
+    "breadcrumbs_aria": "Breadcrumbs",
+    "download": "Download",
+    "open_external": "Open",
+    "tech_specs": {
+      "mono_tag": "02 · Technical specifications",
+      "title": "Series parameters",
+      "lede": "Reference characteristics. The final configuration is sized to the project brief."
+    },
+    "gallery": {
+      "open_photo": "Open photo {n} at full size",
+      "viewer_label": "Full-size photo viewer",
+      "close": "Close",
+      "prev": "Previous photo",
+      "next": "Next photo"
+    },
+    "carousel": {
+      "products_aria": "Product carousel",
+      "open_product": "Open page: {name}",
+      "show_product": "Show: {name}",
+      "pause": "Pause autoplay",
+      "play": "Resume autoplay",
+      "in_use": "in service"
+    },
+    "brands": {
+      "visit_site": "Visit the manufacturer's site: {name}"
+    },
+    "modules": {
+      "content_review_tooltip": "Module content is undergoing review"
+    }
   }
 }

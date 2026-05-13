@@ -69,7 +69,7 @@ export default function VariableFrequencyPage({
 
   const productJsonLd = productLd({
     slug,
-    name: "Шкаф управления ANHEL® с частотным регулированием",
+    name: content.metaTitle,
     description: content.metaDescription,
     image: content.hero.image.src,
     category: "Control cabinets / Variable frequency",

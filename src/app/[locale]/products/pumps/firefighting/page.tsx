@@ -90,7 +90,7 @@ export default function FirefightingProductPage({
   // заказчик финализирует серийное обозначение).
   const productJsonLd = productLd({
     slug,
-    name: "Насосные станции пожаротушения ANHEL®",
+    name: content.metaTitle,
     description: content.metaDescription,
     image: content.hero.image.src,
     category: "Pump / Fire suppression",

@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 import { Link } from "@/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowUpRight, Pause, Play } from "lucide-react";
@@ -34,6 +35,8 @@ type HeroBgCarouselProps = {
 export function HeroBgCarousel({
   autoplay = false,
 }: HeroBgCarouselProps) {
+  const tUi = useTranslations("common.ui");
+  const tHero = useTranslations("home.hero_carousel");
   const prefersReduced = usePrefersReducedMotion();
   const tilt = useTilt<HTMLDivElement>({ maxDeg: 4 });
 
@@ -202,13 +205,13 @@ export function HeroBgCarousel({
               {product.href ? (
                 <Link
                   href={product.href}
-                  aria-label={`Открыть страницу: ${product.name}`}
+                  aria-label={tUi("carousel.open_product", { name: tHero(`${product.slug}.name`) })}
                   data-cursor="hover"
                   className="relative block h-full w-full cursor-pointer"
                 >
                   <Image
                     src={product.image}
-                    alt={product.alt}
+                    alt={tHero(`${product.slug}.alt`)}
                     fill
                     priority={active === 0}
                     sizes="(min-width: 1440px) 600px, 45vw"
@@ -218,7 +221,7 @@ export function HeroBgCarousel({
               ) : (
                 <Image
                   src={product.image}
-                  alt={product.alt}
+                  alt={tHero(`${product.slug}.alt`)}
                   fill
                   priority={active === 0}
                   sizes="(min-width: 1440px) 600px, 45vw"
@@ -236,7 +239,7 @@ export function HeroBgCarousel({
           <div className="flex items-center justify-between">
             <div
               role="tablist"
-              aria-label="Карусель продуктов"
+              aria-label={tUi("carousel.products_aria")}
               className="flex items-center gap-2"
             >
               {HERO_PRODUCTS.map((p, i) => {
@@ -248,7 +251,7 @@ export function HeroBgCarousel({
                     role="tab"
                     aria-selected={isActive}
                     aria-controls="hero-carousel-product"
-                    aria-label={`Показать: ${p.name}`}
+                    aria-label={tUi("carousel.show_product", { name: tHero(`${p.slug}.name`) })}
                     data-cursor="hover"
                     onClick={() => goTo(i)}
                     className={cn(
@@ -273,7 +276,7 @@ export function HeroBgCarousel({
                 type="button"
                 data-cursor="hover"
                 onClick={toggle}
-                aria-label={isPlaying ? "Пауза автосмены" : "Запустить автосмену"}
+                aria-label={isPlaying ? tUi("carousel.pause") : tUi("carousel.play")}
                 className="inline-flex h-7 w-7 items-center justify-center rounded-full border border-[var(--color-hairline)] text-[var(--color-secondary)]/60 transition-colors hover:text-[var(--color-secondary)]"
               >
                 {isPlaying ? (
@@ -314,7 +317,7 @@ export function HeroBgCarousel({
                     data-cursor="hover"
                     className="group inline-flex items-center gap-2 text-[var(--color-secondary)]/80 transition-colors hover:text-[var(--color-secondary)]"
                   >
-                    <span>{product.name}</span>
+                    <span>{tHero(`${product.slug}.name`)}</span>
                     <ArrowUpRight
                       size={13}
                       strokeWidth={1.75}
@@ -326,7 +329,7 @@ export function HeroBgCarousel({
                 ) : (
                   <>
                     <span className="text-[var(--color-secondary)]/70">
-                      {product.name}
+                      {tHero(`${product.slug}.name`)}
                     </span>
                     <span className="rounded-pill border border-[var(--color-hairline)] px-2 py-[1px] font-mono text-[10px] uppercase tracking-[0.1em] text-[var(--color-secondary)]/45">
                       Скоро
@@ -407,7 +410,7 @@ export function HeroBgCarousel({
               {product.href ? (
                 <Link
                   href={product.href}
-                  aria-label={`Открыть страницу: ${product.name}`}
+                  aria-label={tUi("carousel.open_product", { name: tHero(`${product.slug}.name`) })}
                   className="relative block h-full w-full"
                 >
                   <Image
@@ -440,7 +443,7 @@ export function HeroBgCarousel({
               <button
                 key={`m-${p.slug}`}
                 type="button"
-                aria-label={`Показать: ${p.name}`}
+                aria-label={tUi("carousel.show_product", { name: tHero(`${p.slug}.name`) })}
                 aria-pressed={isActive}
                 onClick={() => goTo(i)}
                 className={cn(
