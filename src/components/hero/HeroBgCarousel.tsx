@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
+import { Link } from "@/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowUpRight, Pause, Play } from "lucide-react";
 import { useTilt } from "@/hooks/useTilt";

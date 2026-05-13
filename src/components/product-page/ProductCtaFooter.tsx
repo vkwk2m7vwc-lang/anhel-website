@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { Link } from "@/navigation";
 import { motion } from "framer-motion";
 import type { FooterCtaContent } from "@/content/products/types";
 import { useTranslations } from "next-intl";

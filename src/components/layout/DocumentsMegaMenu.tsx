@@ -1,7 +1,7 @@
 "use client";
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { Link } from "@/navigation";
+import { usePathname } from "@/navigation";
 import { motion } from "framer-motion";
 import { FileText, BookOpen, FileBadge, type LucideIcon } from "lucide-react";
 import { useTranslations } from "next-intl";

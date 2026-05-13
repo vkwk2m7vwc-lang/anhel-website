@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { usePathname } from "next/navigation";
+import { usePathname } from "@/navigation";
 import type { ReactNode } from "react";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion, type PanInfo } from "framer-motion";
-import Link from "next/link";
+import { Link } from "@/navigation";
 import { useEffect, useRef, useState } from "react";
 import { X, Phone, Mail, ChevronDown } from "lucide-react";
 import { useTranslations } from "next-intl";

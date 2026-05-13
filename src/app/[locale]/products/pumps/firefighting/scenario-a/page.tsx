@@ -1,4 +1,4 @@
-import { redirect } from "next/navigation";
+import { redirect } from "@/navigation";
 
 /**
  * Sandbox scenario routes (scenario-a/b/c/d) were used during the

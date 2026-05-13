@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { Link } from "@/navigation";
 import { AnimatePresence } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { ChevronDown } from "lucide-react";

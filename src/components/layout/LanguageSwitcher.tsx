@@ -2,36 +2,31 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useLocale } from "next-intl";
-import { useRouter, usePathname } from "next/navigation";
 import { Check, ChevronDown } from "lucide-react";
+import { useRouter, usePathname } from "@/navigation";
 import { locales, localeNames, type Locale } from "@/i18n";
 
 /**
  * Language switcher — dropdown by current locale code, full native
  * names in the menu (`RU — Русский`, `EN — English`, `TR — Türkçe`).
  *
- * Visual contract — identical to ThemeToggle: h-10 w-10 round button
+ * Visual contract — identical to ThemeToggle: h-10 round-pill button
  * with a thin secondary-coloured border. Together they form the
- * right-hand utility cluster in Header. No external dropdown library —
- * a small homegrown menu with click-outside, Esc, and focus return
- * keeps the bundle lean.
+ * right-hand utility cluster in Header.
  *
  * Behaviour:
  *  - Button shows the active locale's compact code (`RU`).
  *  - Click opens a 200px popover anchored under the button. Current
  *    locale is disabled and gets a check mark.
- *  - Selecting a locale calls `router.replace` with the path rewritten
- *    to include or drop the locale prefix per `localePrefix: 'as-needed'`
- *    convention: RU lands on bare `/...`, EN/TR on `/<code>/...`.
- *  - Cookie persistence is handled automatically by next-intl on the
- *    `replace` navigation (it sees the new URL and stamps
- *    `NEXT_LOCALE`).
- *  - Esc closes; outside-click closes; Tab cycles options inside.
- *
- * Why `router.replace` instead of a regular `<a>`: stays inside the
- * Next.js client cache so theme, scroll position and any in-flight
- * data fetches survive the locale switch. A bare `<a>` would do a
- * hard reload and lose Lenis position + theme flicker.
+ *  - Selecting a locale calls `router.replace(pathname, { locale })`
+ *    via the `@/navigation` wrapper. The wrapper internally rewrites
+ *    the path with the right locale prefix (`localePrefix: 'as-needed'`):
+ *    RU lands on the bare path, EN/TR get `/<code>/` prepended.
+ *  - Soft navigation only — theme, scroll position and any in-flight
+ *    data fetches survive the locale switch.
+ *  - Cookie persistence (`NEXT_LOCALE`, 365 days) is set automatically
+ *    by next-intl middleware on the resulting request.
+ *  - Esc closes; outside-click closes.
  *
  * No flags — politically neutral, visually quieter, fits B2B premium.
  */
@@ -43,8 +38,6 @@ export function LanguageSwitcher() {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
 
-  // Outside-click + Esc close. Mirrors ProductsMenu/DocumentsMenu
-  // patterns elsewhere in the header.
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => {
@@ -68,32 +61,21 @@ export function LanguageSwitcher() {
   }, [open]);
 
   /**
-   * Build the target URL for a locale change.
+   * Switch to a target locale.
    *
-   * `pathname` (returned by next/navigation) for an EN page like
-   * `/en/products` arrives WITHOUT the locale prefix — next-intl
-   * strips it before exposing the value, so we just see `/products`.
-   * For the home page it's `/`. Defensive: if any locale segment
-   * still appears at the start, we strip it.
-   *
-   * Then we either prepend the new locale (`/en/...`) or, for the
-   * default RU, return the bare path.
+   * `pathname` (from `@/navigation.usePathname`) is the canonical
+   * locale-stripped path — for `/en/products/pumps` we get
+   * `/products/pumps`. We pass that path plus the target locale to
+   * `router.replace`, which handles the `as-needed` prefixing rule
+   * (RU on bare host, EN/TR on `/<code>/...`).
    */
   const switchTo = (next: Locale) => {
     if (next === currentLocale) {
       setOpen(false);
       return;
     }
-    const segments = pathname.split("/").filter(Boolean);
-    if (segments.length > 0 && (locales as readonly string[]).includes(segments[0])) {
-      segments.shift();
-    }
-    const pathWithoutLocale = "/" + segments.join("/");
-    const cleanPath = pathWithoutLocale === "/" ? "/" : pathWithoutLocale;
-    const target =
-      next === "ru" ? cleanPath : `/${next}${cleanPath === "/" ? "" : cleanPath}`;
     setOpen(false);
-    router.replace(target);
+    router.replace(pathname, { locale: next });
   };
 
   return (

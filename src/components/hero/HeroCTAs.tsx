@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { Link } from "@/navigation";
 import { useMagnetic } from "@/hooks/useMagnetic";
 import { useIsTouch } from "@/hooks/useIsTouch";
 import { CATALOG_PATH } from "@/lib/routes";
