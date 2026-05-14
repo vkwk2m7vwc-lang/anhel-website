@@ -1334,3 +1334,61 @@ manual.pdf), переводить нечего.
   https://github.com/vkwk2m7vwc-lang/anhel-website/compare/main...feat/i18n-wave-3-documents?expand=1&title=PDF%20localization%20EN%2FTR%20%2B%20wave-3%20documents&body=Squash-merge%20PDF%20localization%20wave%20into%20wave-3%20documents%20branch.
 - После merge: `git tag v1.11-pdf-localization-complete` на merge commit.
 - Затем — финальный редакционный аудит сайта перед публичным запуском.
+
+---
+
+## Сессия 2026-05-13 (третья, продолжение) — ревью-фиксы
+
+Алексей провёл ревью preview-деплоя, нашёл 2 предсуществующих бага +
+3 правки по PDF. Все исправлены отдельными коммитами в той же ветке.
+
+| Коммит | Тип | Что |
+|---|---|---|
+| `95926d9` | fix(heating-unit) | Картинки модулей ИТП `.png` → `.webp` |
+| `82b8a25` | fix(i18n) | Статические PDF-ссылки через `<a>`, не next-intl `<Link>` |
+| `7f11604` | fix(i18n/pdfs) | Шапка PDF: наезд текста, info@ email, обязательные поля |
+
+**Vercel preview:** https://anhel-website-git-feat-i18n-wave-cc682a-anurin7-5494s-projects.vercel.app
+
+### Баг 1 — картинки модулей ИТП (предсуществующий, был на проде)
+
+`heating-unit-modules/data.ts` — helper `MODULE_IMG` строил путь
+`${slug}.png`, но файлы на диске — `.webp` (WebP-конвертация в
+`7b78ad0` обновила 26 литеральных ссылок, но не template-literal
+helper). Фикс: `.png` → `.webp`. Картинки лежат в git, ассеты не
+трогали.
+
+### Баг 2 — PDF на /documents не скачивались (предсуществующий, был на проде)
+
+`DocCard` (`documents/page.tsx`) и `DocumentsGrid.tsx` рендерили
+ссылки на статические PDF через next-intl `<Link>` из `@/navigation`.
+Этот компонент — для роутов приложения: на EN/TR подставлял префикс
+локали (`/en/docs/...` → 404), на RU перехватывал клик для SPA-
+навигации (роута `/docs/x.pdf` нет → 404-страница). Введён в
+`63e6c32`, был в `main`. Фикс: чистый `<a href download>` —
+зеркало паттерна `ProductHero.ProductCtaButton`. Заодно из
+`DocumentsGrid.RU_ONLY_DOC_IDS` убран `oprosnik` — опросники теперь
+локализованы, note «Original document» остаётся только для деклараций.
+
+### Правки PDF (3 шт.)
+
+1. **Наезд текста в шапке** — company strip (слева) налезал на
+   Document ID (справа). Strip укорочен +
+   `draw_header()` измеряет ширину doc-ID и обрезает strip по « · ».
+2. **Email** — `sales@anhelspb.com` → `info@anhelspb.com` везде
+   (strip + инструкция), как на сайте и в RU-оригиналах.
+3. **Обязательные поля** — 6 контактных полей всех опросников +
+   required-поля control-systems и сервисной формы получили красную
+   `*` после лейбла + легенда «* — required field / zorunlu alan».
+   Карта required извлечена из `src/content/quiz/*-fields.ts` и
+   form-config'ов.
+
+Все 18 PDF перегенерированы. Визуально проверены (PyMuPDF render):
+шапка чистая, info@, красные `*` на обязательных. `tsc` clean.
+
+### Состояние ветки
+
+- Branch: `feat/i18n-wave-3-documents`, tip `7f11604`
+- Tag `v1.11-pdf-localization-complete` передвинут на `7f11604`
+- Vercel preview `7f11604` — READY
+- Готово к squash-merge → main после ОК Алексея.
