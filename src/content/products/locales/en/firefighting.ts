@@ -24,7 +24,7 @@ export const content: ProductContent = {
       alt: "ANHEL® — fire-protection pumping station in a red enclosure, HVS-NU series",
     },
     primaryCta: { label: "Fill in online", href: "/quiz/pumps?from=firefighting", variant: "primary" },
-    secondaryCta: { label: "Specification sheet", href: "/docs/firefighting/oprosnyi-list.pdf", variant: "ghost" },
+    secondaryCta: { label: "Specification sheet", href: "/docs/firefighting/oprosnyi-list-en.pdf", variant: "ghost" },
   },
 
   techSpecs: [
@@ -136,9 +136,9 @@ export const content: ProductContent = {
     title: "Documents and certificates",
     lede: "EAEU Conformity Declaration, specification sheet and manual — for design and acceptance.",
     items: [
-      { id: "oprosnik", title: "Pumping-station specification sheet", size: "1.49 MB", href: "/docs/firefighting/oprosnyi-list.pdf" },
+      { id: "oprosnik", title: "Pumping-station specification sheet", size: "40 KB", href: "/docs/firefighting/oprosnyi-list-en.pdf" },
       { id: "cert-deklaratsiya", title: "EAEU Conformity Declaration — ANHEL® fire-protection pumping stations", size: "0.86 MB", href: "/docs/firefighting/cert-deklaratsiya.pdf" },
-      { id: "manual", title: "Operating manual — ANHEL® SPD-type pumping stations", size: "1.41 MB", href: "/docs/firefighting/manual.pdf" },
+      { id: "manual", title: "Operating manual — ANHEL® SPD-type pumping stations", size: "61 KB", href: "/docs/firefighting/manual-en.pdf" },
     ],
   },
 

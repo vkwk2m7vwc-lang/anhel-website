@@ -1,6 +1,7 @@
 'use client';
 
 import { Controller, useFormContext } from 'react-hook-form';
+import { useTranslations } from 'next-intl';
 import { cn } from '@/lib/utils';
 
 /**
@@ -17,6 +18,7 @@ import { cn } from '@/lib/utils';
  */
 export function IntakeChooser() {
   const { control } = useFormContext();
+  const t = useTranslations('quiz.pumps.intake_chooser');
 
   const items: Array<{
     name: string;
@@ -26,29 +28,29 @@ export function IntakeChooser() {
   }> = [
     {
       name: 'intake_pond',
-      label: 'Водоём',
+      label: t('pond'),
       icon: <PondIcon />,
     },
     {
       name: 'intake_under',
-      label: 'Подземный',
+      label: t('underground'),
       icon: <UndergroundIcon />,
     },
     {
       name: 'intake_semi',
-      label: 'Полузаглублённый',
+      label: t('semi_buried'),
       icon: <SemiBuriedIcon />,
     },
     {
       name: 'intake_above',
-      label: 'Наземный',
+      label: t('above_ground'),
       icon: <AboveGroundIcon />,
     },
   ];
 
   return (
     <div className="sm:col-span-2">
-      <p className="mb-3 text-sm text-secondary/75">Забор воды из водоёма или резервуара</p>
+      <p className="mb-3 text-sm text-secondary/75">{t('caption')}</p>
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         {items.map((it) => (
           <Controller

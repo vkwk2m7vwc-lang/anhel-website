@@ -1,12 +1,27 @@
 "use client";
 
-import { Link } from "@/navigation";
 import { motion } from "framer-motion";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import type {
   DocumentsContent,
   DocumentItem,
 } from "@/content/products/types";
+
+/**
+ * IDs of documents whose PDF body is RU-only. On non-RU locales we
+ * surface a small "Original document (Russian)" line under the card
+ * so the visitor isn't surprised when the file opens in Russian.
+ *
+ * `cert-deklaratsiya` — EAEU Declaration of Conformity (legally
+ *  issued in Russian; translation is not permitted).
+ *
+ * NOT included (these are locale-swapped at the data layer — the
+ * per-locale product content points at `*-en.pdf` / `*-tr.pdf`):
+ *   - `oprosnik` — questionnaire, now has EN/TR variants
+ *     (oprosnyi-list-en.pdf / -tr.pdf, PR feat/pdf-localization-wave-1)
+ *   - `manual` — operating manual (manual-en.pdf / manual-tr.pdf)
+ */
+const RU_ONLY_DOC_IDS = new Set(["cert-deklaratsiya"]);
 
 /**
  * Documents grid — section 11.
@@ -76,6 +91,15 @@ export function DocumentsGrid({ content }: { content: DocumentsContent }) {
 
 function DocCard({ doc, index }: { doc: DocumentItem; index: number }) {
   const tUi = useTranslations("common.ui");
+  const tDocs = useTranslations("documents.sections.certificates");
+  const locale = useLocale();
+  // Surface "Original document (Russian)" under RU-only cards on EN/TR.
+  // Reuses the same translation key the /documents page uses for the
+  // EAEU certificate badge so all "RU master" indicators read identically.
+  const ruNote =
+    locale !== "ru" && RU_ONLY_DOC_IDS.has(doc.id)
+      ? tDocs("original_note")
+      : undefined;
   return (
     <motion.li
       initial={{ opacity: 0, y: 16 }}
@@ -88,7 +112,11 @@ function DocCard({ doc, index }: { doc: DocumentItem; index: number }) {
       }}
       className="relative"
     >
-      <Link
+      {/* Static PDF / external file — plain <a>, NOT next-intl <Link>.
+          The i18n <Link> would prepend the locale prefix on EN/TR
+          (→ /en/docs/… → 404) and intercept the click for SPA routing
+          on RU. Mirrors ProductHero.ProductCtaButton + /contacts. */}
+      <a
         href={doc.href}
         target={doc.external ? "_blank" : undefined}
         rel={doc.external ? "noreferrer noopener" : undefined}
@@ -135,6 +163,13 @@ function DocCard({ doc, index }: { doc: DocumentItem; index: number }) {
               {doc.size}
             </span>
           ) : null}
+          {/* RU-only badge for `oprosnik` / `cert-deklaratsiya` on EN/TR.
+              See RU_ONLY_DOC_IDS above for the rationale. */}
+          {ruNote ? (
+            <span className="text-[11px] italic text-[var(--color-secondary)]/45 sm:text-xs">
+              {ruNote}
+            </span>
+          ) : null}
           {/* На sm+ — отдельный CTA «Скачать →»; на mobile это место занимает arrow справа от строки. */}
           <span className="hidden items-center gap-2 font-mono text-[11px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/55 transition-colors [@media(hover:hover)]:group-hover:text-[var(--color-secondary)] sm:inline-flex">
             {doc.external ? tUi("open_external") : tUi("download")}
@@ -154,7 +189,7 @@ function DocCard({ doc, index }: { doc: DocumentItem; index: number }) {
         >
           →
         </span>
-      </Link>
+      </a>
     </motion.li>
   );
 }

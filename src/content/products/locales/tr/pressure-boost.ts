@@ -24,7 +24,7 @@ export const content: ProductContent = {
       alt: "ANHEL — otomatik basınç koruma ünitesi: kontrol panosu, pompa grubu ve membranlı genleşme tankı",
     },
     primaryCta: { label: "Çevrimiçi doldur", href: "/quiz/pumps?from=pressure-boost", variant: "primary" },
-    secondaryCta: { label: "Teknik veri formu", href: "/docs/pressure-boost/oprosnyi-list.pdf", variant: "ghost" },
+    secondaryCta: { label: "Teknik veri formu", href: "/docs/pressure-boost/oprosnyi-list-tr.pdf", variant: "ghost" },
   },
 
   techSpecs: [
@@ -133,9 +133,9 @@ export const content: ProductContent = {
     title: "Belgeler ve sertifikalar",
     lede: "Teknik veri formu, sertifikalar ve kılavuz — tasarım ve kabul için.",
     items: [
-      { id: "oprosnik", title: "Pompa istasyonu teknik veri formu", size: "1,49 MB", href: "/docs/pressure-boost/oprosnyi-list.pdf" },
+      { id: "oprosnik", title: "Pompa istasyonu teknik veri formu", size: "40 KB", href: "/docs/pressure-boost/oprosnyi-list-tr.pdf" },
       { id: "cert-deklaratsiya", title: "EAEU Uygunluk Beyannamesi — ANHEL® basınç koruma üniteleri", size: "0,86 MB", href: "/docs/pressure-boost/cert-deklaratsiya.pdf" },
-      { id: "manual", title: "Kullanım kılavuzu — ANHEL® SPD tipi pompa istasyonları", size: "1,41 MB", href: "/docs/pressure-boost/manual.pdf" },
+      { id: "manual", title: "Kullanım kılavuzu — ANHEL® SPD tipi pompa istasyonları", size: "63 KB", href: "/docs/pressure-boost/manual-tr.pdf" },
     ],
   },
 

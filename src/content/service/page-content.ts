@@ -26,5 +26,22 @@ export const REQUIREMENTS: readonly { key: RequirementKey }[] = [
   { key: 'request' },
 ];
 
+/**
+ * Locale-aware download URL for the service-request PDF.
+ *
+ * RU keeps the original AcroForm at `/documents/service-request-anhel.pdf`.
+ * EN/TR resolve to ReportLab re-renders produced by
+ * `_scripts/build_service_request_translations.py`.
+ *
+ * Use this helper instead of hardcoding the path so all download
+ * buttons stay in sync when a new locale is added.
+ */
+export function resolveServicePdfHref(locale: string): string {
+  return locale === 'ru'
+    ? '/documents/service-request-anhel.pdf'
+    : `/documents/service-request-anhel-${locale}.pdf`;
+}
+
+/** @deprecated — RU-only path. Use `resolveServicePdfHref(locale)`. */
 export const SERVICE_PDF_HREF = '/documents/service-request-anhel.pdf';
 export const SERVICE_REQUEST_HREF = '/service/request';

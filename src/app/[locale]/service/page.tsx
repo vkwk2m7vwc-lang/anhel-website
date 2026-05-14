@@ -6,7 +6,7 @@ import { Breadcrumbs } from '@/components/product-page/Breadcrumbs';
 import {
   SERVICE_CARDS,
   REQUIREMENTS,
-  SERVICE_PDF_HREF,
+  resolveServicePdfHref,
   SERVICE_REQUEST_HREF,
 } from '@/content/service/page-content';
 
@@ -92,7 +92,7 @@ export default function ServicePage({
                   </span>
                 </Link>
                 <a
-                  href={SERVICE_PDF_HREF}
+                  href={resolveServicePdfHref(locale)}
                   download
                   data-cursor="hover"
                   className="inline-flex items-center gap-3 rounded-md border-[0.5px] border-[var(--color-secondary)]/40 bg-transparent px-[22px] py-[14px] text-sm font-medium text-[var(--color-secondary)]/85 transition-colors hover:border-[var(--color-secondary)] hover:text-[var(--color-secondary)]"

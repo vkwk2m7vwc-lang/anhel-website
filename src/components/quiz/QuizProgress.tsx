@@ -1,6 +1,7 @@
 'use client';
 
 import { useFormContext, useWatch } from 'react-hook-form';
+import { useTranslations } from 'next-intl';
 import { cn } from '@/lib/utils';
 import type { QuizField, QuizStep, ShowIf } from '@/content/quiz/pumps-fields';
 
@@ -73,6 +74,7 @@ function computeLiveProgress(
  *  — будущие сильно приглушены, чтобы взгляд не цеплялся
  */
 export function QuizProgress({ steps, current, visited, onStepClick }: Props) {
+  const t = useTranslations('quiz.shell');
   const { control } = useFormContext();
   const watched = useWatch({ control });
   const values = (watched ?? {}) as Record<string, unknown>;
@@ -173,9 +175,7 @@ export function QuizProgress({ steps, current, visited, onStepClick }: Props) {
 
       {/* Подпись: «Шаг N из 5 · NN%» */}
       <p className="mt-4 flex items-baseline gap-3 text-xs text-secondary/55">
-        <span>
-          Шаг {current + 1} из {steps.length}
-        </span>
+        <span>{t('step_of', { current: current + 1, total: steps.length })}</span>
         <span className="font-mono text-[color:var(--accent-current)]">{pct}%</span>
       </p>
     </div>

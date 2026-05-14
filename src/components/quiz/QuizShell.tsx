@@ -12,27 +12,26 @@ import {
 } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslations } from 'next-intl';
 import type { ZodTypeAny } from 'zod';
-import {
-  QUIZ_INTRO_PARA_1,
-  QUIZ_INTRO_PARA_2,
-  QUIZ_DISCLAIMER_TITLE,
-  QUIZ_DISCLAIMER_BODY,
-  QUIZ_CONSENT_LABEL,
-  type QuizStep,
-} from '@/content/quiz/pumps-fields';
-import { pumpsQuizSchema } from '@/content/quiz/pumps-schema';
-import { vpuQuizSchema } from '@/content/quiz/vpu-schema';
-import { itpQuizSchema } from '@/content/quiz/itp-schema';
-import { aupdQuizSchema } from '@/content/quiz/aupd-schema';
+import { type QuizStep } from '@/content/quiz/pumps-fields';
+import { makePumpsQuizSchema, pumpsQuizSchema } from '@/content/quiz/pumps-schema';
+import { makeVpuQuizSchema, vpuQuizSchema } from '@/content/quiz/vpu-schema';
+import { makeItpQuizSchema, itpQuizSchema } from '@/content/quiz/itp-schema';
+import { makeAupdQuizSchema, aupdQuizSchema } from '@/content/quiz/aupd-schema';
 import type { QuizConfig, QuizKind } from '@/content/quiz/quiz-config';
+import { useTranslatedConfig } from './useTranslatedConfig';
 
 /**
- * Map kind→schema. Resolved here in the client component, not passed via
- * config props. Zod schemas are class instances and cannot be serialized
- * across the server↔client boundary.
+ * Static schemas (RU messages) used as a fallback for quizzes whose
+ * schema factory is not yet migrated to the locale-aware variant.
+ * Vpu is migrated and built per-render via `makeVpuQuizSchema(t)` inside
+ * the component body — see the `schemas` memo below.
+ *
+ * Zod schemas are class instances and cannot be serialized across the
+ * server↔client boundary, so we always resolve them in the client.
  */
-const SCHEMAS: Record<QuizKind, ZodTypeAny> = {
+const STATIC_SCHEMAS: Record<QuizKind, ZodTypeAny> = {
   pumps: pumpsQuizSchema,
   vpu: vpuQuizSchema,
   itp: itpQuizSchema,
@@ -51,7 +50,29 @@ type Props = {
   prefill?: Record<string, unknown>;
 };
 
-export function QuizShell({ config, prefill }: Props) {
+export function QuizShell({ config: rawConfig, prefill }: Props) {
+  const config = useTranslatedConfig(rawConfig);
+  const t = useTranslations('quiz.shell');
+  const tValidation = useTranslations('quiz.shell.validation');
+
+  /**
+   * Build the active zod schema for this quiz kind. Vpu uses the
+   * locale-aware factory; the other three fall back to the static
+   * RU-message schema until their schema files are migrated in the
+   * follow-up commits (pumps / itp / aupd / control-systems).
+   *
+   * Re-memoizes only when the locale's `t` instance changes, which
+   * effectively means once per locale switch. Within a render-stable
+   * locale the schema reference stays stable for `useForm`.
+   */
+  const schema = useMemo<ZodTypeAny>(() => {
+    if (rawConfig.kind === 'pumps') return makePumpsQuizSchema(tValidation);
+    if (rawConfig.kind === 'vpu') return makeVpuQuizSchema(tValidation);
+    if (rawConfig.kind === 'itp') return makeItpQuizSchema(tValidation);
+    if (rawConfig.kind === 'aupd') return makeAupdQuizSchema(tValidation);
+    return STATIC_SCHEMAS[rawConfig.kind];
+  }, [rawConfig.kind, tValidation]);
+
   const [stepIdx, setStepIdx] = useState(0);
   const [visited, setVisited] = useState<Set<number>>(new Set([0]));
   const [submitted, setSubmitted] = useState<null | { ok: true } | { ok: false; message: string }>(
@@ -66,7 +87,7 @@ export function QuizShell({ config, prefill }: Props) {
   );
 
   const methods = useForm<Record<string, unknown>>({
-    resolver: zodResolver(SCHEMAS[config.kind]),
+    resolver: zodResolver(schema),
     defaultValues: initialValues,
     mode: 'onBlur',
   });
@@ -169,14 +190,13 @@ export function QuizShell({ config, prefill }: Props) {
       } else {
         setSubmitted({
           ok: false,
-          message: data.message || 'Не удалось отправить заявку. Попробуйте позже.',
+          message: data.message || t('error_default'),
         });
       }
     } catch {
       setSubmitted({
         ok: false,
-        message:
-          'Ошибка сети. Скачайте PDF и пришлите на info@anhelspb.com — мы обработаем заявку.',
+        message: t('error_network'),
       });
     } finally {
       setIsSubmitting(false);
@@ -194,7 +214,7 @@ export function QuizShell({ config, prefill }: Props) {
         {/* Header */}
         <header className="mb-10">
           <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-secondary/55">
-            Опросный лист
+            {t('tag')}
           </p>
           <h1 className="mt-2 text-2xl sm:text-3xl font-medium tracking-tight text-secondary">
             {config.title}
@@ -202,8 +222,8 @@ export function QuizShell({ config, prefill }: Props) {
           {config.description && (
             <p className="mt-2 text-sm leading-relaxed text-secondary/70">{config.description}</p>
           )}
-          <p className="mt-3 text-sm leading-relaxed text-secondary/70">{QUIZ_INTRO_PARA_1}</p>
-          <p className="mt-3 text-sm leading-relaxed text-secondary/70">{QUIZ_INTRO_PARA_2}</p>
+          <p className="mt-3 text-sm leading-relaxed text-secondary/70">{t('intro_para_1')}</p>
+          <p className="mt-3 text-sm leading-relaxed text-secondary/70">{t('intro_para_2')}</p>
         </header>
 
         <QuizProgress
@@ -215,8 +235,7 @@ export function QuizShell({ config, prefill }: Props) {
 
         {restored && (
           <p className="mt-4 rounded-sm border border-[color:var(--color-hairline)] bg-[color:var(--color-hover-tint)] px-3 py-2 text-xs text-secondary/70">
-            Восстановлены данные из предыдущей сессии. Можно продолжить с того места, где
-            остановились.
+            {t('restored')}
           </p>
         )}
 
@@ -290,40 +309,41 @@ function SuccessScreen({
   catalogHref: string;
   catalogLabel: string;
 }) {
+  const t = useTranslations('quiz.shell');
   return (
     <div className="mx-auto flex min-h-[70vh] max-w-2xl flex-col items-start justify-center px-5 py-16">
       <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-secondary/55">
-        Заявка получена
+        {t('received_tag')}
       </p>
       <h1 className="mt-3 text-3xl font-medium tracking-tight text-secondary sm:text-4xl">
-        Спасибо!
+        {t('thanks_title')}
       </h1>
       <p className="mt-4 text-base leading-relaxed text-secondary/75">
-        Мы получили ваш запрос. Менеджер свяжется в течение 1 рабочего дня.
+        {t('thanks_body')}
       </p>
       <p className="mt-3 text-sm leading-relaxed text-secondary/65">
-        Срочный вопрос — звоните{' '}
+        {t('urgent_pre')}
         <a
           href="tel:+78124164500"
           className="border-b border-secondary/40 hover:border-secondary"
         >
           +7 (812) 416-45-00
-        </a>{' '}
-        или пишите на{' '}
+        </a>
+        {t('urgent_or')}
         <a
           href="mailto:info@anhelspb.com"
           className="border-b border-secondary/40 hover:border-secondary"
         >
           info@anhelspb.com
         </a>
-        .
+        {t('urgent_dot')}
       </p>
       <div className="mt-8 flex flex-wrap gap-3">
         <a
           href="/"
           className="inline-flex min-h-11 items-center justify-center border border-secondary px-5 py-2.5 text-sm hover:bg-secondary hover:text-primary"
         >
-          На главную
+          {t('to_home')}
         </a>
         <a
           href={catalogHref}
@@ -343,6 +363,7 @@ function ReviewStep({
   onJump: (idx: number) => void;
   steps: QuizStep[];
 }) {
+  const t = useTranslations('quiz.shell');
   const { control } = useFormContext();
   const watched = useWatch({ control });
   const values = (watched ?? {}) as Record<string, unknown>;
@@ -351,7 +372,7 @@ function ReviewStep({
       {steps
         .filter((s) => s.id !== 'review')
         .map((s, idx) => {
-          const filled = collectFilled(s, values);
+          const filled = collectFilled(s, values, t('yes_short'));
           if (filled.length === 0) return null;
           return (
             <section key={s.id} className="border-t border-[color:var(--color-hairline)] pt-6">
@@ -370,7 +391,7 @@ function ReviewStep({
                   // через -mr-2 (компенсация padding'а у правого края).
                   className="-mr-2 inline-flex min-h-11 items-center px-2 text-xs text-secondary/65 hover:text-secondary"
                 >
-                  Изменить
+                  {t('edit')}
                 </button>
               </div>
               <dl className="mt-4 grid grid-cols-1 gap-x-6 gap-y-3 sm:grid-cols-2">
@@ -390,9 +411,9 @@ function ReviewStep({
       {/* Disclaimer */}
       <section className="relative border-l-2 border-[color:var(--accent-fire)] pl-4">
         <p className="text-sm font-medium text-[color:var(--accent-fire)]">
-          {QUIZ_DISCLAIMER_TITLE}
+          {t('disclaimer_title')}
         </p>
-        <p className="mt-2 text-xs leading-relaxed text-secondary/70">{QUIZ_DISCLAIMER_BODY}</p>
+        <p className="mt-2 text-xs leading-relaxed text-secondary/70">{t('disclaimer_body')}</p>
       </section>
 
       {/* Consent */}
@@ -403,7 +424,7 @@ function ReviewStep({
           render={({ field, fieldState }) => (
             <div>
               <CheckboxField
-                label={QUIZ_CONSENT_LABEL}
+                label={t('consent_label')}
                 checked={!!field.value}
                 onChange={(e) => field.onChange(e.target.checked)}
                 onBlur={field.onBlur}
@@ -414,21 +435,21 @@ function ReviewStep({
                 </p>
               )}
               <p className="mt-2 pl-7 text-xs leading-relaxed text-secondary/55">
-                В соответствии с{' '}
+                {t('consent_privacy_pre')}
                 <Link
                   href="/privacy-policy"
                   className="border-b border-secondary/40 hover:border-secondary"
                 >
-                  Политикой конфиденциальности
+                  {t('consent_privacy')}
                 </Link>
-                {' '}и{' '}
+                {t('consent_and')}
                 <Link
                   href="/personal-data-consent"
                   className="border-b border-secondary/40 hover:border-secondary"
                 >
-                  Согласием на обработку ПД
+                  {t('consent_data')}
                 </Link>
-                .
+                {t('urgent_dot')}
               </p>
             </div>
           )}
@@ -439,7 +460,11 @@ function ReviewStep({
 }
 
 /** Собирает заполненные поля шага в [{label, value}]. */
-function collectFilled(step: QuizStep, values: Record<string, unknown>) {
+function collectFilled(
+  step: QuizStep,
+  values: Record<string, unknown>,
+  yesLabel: string,
+) {
   const out: Array<{ label: string; value: string }> = [];
   for (const section of step.sections) {
     for (const f of section.fields) {
@@ -447,7 +472,7 @@ function collectFilled(step: QuizStep, values: Record<string, unknown>) {
       if (v === undefined || v === null || v === '' || v === false) continue;
       let pretty: string;
       if (f.type === 'checkbox') {
-        pretty = 'Да';
+        pretty = yesLabel;
       } else if (f.type === 'radio' && f.options) {
         const opt = f.options.find((o) => o.value === v);
         pretty = opt ? opt.label : String(v);

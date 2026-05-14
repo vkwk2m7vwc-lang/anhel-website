@@ -27,7 +27,7 @@ export const content: ProductContent = {
       alt: "ANHEL — pumping station for heating and cooling systems: expansion tank, pump group and control cabinet",
     },
     primaryCta: { label: "Fill in online", href: "/quiz/pumps?from=heating-cooling", variant: "primary" },
-    secondaryCta: { label: "Specification sheet", href: "/docs/heating-cooling/oprosnyi-list.pdf", variant: "ghost" },
+    secondaryCta: { label: "Specification sheet", href: "/docs/heating-cooling/oprosnyi-list-en.pdf", variant: "ghost" },
   },
 
   techSpecs: [
@@ -141,9 +141,9 @@ export const content: ProductContent = {
     title: "Documents and certificates",
     lede: "Specification sheet, certificates and manual — for design and acceptance.",
     items: [
-      { id: "oprosnik", title: "Pumping-station specification sheet", size: "1.49 MB", href: "/docs/heating-cooling/oprosnyi-list.pdf" },
+      { id: "oprosnik", title: "Pumping-station specification sheet", size: "40 KB", href: "/docs/heating-cooling/oprosnyi-list-en.pdf" },
       { id: "cert-deklaratsiya", title: "EAEU Conformity Declaration — ANHEL® heating-and-cooling pumping stations", size: "0.86 MB", href: "/docs/heating-cooling/cert-deklaratsiya.pdf" },
-      { id: "manual", title: "Operating manual — ANHEL® SPD-type pumping stations", size: "1.41 MB", href: "/docs/heating-cooling/manual.pdf" },
+      { id: "manual", title: "Operating manual — ANHEL® SPD-type pumping stations", size: "61 KB", href: "/docs/heating-cooling/manual-en.pdf" },
     ],
   },
 

@@ -6,8 +6,19 @@
  * Required-поля — только 6 контактных + согласие на ОПД на финальном шаге.
  * Все технические поля опциональные (как в PDF), но если заполнены —
  * проходят базовые проверки (числа, валидный email, и т.п.).
+ *
+ * Two flavors exported:
+ *  - `pumpsQuizSchema`        — static RU messages, kept for the server-side
+ *                                /api/questionnaire route (no locale context).
+ *  - `makePumpsQuizSchema(t)` — locale-aware factory used by client-side
+ *                                QuizShell. Same shape; only messages differ.
  */
 import { z } from 'zod';
+import {
+  makeContactsBlock,
+  makeConsentBlock,
+  type ValidationT,
+} from './contacts-schema';
 
 const optionalText = z.string().trim().optional().or(z.literal('').transform(() => undefined));
 const optionalNumberLike = z
@@ -20,19 +31,8 @@ const optionalNumberLike = z
   });
 const optionalBool = z.boolean().optional();
 
-export const pumpsQuizSchema = z.object({
-  // Step 01 — Контакты и объект (только 6 контактных = required)
-  contact_organization: z.string().trim().min(1, 'Укажите организацию'),
-  contact_fullname: z.string().trim().min(1, 'Укажите ФИО'),
-  contact_position: z.string().trim().min(1, 'Укажите должность'),
-  contact_city: z.string().trim().min(1, 'Укажите город'),
-  contact_email: z.string().trim().min(1, 'Укажите email').email('Неверный формат email'),
-  contact_phone: z
-    .string()
-    .trim()
-    .min(1, 'Укажите телефон')
-    .regex(/^[+\d\s()\-.]{6,}$/, 'Проверьте телефон'),
-
+/** Technical fields — same shape for both flavors (no validation messages). */
+const technicalFields = {
   source_channel: z.string().optional(),
   source_other: optionalText,
   object_name: optionalText,
@@ -106,14 +106,36 @@ export const pumpsQuizSchema = z.object({
   module_horizontal: optionalBool,
 
   additional_info: optionalText,
+} as const;
 
-  // Step 05 — Согласие
+/** RU-message static schema (server-side validation in /api/questionnaire). */
+export const pumpsQuizSchema = z.object({
+  contact_organization: z.string().trim().min(1, 'Укажите организацию'),
+  contact_fullname: z.string().trim().min(1, 'Укажите ФИО'),
+  contact_position: z.string().trim().min(1, 'Укажите должность'),
+  contact_city: z.string().trim().min(1, 'Укажите город'),
+  contact_email: z.string().trim().min(1, 'Укажите email').email('Неверный формат email'),
+  contact_phone: z
+    .string()
+    .trim()
+    .min(1, 'Укажите телефон')
+    .regex(/^[+\d\s()\-.]{6,}$/, 'Проверьте телефон'),
+  ...technicalFields,
   consent_pdn: z.literal(true, {
     errorMap: () => ({ message: 'Необходимо согласие на обработку персональных данных' }),
   }),
 });
 
 export type PumpsQuizValues = z.infer<typeof pumpsQuizSchema>;
+
+/** Locale-aware factory used by client-side QuizShell. */
+export function makePumpsQuizSchema(t: ValidationT) {
+  return z.object({
+    ...makeContactsBlock(t),
+    ...technicalFields,
+    ...makeConsentBlock(t),
+  });
+}
 
 /** Дефолты — все checkboxes false, тексты '', radio undefined. */
 export const pumpsDefaults: Record<string, unknown> = {

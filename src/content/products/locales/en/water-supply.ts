@@ -37,7 +37,7 @@ export const content: ProductContent = {
     },
     secondaryCta: {
       label: "Specification sheet",
-      href: "/docs/water-supply/oprosnyi-list.pdf",
+      href: "/docs/water-supply/oprosnyi-list-en.pdf",
       variant: "ghost",
     },
   },
@@ -159,9 +159,9 @@ export const content: ProductContent = {
     title: "Documents and certificates",
     lede: "EAEU Conformity Declaration, specification sheet and manual — for design and acceptance.",
     items: [
-      { id: "oprosnik", title: "Pumping-station specification sheet", size: "1.49 MB", href: "/docs/water-supply/oprosnyi-list.pdf" },
+      { id: "oprosnik", title: "Pumping-station specification sheet", size: "40 KB", href: "/docs/water-supply/oprosnyi-list-en.pdf" },
       { id: "cert-deklaratsiya", title: "EAEU Conformity Declaration — ANHEL® water-supply pumping stations", size: "0.86 MB", href: "/docs/water-supply/cert-deklaratsiya.pdf" },
-      { id: "manual", title: "Operating manual — ANHEL® SPD-type pumping stations", size: "1.41 MB", href: "/docs/water-supply/manual.pdf" },
+      { id: "manual", title: "Operating manual — ANHEL® SPD-type pumping stations", size: "61 KB", href: "/docs/water-supply/manual-en.pdf" },
     ],
   },
 

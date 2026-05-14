@@ -1,15 +1,22 @@
 import type { Metadata } from 'next';
 import type { CSSProperties } from 'react';
+import { getTranslations } from 'next-intl/server';
 import { QuizShell } from '@/components/quiz/QuizShell';
 import { itpQuizConfig } from '@/content/quiz/itp-config';
 
 export const dynamic = 'force-dynamic';
 
-export const metadata: Metadata = {
-  title: 'Опросный лист — БИТП',
-  description:
-    'Заполните онлайн-опросник для подбора блочного индивидуального теплового пункта (БИТП) ANHEL®. Менеджер свяжется в течение 1 рабочего дня.',
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: { locale: string };
+}): Promise<Metadata> {
+  const t = await getTranslations({ locale: params.locale, namespace: 'quiz.itp' });
+  return {
+    title: t('meta_title'),
+    description: t('meta_description'),
+  };
+}
 
 /** /quiz/itp — опросник по БИТП. Акцент: heat (янтарный). */
 export default function ItpQuizPage() {

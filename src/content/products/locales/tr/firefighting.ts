@@ -24,7 +24,7 @@ export const content: ProductContent = {
       alt: "ANHEL® — kırmızı muhafazada yangın koruma pompa istasyonu, HVS-NU serisi",
     },
     primaryCta: { label: "Çevrimiçi doldur", href: "/quiz/pumps?from=firefighting", variant: "primary" },
-    secondaryCta: { label: "Teknik veri formu", href: "/docs/firefighting/oprosnyi-list.pdf", variant: "ghost" },
+    secondaryCta: { label: "Teknik veri formu", href: "/docs/firefighting/oprosnyi-list-tr.pdf", variant: "ghost" },
   },
 
   techSpecs: [
@@ -136,9 +136,9 @@ export const content: ProductContent = {
     title: "Belgeler ve sertifikalar",
     lede: "EAEU Uygunluk Beyannamesi, teknik veri formu ve kılavuz — tasarım ve kabul için.",
     items: [
-      { id: "oprosnik", title: "Pompa istasyonu teknik veri formu", size: "1,49 MB", href: "/docs/firefighting/oprosnyi-list.pdf" },
+      { id: "oprosnik", title: "Pompa istasyonu teknik veri formu", size: "42 KB", href: "/docs/firefighting/oprosnyi-list-tr.pdf" },
       { id: "cert-deklaratsiya", title: "EAEU Uygunluk Beyannamesi — ANHEL® yangın koruma pompa istasyonları", size: "0,86 MB", href: "/docs/firefighting/cert-deklaratsiya.pdf" },
-      { id: "manual", title: "Kullanım kılavuzu — ANHEL® SPD tipi pompa istasyonları", size: "1,41 MB", href: "/docs/firefighting/manual.pdf" },
+      { id: "manual", title: "Kullanım kılavuzu — ANHEL® SPD tipi pompa istasyonları", size: "63 KB", href: "/docs/firefighting/manual-tr.pdf" },
     ],
   },
 

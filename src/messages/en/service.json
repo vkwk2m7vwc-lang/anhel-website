@@ -57,7 +57,57 @@
   },
   "request_page": {
     "meta_title": "Service request",
-    "meta_description": "Online service request form for ANHEL equipment.",
-    "ru_only_note": "This form is in Russian. For requests in other languages, please use the form on the Contact page."
+    "meta_description": "Online service request form for ANHEL equipment."
+  },
+  "request_form": {
+    "meta_title": "Service request",
+    "meta_description": "Online service request form for ANHEL® equipment.",
+    "tag": "Service request",
+    "title": "ANHEL® Service Request",
+    "subtitle": "Fill in the form and we will arrange the engineer visit. The dispatch decision is made after we receive the completed and stamped request.",
+    "step_aria": "Step {current}: {title}",
+    "step_of": "Step {current} of {total}",
+    "step_short": "Step {current} / {total}",
+    "back": "Back",
+    "next": "Next",
+    "submit": "Submit request",
+    "submitting": "Sending…",
+    "success_title": "Request sent",
+    "success_body": "We will contact you within one business day. Returning to the Service overview now.",
+    "cancel_pre": "Changed your mind? ",
+    "cancel_link": "Back to service overview",
+    "steps": {
+      "0": { "title": "Facility and request", "description": "Where the equipment is installed and under which document it was supplied." },
+      "1": { "title": "Equipment and documents", "description": "What is being serviced and under which document it was supplied." },
+      "2": { "title": "Contact person", "description": "Whom the service engineer will meet at the site." },
+      "3": { "title": "Fault and acknowledgements", "description": "Describe the problem — the more detail, the better the engineer can prepare. Confirm the visit terms." },
+      "4": { "title": "Review and send", "description": "Review your entries. After submitting, the request will reach info@anhelspb.com — we will arrange the visit." }
+    },
+    "fields": {
+      "request_number": { "label": "Request number (product serial)", "placeholder": "e.g. 24S574 — year and batch index" },
+      "company_name": { "label": "Company name", "placeholder": "Acme Ltd." },
+      "object_name": { "label": "Facility name", "placeholder": "Baltic Pearl Residential Complex" },
+      "object_address": { "label": "Facility address", "placeholder": "28 Nevsky Prospect, Saint Petersburg" },
+      "equipment_type": { "label": "Equipment type", "placeholder": "pumping unit / heat substation / water treatment unit" },
+      "equipment_name": { "label": "Product name", "placeholder": "firefighting unit HVS-NU 60-90" },
+      "equipment_serial": { "label": "Product serial number", "placeholder": "24S574" },
+      "equipment_commissioning_date": { "label": "Commissioning date" },
+      "invoice_number_date": { "label": "Invoice number and date", "placeholder": "No. 123 of 12.05.2024" },
+      "upd_number_date": { "label": "UPD number and date", "placeholder": "No. 456 of 18.05.2024" },
+      "synteka_number": { "label": "Synteka request number", "placeholder": "if available — otherwise skip" },
+      "contact_full_name": { "label": "Full name", "placeholder": "John A. Smith" },
+      "contact_position": { "label": "Position", "placeholder": "chief engineer" },
+      "contact_phone": { "label": "Mobile phone", "placeholder": "+7 (___) ___-__-__" },
+      "contact_email": { "label": "Email", "placeholder": "name@company.com" },
+      "problem_description": {
+        "label": "Detailed fault description",
+        "placeholder": "For example: after the routine start-up, pump No. 1 fails to reach operating pressure and emits a metallic noise at start…",
+        "hint": "Video material can be attached to a follow-up email sent to info@anhelspb.com."
+      },
+      "commit_representative": { "label": "I undertake to provide an on-site representative authorised to sign the Service Protocol and apply the company stamp on the Work Completion Act." },
+      "commit_equipment_ready": { "label": "I undertake to ensure equipment readiness for diagnostics (access, power supply to the control cabinet, water supply and draw-off)." },
+      "commit_decision_after_request": { "label": "I understand that the dispatch decision is made after the completed and stamped request is received." },
+      "consent_pd": { "label": "Consent to personal data processing (FZ-152)." }
+    }
   }
 }

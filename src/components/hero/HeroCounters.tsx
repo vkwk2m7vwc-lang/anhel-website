@@ -35,7 +35,11 @@ export function HeroCounters() {
   const warranty = useCountUp<HTMLDivElement>({ to: 24 });
 
   return (
-    <div className="hidden md:mt-20 md:flex md:flex-wrap md:gap-x-14 md:gap-y-0">
+    // No `md:mt-20` here any more — the parent HeroShell bottom-area wraps
+    // the counters with its own hairline + pt-10 + the tagline row above,
+    // so the previous 80 px top margin would double the breathing room.
+    // Spacing is now driven purely by the parent layout.
+    <div className="hidden md:flex md:flex-wrap md:gap-x-14 md:gap-y-0">
       <Counter
         innerRef={objects.ref}
         value={objects.value}

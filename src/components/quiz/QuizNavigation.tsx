@@ -2,6 +2,7 @@
 
 import { cn } from '@/lib/utils';
 import { ArrowLeft, ArrowRight, Send } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 
 type Props = {
   current: number;
@@ -13,6 +14,7 @@ type Props = {
 };
 
 export function QuizNavigation({ current, total, onBack, onNext, isSubmitting, disableNext }: Props) {
+  const t = useTranslations('quiz.shell');
   const isFirst = current === 0;
   const isLast = current === total - 1;
 
@@ -45,7 +47,7 @@ export function QuizNavigation({ current, total, onBack, onNext, isSubmitting, d
             : 'text-secondary/75 hover:text-secondary',
         )}
       >
-        <ArrowLeft size={16} aria-hidden /> Назад
+        <ArrowLeft size={16} aria-hidden /> {t('back')}
       </button>
 
       <button
@@ -61,12 +63,12 @@ export function QuizNavigation({ current, total, onBack, onNext, isSubmitting, d
       >
         {isLast ? (
           <>
-            {isSubmitting ? 'Отправка…' : 'Отправить заявку'}
+            {isSubmitting ? t('submitting') : t('submit')}
             <Send size={16} aria-hidden />
           </>
         ) : (
           <>
-            Далее <ArrowRight size={16} aria-hidden />
+            {t('next')} <ArrowRight size={16} aria-hidden />
           </>
         )}
       </button>

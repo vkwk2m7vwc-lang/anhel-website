@@ -8,21 +8,16 @@ import { ServiceRequestForm } from '@/components/service/ServiceRequestForm';
  * SEO: noindex — поисковикам форма не нужна, в индекс уйдёт только
  * лендинг `/service`.
  *
- * i18n: meta-теги локализованы через service.request_page.*.
- *
- * Сама форма (ServiceRequestForm) остаётся на русском для всех локалей.
- * Причина: 50+ инженерных полей с строгими наименованиями (request_number,
- * equipment_serial, ШУ, ИОТ и т.п.), которые менеджер парсит в RU
- * нотации. EN/TR-клиенты должны писать через `/contacts` — глобальная
- * форма обратной связи на их языке доступна там. Перевод формы заявки —
- * отдельная задача после полной локализации PDF-опросников.
+ * i18n: meta-теги и форма локализованы через service.request_form.*
+ * (см. _scripts/locales). Form labels / placeholders / hints overlaid
+ * via useTranslatedServiceSteps hook with TS RU fallback.
  */
 export async function generateMetadata({
   params: { locale },
 }: {
   params: { locale: string };
 }): Promise<Metadata> {
-  const t = await getTranslations({ locale, namespace: 'service.request_page' });
+  const t = await getTranslations({ locale, namespace: 'service.request_form' });
   return {
     title: t('meta_title'),
     description: t('meta_description'),

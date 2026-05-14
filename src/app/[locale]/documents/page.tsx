@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { Link } from "@/navigation";
 import { FileText, FileBadge, FileCog, Download, Building2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
@@ -26,9 +25,18 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
  * `documents.items.<key>` по стабильному ключу. Размер файла (МБ)
  * остаётся как есть в TS — это технический факт, не контент.
  *
- * PDF-файлы: сертификаты всегда RU (юр.документ РФ). Опросники и
- * каталоги — в текущей версии тоже только RU; per-locale PDF — в
- * отдельном PR `feat/pdf-localization-wave-1`.
+ * Locale-aware PDF policy (PR feat/pdf-localization-wave-1):
+ *   - Опросные листы — есть RU/EN/TR (`oprosnyi-list-<locale>.pdf`).
+ *     На EN/TR href и size swap'ятся в `localizedQuestionnaire()`.
+ *   - Карточка организации — есть RU/EN/TR
+ *     (`company-profile-<locale>.pdf`), swap в COMMON_DOCS.
+ *   - Заявка на сервис — есть RU/EN/TR
+ *     (`service-request-anhel-<locale>.pdf`), swap в COMMON_DOCS.
+ *   - Руководства по эксплуатации — есть RU + EN/TR для всех 5
+ *     насосных категорий (`manual-<locale>.pdf`).
+ *   - Сертификаты и декларации ЕАЭС — ТОЛЬКО RU (юр. документы РФ).
+ *     На EN/TR показывается «Original document (Russian)».
+ *   - Каталоги МФМК — отдельная задача, переверстка нужна.
  */
 export async function generateMetadata({
   params: { locale },
@@ -109,10 +117,67 @@ const CATEGORIES: readonly DocCategoryData[] = [
   },
 ];
 
-const COMMON_DOCS: readonly { key: "anhel_card" | "service_request"; href: string; size: string }[] = [
-  { key: "anhel_card", href: "/anhel-card.pdf", size: "0.07 MB" },
-  { key: "service_request", href: "/documents/service-request-anhel.pdf", size: "0.06 MB" },
+/**
+ * COMMON_DOCS entries — every URL is now locale-aware.
+ *
+ * `anhel_card` — three locale variants /company-profile-{ru,en,tr}.pdf
+ * produced by _scripts/build_company_profile.py. Different sizes per
+ * locale are negligible (~40 KB each) so we display a single rounded
+ * value.
+ *
+ * `service_request` — three locale variants
+ * /documents/service-request-anhel{,-en,-tr}.pdf produced by
+ * _scripts/build_service_request_translations.py. RU is the original
+ * AcroForm (60 KB); EN/TR are ReportLab re-renders (~37 KB each).
+ */
+type CommonDocLocaleResolver = (locale: string) => string;
+
+const COMMON_DOCS: readonly {
+  key: "anhel_card" | "service_request";
+  size: string;
+  href: CommonDocLocaleResolver;
+}[] = [
+  {
+    key: "anhel_card",
+    size: "0.04 MB",
+    href: (locale) => `/company-profile-${locale}.pdf`,
+  },
+  {
+    key: "service_request",
+    size: "0.06 MB",
+    href: (locale) =>
+      locale === "ru"
+        ? "/documents/service-request-anhel.pdf"
+        : `/documents/service-request-anhel-${locale}.pdf`,
+  },
 ];
+
+/**
+ * Localised questionnaire size table.
+ *
+ * RU originals are AcroForm-based and range 0.29–2.17 MB. EN/TR PDFs
+ * are ReportLab re-renders (sectioned printable forms) and are
+ * uniformly compact. The values below are pulled from disk and never
+ * vary across the four pump categories (file is shared) — we keep a
+ * lookup keyed by the «documents.items.<key>» stable id.
+ */
+const LOCALISED_Q_SIZE: Record<"en" | "tr", string> = {
+  en: "0.04 MB",
+  tr: "0.04 MB",
+};
+
+/**
+ * Swap a questionnaire entry's href / size for a non-RU locale.
+ */
+function localizedQuestionnaire(
+  q: DocItem,
+  locale: string,
+): { href: string; size: string } {
+  if (locale === "ru") return { href: q.href, size: q.size };
+  const stem = locale as "en" | "tr";
+  const href = q.href.replace(/oprosnyi-list\.pdf$/, `oprosnyi-list-${stem}.pdf`);
+  return { href, size: LOCALISED_Q_SIZE[stem] };
+}
 
 export default function DocumentsPage({
   params: { locale },
@@ -130,10 +195,13 @@ export default function DocumentsPage({
   const manualCats = CATEGORIES.filter((cat) => cat.manuals && cat.manuals.length > 0);
 
   // Подпись «Original document (Russian)» / «Orijinal belge (Rusça)»
-  // показывается под каждым сертификатом ТОЛЬКО на не-RU локалях,
-  // чтобы EN/TR-читатели понимали, что PDF откроется на русском.
-  // На RU подпись избыточна, поэтому не рендерим.
-  const certNote = locale === "ru" ? undefined : t("sections.certificates.original_note");
+  // показывается ТОЛЬКО под сертификатами и декларациями ЕАЭС на не-RU
+  // локалях — это юр. документы РФ, перевод не предусмотрен.
+  //
+  // Опросные листы, карточка организации, сервисная заявка и
+  // руководства имеют локализованные варианты — note для них больше
+  // не выводится.
+  const ruNote = locale === "ru" ? undefined : t("sections.certificates.original_note");
 
   return (
     <main className="pt-24 md:pt-32">
@@ -162,15 +230,19 @@ export default function DocumentsPage({
         <div className="mx-auto max-w-[1440px] px-6 py-14 md:px-12 md:py-16">
           <p className="mono-tag mb-8">{t("common_section.mono_tag")}</p>
           <ul className="grid gap-3 md:grid-cols-2">
-            {COMMON_DOCS.map((doc) => (
-              <DocCard
-                key={doc.href}
-                title={tCommon(doc.key)}
-                href={doc.href}
-                size={doc.size}
-                icon={Building2}
-              />
-            ))}
+            {COMMON_DOCS.map((doc) => {
+              // Every COMMON_DOCS entry now has a locale-specific PDF
+              // — note about Russian-only is no longer needed here.
+              return (
+                <DocCard
+                  key={doc.key}
+                  title={tCommon(doc.key)}
+                  href={doc.href(locale)}
+                  size={doc.size}
+                  icon={Building2}
+                />
+              );
+            })}
           </ul>
         </div>
       </section>
@@ -192,11 +264,17 @@ export default function DocumentsPage({
                 key={cat.slug}
                 id={cat.slug}
                 title={tDirections(`${cat.slug}.title`)}
-                items={cat.questionnaires.map((q) => ({
-                  title: tItems(q.key),
-                  href: q.href,
-                  size: q.size,
-                }))}
+                items={cat.questionnaires.map((q) => {
+                  // EN/TR questionnaires live alongside the RU master
+                  // as `oprosnyi-list-<locale>.pdf`. Generated by
+                  // _scripts/build_questionnaire_translations.py.
+                  const swapped = localizedQuestionnaire(q, locale);
+                  return {
+                    title: tItems(q.key),
+                    href: swapped.href,
+                    size: swapped.size,
+                  };
+                })}
                 icon={FileText}
               />
             ))}
@@ -242,7 +320,7 @@ export default function DocumentsPage({
                   title: tItems(c.key),
                   href: c.href,
                   size: c.size,
-                  note: certNote,
+                  note: ruNote,
                 }))}
                 icon={FileBadge}
               />
@@ -265,11 +343,18 @@ export default function DocumentsPage({
                 <DirectionGroup
                   key={cat.slug}
                   title={tDirections(`${cat.slug}.title`)}
-                  items={(cat.manuals ?? []).map((m) => ({
-                    title: tItems(m.key),
-                    href: m.href,
-                    size: m.size,
-                  }))}
+                  items={(cat.manuals ?? []).map((m) => {
+                    // Locale-aware manual swap. The RU master is
+                    // /docs/<cat>/manual.pdf (1.38 MB). EN/TR translated
+                    // re-renders sit alongside as manual-en.pdf /
+                    // manual-tr.pdf (~60 KB each, generated via
+                    // _scripts/build_manual_translations.py).
+                    if (locale === "ru") return { title: tItems(m.key), href: m.href, size: m.size };
+                    const suffix = locale === "en" ? "-en" : "-tr";
+                    const localizedHref = m.href.replace(/manual\.pdf$/, `manual${suffix}.pdf`);
+                    const localizedSize = locale === "en" ? "61 KB" : "63 KB";
+                    return { title: tItems(m.key), href: localizedHref, size: localizedSize };
+                  })}
                   icon={FileCog}
                 />
               ))}
@@ -359,9 +444,15 @@ function DocCard({
   note?: string;
   icon: typeof FileText;
 }) {
+  // Static PDFs live in /public — they are NOT app routes. The
+  // next-intl <Link> would (a) prepend the locale prefix on EN/TR
+  // (→ /en/docs/… → 404) and (b) intercept the click for client-side
+  // routing on RU (→ no such route → 404 page). Plain <a download>
+  // lets the browser fetch the file directly. Same pattern as
+  // ProductHero.ProductCtaButton and the /contacts download button.
   return (
     <li>
-      <Link
+      <a
         href={href}
         download
         data-cursor="hover"
@@ -389,7 +480,7 @@ function DocCard({
           aria-hidden="true"
           className="shrink-0 text-[var(--color-secondary)]/35 transition-all group-hover:translate-y-0.5 group-hover:text-[var(--color-secondary)]"
         />
-      </Link>
+      </a>
     </li>
   );
 }

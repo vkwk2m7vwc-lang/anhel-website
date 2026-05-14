@@ -35,7 +35,7 @@ export const content: ProductContent = {
     },
     secondaryCta: {
       label: "Teknik veri formu",
-      href: "/docs/heating-unit/oprosnyi-list.pdf",
+      href: "/docs/heating-unit/oprosnyi-list-tr.pdf",
       variant: "ghost",
     },
   },
@@ -144,7 +144,7 @@ export const content: ProductContent = {
     title: "Belgeler ve sertifikalar",
     lede: "Teknik veri formu ve sertifika — tasarım ve kabul için.",
     items: [
-      { id: "oprosnik", title: "Isı istasyonu teknik veri formu", size: "0.54 MB", href: "/docs/heating-unit/oprosnyi-list.pdf" },
+      { id: "oprosnik", title: "Isı istasyonu teknik veri formu", size: "51 KB", href: "/docs/heating-unit/oprosnyi-list-tr.pdf" },
       { id: "cert-deklaratsiya", title: "Sertifika — ANHEL® blok ısı istasyonları", size: "2.32 MB", href: "/docs/heating-unit/cert-deklaratsiya.pdf" },
     ],
   },

@@ -28,11 +28,9 @@ import { HeroCountersMobile } from "./HeroCountersMobile";
 export function HeroShell({
   background,
   foreground,
-  variantLabel,
 }: {
   background: ReactNode;
   foreground?: ReactNode;
-  variantLabel: string;
 }) {
   const t = useTranslations("home.hero");
   return (
@@ -120,34 +118,39 @@ export function HeroShell({
           <HeroCTAs />
         </div>
 
-        {/* Bottom row: counters + variant label + scroll hint — all three
-            children are presentational text, so we leave the row
-            click-through (the outer wrapper already is). */}
-        <div className="mt-12 hidden flex-col gap-10 border-t border-[var(--color-hairline)] pt-10 md:mt-16 md:flex md:flex-row md:items-end md:justify-between">
-          <HeroCounters />
+        {/* Bottom area: brand tagline + counters.
+            Two duplicate lines were removed in 2026-05 — `variantLabel`
+            (ANHEL® mark, redundant with the header logo) and `scroll_hint`
+            («ПРОКРУТИТЬ ↓», superfluous on a full-bleed hero). The variant
+            label prop was dropped from HeroShell's signature at the same
+            time.
 
-          <div className="flex flex-col gap-3 text-right md:items-end">
-            <p className="font-mono text-[10px] uppercase tracking-[0.1em] text-[var(--color-secondary)]/40">
-              {t("footer_tagline")}
-            </p>
-            <p className="font-mono text-[10px] uppercase tracking-[0.1em] text-[var(--color-secondary)]/50">
-              {variantLabel}
-            </p>
-            <motion.p
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 1, delay: 1.4 }}
-              className="flex items-center justify-end gap-2 font-mono text-[10px] uppercase tracking-[0.1em] text-[var(--color-secondary)]/60"
-            >
-              {t("scroll_hint")}
-              <motion.span
-                aria-hidden="true"
-                animate={{ y: [0, 4, 0] }}
-                transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
-              >
-                ↓
-              </motion.span>
-            </motion.p>
+            The tagline used to sit on the SAME row as HeroCounters with
+            `flex-row justify-between` — counters on the left, tagline at
+            far-right. On lg+ the carousel's pagination strip
+            (`absolute inset-x-8 bottom-10` inside the right 40% zone)
+            renders the active product name with an arrow on the LEFT of
+            that zone. With the RU tagline being the longest of the three
+            («Проектирование · Производство · Автоматизация», ~290 px),
+            its left edge crept into the same horizontal range as the
+            carousel product name on 1280–1440 viewports and the two
+            collided.
+
+            Fix: lift the tagline ONE row up so it sits above the hairline
+            and the counters, full-width right-aligned. Vertically it now
+            clears the carousel pagination row (`bottom-10`) by the full
+            counter-strip height + hairline + pt-10. Counters keep the
+            same flow but lose the right-hand sibling — they now sit on
+            their own row, full width.
+
+            Desktop/tablet only (hidden md:block) — mobile uses inline
+            HeroCountersMobile above. */}
+        <div className="mt-12 hidden md:mt-16 md:block">
+          <p className="text-right font-mono text-[10px] uppercase tracking-[0.1em] text-[var(--color-secondary)]/40">
+            {t("footer_tagline")}
+          </p>
+          <div className="mt-6 border-t border-[var(--color-hairline)] pt-10">
+            <HeroCounters />
           </div>
         </div>
       </div>

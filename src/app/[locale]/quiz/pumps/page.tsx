@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import type { CSSProperties } from 'react';
+import { getTranslations } from 'next-intl/server';
 import { QuizShell } from '@/components/quiz/QuizShell';
 import { pumpsPrefillMap, pumpsAccentMap } from '@/content/quiz/pumps-fields';
 import { pumpsQuizConfig } from '@/content/quiz/pumps-config';
@@ -8,11 +9,20 @@ import { pumpsQuizConfig } from '@/content/quiz/pumps-config';
 // из client-component, статическая генерация для неё не имеет смысла.
 export const dynamic = 'force-dynamic';
 
-export const metadata: Metadata = {
-  title: 'Опросный лист — подбор насосной установки',
-  description:
-    'Заполните онлайн-опросник для подбора насосной установки. Менеджер свяжется в течение 1 рабочего дня. Также доступен PDF-вариант.',
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: { locale: string };
+}): Promise<Metadata> {
+  const t = await getTranslations({
+    locale: params.locale,
+    namespace: 'quiz.pumps',
+  });
+  return {
+    title: t('meta_title'),
+    description: t('meta_description'),
+  };
+}
 
 type Props = {
   searchParams?: { from?: string };

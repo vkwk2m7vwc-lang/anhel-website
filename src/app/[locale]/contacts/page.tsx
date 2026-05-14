@@ -279,8 +279,8 @@ export default function ContactsPage({
                     {t("requisites.download_note")}
                   </p>
                   <a
-                    href="/anhel-card.pdf"
-                    download="ANHEL-karta-organizacii.pdf"
+                    href={`/company-profile-${locale}.pdf`}
+                    download={`ANHEL-company-profile-${locale}.pdf`}
                     data-cursor="hover"
                     className="inline-flex items-center gap-3 rounded-sm border border-[var(--color-secondary)] bg-[var(--color-secondary)] px-7 py-3 font-mono text-xs uppercase tracking-[0.12em] text-[var(--color-primary)] transition-opacity hover:opacity-90"
                   >

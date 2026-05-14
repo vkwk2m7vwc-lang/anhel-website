@@ -1,8 +1,21 @@
 /**
  * Zod-схема ВПУ. Required: только 6 контактных + согласие на ОПД.
  * Все технические поля опциональные (как в PDF).
+ *
+ * Two flavors exported:
+ *  - `vpuQuizSchema`        — static, RU messages, used by the server-side
+ *                             /api/questionnaire route (no locale context).
+ *  - `makeVpuQuizSchema(t)` — factory used by client-side QuizShell so
+ *                             validation messages render in the active
+ *                             locale. Both schemas have identical shape;
+ *                             only the error messages differ.
  */
 import { z } from 'zod';
+import {
+  makeContactsBlock,
+  makeConsentBlock,
+  type ValidationT,
+} from './contacts-schema';
 
 const optionalText = z.string().trim().optional().or(z.literal('').transform(() => undefined));
 const optionalNumberLike = z
@@ -14,19 +27,9 @@ const optionalNumberLike = z
     return Number.isFinite(n) ? n : undefined;
   });
 
-export const vpuQuizSchema = z.object({
-  // Контакты
-  contact_organization: z.string().trim().min(1, 'Укажите организацию'),
-  contact_fullname: z.string().trim().min(1, 'Укажите ФИО'),
-  contact_position: z.string().trim().min(1, 'Укажите должность'),
-  contact_city: z.string().trim().min(1, 'Укажите город'),
-  contact_email: z.string().trim().min(1, 'Укажите email').email('Неверный формат email'),
-  contact_phone: z
-    .string()
-    .trim()
-    .min(1, 'Укажите телефон')
-    .regex(/^[+\d\s()\-.]{6,}$/, 'Проверьте телефон'),
-
+/** Technical fields — same shape for both flavors, only required fields
+ *  (contacts + consent) differ in their error messages. */
+const technicalFields = {
   // Источник
   water_source: optionalText,
   water_temp: optionalText, // диапазон «min, max» хранится как строка
@@ -52,12 +55,34 @@ export const vpuQuizSchema = z.object({
   drain_limits_volume: optionalText,
   design_docs_scope: optionalText,
   additional_info: optionalText,
+} as const;
 
-  // Согласие
+/** RU-message static schema (server-side validation in /api/questionnaire). */
+export const vpuQuizSchema = z.object({
+  contact_organization: z.string().trim().min(1, 'Укажите организацию'),
+  contact_fullname: z.string().trim().min(1, 'Укажите ФИО'),
+  contact_position: z.string().trim().min(1, 'Укажите должность'),
+  contact_city: z.string().trim().min(1, 'Укажите город'),
+  contact_email: z.string().trim().min(1, 'Укажите email').email('Неверный формат email'),
+  contact_phone: z
+    .string()
+    .trim()
+    .min(1, 'Укажите телефон')
+    .regex(/^[+\d\s()\-.]{6,}$/, 'Проверьте телефон'),
+  ...technicalFields,
   consent_pdn: z.literal(true, {
     errorMap: () => ({ message: 'Необходимо согласие на обработку персональных данных' }),
   }),
 });
+
+/** Locale-aware factory used by client-side QuizShell. */
+export function makeVpuQuizSchema(t: ValidationT) {
+  return z.object({
+    ...makeContactsBlock(t),
+    ...technicalFields,
+    ...makeConsentBlock(t),
+  });
+}
 
 export const vpuDefaults: Record<string, unknown> = {
   contact_organization: '', contact_fullname: '', contact_position: '',

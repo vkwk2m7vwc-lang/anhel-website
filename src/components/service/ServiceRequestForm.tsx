@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslations } from 'next-intl';
 import { ArrowLeft, ArrowRight, Send, Check } from 'lucide-react';
 import {
   FORM_STEPS,
@@ -12,6 +13,10 @@ import {
   type FormField,
   type FormStep,
 } from '@/content/service/form-config';
+import { useTranslatedServiceSteps } from './useTranslatedServiceSteps';
+
+/** Validation `t(key, vars?)` shape — shared across translation namespaces. */
+type Tfn = (key: string, vars?: Record<string, string | number>) => string;
 
 /**
  * Multistep-форма заявки на сервисное обслуживание.
@@ -53,26 +58,34 @@ function emptyValues(): Values {
   return v;
 }
 
-function validateField(field: FormField, value: string | boolean): string | undefined {
+function validateField(
+  field: FormField,
+  value: string | boolean,
+  tValidation: Tfn,
+): string | undefined {
   if (field.kind === 'checkbox') {
-    if (field.required && value !== true) return 'Необходимо согласие';
+    if (field.required && value !== true) return tValidation('consent_required');
     return undefined;
   }
   const str = typeof value === 'string' ? value.trim() : '';
-  if (field.required && !str) return 'Поле обязательно';
+  if (field.required && !str) return tValidation('field_required');
   if (!str) return undefined;
-  if (field.kind === 'tel' && !TEL_REGEX.test(str)) return 'Похоже на некорректный номер';
-  if (field.kind === 'email' && !EMAIL_REGEX.test(str)) return 'Некорректный e-mail';
+  if (field.kind === 'tel' && !TEL_REGEX.test(str)) return tValidation('phone_format');
+  if (field.kind === 'email' && !EMAIL_REGEX.test(str)) return tValidation('email_format');
   if (field.kind === 'textarea' && field.minLength && str.length < field.minLength) {
-    return `Минимум ${field.minLength} символов (введено ${str.length})`;
+    return tValidation('min_length', { min: field.minLength, actual: str.length });
   }
   return undefined;
 }
 
-function validateStep(step: FormStep, values: Values): Errors {
+function validateStep(
+  step: FormStep,
+  values: Values,
+  tValidation: Tfn,
+): Errors {
   const errs: Errors = {};
   for (const f of step.fields) {
-    const e = validateField(f, values[f.name]);
+    const e = validateField(f, values[f.name], tValidation);
     if (e) errs[f.name] = e;
   }
   return errs;
@@ -101,6 +114,9 @@ function computeProgress(stepIdx: number, step: FormStep, values: Values): numbe
 
 export function ServiceRequestForm() {
   const router = useRouter();
+  const t = useTranslations('service.request_form');
+  const tValidation = useTranslations('quiz.shell.validation') as unknown as Tfn;
+  const localizedSteps = useTranslatedServiceSteps();
   const [values, setValues] = useState<Values>(emptyValues);
   const [stepIdx, setStepIdx] = useState(0);
   const [errors, setErrors] = useState<Errors>({});
@@ -145,8 +161,8 @@ export function ServiceRequestForm() {
     }
   }, [values, stepIdx]);
 
-  const step = FORM_STEPS[stepIdx];
-  const isLast = stepIdx === FORM_STEPS.length - 1;
+  const step = localizedSteps[stepIdx];
+  const isLast = stepIdx === localizedSteps.length - 1;
   const pct = computeProgress(stepIdx, step, values);
 
   const setFieldValue = useCallback((name: string, value: string | boolean) => {
@@ -160,7 +176,7 @@ export function ServiceRequestForm() {
   }, []);
 
   const handleNext = useCallback(() => {
-    const errs = validateStep(step, values);
+    const errs = validateStep(step, values, tValidation);
     if (Object.keys(errs).length > 0) {
       setErrors(errs);
       return;
@@ -171,7 +187,7 @@ export function ServiceRequestForm() {
     setVisited((prev) => new Set(prev).add(nextIdx));
     setStepIdx(nextIdx);
     if (typeof window !== 'undefined') window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, [step, stepIdx, values]);
+  }, [step, stepIdx, values, tValidation]);
 
   const handlePrev = useCallback(() => {
     if (stepIdx === 0) return;
@@ -182,10 +198,13 @@ export function ServiceRequestForm() {
 
   const handleSubmit = useCallback(() => {
     const allErrs: Errors = {};
-    for (const s of FORM_STEPS) Object.assign(allErrs, validateStep(s, values));
+    for (const s of localizedSteps)
+      Object.assign(allErrs, validateStep(s, values, tValidation));
     if (Object.keys(allErrs).length > 0) {
       setErrors(allErrs);
-      const firstErrStep = FORM_STEPS.find((s) => s.fields.some((f) => allErrs[f.name]));
+      const firstErrStep = localizedSteps.find((s) =>
+        s.fields.some((f) => allErrs[f.name]),
+      );
       if (firstErrStep) setStepIdx(firstErrStep.index);
       return;
     }
@@ -199,7 +218,7 @@ export function ServiceRequestForm() {
       }
       setTimeout(() => router.push('/service?submitted=1'), 1600);
     }, 700);
-  }, [values, router]);
+  }, [values, router, localizedSteps, tValidation]);
 
   const goToStep = useCallback(
     (idx: number) => {
@@ -213,13 +232,12 @@ export function ServiceRequestForm() {
   return (
     <div className="mx-auto w-full max-w-[840px] px-6 pb-32 pt-24 md:px-12 md:pt-28">
       {/* === Header === */}
-      <p className="mono-tag">Заявка на диагностику</p>
+      <p className="mono-tag">{t('tag')}</p>
       <h1 className="mt-6 font-display text-4xl font-medium leading-[1.1] md:text-5xl">
-        Сервисная заявка ANHEL®
+        {t('title')}
       </h1>
       <p className="mt-4 max-w-[600px] text-sm leading-relaxed text-[var(--color-secondary)]/65 md:mt-5 md:text-[15px]">
-        Заполните форму — мы согласуем выезд инженера. Решение принимается
-        после получения заполненной и пропечатанной заявки.
+        {t('subtitle')}
       </p>
 
       {/* === Progress: тонкая линия + точки === */}
@@ -238,7 +256,7 @@ export function ServiceRequestForm() {
             а сам пятачок остаётся декоративным — фактический tap-target
             теперь весь столбик. */}
         <div className="mt-5 flex items-start justify-between gap-1">
-          {FORM_STEPS.map((s, i) => {
+          {localizedSteps.map((s, i) => {
             const active = i === stepIdx;
             const isVisited = visited.has(i);
             const clickable = isVisited && !active;
@@ -249,7 +267,7 @@ export function ServiceRequestForm() {
                 disabled={!clickable}
                 onClick={() => clickable && goToStep(i)}
                 aria-current={active ? 'step' : undefined}
-                aria-label={`Шаг ${i + 1}: ${s.title}`}
+                aria-label={t('step_aria', { current: i + 1, title: s.title })}
                 className={
                   'group relative flex min-h-11 flex-1 flex-col items-start py-1 text-left transition-colors ' +
                   (clickable ? 'cursor-pointer' : 'cursor-default')
@@ -285,7 +303,10 @@ export function ServiceRequestForm() {
 
         <div className="mt-3 flex items-center justify-between font-mono text-[11px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/55">
           <span>
-            Шаг {stepIdx + 1} из {FORM_STEPS.length}
+            {t('step_of', {
+              current: stepIdx + 1,
+              total: localizedSteps.length,
+            })}
           </span>
           <span className="text-[var(--color-secondary)]/85">{pct}%</span>
         </div>
@@ -309,11 +330,10 @@ export function ServiceRequestForm() {
               </span>
               <div>
                 <p className="font-display text-2xl font-medium">
-                  Заявка отправлена
+                  {t('success_title')}
                 </p>
                 <p className="mt-3 max-w-[520px] text-sm leading-relaxed text-[var(--color-secondary)]/70 md:text-[15px]">
-                  Мы свяжемся с вами в течение рабочего дня. Сейчас вернём
-                  на главную страницу сервиса.
+                  {t('success_body')}
                 </p>
               </div>
             </div>
@@ -334,7 +354,10 @@ export function ServiceRequestForm() {
             aria-labelledby={`step-${step.index}-title`}
           >
             <p className="mono-tag">
-              {`Шаг ${stepIdx + 1} / ${FORM_STEPS.length}`}
+              {t('step_short', {
+                current: stepIdx + 1,
+                total: localizedSteps.length,
+              })}
             </p>
             <h2
               id={`step-${step.index}-title`}
@@ -362,7 +385,9 @@ export function ServiceRequestForm() {
               </div>
             )}
 
-            {isLast && <ReviewSummary values={values} />}
+            {isLast && (
+              <ReviewSummary values={values} steps={localizedSteps} />
+            )}
           </motion.section>
         </AnimatePresence>
       )}
@@ -384,7 +409,7 @@ export function ServiceRequestForm() {
             }
           >
             <ArrowLeft size={16} strokeWidth={1.5} aria-hidden="true" />
-            Назад
+            {t('back')}
           </button>
 
           {!isLast ? (
@@ -394,7 +419,7 @@ export function ServiceRequestForm() {
               data-cursor="hover"
               className="group inline-flex min-h-11 items-center gap-2 border border-[var(--color-secondary)] bg-[var(--color-secondary)] px-5 py-2.5 text-sm font-medium text-[var(--color-primary)] transition-colors hover:bg-transparent hover:text-[var(--color-secondary)]"
             >
-              Далее
+              {t('next')}
               <ArrowRight size={16} strokeWidth={1.5} aria-hidden="true" />
             </button>
           ) : (
@@ -405,7 +430,7 @@ export function ServiceRequestForm() {
               data-cursor="hover"
               className="group inline-flex min-h-11 items-center gap-2 border border-[var(--color-secondary)] bg-[var(--color-secondary)] px-5 py-2.5 text-sm font-medium text-[var(--color-primary)] transition-colors hover:bg-transparent hover:text-[var(--color-secondary)] disabled:cursor-not-allowed disabled:opacity-50"
             >
-              {submitState === 'submitting' ? 'Отправка…' : 'Отправить заявку'}
+              {submitState === 'submitting' ? t('submitting') : t('submit')}
               <Send size={16} strokeWidth={1.5} aria-hidden="true" />
             </button>
           )}
@@ -415,12 +440,12 @@ export function ServiceRequestForm() {
       {/* Cancel link */}
       {submitState === 'idle' && (
         <p className="mt-6 text-center text-xs text-[var(--color-secondary)]/55">
-          Передумали?{' '}
+          {t('cancel_pre')}
           <Link
             href="/service"
             className="underline-offset-2 hover:text-[var(--color-secondary)] hover:underline"
           >
-            Вернуться к описанию услуг
+            {t('cancel_link')}
           </Link>
         </p>
       )}
@@ -447,6 +472,7 @@ function FieldRow({
   error: string | undefined;
   onChange: (name: string, value: string | boolean) => void;
 }) {
+  const tShell = useTranslations('quiz.shell');
   const id = `field-${field.name}`;
   const errorId = error ? `${id}-error` : undefined;
   const hintId = field.hint ? `${id}-hint` : undefined;
@@ -473,21 +499,21 @@ function FieldRow({
         <span className="text-sm leading-relaxed text-[var(--color-secondary)]/85 md:text-[15px]">
           {field.name === 'consent_pd' ? (
             <>
-              Я даю согласие на обработку моих персональных данных в соответствии с{' '}
+              {tShell('consent_privacy_pre')}
               <Link
                 href="/privacy-policy"
                 className="underline decoration-[var(--color-hairline)] underline-offset-[3px] hover:decoration-[var(--color-secondary)]"
               >
-                Политикой конфиденциальности
+                {tShell('consent_privacy')}
               </Link>
-              {' '}и{' '}
+              {tShell('consent_and')}
               <Link
                 href="/personal-data-consent"
                 className="underline decoration-[var(--color-hairline)] underline-offset-[3px] hover:decoration-[var(--color-secondary)]"
               >
-                Согласием на обработку ПД
+                {tShell('consent_data')}
               </Link>
-              .
+              {tShell('urgent_dot')}
             </>
           ) : (
             field.label
@@ -599,23 +625,33 @@ function FieldError({
 }
 
 /** Превью на последнем шаге — все шаги/поля списком. */
-function ReviewSummary({ values }: { values: Values }) {
+function ReviewSummary({
+  values,
+  steps,
+}: {
+  values: Values;
+  steps: readonly FormStep[];
+}) {
+  const tShell = useTranslations('quiz.shell');
+  const yesLabel = tShell('yes_short');
   const grouped = useMemo(
     () =>
-      FORM_STEPS.filter((s) => s.fields.length > 0).map((s) => ({
-        step: s,
-        rows: s.fields.map((f) => {
-          const raw = values[f.name];
-          let display = '';
-          if (f.kind === 'checkbox') {
-            display = raw === true ? 'Да' : '—';
-          } else {
-            display = typeof raw === 'string' && raw.trim() ? raw : '—';
-          }
-          return { field: f, display };
-        }),
-      })),
-    [values],
+      steps
+        .filter((s) => s.fields.length > 0)
+        .map((s) => ({
+          step: s,
+          rows: s.fields.map((f) => {
+            const raw = values[f.name];
+            let display = '';
+            if (f.kind === 'checkbox') {
+              display = raw === true ? yesLabel : '—';
+            } else {
+              display = typeof raw === 'string' && raw.trim() ? raw : '—';
+            }
+            return { field: f, display };
+          }),
+        })),
+    [steps, values, yesLabel],
   );
 
   return (
@@ -623,7 +659,7 @@ function ReviewSummary({ values }: { values: Values }) {
       {grouped.map(({ step, rows }) => (
         <div key={step.index} className="border-t border-[var(--color-hairline)] pt-6">
           <p className="font-mono text-[11px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/55">
-            Шаг {step.index + 1} · {step.title}
+            {step.index + 1} · {step.title}
           </p>
           <dl className="mt-4 grid grid-cols-1 gap-x-8 gap-y-4 md:grid-cols-2">
             {rows.map(({ field, display }) => (

@@ -1,5 +1,16 @@
-/** Zod-схема ИТП. Required: 6 контактов + согласие. */
+/**
+ * Zod-схема ИТП. Required: 6 контактов + согласие.
+ *
+ * Two flavors exported:
+ *  - `itpQuizSchema`        — static RU, kept for server-side route.
+ *  - `makeItpQuizSchema(t)` — locale-aware factory used by QuizShell.
+ */
 import { z } from 'zod';
+import {
+  makeContactsBlock,
+  makeConsentBlock,
+  type ValidationT,
+} from './contacts-schema';
 
 const optionalText = z.string().trim().optional().or(z.literal('').transform(() => undefined));
 const optionalNumberLike = z
@@ -37,15 +48,8 @@ function systemShape(prefix: string) {
   };
 }
 
-export const itpQuizSchema = z.object({
-  // Контакты
-  contact_organization: z.string().trim().min(1, 'Укажите организацию'),
-  contact_fullname: z.string().trim().min(1, 'Укажите ФИО'),
-  contact_position: z.string().trim().min(1, 'Укажите должность'),
-  contact_city: z.string().trim().min(1, 'Укажите город'),
-  contact_email: z.string().trim().min(1, 'Укажите email').email('Неверный формат email'),
-  contact_phone: z.string().trim().min(1, 'Укажите телефон').regex(/^[+\d\s()\-.]{6,}$/, 'Проверьте телефон'),
-
+/** Technical fields — same shape for both flavors. */
+const technicalFields = {
   object_name: optionalText,
   source_channel: optionalRadio,
   source_other: optionalText,
@@ -100,11 +104,30 @@ export const itpQuizSchema = z.object({
   voltage_230: optionalBool, voltage_380: optionalBool,
 
   additional_info: optionalText,
+} as const;
 
+/** RU-message static schema (server-side validation in /api/questionnaire). */
+export const itpQuizSchema = z.object({
+  contact_organization: z.string().trim().min(1, 'Укажите организацию'),
+  contact_fullname: z.string().trim().min(1, 'Укажите ФИО'),
+  contact_position: z.string().trim().min(1, 'Укажите должность'),
+  contact_city: z.string().trim().min(1, 'Укажите город'),
+  contact_email: z.string().trim().min(1, 'Укажите email').email('Неверный формат email'),
+  contact_phone: z.string().trim().min(1, 'Укажите телефон').regex(/^[+\d\s()\-.]{6,}$/, 'Проверьте телефон'),
+  ...technicalFields,
   consent_pdn: z.literal(true, {
     errorMap: () => ({ message: 'Необходимо согласие на обработку персональных данных' }),
   }),
 });
+
+/** Locale-aware factory used by client-side QuizShell. */
+export function makeItpQuizSchema(t: ValidationT) {
+  return z.object({
+    ...makeContactsBlock(t),
+    ...technicalFields,
+    ...makeConsentBlock(t),
+  });
+}
 
 /** Дефолты для всех 97 + consent. */
 function systemDefaults(prefix: string): Record<string, unknown> {

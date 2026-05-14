@@ -24,7 +24,7 @@ export const content: ProductContent = {
       alt: "ANHEL — özel konfigürasyonlu pompa istasyonu: modüler kolektörler ve pompa grubu montajı",
     },
     primaryCta: { label: "Çevrimiçi doldur", href: "/quiz/pumps?from=special", variant: "primary" },
-    secondaryCta: { label: "Teknik veri formu", href: "/docs/special/oprosnyi-list.pdf", variant: "ghost" },
+    secondaryCta: { label: "Teknik veri formu", href: "/docs/special/oprosnyi-list-tr.pdf", variant: "ghost" },
   },
 
   techSpecs: [
@@ -133,9 +133,9 @@ export const content: ProductContent = {
     title: "Belgeler ve sertifikalar",
     lede: "Teknik veri formu, sertifikalar ve kılavuz — tasarım ve kabul için.",
     items: [
-      { id: "oprosnik", title: "Pompa istasyonu teknik veri formu", size: "1,49 MB", href: "/docs/special/oprosnyi-list.pdf" },
+      { id: "oprosnik", title: "Pompa istasyonu teknik veri formu", size: "42 KB", href: "/docs/special/oprosnyi-list-tr.pdf" },
       { id: "cert-deklaratsiya", title: "EAEU Uygunluk Beyannamesi — ANHEL® özel konfigürasyon pompa istasyonları", size: "0,86 MB", href: "/docs/special/cert-deklaratsiya.pdf" },
-      { id: "manual", title: "Kullanım kılavuzu — ANHEL® SPD tipi pompa istasyonları", size: "1,41 MB", href: "/docs/special/manual.pdf" },
+      { id: "manual", title: "Kullanım kılavuzu — ANHEL® SPD tipi pompa istasyonları", size: "63 KB", href: "/docs/special/manual-tr.pdf" },
     ],
   },
 

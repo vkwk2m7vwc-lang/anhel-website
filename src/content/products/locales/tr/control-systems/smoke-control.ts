@@ -137,7 +137,7 @@ export const content: ProductContent = {
     title: "Belgeler ve teknik veri formu",
     lede: "Teknik veri formu — tasarım ve kabul için PDF veya otomatik kaydetmeli çevrimiçi form.",
     items: [
-      { id: "oprosnik-pdf", title: "Kontrol panosu teknik veri formu (PDF)", size: "1,8 MB", href: "/docs/control-systems/oprosnyi-list.pdf" },
+      { id: "oprosnik-pdf", title: "Kontrol panosu teknik veri formu (PDF)", size: "1,8 MB", href: "/docs/control-systems/oprosnyi-list-tr.pdf" },
       { id: "oprosnik-online", title: "Teknik veri formunu çevrimiçi doldur", href: "/quiz/control-systems" },
     ],
   },
