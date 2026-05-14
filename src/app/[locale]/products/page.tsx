@@ -78,13 +78,18 @@ export default function ProductsCatalogPage({
             </ol>
           </nav>
 
-          <p className="mono-tag mt-8">{t("catalog.mono_tag")}</p>
-          <h1 className="mt-4 max-w-[860px] font-display text-section font-medium text-[var(--color-secondary)]">
-            {t("catalog.heading")}
-          </h1>
-          <p className="mt-6 max-w-[640px] text-body text-[var(--color-secondary)]/70 md:mt-8">
-            {t("catalog.lede")}
-          </p>
+          {/* Типографический hero — одна левая колонка max-w-4xl.
+              Не двухколоночная сетка: справа формально нет пустой
+              половины. Mobile не затронут (там колонка и так одна). */}
+          <div className="mt-8 max-w-4xl">
+            <p className="mono-tag">{t("catalog.mono_tag")}</p>
+            <h1 className="mt-4 font-display text-section font-medium text-[var(--color-secondary)]">
+              {t("catalog.heading")}
+            </h1>
+            <p className="mt-6 max-w-[640px] text-body text-[var(--color-secondary)]/70 md:mt-8">
+              {t("catalog.lede")}
+            </p>
+          </div>
         </div>
       </section>
 
