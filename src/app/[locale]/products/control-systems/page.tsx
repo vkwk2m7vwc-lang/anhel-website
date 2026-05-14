@@ -106,13 +106,19 @@ export default function ControlSystemsCategoryPage({
             </ol>
           </nav>
 
-          <p className="mono-tag mt-8">{tFamily("page.mono_tag")}</p>
-          <h1 className="mt-4 max-w-[860px] font-display text-section font-medium text-[var(--color-secondary)]">
-            {tFamily("page.heading")}
-          </h1>
-          <p className="mt-6 max-w-[640px] text-body text-[var(--color-secondary)]/70 md:mt-8">
-            {tFamily("page.lede")}
-          </p>
+          {/* Типографический hero — одна левая колонка max-w-4xl, без
+              двухколоночной сетки: справа формально нет пустой половины.
+              Mobile не затронут (там колонка и так одна).
+              Эталон правки — /products + /service (7db772f). */}
+          <div className="mt-8 max-w-4xl">
+            <p className="mono-tag">{tFamily("page.mono_tag")}</p>
+            <h1 className="mt-4 font-display text-section font-medium text-[var(--color-secondary)]">
+              {tFamily("page.heading")}
+            </h1>
+            <p className="mt-6 max-w-[640px] text-body text-[var(--color-secondary)]/70 md:mt-8">
+              {tFamily("page.lede")}
+            </p>
+          </div>
         </div>
       </section>
 
