@@ -1575,3 +1575,49 @@ P1: `/documents`, `/projects`, `/service/request`, `/products/pumps`,
 На family-landing отдельно проверить паттерн пустой desktop-зоны hero
 (#3) — но саму правку #3 не делать до ответа Алексея.
 Скриншоты — только проблемных блоков (`<route>/<issue-id>.webp`).
+
+
+---
+
+## Сессия 2026-05-14 (продолжение 3) — Решение #3 + push + preview
+
+Алексей по #3: переделать hero `/products` и `/service` в типографический
+одноколоночный формат. Сделано.
+
+### Применено
+
+- `7db772f fix(hero)` — hero обеих страниц переведён в одну левую
+  колонку `max-w-4xl`, выровненную по левому краю. `/service`: убрана
+  сетка `md:grid-cols-12` + `md:col-span-7` (это и был «пустой правый
+  столбец»). `/products`: контent обёрнут в один `max-w-4xl`, убраны
+  рассогласованные per-element max-width у H1. Mobile не затронут
+  (там колонка и так одна — проверено скриншотом).
+- Проверено: `tsc` + `npm run build` чисто, 166 страниц. Desktop и
+  mobile heroes сверены скриншотами.
+
+### Push + Vercel preview
+
+- Ветка `feat/editorial-visual-audit` запушена в origin (5 коммитов:
+  `ddc4023` → `bc6abcb` → `26a5933` → `82cfc7f` → `7db772f`, далее
+  ещё docs-коммит этой записи).
+- Vercel branch-preview (стабильный branchAlias):
+  **https://anhel-website-git-feat-editorial-515bd3-anurin7-5494s-projects.vercel.app**
+- Алексей смотрит на preview сразу 3 фикса: #1 счётчики (главная),
+  #5 /hero-e (→404), #3 hero (/products + /service).
+
+### Статус решений P0
+
+| # | Решение | Статус |
+|---|---|---|
+| 1 счётчики | убрать | ✅ `bc6abcb` |
+| 2 каталог тонкий | отложить | 📋 backlog после запуска |
+| 3 пустой desktop-hero | типографический hero | ✅ `7db772f` — ждёт ОК на preview |
+| 4 /service без фото | backlog | 📋 ждёт фото от заказчика |
+| 5 /hero-e | удалить из роутинга | ✅ `26a5933` |
+
+### Следующий шаг
+
+Ждём ОК Алексея по preview. После ОК — **P1 (7 страниц)** в новой
+сессии: `/documents`, `/projects`, `/service/request`, 4 family-landing.
+Скриншоты — только проблемных блоков. Тех.долг (осиротевшие i18n-ключи
+`home.about.stats.*`) — в финальную уборку кода после всего аудита.
