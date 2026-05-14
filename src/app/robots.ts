@@ -25,10 +25,6 @@ export default function robots(): MetadataRoute.Robots {
           "/products/pumps/firefighting/scenario-b",
           "/products/pumps/firefighting/scenario-c",
           "/products/pumps/firefighting/scenario-d",
-          // `/hero-e` is an alias route used by the dev team for
-          // linking into the autoplay hero variant — same layout as
-          // /, no need to double-index.
-          "/hero-e",
         ],
       },
     ],
