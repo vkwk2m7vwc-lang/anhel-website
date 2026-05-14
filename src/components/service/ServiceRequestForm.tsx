@@ -230,7 +230,7 @@ export function ServiceRequestForm() {
   );
 
   return (
-    <div className="mx-auto w-full max-w-[840px] px-6 pb-32 pt-24 md:px-12 md:pt-28">
+    <div className="mx-auto w-full max-w-[840px] px-6 pb-24 pt-20 md:px-12 md:pb-32 md:pt-28">
       {/* === Header === */}
       <p className="mono-tag">{t('tag')}</p>
       <h1 className="mt-6 font-display text-4xl font-medium leading-[1.1] md:text-5xl">
@@ -241,7 +241,7 @@ export function ServiceRequestForm() {
       </p>
 
       {/* === Progress: тонкая линия + точки === */}
-      <div className="mt-12 md:mt-14">
+      <div className="mt-8 md:mt-14">
         {/* Тонкая полоса */}
         <div className="relative h-px w-full bg-[var(--color-hairline)]">
           <div
@@ -350,7 +350,7 @@ export function ServiceRequestForm() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -6 }}
             transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
-            className="mt-14 border-t border-[var(--color-hairline)] pt-10 md:mt-16 md:pt-12"
+            className="mt-10 border-t border-[var(--color-hairline)] pt-8 md:mt-16 md:pt-12"
             aria-labelledby={`step-${step.index}-title`}
           >
             <p className="mono-tag">
@@ -372,7 +372,7 @@ export function ServiceRequestForm() {
             )}
 
             {step.fields.length > 0 && (
-              <div className="mt-10 grid grid-cols-1 gap-x-8 gap-y-2 sm:grid-cols-2 md:mt-12">
+              <div className="mt-8 grid grid-cols-1 gap-x-8 gap-y-2 sm:grid-cols-2 md:mt-12">
                 {step.fields.map((field) => (
                   <FieldRow
                     key={field.name}
@@ -394,7 +394,7 @@ export function ServiceRequestForm() {
 
       {/* === Sticky bottom navigation === */}
       {submitState !== 'done' && (
-        <div className="sticky bottom-0 z-20 -mx-6 mt-14 flex items-center justify-between gap-4 border-t border-[var(--color-hairline)] bg-[var(--color-primary)]/85 px-6 py-4 backdrop-blur md:-mx-12 md:px-12">
+        <div className="sticky bottom-0 z-20 -mx-6 mt-10 flex items-center justify-between gap-4 border-t border-[var(--color-hairline)] bg-[var(--color-primary)]/85 px-6 py-3 backdrop-blur md:mt-14 md:px-12 md:py-4 md:-mx-12">
           <button
             type="button"
             onClick={handlePrev}
