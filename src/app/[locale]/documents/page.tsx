@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { Link } from "@/navigation";
 import { FileText, FileBadge, FileCog, Download, Building2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
@@ -445,9 +444,15 @@ function DocCard({
   note?: string;
   icon: typeof FileText;
 }) {
+  // Static PDFs live in /public — they are NOT app routes. The
+  // next-intl <Link> would (a) prepend the locale prefix on EN/TR
+  // (→ /en/docs/… → 404) and (b) intercept the click for client-side
+  // routing on RU (→ no such route → 404 page). Plain <a download>
+  // lets the browser fetch the file directly. Same pattern as
+  // ProductHero.ProductCtaButton and the /contacts download button.
   return (
     <li>
-      <Link
+      <a
         href={href}
         download
         data-cursor="hover"
@@ -475,7 +480,7 @@ function DocCard({
           aria-hidden="true"
           className="shrink-0 text-[var(--color-secondary)]/35 transition-all group-hover:translate-y-0.5 group-hover:text-[var(--color-secondary)]"
         />
-      </Link>
+      </a>
     </li>
   );
 }
