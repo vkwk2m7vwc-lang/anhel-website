@@ -1736,3 +1736,76 @@ dark не разваливается, реальные фото/рендеры, 
 детальные `/projects/*`, квизы) на той же ветке, без новых тэгов.
 Тех.долг (осиротевшие i18n-ключи `home.about.stats.*`) — в финальную
 уборку после всего аудита.
+
+
+---
+
+## Сессия 2026-05-14 (продолжение) — P2-аудит (35 маршрутов) + 4 фикса с P1
+
+Редакционный визуальный аудит, блок P2. Ветка `feat/editorial-visual-audit`,
+без новых тэгов. Контекст подхвачен из `_PROGRESS.md` + `_audit/DECISIONS.md`.
+
+### Проверено
+
+35 P2-маршрутов: 5 насосных деталей, 5 шкафов деталей, 8 ИТП-модулей,
+4 firefighting-сценария, 13 объектов `/projects/[slug]`. Типовые
+представители + перенос на остальные (страницы из одного компонентного
+стека). Mobile 390 + desktop 1440 · RU/EN · light/dark.
+
+### Применено в этой сессии
+
+**4 пред-авторизованных косметических фикса с P1** (`fix:`):
+- C1 `/documents` нечётные сетки — последняя карточка нечётной группы
+  тянется на 2 колонки.
+- C2 `/service/request` — сжат mobile-ритм отступов (шапка + sticky
+  больше не съедают первый экран); desktop не тронут.
+- C3 убран `line-clamp` в `AdvantagesGrid` + `DocumentsGrid` — описания
+  на heating-unit/water-treatment читаются целиком.
+- C4 `BrandsStrip` — 2-колоночная сетка <sm, flex-стрип со sm+.
+
+**3 реальных бага P2 — найдены и исправлены автономно:**
+- P2-5 `fix(product-page)` — `TechSpecsGrid` на mobile: длинные значения
+  ТТХ наезжали на label и на свои перенесённые строки. value-блок →
+  `flex-1 min-w-0 justify-end text-right`, `leading-none` → `leading-tight`.
+- P2-6 `fix(product-page)` — `TechSpecsGrid` серая «дыра» при нечётном
+  числе ТТХ (7 у ИТП-модулей) → filler-ячейки. Тот же фикс — сетка
+  «Применение» на ИТП-модульных страницах.
+- P2-7 `fix(projects)` — `break-words` на H1 `/projects/[slug]`: длинное
+  составное слово («Многофункциональный…») вылезало за край на 390px.
+
+`tsc` + `npm run build` чисто после всех фиксов. Каждый фикс сверён
+скриншотом (медленный скролл, чтобы обойти headless-флейк framer-motion).
+
+### Артефакт, не баг
+
+- `TechSpecsGrid` иногда рендерился серым боксом на full-page скриншотах
+  с быстрым stepped-скроллом. Диагностика (slow scroll + scrollIntoView,
+  замер opacity): плитки = opacity 1, текст на месте на всех 5 проверенных
+  страницах. Headless-флейк `whileInView` — как карта `/contacts`.
+
+### Требует решения Алексея (не блокер)
+
+- `firefighting/scenario-{a,b,c,d}` — `redirect()`-заглушки (HTTP 307 →
+  firefighting). Sandbox-маршруты после дизайн-ревью, в коде помечены к
+  удалению. Рекомендация: удалить из роутинга (как `/hero-e` в P0).
+
+### Артефакты аудита
+
+- `_audit/pages/p2-product-details.md` (5+5+8+4), `p2-projects-detail.md` (13).
+- `_audit/REPORT-interim-P2.md` — промежуточный отчёт.
+- `_audit/DECISIONS.md` — добавлен раздел «P2 — раунд 1».
+- Скриншоты — `_audit/screenshots/` gitignored; в этой сессии жили в `/tmp`.
+
+### Состояние
+
+- Branch `feat/editorial-visual-audit`: P1-коммиты → `fix:` (4 косметич.) →
+  `fix(product-page)` → `fix(projects)` → `docs(audit)` (P2).
+- Прод-сервер пересобран (`.next` чистился — был stale-`.nft.json` ENOENT)
+  и перезапущен на :3000.
+
+### Следующий шаг
+
+P3 (квизы `/quiz/*`, 5 шт) + P4 (`/privacy-policy`,
+`/personal-data-consent`) — в этой же сессии если контекст позволит,
+иначе в новой. После — финальный `_audit/REPORT.md` + уборка кода
+(осиротевшие i18n-ключи `home.about.stats.*`).
