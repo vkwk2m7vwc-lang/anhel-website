@@ -1,0 +1,46 @@
+{
+  "page": "/products/control-systems",
+  "date": "2026-05-14",
+  "priority": "P1",
+  "status": "fixed",
+  "viewports_checked": ["mobile 390", "desktop 1440"],
+  "locales_checked": ["ru", "en", "tr"],
+  "themes_checked": ["light", "dark"],
+  "overall": "Структурно идентичен /products/pumps: hero + ProductsShowcase с 5 карточками серий шкафов с реальными рендерами. Mobile и dark — чисто. На desktop был тот же паттерн пустого hero — применил типографический hero автономно по пред-авторизации (эталон 7db772f).",
+  "blocks": [
+    {
+      "block": "Header + breadcrumb «ГЛАВНАЯ > КАТАЛОГ > ШКАФЫ УПРАВЛЕНИЯ»",
+      "needed": "yes", "readable": "yes", "real_value": "yes",
+      "verdict": "оставить",
+      "recommendation": "Без правок."
+    },
+    {
+      "block": "Hero — mono-tag + H1 «Пять серий шкафов управления под ваш объект» + лид",
+      "viewport": "desktop 1440",
+      "needed": "yes", "readable": "yes", "real_value": "yes",
+      "readable_issues": ["БЫЛО: H1 в max-w-[860px], лид в max-w-[640px], прибиты к левому краю, правая половина desktop-экрана пустая — тот же паттерн, что #3"],
+      "verdict": "исправлено",
+      "recommendation": "ИСПРАВЛЕНО автономно по пред-авторизации: контент обёрнут в div max-w-4xl, с H1 снят max-w-[860px]. Эталон — 7db772f."
+    },
+    {
+      "block": "ProductsShowcase — 5 карточек серий",
+      "needed": "yes", "readable": "yes", "real_value": "yes",
+      "real_value_notes": "Реальные рендеры шкафов, конкретные описания серий. Mobile 1 колонка, desktop 2.",
+      "verdict": "оставить",
+      "recommendation": "Без правок."
+    },
+    {
+      "block": "Footer",
+      "needed": "yes", "readable": "yes", "real_value": "yes",
+      "verdict": "оставить",
+      "recommendation": "Без правок."
+    }
+  ],
+  "fix_applied": {
+    "commit_scope": "fix(hero)",
+    "file": "src/app/[locale]/products/control-systems/page.tsx",
+    "description": "Hero переведён в типографический одноколоночный формат (div max-w-4xl), снят рассогласованный max-w-[860px] с H1. Идентичная правка с /products/pumps. Эталон — 7db772f. Покрыто пред-авторизацией для family-landing."
+  },
+  "cross_locale": "RU/EN/TR — всё переведено, RU-fallback нет.",
+  "dark_theme": "В норме, контраст держится."
+}

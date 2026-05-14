@@ -1,0 +1,46 @@
+{
+  "page": "/products/pumps",
+  "date": "2026-05-14",
+  "priority": "P1",
+  "status": "fixed",
+  "viewports_checked": ["mobile 390", "desktop 1440"],
+  "locales_checked": ["ru", "en", "tr"],
+  "themes_checked": ["light", "dark"],
+  "overall": "Раздел-каталог насосных станций: hero + ProductsShowcase с 5 карточками серий с реальными рендерами. Mobile, dark, TR — чисто, fallback'ов нет. На desktop был тот же паттерн пустого hero, что закрыли решением #3 на /products и /service — применил типографический hero автономно по пред-авторизации (эталон 7db772f).",
+  "blocks": [
+    {
+      "block": "Header + breadcrumb «ГЛАВНАЯ > КАТАЛОГ > НАСОСНЫЕ СТАНЦИИ»",
+      "needed": "yes", "readable": "yes", "real_value": "yes",
+      "verdict": "оставить",
+      "recommendation": "Без правок."
+    },
+    {
+      "block": "Hero — mono-tag + H1 «Пять серий насосных станций под ваш объект» + лид",
+      "viewport": "desktop 1440",
+      "needed": "yes", "readable": "yes", "real_value": "yes",
+      "readable_issues": ["БЫЛО: H1 в max-w-[860px], лид в max-w-[640px], прибиты к левому краю, правая половина desktop-экрана пустая — тот же паттерн, что #3 на /products + /service"],
+      "verdict": "исправлено",
+      "recommendation": "ИСПРАВЛЕНО автономно по пред-авторизации: контент обёрнут в один div max-w-4xl, с H1 снят max-w-[860px], mt-8 перенесён на обёртку. Эталон — 7db772f."
+    },
+    {
+      "block": "ProductsShowcase — 5 карточек серий",
+      "needed": "yes", "readable": "yes", "real_value": "yes",
+      "real_value_notes": "Реальные рендеры оборудования, конкретные описания серий. Mobile 1 колонка, desktop 2. Нечётная сетка (5 карт) — последняя в левой ячейке, справа воздух — нормально.",
+      "verdict": "оставить",
+      "recommendation": "Без правок."
+    },
+    {
+      "block": "Footer",
+      "needed": "yes", "readable": "yes", "real_value": "yes",
+      "verdict": "оставить",
+      "recommendation": "Без правок."
+    }
+  ],
+  "fix_applied": {
+    "commit_scope": "fix(hero)",
+    "file": "src/app/[locale]/products/pumps/page.tsx",
+    "description": "Hero переведён в типографический одноколоночный формат (div max-w-4xl), снят рассогласованный max-w-[860px] с H1. Один-в-один приём из 7db772f. Mobile не затронут. Покрыто пред-авторизацией Алексея для family-landing страниц."
+  },
+  "cross_locale": "RU/EN/TR — всё переведено, RU-fallback нет. TR-вёрстка hero и карточек не ломается.",
+  "dark_theme": "В норме, рендеры оборудования и карточки держатся."
+}

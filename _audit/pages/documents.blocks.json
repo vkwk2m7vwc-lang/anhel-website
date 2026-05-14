@@ -1,0 +1,68 @@
+{
+  "page": "/documents",
+  "date": "2026-05-14",
+  "priority": "P1",
+  "status": "ok",
+  "viewports_checked": ["mobile 390", "desktop 1440"],
+  "locales_checked": ["ru", "en", "tr"],
+  "themes_checked": ["light", "dark"],
+  "overall": "Страница в хорошем состоянии. Hero — одноколоночный типографический (приём из решения #3), двухколоночной сетки с пустым правым столбцом нет. Карточки документов читаемы, mobile стекается 1-в-колонку. Каталоги — честный placeholder «в подготовке». На EN/TR сертификаты ЕАЭС корректно помечены «Original document (Russian)». Проблемных блоков нет, к запуску готова. Мелочь: на desktop нечётные группы карточек (5 шт) оставляют полупустую последнюю строку в 2-колоночной сетке.",
+  "blocks": [
+    {
+      "block": "Header",
+      "needed": "yes", "readable": "yes", "real_value": "yes",
+      "verdict": "оставить",
+      "recommendation": "Без правок."
+    },
+    {
+      "block": "Hero — H1 «Опросные листы, каталоги, сертификаты — в одном месте» + лид + email-ссылка",
+      "needed": "yes", "readable": "yes", "real_value": "yes",
+      "real_value_notes": "Hero объясняет логику работы с документами (скачать опросный лист -> прислать на info@ -> инженер пересчитает). Одноколоночный типографический, без пустой правой сетки.",
+      "verdict": "оставить",
+      "recommendation": "Без правок. Опционально — подровнять max-w-3xl до max-w-4xl для единообразия с /products/pumps и /service. Косметика."
+    },
+    {
+      "block": "Общие документы — 2 карточки (карточка организации, заявка на сервис)",
+      "needed": "yes", "readable": "yes", "real_value": "yes",
+      "real_value_notes": "Locale-aware: на EN/TR подменяются на локализованные PDF.",
+      "verdict": "оставить",
+      "recommendation": "Без правок."
+    },
+    {
+      "block": "Опросные листы — 4 группы по направлению",
+      "needed": "yes", "readable": "yes", "real_value": "yes",
+      "readable_issues": ["Desktop: группа «Насосные станции» (5 карточек) в 2-колоночной сетке оставляет полупустую последнюю строку"],
+      "verdict": "оставить",
+      "recommendation": "Без правок. Нечётная сетка — косметика, не баг."
+    },
+    {
+      "block": "Каталоги — placeholder «в подготовке»",
+      "needed": "yes", "readable": "yes", "real_value": "yes",
+      "real_value_notes": "Честный placeholder с dashed-рамкой, явно сказано что в работе. Не выглядит как недоделка.",
+      "verdict": "оставить",
+      "recommendation": "Без правок."
+    },
+    {
+      "block": "Сертификаты ЕАЭС — 3 группы",
+      "needed": "yes", "readable": "yes", "real_value": "yes",
+      "real_value_notes": "На EN/TR корректно показывается note «Original document (Russian)» — осознанное поведение для юр. документов РФ.",
+      "verdict": "оставить",
+      "recommendation": "Без правок."
+    },
+    {
+      "block": "Руководства по эксплуатации — 1 группа (5 карточек)",
+      "needed": "yes", "readable": "yes", "real_value": "yes",
+      "readable_issues": ["Desktop: 5 карточек в 2-колоночной сетке -> полупустая последняя строка"],
+      "verdict": "оставить",
+      "recommendation": "Без правок."
+    },
+    {
+      "block": "Footer",
+      "needed": "yes", "readable": "yes", "real_value": "yes",
+      "verdict": "оставить",
+      "recommendation": "Без правок."
+    }
+  ],
+  "cross_locale": "RU/EN/TR — всё переведено, RU-fallback нет. Сертификаты ЕАЭС на EN/TR помечены «Original document (Russian)» — это by design.",
+  "dark_theme": "В норме, карточки и hairline-рамки держатся."
+}

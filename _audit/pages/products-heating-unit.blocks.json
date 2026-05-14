@@ -1,0 +1,61 @@
+{
+  "page": "/products/heating-unit",
+  "date": "2026-05-14",
+  "priority": "P1",
+  "status": "ok",
+  "viewports_checked": ["mobile 390", "desktop 1440"],
+  "locales_checked": ["ru", "en", "tr"],
+  "themes_checked": ["light", "dark"],
+  "overall": "Вопреки названию family-landing — это полноценная продуктовая страница (ProductPageShell + ProductHero), не тонкий каталог. Паттерна пустого desktop-hero НЕТ: hero с реальным рендером оборудования занимает экран целиком. Section map: hero -> 8 модулей -> 6 преимуществ -> галерея -> документация -> финальный CTA. Mobile/desktop/dark/TR — чисто. Мелочь: line-clamp в AdvantagesGrid режет описания пунктов 02/04 и длинное название PDF-карточки.",
+  "blocks": [
+    {
+      "block": "Hero — H1 «Блочные индивидуальные тепловые пункты ANHEL» + лид + 2 CTA + рендер оборудования",
+      "needed": "yes", "readable": "yes", "real_value": "yes",
+      "real_value_notes": "Полноценный hero с реальным рендером ИТП на grid-фоне. Паттерна пустого правого столбца здесь НЕТ — фикс family-landing hero не требуется.",
+      "verdict": "оставить",
+      "recommendation": "Без правок."
+    },
+    {
+      "block": "Линейка модулей — 8 модулей (01-08)",
+      "needed": "yes", "readable": "yes", "real_value": "yes",
+      "real_value_notes": "Сетка 2 колонки, реальные рендеры каждого модуля, номера 01-08, ссылка «Подробно».",
+      "verdict": "оставить",
+      "recommendation": "Без правок."
+    },
+    {
+      "block": "Преимущества — 6 пунктов",
+      "viewport": "mobile 390",
+      "needed": "yes", "readable": "yes", "real_value": "yes",
+      "readable_issues": ["Описания пунктов 02 и 04 обрезаны многоточием (line-clamp в AdvantagesGrid) — режет смысловую часть фразы"],
+      "verdict": "оставить",
+      "recommendation": "Без обязательных правок. Опционально — поднять лимит clamp на 1 строку. Косметика."
+    },
+    {
+      "block": "Галерея — реальные фото с производства/объектов",
+      "needed": "yes", "readable": "yes", "real_value": "yes",
+      "verdict": "оставить",
+      "recommendation": "Без правок."
+    },
+    {
+      "block": "Документация — 2 PDF-карточки",
+      "needed": "yes", "readable": "yes", "real_value": "yes",
+      "readable_issues": ["Длинное название карточки «Сертификат — блочные индивидуальные тепловые пункты...» обрезается многоточием"],
+      "verdict": "оставить",
+      "recommendation": "Без обязательных правок. Косметика."
+    },
+    {
+      "block": "Финальный CTA «Соберите свой ИТП под проект» + соседние разделы",
+      "needed": "yes", "readable": "yes", "real_value": "yes",
+      "verdict": "оставить",
+      "recommendation": "Без правок."
+    },
+    {
+      "block": "Footer",
+      "needed": "yes", "readable": "yes", "real_value": "yes",
+      "verdict": "оставить",
+      "recommendation": "Без правок."
+    }
+  ],
+  "cross_locale": "RU/EN/TR — всё переведено, RU-fallback нет, TR-вёрстка не ломается.",
+  "dark_theme": "В норме, warm-gradient за рендером в hero смотрится правильно, контраст держится."
+}

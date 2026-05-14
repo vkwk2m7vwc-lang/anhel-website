@@ -1664,3 +1664,75 @@ Workflow (без изменений):
 - В конце всего аудита — финальный `_audit/REPORT.md` + уборка кода
   (осиротевшие i18n-ключи `home.about.stats.*` +
   `home.production.stats.directions_caption`).
+
+
+---
+
+## Сессия 2026-05-14 (продолжение) — P1-аудит (7 страниц)
+
+Редакционный визуальный аудит, блок P1. Ветка `feat/editorial-visual-audit`,
+без новых тэгов. Контекст подхвачен из `_PROGRESS.md` + `_audit/DECISIONS.md`.
+
+### Проверено
+
+7 P1-страниц: `/documents`, `/projects`, `/service/request`,
+`/products/pumps`, `/products/control-systems`, `/products/heating-unit`,
+`/products/water-treatment`. Mobile 390 (приоритет) + desktop 1440 ·
+RU/EN/TR · light/dark. 84 скриншота через `_audit/screenshot.mjs` +
+адресные viewport-only и chunked-снимки для верификации.
+
+### Итог
+
+**Блокеров запуска по P1 нет.** Все 3 локали переведены (RU-fallback нет),
+dark не разваливается, реальные фото/рендеры, честные placeholder'ы.
+
+### Зафиксил сам (по пред-авторизации)
+
+- `fix(hero)` — `/products/pumps` + `/products/control-systems`: найден
+  тот же паттерн пустого desktop-hero, что закрывали #3 на /products и
+  /service (H1 в `max-w-[860px]`, прибит влево, правая половина пустая).
+  Применён типографический hero (`div max-w-4xl`, снят `max-w-[860px]`
+  с H1) — один-в-один `7db772f`. Покрыто пред-авторизацией Алексея для
+  family-landing, отдельного согласования не требовало. `tsc` + `build`
+  чистые, desktop-hero сверен скриншотом после фикса. Mobile не затронут.
+- `/products/heating-unit` + `/products/water-treatment` — паттерна
+  пустого hero НЕТ (это полноценные продуктовые страницы с `ProductHero`).
+  Фикс не применялся.
+
+### Артефакт, не баг
+
+- `/service/request` — full-page скриншот показывает sticky-навигацию
+  наезжающей на поля. Проверено viewport-only снимками (top/mid/bottom,
+  390+1440): штатное поведение frosted-glass sticky-панели, тот же класс
+  артефактов, что пустая карта `/contacts`. Правка не нужна.
+
+### Мелочи P1 (косметика, не блокеры — ждут решения Алексея)
+
+- `/documents` desktop — нечётные группы карточек, полупустая последняя строка.
+- `/service/request` mobile — высокая шапка формы + sticky-бар сжимают
+  первый экран; дубль подписи шага.
+- `/products/heating-unit` + `/water-treatment` — `line-clamp` в
+  `AdvantagesGrid` режет описания части пунктов.
+- `/products/water-treatment` — `BrandsStrip` на mobile «гуляет» (flex-wrap).
+
+### Артефакты аудита
+
+- Per-page `_audit/pages/<route>.md` + `.blocks.json` на все 7 P1-страниц.
+- `_audit/REPORT-interim-P1.md` — промежуточный отчёт.
+- `_audit/DECISIONS.md` — добавлен раздел «P1 — раунд 1».
+- Скриншоты — `_audit/screenshots/` gitignored; в этой сессии скриншоты
+  жили в `/tmp` + scratch (не в репозитории).
+
+### Состояние
+
+- Branch `feat/editorial-visual-audit`: P0-коммиты → `44b8a82` →
+  `fix(hero)` (pumps + control-systems) → `docs(audit)` (P1 отчёт).
+- Прод-сервер пересобран (`npm run build` чистый) и перезапущен на :3000.
+
+### Следующий шаг
+
+Ждём ОК Алексея по preview на 2 применённые правки (`fix(hero)`).
+Дальше — P2 (продуктовые detail-страницы, сценарии firefighting,
+детальные `/projects/*`, квизы) на той же ветке, без новых тэгов.
+Тех.долг (осиротевшие i18n-ключи `home.about.stats.*`) — в финальную
+уборку после всего аудита.
