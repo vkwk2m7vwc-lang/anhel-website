@@ -1524,3 +1524,54 @@ helper). Фикс: `.png` → `.webp`. Картинки лежат в git, ас�
 `/products/control-systems`, `/products/heating-unit`, `/products/water-treatment`.
 На family-landing отдельно проверить паттерн пустой desktop-зоны hero.
 Затем P2/P3/P4 и финальный `_audit/REPORT.md`.
+
+
+---
+
+## Сессия 2026-05-14 (продолжение 2) — Решения по P0 + применение
+
+Алексей принял P0-отчёт и дал решения по 5 находкам. Лог решений —
+`_audit/DECISIONS.md` (закоммичен).
+
+### Применено
+
+- `bc6abcb fix(home)` — решение #1: убран дублирующий блок счётчиков
+  150+/12+/4+/24+ из `AboutSection` (+ удалён неиспользуемый `Stat`).
+  «4 направления» убрано из счётчиков `ProductionSection`, оставлено
+  только в hero; сетка статов Производства 4→3 колонки.
+- `26a5933 fix(routing)` — решение #5: удалён `src/app/[locale]/hero-e/`,
+  убран `/hero-e` из `robots.ts`, поправлен комментарий в `HeroBgCarousel`.
+
+Проверено: `tsc` чисто, `npm run build` — ✓ 166 страниц (было 169),
+`/hero-e` → 404. Layout «О компании» и «Производство» проверен скриншотами
+на mobile 390 + desktop 1440 — держится (Производство: 3 стата, desktop
+3-в-ряд / mobile 2+1).
+
+### Отложено / ждёт
+
+- **#2** `/products` тонкий каталог — backlog после запуска (структурная
+  задача, Алексей продумает наполнение).
+- **#3** пустая правая зона desktop hero (/products + /service) — Алексею
+  отправлены 2 desktop-скриншота, ждёт его решения. НЕ фиксить автономно.
+- **#4** `/service` без фото — backlog, ждёт фотоматериалов от заказчика.
+- Карта `/contacts` — Алексей подтвердил, на проде работает. Не трогать.
+- Тех.долг: осиротевшие i18n-ключи `home.about.stats.*` +
+  `home.production.stats.directions_caption` в `messages/*/home.json` —
+  безвредны, почистить отдельным коммитом.
+
+### Состояние
+
+- Branch `feat/editorial-visual-audit`: `ddc4023` (audit P0) → `bc6abcb`
+  (fix counters) → `26a5933` (fix hero-e) → `docs(audit): decisions log`.
+- Прод-сервер пересобран и перезапущен на :3000 (новый build).
+- `_audit/screenshots/` gitignored; `_audit/DECISIONS.md` закоммичен.
+
+### Следующий шаг — P1 (7 страниц)
+
+Не начат в этой сессии (контекст исчерпан на P0 + применении решений).
+P1: `/documents`, `/projects`, `/service/request`, `/products/pumps`,
+`/products/control-systems`, `/products/heating-unit`,
+`/products/water-treatment`.
+На family-landing отдельно проверить паттерн пустой desktop-зоны hero
+(#3) — но саму правку #3 не делать до ответа Алексея.
+Скриншоты — только проблемных блоков (`<route>/<issue-id>.webp`).
