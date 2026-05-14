@@ -7,8 +7,12 @@ import { useTranslations } from "next-intl";
  * Содержимое — финальные тексты v2 из copy.md (A.3):
  *   - метка, заголовок, лид-абзац
  *   - 3 подблока: КБ / Цех / Стенд
- *   - ряд из 4 цифр: от 30 дней / 4 направления / 100% / Своё
+ *   - ряд из 3 цифр: от 30 дней / 100% / Своё
  *   - CTA «Запросить визит на производство →» ведёт на /contacts
+ *
+ * «4 направления» убрано из этого ряда после редакционного аудита
+ * 2026-05: показатель повторялся в hero-counters и в этой секции.
+ * Оставлен только в hero — он там осмысленный proof-point бренда.
  *
  * Принцип: слово «Москва» нигде не упоминается (copy.md, общий
  * принцип редактуры).
@@ -56,18 +60,18 @@ export function ProductionSection() {
           />
         </div>
 
-        {/* 4 цифры под подблоками. Стилистика как в About — font-display
-            40-56px, accent-fire на знаке «+»/«%», подпись font-mono 11px. */}
+        {/* 3 цифры под подблоками. Стилистика как в About — font-display
+            40-56px, accent-fire на знаке «%», подпись font-mono 11px.
+            На mobile grid-cols-2 (2 + 1), на md+ — три в ряд. */}
         <div
           aria-label={t("stats_aria")}
-          className="mt-14 grid grid-cols-2 gap-6 border-t border-[var(--color-hairline)] pt-10 md:mt-16 md:grid-cols-4 md:gap-10 md:pt-12"
+          className="mt-14 grid grid-cols-2 gap-6 border-t border-[var(--color-hairline)] pt-10 md:mt-16 md:grid-cols-3 md:gap-10 md:pt-12"
         >
           <Stat
             value={t("stats.lead_time_value")}
             unit={t("stats.lead_time_unit")}
             caption={t("stats.lead_time_caption")}
           />
-          <Stat value="4" caption={t("stats.directions_caption")} />
           <Stat
             value="100"
             suffix="%"

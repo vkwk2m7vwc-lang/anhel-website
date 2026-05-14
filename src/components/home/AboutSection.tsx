@@ -8,21 +8,18 @@ import { useTranslations } from "next-intl";
  * проектировщику/закупщику быстрый ответ «что за ANHEL» без перехода на
  * отдельную страницу. Скролл-якорь, не route.
  *
- * Содержимое — финальные тексты v2 из copy.md (A.2):
+ * Содержимое:
  *   - метка, заголовок, 3 абзаца (бренд → производство → полный цикл)
- *   - ряд из 3 статичных счётчиков (150+ объектов / 12+ лет опыта / 04 направления)
  *   - CTA «О производстве →» — якорь на /#production
  *
- * Счётчики статические (без count-up anim) — в hero уже играется
- * анимация, повторять её одной секцией ниже визуально шумно (см. M1
- * из audit: count-up читался как «числа постоянно растут»).
+ * Ряд счётчиков (150+ / 12+ / 4+ / 24+) убран после редакционного
+ * аудита 2026-05: он дословно дублировал hero-counters одним экраном
+ * выше. Бренд-метрики теперь живут только в hero.
  *
  * Стиль секции согласован с `ProductsShowcase`: max-width 1440,
  * h2 на font-display, lede 60-70 chars, mono-tag сверху.
  *
- * i18n: все строки — из `home.about.*`. Все цифры в счётчиках —
- * презентационные (150 / 12 / 04 / +) и не переводятся: они одинаковы
- * во всех языках, лишь подписи (`caption`) приходят через t().
+ * i18n: все строки — из `home.about.*`.
  */
 export function AboutSection() {
   const t = useTranslations("home.about");
@@ -50,24 +47,6 @@ export function AboutSection() {
           {t("paragraph_3")}
         </p>
 
-        {/* Static stats — без count-up animation. 3 значения горизонтально:
-            150+ объектов / 12 лет опыта / 04 направления — реальные цифры
-            бренда (бизнес работает с 2014, 150+ объектов сданы). */}
-        <div
-          aria-label={t("stats_aria")}
-          className="mt-16 grid grid-cols-2 gap-x-6 gap-y-10 border-t border-[var(--color-hairline)] pt-10 md:mt-20 md:grid-cols-4 md:gap-x-10 md:gap-y-0 md:pt-14 lg:gap-x-16"
-        >
-          <Stat value="150" suffix="+" caption={t("stats.objects_caption")} />
-          <Stat value="12" suffix="+" caption={t("stats.years_caption")} />
-          <Stat value="4" suffix="+" caption={t("stats.directions_caption")} />
-          <Stat
-            value="24"
-            suffix="+"
-            unit={t("stats.warranty_unit")}
-            caption={t("stats.warranty_caption")}
-          />
-        </div>
-
         {/* CTA на якорь #production — секция «Производство» ниже на той
             же странице. Сам link плотный, ghost-style, как у hero. */}
         <div className="mt-12 md:mt-16">
@@ -88,46 +67,5 @@ export function AboutSection() {
         </div>
       </div>
     </section>
-  );
-}
-
-/**
- * Single static stat — крупная цифра, опц. accent-suffix, опц. unit,
- * подпись капсом снизу. Композиция стабильная, никакой анимации.
- *
- * `value` всегда строка (поддерживает «10» / «100» / «24» / «4» и пр.).
- * `suffix` — отдельный span с accent-fire цветом (для «+»).
- * `unit`   — мелкий моно-суффикс справа (для «24 мес»).
- */
-function Stat({
-  value,
-  suffix,
-  unit,
-  caption,
-}: {
-  value: string;
-  suffix?: string;
-  unit?: string;
-  caption: string;
-}) {
-  return (
-    <div>
-      <p className="flex items-baseline gap-1 font-display text-[40px] font-medium leading-none text-[var(--color-secondary)] md:text-[56px]">
-        <span>{value}</span>
-        {suffix ? (
-          <span aria-hidden="true" className="text-[var(--accent-fire)]">
-            {suffix}
-          </span>
-        ) : null}
-        {unit ? (
-          <span className="ml-1 font-mono text-base font-normal text-[var(--color-secondary)]/70 md:text-lg">
-            {unit}
-          </span>
-        ) : null}
-      </p>
-      <p className="mt-3 font-mono text-[11px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/55 md:mt-4">
-        {caption}
-      </p>
-    </div>
   );
 }
