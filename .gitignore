@@ -52,3 +52,7 @@ tmp/
 .vscode
 
 .claude/
+
+# editorial audit — screenshots are local-only evidence
+_audit/screenshots/
+_audit/screenshot-failures.json

@@ -1392,3 +1392,135 @@ helper). Фикс: `.png` → `.webp`. Картинки лежат в git, ас�
 - Tag `v1.11-pdf-localization-complete` передвинут на `7f11604`
 - Vercel preview `7f11604` — READY
 - Готово к squash-merge → main после ОК Алексея.
+
+
+---
+
+## Сессия 2026-05-14 — Редакционный визуальный аудит (Pre-flight + Шаг 1)
+
+**ТЗ:** `uploads/tz_editorial_audit_FINAL_v8.md` — редакционный аудит глазами
+посетителя (главный инженер, 15 минут, iPhone). Mobile-first. НЕ QA кода.
+
+### Pre-flight — ✅ выполнен
+
+- Тэг `v1.11.1-before-editorial-audit` на main (`50581d8`).
+- Ветка `feat/editorial-visual-audit` от main, checked out в рабочей
+  iCloud-папке (была на `feat/i18n-wave-3-documents`, git clean — переключение
+  безопасно). `_audit/`, `_audit/screenshots/`, `_audit/pages/` созданы.
+
+### Шаг 1 — Карта сайта — ✅ выполнен
+
+`_audit/site-map.json` — **54 маршрута**:
+- P0 (4): /, /products, /service, /contacts
+- P1 (7): /documents, /projects, /service/request + 4 family-landing
+  (pumps, control-systems, heating-unit, water-treatment)
+- P2 (35): 5 насосных + 4 firefighting-сценария + 5 шкафов + 8 ИТП-модулей
+  + 13 объектов /projects/[slug]
+- P3 (5): /quiz/{pumps,aupd,itp,vpu,control-systems}
+- P4 (3): /privacy-policy, /personal-data-consent, **/hero-e**
+
+**Расхождения с ТЗ (зафиксированы в site-map.json):**
+- ТЗ говорит «4 шкафа» — фактически 5 детальных control-systems страниц.
+- `/hero-e` — похоже на экспериментальную/dev-страницу hero-варианта.
+  ФЛАГ: вероятно не должна быть в публичном роутинге. Проверить отдельно.
+- water-treatment не имеет детальных подстраниц — это и есть страница
+  направления (отнесено к P1 family-landing).
+
+### Тулинг скриншотов — ✅ настроен и проверен
+
+- **NODE_ENV trap:** в shell снова утекал `NODE_ENV=production` — все
+  next-команды запускаются с `unset NODE_ENV`.
+- Playwright 1.60.0 + chromium установлены (`npm i -D playwright`,
+  `npx playwright install chromium`). `sharp` 0.34.5 уже был в deps.
+- Прод-сборка: `npm run build` — ✓ 169 страниц, чисто. Прод-сервер
+  `npm start` на `http://localhost:3000` (RU=/, EN=/en, TR=/tr;
+  localePrefix as-needed).
+- Тема: next-themes, `attribute="class"`, `defaultTheme="light"`,
+  storageKey `theme` → скриптом ставится `localStorage.theme` до загрузки.
+- `_audit/screenshot.mjs` — пайплайн: viewports 390/820/1440, локали
+  ru/en/tr, темы light/dark, full-page → WebP q80. Гард: длинные mobile-
+  страницы (>16000px — лимит WebP) даунскейлятся sharp'ом.
+  Аргументы: `--routes`, `--priority`, `--all`, `--viewports`, `--locales`,
+  `--themes`, `--base`.
+- **Проверено:** `/` mobile 390 (ru, light+dark) + desktop 1440 — 4 webp
+  ок, тема переключается, страница рендерится полностью. Файлы в
+  `_audit/screenshots/home/`.
+
+### Состояние
+
+- Branch: `feat/editorial-visual-audit` @ `50581d8` (= main, без коммитов)
+- Прод-сервер запущен на :3000 (для следующей сессии: проверить
+  `lsof -ti:3000`, при необходимости `npm run build && npm start`)
+- Чистого коммита по `_audit/` ещё нет — артефакты аудита можно
+  коммитить отдельно или в конце.
+
+### Следующий шаг — Шаг 2: проход страниц (mobile-first)
+
+1. Прогнать `screenshot.mjs --priority P0,P1` по mobile 390 (ru/en/tr,
+   light/dark) — это базовый приоритет.
+2. По каждой странице — Шаг 3 (редакционный анализ блоков, JSON) +
+   Шаг 4 (`_audit/pages/<route>.md`).
+3. Затем P2-P4 выборочно/полностью, Lighthouse mobile по P0.
+4. Финал — `_audit/REPORT.md`.
+
+Объём Шагов 2-5 (54 маршрута × вьюпорты × локали × темы + поблочный
+анализ + отчёты) — это многочасовая основная работа, идёт отдельными
+проходами; контекст-лимит → доделать текущую страницу, обновить этот
+файл, остановиться.
+
+
+---
+
+## Сессия 2026-05-14 (продолжение) — Редакционный аудит: P0-страницы
+
+**Смена стратегии по скриншотам (указание Алексея):** скриншоты делаются ТОЛЬКО
+для проблемных блоков (`<route>/<issue-id>.webp`), «ок»-страницы — без файлов,
+пометка `status: ok`. Папка `_audit/screenshots/` добавлена в `.gitignore` —
+скриншоты локальные, в коммитах только JSON/MD.
+
+### Сделано — все 4 P0-страницы
+
+| Страница | Статус | Проблемных блоков |
+|---|---|---|
+| `/` | ✅ сильная | 1 (дубль счётчиков) |
+| `/products` | ⚠️ тонкая | 2 (дубль главной + пустая desktop-зона) |
+| `/service` | ⚠️ нет визуала | 2 (нет фото сервиса + пустая desktop-зона) |
+| `/contacts` | ✅ чистая | 0 |
+
+Артефакты: `_audit/pages/{home,products,service,contacts}.md` + `.blocks.json`,
+`_audit/REPORT-interim-P0.md`, скриншоты-доказательства в
+`_audit/screenshots/{home,products,service}/` (gitignored, локальные).
+
+### Ключевые выводы по P0
+
+- P0 в хорошем состоянии, критичных блокеров нет. 4 правки «переделать» — все
+  структурные/контентные, ждут решения Алексея. Мелких визуальных багов
+  (которые можно фиксить без согласования) на P0 НЕ найдено — раздел «зафиксил
+  сам» пустой.
+- Сквозное хорошее: i18n RU/EN/TR переведён полностью (fallback'ов нет), dark-
+  тема нигде не разваливается, реальная продуктовая фотография — сильная сторона.
+- **Паттерн-проблема:** desktop-hero внутренних страниц — H1+интро в левой
+  половине, правая пустая (подтверждено на /products и /service). Проверить на
+  P1 family-landing.
+- `/hero-e`: dev-страница, нет ссылок из навигации, нет в sitemap.xml, в
+  robots.ts — disallow. Рекомендация: удалить из роутинга (P4).
+- `/contacts` карта: в headless-скриншотах пустой бокс — ПРОВЕРЕНО, артефакт
+  headless-рендера, НЕ баг (iframe грузится, запросы 200, контент виджета в DOM).
+  Алексею мельком подтвердить в обычном браузере.
+
+### Тех. состояние
+
+- Branch `feat/editorial-visual-audit` — артефакты `_audit/` готовы к коммиту
+  (JSON+MD; скриншоты gitignored).
+- Прод-сервер `npm start` на :3000 (может быть ещё запущен; для след. сессии —
+  `lsof -ti:3000`, при необходимости `unset NODE_ENV && npm run build && npm start`).
+- Скриншот-пайплайн: `_audit/screenshot.mjs` (batch, `--outdir /tmp/audit-scratch`),
+  `_audit/shoot.mjs` (одиночный/clip). Scratch-скрины — в `/tmp/audit-scratch/`.
+- **NODE_ENV trap снова актуален** — все next-команды с `unset NODE_ENV`.
+
+### Следующий шаг — P1 (7 страниц)
+
+`/documents`, `/projects`, `/service/request`, `/products/pumps`,
+`/products/control-systems`, `/products/heating-unit`, `/products/water-treatment`.
+На family-landing отдельно проверить паттерн пустой desktop-зоны hero.
+Затем P2/P3/P4 и финальный `_audit/REPORT.md`.
