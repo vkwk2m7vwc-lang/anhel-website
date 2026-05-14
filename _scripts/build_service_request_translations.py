@@ -72,6 +72,19 @@ SERVICE_FORM = [
     ])]),
 ]
 
+# Required fields — from src/content/service/form-config.ts (`required: true`).
+# Everything except `synteka_number` is mandatory; the four commitment
+# checkboxes and the consent box are all required acknowledgements.
+REQUIRED_SERVICE = {
+    "request_number", "company_name", "object_name", "object_address",
+    "equipment_type", "equipment_name", "equipment_serial",
+    "equipment_commissioning_date", "invoice_number_date",
+    "upd_number_date", "contact_full_name", "contact_position",
+    "contact_phone", "contact_email", "problem_description",
+    "commit_representative", "commit_equipment_ready",
+    "commit_decision_after_request", "consent_pd",
+}
+
 
 # Override the service-specific chrome.
 CHROME = {
@@ -140,9 +153,17 @@ def build_one(locale: str, out_path: Path):
     c.setKeywords(["service", "request", locale, "ANHEL"])
 
     r = qmod.Renderer(c, locale, chrome, doc_id, top_title, top_subtitle)
+    r.required_fields = REQUIRED_SERVICE
     r.draw_header()
     r.draw_top_card(top_title, top_subtitle,
                     chrome["instructions_title"], chrome["instructions"])
+
+    # Required-field legend (explains the red asterisk).
+    r.ensure_space(8 * qmod.mm)
+    c.setFillColor(qmod.MUTED)
+    c.setFont("Body", 8)
+    c.drawString(qmod.MARGIN_L, r.y - 8, chrome["required_note"])
+    r.y -= 6 * qmod.mm
 
     steps_node = form.get("steps", {})
 

@@ -581,6 +581,13 @@ QUIZ_TO_DIRS = {
 
 
 # ---- locale strings shown on the PDF chrome (not in messages JSON) ---
+#
+# Contact e-mail is `info@anhelspb.com` everywhere — the same address
+# the website (/contacts, /service, Footer) and the RU AcroForm
+# masters use. `company_strip` is intentionally short: it sits in a
+# repeating page header next to the right-aligned document ID, so it
+# must not be wide enough to collide with it (see `draw_header`,
+# which additionally truncates at « · » boundaries as a safety net).
 CHROME = {
     "en": {
         "doc_kind": "QUESTIONNAIRE",
@@ -589,13 +596,13 @@ CHROME = {
             "Fill in the form by hand or in a PDF reader. Tick the relevant "
             "boxes (☐ → ■). Where parameters are unknown, leave the line "
             "blank or write «to be determined». Return the completed form "
-            "to sales@anhelspb.com — our engineering team replies within "
+            "to info@anhelspb.com — our engineering team replies within "
             "one business day with a sizing proposal."
         ),
         "company_strip": (
-            "Profit LLC · ANHEL® brand · Saint Petersburg, Russia · "
-            "anhelspb.com · sales@anhelspb.com · +7 (812) 416-45-00"
+            "Profit LLC · ANHEL® brand · anhelspb.com · info@anhelspb.com"
         ),
+        "required_note": "* — required field.",
         "page": "Page",
         "of": "of",
         "yes": "Yes",
@@ -615,13 +622,13 @@ CHROME = {
             "Formu elle veya bir PDF okuyucuda doldurun. İlgili kutuları "
             "işaretleyin (☐ → ■). Bilinmeyen parametreler için satırı boş "
             "bırakın veya «belirlenecek» yazın. Doldurulmuş formu "
-            "sales@anhelspb.com adresine gönderin — mühendislik ekibimiz "
+            "info@anhelspb.com adresine gönderin — mühendislik ekibimiz "
             "bir iş günü içinde teklifle dönüş yapar."
         ),
         "company_strip": (
-            "Profit LLC · ANHEL® markası · Saint Petersburg, Rusya · "
-            "anhelspb.com · sales@anhelspb.com · +7 (812) 416-45-00"
+            "Profit LLC · ANHEL® markası · anhelspb.com · info@anhelspb.com"
         ),
+        "required_note": "* — zorunlu alan.",
         "page": "Sayfa",
         "of": "/",
         "yes": "Evet",
@@ -633,6 +640,27 @@ CHROME = {
         "doc_id_prefix": "Belge No",
         "date_prefix": "Düzenleme",
         "step_label": "Adım",
+    },
+}
+
+
+# Required-field markers. Pulled from src/content/quiz/*-fields.ts and
+# src/content/products/control-systems/quiz-config.ts (`required: true`).
+# Rendered as a red asterisk after the field label, matching the RU
+# AcroForm masters where the contact block is marked mandatory.
+_CONTACT_REQUIRED = {
+    "contact_organization", "contact_fullname", "contact_position",
+    "contact_city", "contact_email", "contact_phone",
+}
+REQUIRED_FIELDS = {
+    "vpu": set(_CONTACT_REQUIRED),
+    "pumps": set(_CONTACT_REQUIRED),
+    "aupd": set(_CONTACT_REQUIRED),
+    "itp": set(_CONTACT_REQUIRED),
+    "control_systems": {
+        "company_name", "contact_full_name", "contact_phone",
+        "object_name", "object_address", "cabinet_type",
+        "pumps_count", "pump_power", "voltage", "consent_pd",
     },
 }
 
@@ -731,6 +759,10 @@ class Renderer:
         self.doc_id = doc_id
         self.top_title = top_title
         self.top_subtitle = top_subtitle
+        # Field names that get a red required-marker asterisk. Populated
+        # by the caller (build_one / the service-form builder) before
+        # any field is drawn.
+        self.required_fields: set[str] = set()
         self.page = 1
         self.total_pages = None  # set after first pass; redraw if needed
         self.y = PAGE_H - MARGIN_T
@@ -745,23 +777,49 @@ class Renderer:
     # --- chrome ---------------------------------------------------
 
     def draw_header(self):
+        """
+        Two-row header band:
+          row 1 — ANHEL® wordmark (left)        ·  doc kind (right)
+          row 2 — company strip (left)          ·  document ID (right)
+
+        Row 2 is the collision-prone one: a long left-aligned company
+        strip and a right-aligned doc ID share the same baseline. We
+        size the strip against the *measured* width of the doc ID and
+        truncate it at « · » separators if it would ever reach the ID,
+        so the two never overlap regardless of locale string lengths.
+        """
         c = self.c
-        # left: ANHEL wordmark
+        top_y = PAGE_H - MARGIN_T + 8 * mm
+        bot_y = PAGE_H - MARGIN_T + 3.2 * mm
+        right_x = PAGE_W - MARGIN_R
+
+        # row 1 left: ANHEL wordmark
         c.setFillColor(PRIMARY)
         c.setFont("Bold", 16)
-        c.drawString(MARGIN_L, PAGE_H - MARGIN_T + 8 * mm, "ANHEL®")
+        c.drawString(MARGIN_L, top_y, "ANHEL®")
+        # row 1 right: doc kind
         c.setFont("Body", 8)
         c.setFillColor(MUTED)
-        c.drawString(MARGIN_L, PAGE_H - MARGIN_T + 3.2 * mm,
-                     self.chrome["company_strip"])
-        # right: doc kind + doc id
+        c.drawRightString(right_x, top_y, self.chrome["doc_kind"])
+
+        # row 2 right: document ID
+        doc_id_line = f"{self.chrome['doc_id_prefix']}: {self.doc_id}"
         c.setFont("Body", 8)
         c.setFillColor(MUTED)
-        right_x = PAGE_W - MARGIN_R
-        c.drawRightString(right_x, PAGE_H - MARGIN_T + 8 * mm,
-                          self.chrome["doc_kind"])
-        c.drawRightString(right_x, PAGE_H - MARGIN_T + 3.2 * mm,
-                          f"{self.chrome['doc_id_prefix']}: {self.doc_id}")
+        c.drawRightString(right_x, bot_y, doc_id_line)
+
+        # row 2 left: company strip — width-limited so it never reaches
+        # the doc ID. 8 mm safety gutter between the two.
+        doc_id_w = pdfmetrics.stringWidth(doc_id_line, "Body", 8)
+        avail = CONTENT_W - doc_id_w - 8 * mm
+        strip = self.chrome["company_strip"]
+        while strip and pdfmetrics.stringWidth(strip, "Body", 8) > avail:
+            if " · " in strip:
+                strip = strip.rsplit(" · ", 1)[0]
+            else:
+                strip = strip[:-2]
+        c.drawString(MARGIN_L, bot_y, strip)
+
         # hairline
         c.setStrokeColor(HAIRLINE)
         c.setLineWidth(0.4)
@@ -915,13 +973,24 @@ class Renderer:
 
     # --- field renderers ----------------------------------------
 
+    def _draw_required_star(self, x_after: float, baseline_y: float):
+        """Draw a red ' *' marker just after a label on the same line."""
+        self.c.setFillColor(ACCENT)
+        self.c.setFont("Body", 9)
+        self.c.drawString(x_after + 1.5, baseline_y, "*")
+        self.c.setFillColor(PRIMARY)
+
     def _input_field(self, x: float, label: str, w: float, unit: str | None,
-                     hint: str | None, multiline_lines: int = 1):
+                     hint: str | None, multiline_lines: int = 1,
+                     required: bool = False):
         """Render label + input rule(s) + optional unit + optional hint."""
         # label
         self.c.setFillColor(PRIMARY)
         self.c.setFont("Body", 9)
         self.c.drawString(x, self.y - 9, label)
+        if required:
+            label_w = pdfmetrics.stringWidth(label, "Body", 9)
+            self._draw_required_star(x + label_w, self.y - 9)
         self.y -= 11
         # input rule(s)
         unit_w = 0
@@ -946,14 +1015,18 @@ class Renderer:
                 self.y -= 9.5
         self.y -= 2 * mm
 
-    def _checkbox_field(self, x: float, label: str, w: float, hint: str | None):
+    def _checkbox_field(self, x: float, label: str, w: float, hint: str | None,
+                        required: bool = False):
         # checkbox glyph
         self.c.setStrokeColor(PRIMARY)
         self.c.setLineWidth(0.5)
         box = 3 * mm
         cb_y = self.y - 9
         self.c.rect(x, cb_y, box, box, fill=0, stroke=1)
-        # label
+        # label — required marker is baked into the text since the label
+        # may wrap across lines (checkbox labels can be long).
+        if required:
+            label = f"{label} *"
         self.c.setFillColor(PRIMARY)
         self.c.setFont("Body", 9)
         lx = x + box + 2 * mm
@@ -971,8 +1044,11 @@ class Renderer:
         self.y -= 1.5 * mm
 
     def _radio_field(self, x: float, label: str, w: float,
-                     options: list[tuple[str, str]] | None, hint: str | None):
-        # label
+                     options: list[tuple[str, str]] | None, hint: str | None,
+                     required: bool = False):
+        # label — required marker baked in (radio labels can wrap).
+        if required:
+            label = f"{label} *"
         self.c.setFillColor(PRIMARY)
         self.c.setFont("Body", 9)
         for line in self.wrap_text(label, "Body", 9, w):
@@ -1035,18 +1111,23 @@ class Renderer:
         label = resolved["label"]
         hint = resolved["hint"]
         unit = FIELD_UNITS.get(name) or resolved["unit"]
+        required = name in self.required_fields
         if kind in ("text", "email", "tel"):
-            self._input_field(x, label, w, unit, hint, multiline_lines=1)
+            self._input_field(x, label, w, unit, hint, multiline_lines=1,
+                              required=required)
         elif kind == "number":
-            self._input_field(x, label, w, unit, hint, multiline_lines=1)
+            self._input_field(x, label, w, unit, hint, multiline_lines=1,
+                              required=required)
         elif kind == "textarea":
-            self._input_field(x, label, w, unit, hint, multiline_lines=TEXTAREA_LINES)
+            self._input_field(x, label, w, unit, hint,
+                              multiline_lines=TEXTAREA_LINES, required=required)
         elif kind == "checkbox":
-            self._checkbox_field(x, label, w, hint)
+            self._checkbox_field(x, label, w, hint, required=required)
         elif kind == "radio":
-            self._radio_field(x, label, w, resolved["options"], hint)
+            self._radio_field(x, label, w, resolved["options"], hint,
+                              required=required)
         else:
-            self._input_field(x, label, w, None, hint)
+            self._input_field(x, label, w, None, hint, required=required)
 
 
 # =====================================================================
@@ -1080,9 +1161,17 @@ def build_one(kind: str, locale: str, out_path: Path):
     c.setKeywords([kind, locale, "ANHEL", "questionnaire"])
 
     r = Renderer(c, locale, chrome, doc_id, top_title, top_subtitle)
+    r.required_fields = REQUIRED_FIELDS.get(kind, set())
     r.draw_header()
     r.draw_top_card(top_title, top_subtitle,
                     chrome["instructions_title"], chrome["instructions"])
+
+    # Required-field legend (explains the red asterisk).
+    r.ensure_space(8 * mm)
+    c.setFillColor(MUTED)
+    c.setFont("Body", 8)
+    c.drawString(MARGIN_L, r.y - 8, chrome["required_note"])
+    r.y -= 6 * mm
 
     # Iterate steps → sections → fields
     for step_idx, (step_id, sections) in enumerate(struct):
