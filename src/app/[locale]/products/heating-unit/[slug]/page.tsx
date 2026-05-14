@@ -301,6 +301,16 @@ export default async function HeatingModulePage({ params }: RouteParams) {
                 </span>
               </li>
             ))}
+            {/* Filler для md-сетки (2 колонки): нечётное число пунктов
+                применения оставляло «дыру» цвета hairline в последнем
+                ряду. На mobile (1 колонка) partial-рядов нет — filler
+                скрыт. */}
+            {m.applications.length % 2 === 1 ? (
+              <li
+                aria-hidden="true"
+                className="hidden bg-[var(--color-primary)] md:block"
+              />
+            ) : null}
           </ul>
         </div>
       </section>
