@@ -1621,3 +1621,46 @@ P1: `/documents`, `/projects`, `/service/request`, `/products/pumps`,
 сессии: `/documents`, `/projects`, `/service/request`, 4 family-landing.
 Скриншоты — только проблемных блоков. Тех.долг (осиротевшие i18n-ключи
 `home.about.stats.*`) — в финальную уборку кода после всего аудита.
+
+
+---
+
+## Сессия 2026-05-14 — закрытие. Preview ОК, P1 → новая сессия
+
+Алексей проверил Vercel preview — **все 3 фикса (#1, #5, #3) подтверждены,
+работают**. Сессия закрыта на завершённом блоке.
+
+### Итог сессии
+
+- P0-аудит (4 страницы) + interim-отчёт — сделано.
+- Решения Алексея применены: #1 (счётчики), #5 (/hero-e), #3 (типографический
+  hero) — закоммичены, запушены, подтверждены на preview.
+- #2 и #4 — в backlog после запуска (см. `_audit/DECISIONS.md`).
+- Ветка `feat/editorial-visual-audit` в origin, актуальна.
+
+### ПРЕД-АВТОРИЗАЦИЯ для следующей сессии (P1)
+
+Алексей заранее разрешил, спрашивать отдельно НЕ нужно:
+- **Family-landing страницы** (`/products/pumps`, `/products/control-systems`,
+  `/products/heating-unit`, `/products/water-treatment`): если на них тот же
+  паттерн пустого desktop-hero — **применять то же решение типографического
+  hero** (одна колонка `max-w-4xl`, без двухколоночной сетки), автономно.
+  Эталон правки — коммит `7db772f` (`/products` + `/service`).
+
+### Следующий шаг — P1 (7 страниц), новая сессия
+
+`/documents`, `/projects`, `/service/request`, `/products/pumps`,
+`/products/control-systems`, `/products/heating-unit`,
+`/products/water-treatment`.
+
+Workflow (без изменений):
+- mobile-first, RU/EN/TR, light/dark, роль главного инженера.
+- Скриншоты — ТОЛЬКО проблемных блоков (`_audit/screenshots/<route>/<issue-id>.webp`,
+  gitignored). «ok»-страницы — без файлов, пометка `status: ok`.
+- Per-page `_audit/pages/<route>.md` + `.blocks.json`.
+- Прод-сервер: `lsof -ti:3000`, при необходимости `unset NODE_ENV &&
+  npm run build && npm start`. Скрипты: `_audit/screenshot.mjs` (batch,
+  `--outdir /tmp/audit-scratch`), `_audit/shoot.mjs` (одиночный/clip).
+- В конце всего аудита — финальный `_audit/REPORT.md` + уборка кода
+  (осиротевшие i18n-ключи `home.about.stats.*` +
+  `home.production.stats.directions_caption`).
