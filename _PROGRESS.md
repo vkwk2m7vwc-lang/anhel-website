@@ -1809,3 +1809,44 @@ P3 (квизы `/quiz/*`, 5 шт) + P4 (`/privacy-policy`,
 `/personal-data-consent`) — в этой же сессии если контекст позволит,
 иначе в новой. После — финальный `_audit/REPORT.md` + уборка кода
 (осиротевшие i18n-ключи `home.about.stats.*`).
+
+
+---
+
+## Сессия 2026-05-14 — закрытие P2-блока
+
+Алексей проверил Vercel preview — **все 7 P2-фиксов подтверждены, работают**.
+По `firefighting/scenario-*` дал добро на удаление.
+
+### Доделано в закрытии
+
+- `fix(routing)` `0db8383` — удалены 4 dev-маршрута
+  `src/app/[locale]/products/pumps/firefighting/scenario-{a,b,c,d}/` (были
+  `redirect()`-заглушки) + убраны scenario-* disallow из `robots.ts`.
+  Компоненты `src/components/products/firefighting/scenario-*/` оставлены
+  по указанию Алексея. Проверено: маршруты → 404, `robots.txt` чистый,
+  `tsc` + `build` чисто (166 → 162 статических страницы).
+- Ветка `feat/editorial-visual-audit` в origin, актуальна.
+
+### Итог P0–P2
+
+- **P0** (4 страницы) — закрыто, фиксы подтверждены.
+- **P1** (7 страниц) — закрыто, 1 фикс (типографический hero pumps +
+  control-systems) подтверждён.
+- **P2** (35 маршрутов) — закрыто. 4 пред-авторизованных косметических
+  фикса с P1 + 3 реальных бага P2 + удаление scenario-* — всё применено,
+  подтверждено на preview.
+- Блокеров запуска по P0–P2 — нет.
+
+### Следующий шаг — P3 + P4 (новая сессия)
+
+- **P3** — квизы `/quiz/{pumps,aupd,itp,vpu,control-systems}` (5 шт,
+  интерактивные формы на QuizShell; визуальный язык как у
+  `/service/request`).
+- **P4** — `/privacy-policy`, `/personal-data-consent` (2 шт, статические
+  юр.страницы).
+- Та же ветка `feat/editorial-visual-audit`, без новых тэгов, pre-flight
+  не нужен. Контекст — этот файл + `_audit/DECISIONS.md`.
+- После P3+P4 — финальный `_audit/REPORT.md` + уборка кода (осиротевшие
+  i18n-ключи `home.about.stats.*` + `home.production.stats
+  .directions_caption`, тянутся с P0).
