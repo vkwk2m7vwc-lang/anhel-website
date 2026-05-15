@@ -65,10 +65,14 @@ FONT_BLD = FONT_DIR / "DejaVuSans-Bold.ttf"
 LAYOUTS = {
     # lead category : [sibling categories sharing the same master]
     "firefighting": ["water-supply", "heating-cooling", "special"],
+    "pressure-boost": [],
+    "heating-unit": [],
+    "water-treatment": [],
 }
-# Categories handled by this wave-2 rewrite so far.  pressure-boost,
-# heating-unit, water-treatment and control-systems are added once their
-# RU masters have been mapped (their layouts differ from the NU master).
+# control-systems is intentionally NOT handled here: its RU master is the
+# un-rebranded MFMC "Omega Control" original (MFMC Moscow requisites, Omega
+# brand, Akrobat fonts) — it needs to be rebranded to ANHEL/Profit before a
+# faithful EN/TR localization is possible.  Flagged for a separate decision.
 
 # --------------------------------------------------------------------------
 # Fonts
@@ -102,8 +106,13 @@ def _rgb(color_int: int):
 # --------------------------------------------------------------------------
 
 # Spans that must never be translated or covered (brand mark, protocol
-# names, the bare domain in the footer).
-KEEP = {"ANHEL", "®", "Profibus", "Modbus", "Ethernet", "GSM", "anhelspb.com"}
+# names, the bare domain in the footer, bare units / voltages / symbols
+# that read the same in every language).
+KEEP = {
+    "ANHEL", "®", "anhelspb.com",
+    "Profibus", "Modbus", "Ethernet", "GSM", "RS232 (485)",
+    "/", "%", "100%", "P1", "P2", "1×230 V", "3×380 V",
+}
 
 # Company requisites block — 4 right-aligned header lines, all locales.
 REQUISITES = {
@@ -350,6 +359,357 @@ SIMPLE = {
     },
     # ---- page 3: disclaimer marker --------------------------------------
     "Внимание!": {"en": "Important!", "tr": "Dikkat!"},
+
+    # =====================================================================
+    # pressure-boost  (АУПД — pressure-maintenance unit)
+    # =====================================================================
+    "Опросный лист — АУПД ANHEL®": {
+        "en": "Questionnaire — ANHEL® pressure-maintenance units",
+        "tr": "Anket formu — ANHEL® basınç koruma üniteleri",
+    },
+    "Параметры системы": {
+        "en": "System parameters", "tr": "Sistem parametreleri",
+    },
+    "Тепловая мощность системы, Гкал/ч": {
+        "en": "System thermal capacity, Gcal/h",
+        "tr": "Sistem ısıl kapasitesi, Gcal/sa",
+    },
+    "Тепловая мощность системы, кВт": {
+        "en": "System thermal capacity, kW",
+        "tr": "Sistem ısıl kapasitesi, kW",
+    },
+    "Объём системы (расчётный), л": {
+        "en": "System design volume, L",
+        "tr": "Sistem tasarım hacmi, L",
+    },
+    "Статическое давление в системе, бар": {
+        "en": "System static pressure, bar",
+        "tr": "Sistem statik basıncı, bar",
+    },
+    "Максимальное рабочее давление, м.вод.ст.": {
+        "en": "Maximum working pressure, m H₂O",
+        "tr": "Maksimum işletme basıncı, mSS",
+    },
+    "Давление срабатывания предохранительного клапана, м.вод.ст": {
+        "en": "Safety valve set pressure, m H₂O",
+        "tr": "Emniyet vanası ayar basıncı, mSS",
+    },
+    "Давление в обратной линии теплосети, м.вод.ст.": {
+        "en": "District-heating return line pressure, m H₂O",
+        "tr": "Bölgesel ısıtma dönüş hat basıncı, mSS",
+    },
+    "Теплоноситель и режим": {
+        "en": "Heat carrier and operating mode",
+        "tr": "Isı taşıyıcı ve çalışma rejimi",
+    },
+    "Тип теплоносителя": {"en": "Heat carrier type", "tr": "Isı taşıyıcı tipi"},
+    "вода": {"en": "water", "tr": "su"},
+    "раствор гликоля, %": {
+        "en": "glycol solution, %", "tr": "glikol çözeltisi, %",
+    },
+    "Температурный график системы (прямая T1 / обратная T2), °C": {
+        "en": "System temperature schedule (supply T1 / return T2), °C",
+        "tr": "Sistem sıcaklık eğrisi (gidiş T1 / dönüş T2), °C",
+    },
+    "Количество насосов": {"en": "Number of pumps", "tr": "Pompa sayısı"},
+    "Система заполнения": {"en": "Filling system", "tr": "Doldurma sistemi"},
+    "нет": {"en": "no", "tr": "hayır"},
+    "да": {"en": "yes", "tr": "evet"},
+    "да, за 5 часов по требованию МОЭК": {
+        "en": "yes, within 5 hours per MOEK requirement",
+        "tr": "evet, MOEK gereğince 5 saat içinde",
+    },
+    "Тип системы": {"en": "System type", "tr": "Sistem tipi"},
+    "вентиляция": {"en": "ventilation", "tr": "havalandırma"},
+    "другая": {"en": "other", "tr": "diğer"},
+    "Ограничение по габаритам проёма (высота × ширина), м": {
+        "en": "Doorway size limit (height × width), m",
+        "tr": "Kapı açıklığı sınırı (yükseklik × genişlik), m",
+    },
+    "высота": {"en": "height", "tr": "yükseklik"},
+    "ширина": {"en": "width", "tr": "genişlik"},
+
+    # =====================================================================
+    # water-treatment  (ВПУ — water treatment unit)
+    # =====================================================================
+    "Опросный лист — установки водоподготовки ANHEL®": {
+        "en": "Questionnaire — ANHEL® water treatment units",
+        "tr": "Anket formu — ANHEL® su arıtma üniteleri",
+    },
+    "Опросный лист для подбора установки водоподготовки ANHEL®": {
+        "en": "Questionnaire for ANHEL® water treatment unit selection",
+        "tr": "ANHEL® su arıtma ünitesi seçimi için anket formu",
+    },
+    "Источник водоснабжения  (анализ исходной воды необходимо приложить к опросному листу)": {
+        "en": "Water supply source  (a raw-water analysis report must be attached to this questionnaire)",
+        "tr": "Su kaynağı  (ham su analiz raporu bu anket formuna eklenmelidir)",
+    },
+    "Температура исходной воды (min, max), °C": {
+        "en": "Raw water temperature (min, max), °C",
+        "tr": "Ham su sıcaklığı (min, maks), °C",
+    },
+    "Требования к качеству воды  (приложить требования или ссылку на нормативный документ)": {
+        "en": "Treated-water quality requirements  (attach the requirements or a reference to the applicable standard)",
+        "tr": "Arıtılmış su kalite gereksinimleri  (gereksinimleri veya ilgili standardın referansını ekleyin)",
+    },
+    "Расход на входе в водопроводной сети в точке подключения, м³/ч": {
+        "en": "Inlet flow rate at the supply network connection point, m³/h",
+        "tr": "Bağlantı noktasında şebeke giriş debisi, m³/sa",
+    },
+    "Давление на входе в водопроводной сети в точке подключения, м.вод.ст.": {
+        "en": "Inlet pressure at the supply network connection point, m H₂O",
+        "tr": "Bağlantı noktasında şebeke giriş basıncı, mSS",
+    },
+    "Тип применяемого насоса на входе (если имеется)": {
+        "en": "Inlet pump type (if any)",
+        "tr": "Giriş pompası tipi (mevcutsa)",
+    },
+    "Необходимый расход очищенной воды": {
+        "en": "Treated-water flow demand",
+        "tr": "Gerekli arıtılmış su debisi",
+    },
+    "Суточный, м³/сут": {"en": "Daily, m³/day", "tr": "Günlük, m³/gün"},
+    "Максимальный часовой, м³/ч": {
+        "en": "Peak hourly, m³/h", "tr": "Tepe saatlik, m³/sa",
+    },
+    "График водопотребления  (для выбора оптимальной схемы работы установки)": {
+        "en": "Water consumption schedule  (to choose the optimal operating scheme)",
+        "tr": "Su tüketim takvimi  (ünitenin en uygun çalışma şemasının seçilmesi için)",
+    },
+    "Количество смен": {"en": "Number of shifts", "tr": "Vardiya sayısı"},
+    "Продолжительность смены": {
+        "en": "Shift duration", "tr": "Vardiya süresi",
+    },
+    "Продолжительность перерыва между сменами (max)": {
+        "en": "Break between shifts (max)",
+        "tr": "Vardiyalar arası mola (maks)",
+    },
+    "Режим работы установки": {
+        "en": "Unit operating mode", "tr": "Ünitenin çalışma rejimi",
+    },
+    "Необходимый запас чистой воды (накопительная ёмкость − V, м³)": {
+        "en": "Treated-water buffer storage required (tank capacity − V, m³)",
+        "tr": "Gerekli arıtılmış su yedeği (depolama tankı − V, m³)",
+    },
+    "Объём имеющихся ёмкостей под чистую воду, м³": {
+        "en": "Existing treated-water tank capacity, m³",
+        "tr": "Mevcut arıtılmış su tank kapasitesi, m³",
+    },
+    "Необходимый напор воды на выходе из установки, м.вод.ст.": {
+        "en": "Required outlet head, m H₂O",
+        "tr": "Ünite çıkışında gerekli basma yüksekliği, mSS",
+    },
+    "Наличие сети для отведения промывной воды": {
+        "en": "Network for backwash discharge — available?",
+        "tr": "Geri yıkama tahliyesi için hat — mevcut mu?",
+    },
+    "Наличие ограничений по качеству отводимой промывной воды": {
+        "en": "Quality restrictions on the discharged backwash water",
+        "tr": "Tahliye edilen geri yıkama suyu kalitesine ilişkin kısıtlamalar",
+    },
+    "По составу": {"en": "Composition limits", "tr": "İçerik kısıtlamaları"},
+    "По объёму": {"en": "Volume limits", "tr": "Hacim kısıtlamaları"},
+    "Объём предоставления проектной документации на установку": {
+        "en": "Scope of project documentation to be supplied with the unit",
+        "tr": "Ünite ile birlikte sağlanacak proje dokümantasyonu kapsamı",
+    },
+
+    # =====================================================================
+    # heating-unit  (БИТП — block-type heat substation)
+    # =====================================================================
+    "Опросный лист — БИТП ANHEL®": {
+        "en": "Questionnaire — ANHEL® heat substations",
+        "tr": "Anket formu — ANHEL® ısı merkezleri",
+    },
+    "Наименование и расположение объекта": {
+        "en": "Facility name and location",
+        "tr": "Tesis adı ve konumu",
+    },
+    "Температурный график сетевой воды на входе / выходе в БИТП (зимний период), °C": {
+        "en": "District water temperature schedule at the substation inlet / outlet (winter), °C",
+        "tr": "BIM giriş / çıkışında bölgesel ısıtma suyu sıcaklık eğrisi (kış), °C",
+    },
+    "Вход T1": {"en": "T1 (inlet)", "tr": "T1 (giriş)"},
+    "Вход T2": {"en": "T2 (outlet)", "tr": "T2 (çıkış)"},
+    "Давление сетевой воды на входе / выходе в БИТП, бар": {
+        "en": "District water pressure at the substation inlet / outlet, bar",
+        "tr": "BIM giriş / çıkışında bölgesel ısıtma suyu basıncı, bar",
+    },
+    "Высота здания, м": {"en": "Building height, m", "tr": "Bina yüksekliği, m"},
+    "Теплоноситель (вода, гликолевый раствор (%) и т.д.)": {
+        "en": "Heat carrier (water, glycol solution (%), etc.)",
+        "tr": "Isı taşıyıcı (su, glikol çözeltisi (%), vb.)",
+    },
+    "Отопление": {"en": "Heating", "tr": "Isıtma"},
+    "Тепловая нагрузка": {"en": "Thermal load", "tr": "Isıl yük"},
+    "Гкал/час": {"en": "Gcal/h", "tr": "Gcal/sa"},
+    "Отопление (схема присоединения)": {
+        "en": "Heating (connection scheme)",
+        "tr": "Isıtma (bağlantı şeması)",
+    },
+    "Зависимая": {"en": "Dependent (direct)", "tr": "Bağımlı (doğrudan)"},
+    "Независимая": {"en": "Independent (indirect)", "tr": "Bağımsız (eşanjörlü)"},
+    "Непосредственная": {"en": "Direct", "tr": "Doğrudan"},
+    "Отопление  (продолжение)": {
+        "en": "Heating  (continued)", "tr": "Isıtma  (devam)",
+    },
+    "Тип пластинчатого теплообменника": {
+        "en": "Plate heat-exchanger type", "tr": "Plakalı eşanjör tipi",
+    },
+    "Паяный": {"en": "Brazed", "tr": "Lehimli"},
+    "Разборный": {"en": "Gasketed (demountable)", "tr": "Sökülebilir contalı"},
+    "Кожухотрубчатый": {
+        "en": "Shell-and-tube", "tr": "Borulu (shell-and-tube)",
+    },
+    "Температурный график системы отопления (зимний период), °C": {
+        "en": "Heating system temperature schedule (winter), °C",
+        "tr": "Isıtma sistemi sıcaklık eğrisi (kış), °C",
+    },
+    "Вход T1.2": {"en": "T1.2 inlet", "tr": "T1.2 giriş"},
+    "Вход T2.2": {"en": "T2.2 return", "tr": "T2.2 dönüş"},
+    "Потери давления в системе отопления, м.в.ст.": {
+        "en": "Heating system pressure drop, m H₂O",
+        "tr": "Isıtma sistemi basınç kaybı, mSS",
+    },
+    "Максимальное рабочее давление, м.в.ст.": {
+        "en": "Maximum working pressure, m H₂O",
+        "tr": "Maksimum işletme basıncı, mSS",
+    },
+    "Объём системы отопления, м³": {
+        "en": "Heating system volume, m³", "tr": "Isıtma sistemi hacmi, m³",
+    },
+    "Резервирование теплообменника": {
+        "en": "Heat-exchanger redundancy", "tr": "Eşanjör yedekleme",
+    },
+    "Резервирование насоса": {
+        "en": "Pump redundancy", "tr": "Pompa yedekleme",
+    },
+    "На склад": {"en": "Spare on stock", "tr": "Stok yedek"},
+    "Сдвоенный": {"en": "Twin pump", "tr": "İkiz pompa"},
+    "Частотное регулирование насосов": {
+        "en": "Pump VFD speed control", "tr": "Pompa frekans kontrolü",
+    },
+    "Вентиляция": {"en": "Ventilation", "tr": "Havalandırma"},
+    "Схема присоединения": {
+        "en": "Connection scheme", "tr": "Bağlantı şeması",
+    },
+    "Температурный график системы в зимний период, °C": {
+        "en": "System temperature schedule (winter), °C",
+        "tr": "Sistem sıcaklık eğrisi (kış), °C",
+    },
+    "Потери давления в системе, м.в.ст.": {
+        "en": "System pressure drop, m H₂O",
+        "tr": "Sistem basınç kaybı, mSS",
+    },
+    "Объём системы, м³": {"en": "System volume, m³", "tr": "Sistem hacmi, m³"},
+    "ГВС  (горячее водоснабжение)": {
+        "en": "DHW  (domestic hot water)",
+        "tr": "KSS  (kullanım sıcak suyu)",
+    },
+    "Температура холодной воды, °C": {
+        "en": "Cold water temperature, °C", "tr": "Soğuk su sıcaklığı, °C",
+    },
+    "Температура горячей воды, °C": {
+        "en": "Hot water temperature, °C", "tr": "Sıcak su sıcaklığı, °C",
+    },
+    "Давление холодной воды на входе в БИТП, бар": {
+        "en": "Cold water inlet pressure at substation, bar",
+        "tr": "BIM girişinde soğuk su basıncı, bar",
+    },
+    "Необходимое давление горячей воды, бар": {
+        "en": "Required hot water pressure, bar",
+        "tr": "Gerekli sıcak su basıncı, bar",
+    },
+    "Необходимость в установке циркуляционной линии ГВС": {
+        "en": "DHW circulation line required?",
+        "tr": "KSS sirkülasyon hattı gerekli mi?",
+    },
+    "Расход воды на циркуляцию ГВС от максимального расхода, %": {
+        "en": "DHW circulation flow as % of peak demand, %",
+        "tr": "Tepe debinin yüzdesi olarak KSS sirkülasyon debisi, %",
+    },
+    "Гидравлическое сопротивление циркуляции ГВС, м.в.ст.": {
+        "en": "DHW circulation head loss, m H₂O",
+        "tr": "KSS sirkülasyon hidrolik direnci, mSS",
+    },
+    "Схема включения теплообменника ГВС": {
+        "en": "DHW heat-exchanger configuration",
+        "tr": "KSS eşanjör şeması",
+    },
+    "1-ступенчатая": {"en": "Single-stage", "tr": "Tek kademeli"},
+    "2-ступенчатая": {"en": "Two-stage", "tr": "İki kademeli"},
+    "Моноблок": {"en": "Single-skid (monoblock)", "tr": "Monoblok (tek beden)"},
+    "Дополнительное оборудование, функции и параметры": {
+        "en": "Additional equipment, functions, and parameters",
+        "tr": "Ek ekipmanlar, işlevler ve parametreler",
+    },
+    "Погодозависимое регулирование": {
+        "en": "Outdoor-temperature compensation",
+        "tr": "Dış hava sıcaklığına bağlı kontrol",
+    },
+    "Автоматическая линия подпитки систем отопления и вентиляции": {
+        "en": "Automatic make-up line for heating and ventilation",
+        "tr": "Isıtma ve havalandırma için otomatik takviye hattı",
+    },
+    "Автоматическая установка поддержания давления для систем отопления и вентиляции": {
+        "en": "Automatic pressure-maintenance unit for heating and ventilation",
+        "tr": "Isıtma ve havalandırma için otomatik basınç koruma ünitesi",
+    },
+    "Узел учёта тепловой энергии": {
+        "en": "Thermal energy metering unit",
+        "tr": "Isı enerjisi ölçüm ünitesi",
+    },
+    "Регулятор перепада давления": {
+        "en": "Differential pressure regulator",
+        "tr": "Diferansiyel basınç regülatörü",
+    },
+    "Расширительный бак": {"en": "Expansion tank", "tr": "Genleşme tankı"},
+    "Расходомер на холодную воду": {
+        "en": "Cold-water flow meter", "tr": "Soğuk su debimetresi",
+    },
+    "Датчик аварии насоса (реле перепада давления)": {
+        "en": "Pump-failure sensor (DP switch)",
+        "tr": "Pompa arıza sensörü (DP anahtarı)",
+    },
+    "Диспетчеризация": {"en": "SCADA / dispatching", "tr": "SCADA / dispeçer"},
+    "Предусмотреть подпиточный клапан": {
+        "en": "Provide a make-up valve", "tr": "Takviye vanası eklenmeli",
+    },
+    "Предусмотреть подпиточный насос": {
+        "en": "Provide a make-up pump", "tr": "Takviye pompası eklenmeli",
+    },
+    "Изоляция трубопроводов": {
+        "en": "Pipework insulation", "tr": "Boru izolasyonu",
+    },
+    "Стальная арматура на вводе": {
+        "en": "Inlet valves and fittings (steel)",
+        "tr": "Giriş vanaları ve armatürleri (çelik)",
+    },
+    "Под приварку": {"en": "Welded", "tr": "Kaynaklı"},
+    "Фланцевая": {"en": "Flanged", "tr": "Flanşlı"},
+    "Резьбовая": {"en": "Threaded", "tr": "Dişli"},
+    "Размеры помещения для установки БИТП (длина × ширина × высота), мм": {
+        "en": "Substation room dimensions (L × W × H), mm",
+        "tr": "BIM oda boyutları (U × G × Y), mm",
+    },
+    "Размер проёма (ширина × высота), мм": {
+        "en": "Doorway size (W × H), mm",
+        "tr": "Kapı açıklığı (G × Y), mm",
+    },
+    "Передача данных на диспетчерский пункт": {
+        "en": "Data communication to SCADA",
+        "tr": "SCADA'ya veri iletişimi",
+    },
+    "Тел. модем": {"en": "Tel. modem", "tr": "Tel. modem"},
+    "Питание насосов от шкафа управления БИТП": {
+        "en": "Pumps powered from the substation control cabinet",
+        "tr": "Pompalar BIM kontrol panosundan beslenir",
+    },
+    "Питание насосов от стороннего шкафа": {
+        "en": "Pumps powered from an external cabinet",
+        "tr": "Pompalar harici panodan beslenir",
+    },
+    "Напряжение питания": {"en": "Supply voltage", "tr": "Besleme gerilimi"},
 }
 
 # Multi-line paragraph groups.  Each member RU string maps to its group id;
@@ -378,6 +738,9 @@ PARAGRAPHS = {
         "lines": [
             "При возникновении трудностей и вопросов по заполнению опросного листа, пожалуйста, позвоните",
             "по +7 (812) 416-4500 — наши специалисты с удовольствием Вам помогут.",
+            # pressure-boost / heating-unit / water-treatment masters phrase
+            # the second line slightly differently — same translation:
+            "по телефону +7 (812) 416-4500 — наши специалисты с удовольствием Вам помогут.",
         ],
         "en": (
             "If you have any difficulties or questions while completing "
@@ -390,6 +753,63 @@ PARAGRAPHS = {
             "uzmanlarımız size yardımcı olmaktan memnuniyet duyar."
         ),
         "wrap": 468.0,
+    },
+    # pressure-boost / heating-unit have a 2-line title (the NU and
+    # water-treatment titles are single-line — handled via SIMPLE).
+    "title_pb": {
+        "lines": [
+            "Опросный лист для подбора автоматических установок",
+            "поддержания давления ANHEL® (АУПД)",
+        ],
+        "en": "Questionnaire for ANHEL® automatic pressure-maintenance "
+              "unit selection (APMU)",
+        "tr": "ANHEL® otomatik basınç koruma ünitesi seçimi için anket "
+              "formu (APMU)",
+        "wrap": 472.0,
+    },
+    "title_hu": {
+        "lines": [
+            "Опросный лист на подбор блочного",
+            "индивидуального теплового пункта ANHEL®",
+        ],
+        "en": "Questionnaire for ANHEL® block-type individual heat "
+              "substation selection",
+        "tr": "ANHEL® blok bireysel ısı merkezi seçimi için anket formu",
+        "wrap": 472.0,
+    },
+    # pressure-boost / heating-unit / water-treatment share one compact
+    # disclaimer: 5 lines, "Внимание!" inline in the first one (not a
+    # separately styled marker like the NU layout).
+    "disclaimer2": {
+        "lines": [
+            "Внимание!  ООО «Профит» не несёт ответственности за корректность исходных данных",
+            "для подбора оборудования, указанных в опросном листе.",
+            "Отказ заказчика заполнить опросный лист означает его согласие со всеми техническими",
+            "характеристиками, определяемыми условным обозначением, указанным в заявке в",
+            "соответствие с каталогом ANHEL®, и отсутствие дополнительных требований к изделию.",
+        ],
+        "en": [
+            "Important!  Profit LLC accepts no responsibility for the "
+            "accuracy of the source data provided in this questionnaire "
+            "for equipment selection.",
+            "If the customer declines to complete this questionnaire, "
+            "this is deemed acceptance of all technical characteristics "
+            "defined by the type designation stated in the order in "
+            "accordance with the ANHEL® catalogue, and confirmation that "
+            "the product requires no additional features.",
+        ],
+        "tr": [
+            "Dikkat!  Profit LLC, ekipman seçimi için bu anket formunda "
+            "verilen kaynak verilerin doğruluğundan sorumlu değildir.",
+            "Müşterinin bu anket formunu doldurmayı reddetmesi, siparişte "
+            "belirtilen tip tanımıyla ANHEL® kataloğuna uygun olarak "
+            "tanımlanan tüm teknik özellikleri kabul ettiği ve ürün için "
+            "ek bir gereksinim bulunmadığı anlamına gelir.",
+        ],
+        "left_x": 72.4,
+        "wrap": 460.0,
+        "leading": 12.0,
+        "para_gap": 12.0,
     },
     "disclaimer": {
         # first line is indented (it sits next to the bold "Внимание!"
@@ -605,7 +1025,21 @@ def _plan_paragraph(gid: str, locale: str, spans: list,
                 y += leading
         return
 
-    # intro_a / intro_b: simple block at the master's leading
+    if gid == "disclaimer2":
+        # 5-line compact disclaimer, "Внимание!" inline; two sentences,
+        # everything at the left text edge.
+        x = grp["left_x"]
+        y = first["origin"][1]
+        leading = grp["leading"]
+        for si, sentence in enumerate(grp[locale]):
+            if si > 0:
+                y += grp["para_gap"]
+            for ln in _wrap(sentence, bold, size, grp["wrap"]):
+                draws.append(((x, y), ln, bold, size, color))
+                y += leading
+        return
+
+    # intro_a / intro_b / title_*: simple block at the master's leading
     ys = [m["origin"][1] for m in members]
     leading = (ys[1] - ys[0]) if len(ys) > 1 else 12.5
     x, y = first["origin"][0], first["origin"][1]
