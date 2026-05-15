@@ -373,15 +373,15 @@ export function QuizControlSystemsForm() {
             className="mt-14 border-t border-[var(--color-hairline)] pt-10 md:mt-16 md:pt-12"
             aria-labelledby={`step-${step.index}-title`}
           >
-            <p className="mono-tag">
-              {t('step_short', {
-                current: stepIdx + 1,
-                total: localizedSteps.length,
-              })}
-            </p>
+            {/*
+             * Step number is already shown in the progress block above
+             * ("ШАГ N ИЗ M") — the per-step mono-tag duplicated it. Dropped
+             * for consistency with the QuizShell quizzes, where the step
+             * heading carries no separate "step N of M" label.
+             */}
             <h2
               id={`step-${step.index}-title`}
-              className="mt-4 font-display text-3xl font-medium leading-tight md:text-4xl"
+              className="font-display text-3xl font-medium leading-tight md:text-4xl"
             >
               {step.title}
             </h2>
