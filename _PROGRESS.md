@@ -2055,3 +2055,69 @@ i18n-ключам — добро на `chore`-уборку перед мердж
 Перегенерация EN/TR PDF в стиле RU-мастеров. Контекст по PDF —
 `_PROGRESS.md` (сессии wave-3 + PDF-локализации), памятка про
 оригиналы МФМК и единый minimal-стиль каталогов.
+
+
+---
+
+## Сессия 2026-05-15 — Этап 4: интеграция Resend (отправка писем с форм)
+
+Источник ТЗ: `uploads/cowork_stage_4_resend.md`. Цель — заменить
+stub-обработчики форм на реальную отправку писем менеджеру через Resend.
+
+### Расхождение с ТЗ — структура эндпоинтов
+
+ТЗ предполагало 7 отдельных route-файлов. По факту:
+- был **один** stub-роут `/api/questionnaire` на 4 квиза (pumps/vpu/itp/aupd);
+- формы `control-systems`, `/service/request`, `/contacts` — чистые
+  фронт-заглушки (`setTimeout`), бэкенда у них не было вообще.
+
+Согласовано с Алексеем: делаем все 7 форм — 4 роута + проводка 3 форм.
+
+### Сделано
+
+- `npm i resend` (6.12.3). `RESEND_API_KEY` + `QUIZ_RECIPIENT_EMAIL` —
+  только в `.env.local` (git-ignored) и в `.env.local.example` (шаблон).
+- `src/lib/email/sendEmail.ts` — обёртка над Resend. From на этапе
+  теста — `onboarding@resend.dev` (домен `anhelspb.com` ещё не
+  верифицирован). Никогда не бросает — возвращает `{ ok }`.
+- `src/lib/email/payload.ts` — общий wire-контракт форм↔роутов +
+  `parseSubmissionPayload`.
+- `src/lib/email/templates/` — `_layout.ts` + 3 шаблона (`quiz-result`,
+  `service-request`, `contact-form`). Table-вёрстка, inline-стили,
+  тёмный брендинг (`#0A0A0A` / `#F5F5F3` / accent `#FF6B35`). Письмо
+  всегда на русском (читает менеджер), локаль клиента — тег в шапке.
+  Лейблы полей берутся из русского исходного конфига форм.
+- Роуты: доработан `/api/questionnaire` (zod-валидация и проверка
+  PDF-маппинга сохранены, добавлена отправка письма); созданы
+  `/api/quiz/control-systems`, `/api/service-request`, `/api/contacts`.
+  Все — `to: QUIZ_RECIPIENT_EMAIL`, `replyTo` = email клиента из формы.
+- Проводка форм: `QuizShell` + `buildSubmission.ts`,
+  `QuizControlSystemsForm`, `ServiceRequestForm` (+ общий
+  `buildStepsSubmission.ts`), `ContactForm` — теперь реально шлют
+  `fetch` на свои роуты, передают локаль, показывают ошибку при сбое.
+
+### Тесты (локально, порт 3100)
+
+- `tsc --noEmit` + `next lint` — чисто.
+- Рендер 3 шаблонов (ru/en/tr) — кириллица ок, тег локали ок, в подвале
+  `info@anhelspb.com` и ООО «ПРОФИТ», `sales@anhelspb.com` отсутствует.
+- POST на все 7 сценариев (4 квиза + control-systems + service +
+  contacts, локали ru/en/tr) — HTTP 200, Resend вернул id, 7 писем
+  ушло на `anurin7@gmail.com`.
+- Юнит-проверка билдеров payload (21 ассерт) — пройдено.
+
+### Осталось — на стороне Алексея
+
+- Завести `RESEND_API_KEY` + `QUIZ_RECIPIENT_EMAIL` в Vercel
+  (Project → Settings → Environment Variables, все 3 environment).
+  Vercel MCP писать env не умеет, Vercel CLI на маке нет.
+- Проверить письма в почте (Gmail web/iOS, Mail.app), пройти формы на
+  RU/EN/TR на preview-URL.
+- После подтверждения — `QUIZ_RECIPIENT_EMAIL` → `info@anhelspb.com`,
+  верифицировать домен `anhelspb.com` в Resend и переключить From на
+  `noreply@anhelspb.com`.
+
+### Состояние
+
+Ветка `feat/resend-integration` от `main` (`5eeca2b`), 5 атомарных
+коммитов. PR открыт — **не мерджить до подтверждения Алексея.**
