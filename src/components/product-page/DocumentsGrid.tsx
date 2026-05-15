@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Download, Eye } from "lucide-react";
+import { Download } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import type {
   DocumentsContent,
@@ -170,10 +170,6 @@ function DocCard({ doc, index }: { doc: DocumentItem; index: number }) {
           className="flex min-w-0 flex-1 flex-row items-center gap-3 px-4 py-3 transition-colors sm:flex-col sm:items-stretch sm:justify-between sm:gap-0 sm:p-6 md:p-8 [@media(hover:hover)]:hover:bg-[var(--color-hover-tint)] active:ring-1 active:ring-[var(--accent-current)]"
         >
           <CardMeta doc={doc} ruNote={ruNote} />
-          <span className="hidden items-center gap-2 font-mono text-[11px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/55 transition-colors [@media(hover:hover)]:group-hover:text-[var(--color-secondary)] sm:mt-6 sm:inline-flex">
-            {tUi("preview")}
-            <Eye size={14} strokeWidth={1.5} aria-hidden="true" />
-          </span>
         </a>
         {/* Download — separate segment, forces save. Border-left on the
             mobile row, border-top on the sm+ block card. */}

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { FileText, FileBadge, FileCog, Download, Eye, Building2 } from "lucide-react";
+import { FileText, FileBadge, FileCog, Download, Building2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
@@ -494,10 +494,6 @@ function DocCard({
               {note}
             </span>
           ) : null}
-        </span>
-        <span className="hidden shrink-0 items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/40 transition-colors group-hover:text-[var(--color-secondary)]/70 sm:inline-flex">
-          {tUi("preview")}
-          <Eye size={14} strokeWidth={1.5} aria-hidden="true" />
         </span>
       </a>
       {/* Download — separate segment, forces save. */}
