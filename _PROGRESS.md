@@ -2195,3 +2195,65 @@ checkbox→«Да», number→строка. `buildSubmission.ts` теперь и
   Шаблон Outlook-safe по построению: `<table>`-вёрстка, инлайн-стили,
   без flex/grid/position, `color-scheme: light`, явные цвета на каждой
   ячейке. Стоит вынести в этап 6 вместе с mail-tester.
+
+
+---
+
+## Сессия 2026-05-15 — Этап 4 v3: PDF-вложение с заполненным опросным листом
+
+Источник ТЗ: `uploads/cowork_stage_4_email_v3_pdf.md`. Для длинных квизов
+(БИТП — 97 полей) тело письма было длинным. v3: тело = только контакт +
+объект + CTA, полный опросный лист — отдельным PDF-вложением.
+
+### Выбор технологии PDF — pdf-lib (clean-built)
+
+ТЗ предлагало использовать Python-генераторы `_scripts/build_*.py`.
+**Платформенный блокер:** Python/reportlab не работает на Vercel
+serverless. Рассмотрены варианты:
+- AcroForm-fill готовых мастеров (`public/docs/<cat>/oprosnyi-list.pdf`)
+  через pdf-lib — поля МАСТЕРОВ совпадают с конфигами (itp 97, aupd 30,
+  vpu 26, pumps 67), НО мастер control-systems — неперебрендированный
+  оригинал МФМК с generic-именами полей (`Text1`, `Button32`), не
+  маппится. Плюс 5 PDF-мастеров пришлось бы тащить в function bundle.
+- **Выбрано: clean-built через `pdf-lib`** (pure JS, без native-зависимостей,
+  надёжно на serverless) — один генератор для всех 6 форм, A4 с ANHEL-
+  брендингом в том же визуальном языке, что и v2-письмо (шапка, акцентная
+  линейка, контакт-панель, поля по шагам, авто-пагинация). Кириллица —
+  DejaVu Sans, TTF забандлены в `/api` через `outputFileTracingIncludes`
+  (next.config.mjs).
+
+PDF-контент остаётся на русском (архив для менеджера, как и v2-письмо);
+локализуется только имя файла (`Опросный лист — … .pdf` / `Questionnaire`
+/ `Anket`).
+
+### Изменено
+
+- `npm i pdf-lib @pdf-lib/fontkit`. `src/lib/pdf/`: `questionnaire-pdf.ts`
+  (генератор), `fill-questionnaire.ts` (обёртка → `{content, filename}`),
+  `fonts/DejaVuSans*.ttf`. `next.config.mjs` — `outputFileTracingIncludes`.
+- `sendEmail.ts` — поддержка `attachments`. `payload.ts` — `city` /
+  `objectName` / `objectAddress` в `EmailCustomer`.
+- Шаблоны `quiz-result` + `service-request` укорочены: тело = контакт-
+  карточка (+ город/объект/адрес) + блок `renderPdfCta`. Технические поля
+  ушли в PDF. `contact-form` — без изменений (без PDF).
+- Билдеры (`build-quiz-sections`, `buildStepsSubmission`) — `object_name`
+  / `contact_city` / `object_address` уходят в контакт-карточку, не в
+  секции. Роуты questionnaire / control-systems / service-request —
+  генерируют PDF и шлют через `attachments`.
+
+### Тесты (preview b59c882)
+
+- Сборка на Vercel прошла (pdf-lib + outputFileTracingIncludes ок).
+- itp + pumps `?from=firefighting` — реальная отправка через UI: HTTP 200,
+  PDF сгенерирован на serverless (шрифт подгрузился), вложение ушло.
+  itp — 90 полей в 6 секциях, accent heat; pumps — 60 полей, accent fire.
+- control-systems / service-request / contacts — POST на preview: HTTP 200
+  (первые два с PDF, contacts без PDF). Все 6 форм работают.
+- `tsc` + `next lint` — чисто. Локальный рендер — 16/16 ассертов.
+- Скрины (тело письма itp + 2 страницы PDF) — в outputs.
+- mail-tester / Outlook — отложены на этап 6 (после верификации домена).
+
+### Состояние
+
+3 v3-коммита в `feat/resend-integration` поверх v2. PR #22 — Алексей
+делает один squash-merge v2+v3 после визуальной проверки.
