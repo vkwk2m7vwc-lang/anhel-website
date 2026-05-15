@@ -14,6 +14,19 @@ const withNextIntl = createNextIntlPlugin("./src/i18n.ts");
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   /**
+   * Bundle the Cyrillic TTF fonts into the API serverless functions.
+   *
+   * The transactional-email routes generate a PDF questionnaire at
+   * request time (pdf-lib) and embed DejaVu Sans for Cyrillic. Font
+   * files aren't traced automatically because they're read via `fs`,
+   * not `import`-ed — this forces them into every /api function bundle.
+   */
+  experimental: {
+    outputFileTracingIncludes: {
+      "/api/**": ["./src/lib/pdf/fonts/**"],
+    },
+  },
+  /**
    * Image optimization config.
    *
    * `dangerouslyAllowSVG: true` — нужно потому что мы используем
