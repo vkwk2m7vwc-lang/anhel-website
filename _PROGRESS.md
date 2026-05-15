@@ -2175,3 +2175,23 @@ checkbox→«Да», number→строка. `buildSubmission.ts` теперь и
 
 Доп. коммиты в `feat/resend-integration` поверх v1. PR #22 — не мерджить
 до v2-проверки Алексеем.
+
+
+### Тесты v2 — результаты (preview dd21fff)
+
+- **itp через UI на preview** — форма заполнена всеми полями (через
+  localStorage-restore, т.к. пошаговый клик ломал framer-motion-анимацию),
+  отправлена реально: HTTP 200, payload `accent=heat`, **92 строки полей
+  в 6 секциях по шагам**. Письмо ушло на anurin7@gmail.com.
+- **pumps `?from=firefighting`** — то же: HTTP 200, payload `accent=fire`
+  (акцент тянется из `?from`), 62 строки в 4 секциях. Письмо ушло.
+- Скрины обоих писем сохранены в корень рабочей папки:
+  `email-preview-itp-v2.html`, `email-preview-pumps-firefighting-v2.html`.
+- **mail-tester** — ⛔ блокер: Resend в тест-режиме (`onboarding@resend.dev`)
+  отдаёт 403 на отправку на внешний адрес («can only send to your own
+  email»). Полноценный mail-tester возможен только после верификации
+  домена `anhelspb.com` в Resend — это этап 6 launch-плана.
+- **Outlook web** — не проверено автономно (нет Outlook-аккаунта).
+  Шаблон Outlook-safe по построению: `<table>`-вёрстка, инлайн-стили,
+  без flex/grid/position, `color-scheme: light`, явные цвета на каждой
+  ячейке. Стоит вынести в этап 6 вместе с mail-tester.
