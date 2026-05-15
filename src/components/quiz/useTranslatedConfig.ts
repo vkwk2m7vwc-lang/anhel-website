@@ -47,7 +47,12 @@ export function useTranslatedConfig(config: QuizConfig): QuizConfig {
     const tr = (key: string, fallback: string): string => {
       try {
         const v = t(key);
-        return v && v !== key ? v : fallback;
+        // next-intl returns the ABSOLUTE path (`quiz.<key>`) for a missing
+        // message — never the relative `key` we passed. The old `v !== key`
+        // guard therefore never matched a miss, so missing keys leaked the
+        // raw `quiz.itp.description`-style string into the UI instead of
+        // falling back to the RU source string. Guard both forms.
+        return v && v !== key && v !== `quiz.${key}` ? v : fallback;
       } catch {
         return fallback;
       }
