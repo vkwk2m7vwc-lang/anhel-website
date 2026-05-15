@@ -51,7 +51,6 @@
     "subtitle": "Altı adım — iletişimden özel gereksinimlere kadar. Bir iş günü içinde teklif gönderiyoruz.",
     "step_aria": "Adım {current}: {title}",
     "step_of": "{total} adımdan {current}.",
-    "step_short": "Adım {current} / {total}",
     "back": "Geri",
     "next": "İleri",
     "submit": "Gönder",

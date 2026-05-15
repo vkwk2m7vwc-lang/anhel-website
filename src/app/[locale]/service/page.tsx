@@ -66,8 +66,11 @@ export default function ServicePage({
         <div className="relative z-10 mx-auto w-full max-w-[1440px] px-6 pb-16 pt-24 md:px-12 md:pb-24 md:pt-32">
           <Breadcrumbs items={breadcrumbs} />
 
-          <div className="mt-8 grid grid-cols-1 gap-10 md:mt-10 md:grid-cols-12 md:gap-14">
-            <div className="md:col-span-7">
+          {/* Типографический hero — одна левая колонка max-w-4xl.
+              Не двухколоночная сетка: справа формально нет пустой
+              половины. Mobile не затронут (там колонка и так одна). */}
+          <div className="mt-8 md:mt-10">
+            <div className="max-w-4xl">
               <p className="mono-tag">{t('hero.mono_tag')}</p>
               <h1 className="mt-6 font-display text-5xl font-medium leading-[1.05] md:mt-8 md:text-6xl lg:text-7xl">
                 {t('hero.heading')}

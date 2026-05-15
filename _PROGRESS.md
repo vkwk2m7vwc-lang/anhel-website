@@ -1392,3 +1392,546 @@ helper). Фикс: `.png` → `.webp`. Картинки лежат в git, ас�
 - Tag `v1.11-pdf-localization-complete` передвинут на `7f11604`
 - Vercel preview `7f11604` — READY
 - Готово к squash-merge → main после ОК Алексея.
+
+
+---
+
+## Сессия 2026-05-14 — Редакционный визуальный аудит (Pre-flight + Шаг 1)
+
+**ТЗ:** `uploads/tz_editorial_audit_FINAL_v8.md` — редакционный аудит глазами
+посетителя (главный инженер, 15 минут, iPhone). Mobile-first. НЕ QA кода.
+
+### Pre-flight — ✅ выполнен
+
+- Тэг `v1.11.1-before-editorial-audit` на main (`50581d8`).
+- Ветка `feat/editorial-visual-audit` от main, checked out в рабочей
+  iCloud-папке (была на `feat/i18n-wave-3-documents`, git clean — переключение
+  безопасно). `_audit/`, `_audit/screenshots/`, `_audit/pages/` созданы.
+
+### Шаг 1 — Карта сайта — ✅ выполнен
+
+`_audit/site-map.json` — **54 маршрута**:
+- P0 (4): /, /products, /service, /contacts
+- P1 (7): /documents, /projects, /service/request + 4 family-landing
+  (pumps, control-systems, heating-unit, water-treatment)
+- P2 (35): 5 насосных + 4 firefighting-сценария + 5 шкафов + 8 ИТП-модулей
+  + 13 объектов /projects/[slug]
+- P3 (5): /quiz/{pumps,aupd,itp,vpu,control-systems}
+- P4 (3): /privacy-policy, /personal-data-consent, **/hero-e**
+
+**Расхождения с ТЗ (зафиксированы в site-map.json):**
+- ТЗ говорит «4 шкафа» — фактически 5 детальных control-systems страниц.
+- `/hero-e` — похоже на экспериментальную/dev-страницу hero-варианта.
+  ФЛАГ: вероятно не должна быть в публичном роутинге. Проверить отдельно.
+- water-treatment не имеет детальных подстраниц — это и есть страница
+  направления (отнесено к P1 family-landing).
+
+### Тулинг скриншотов — ✅ настроен и проверен
+
+- **NODE_ENV trap:** в shell снова утекал `NODE_ENV=production` — все
+  next-команды запускаются с `unset NODE_ENV`.
+- Playwright 1.60.0 + chromium установлены (`npm i -D playwright`,
+  `npx playwright install chromium`). `sharp` 0.34.5 уже был в deps.
+- Прод-сборка: `npm run build` — ✓ 169 страниц, чисто. Прод-сервер
+  `npm start` на `http://localhost:3000` (RU=/, EN=/en, TR=/tr;
+  localePrefix as-needed).
+- Тема: next-themes, `attribute="class"`, `defaultTheme="light"`,
+  storageKey `theme` → скриптом ставится `localStorage.theme` до загрузки.
+- `_audit/screenshot.mjs` — пайплайн: viewports 390/820/1440, локали
+  ru/en/tr, темы light/dark, full-page → WebP q80. Гард: длинные mobile-
+  страницы (>16000px — лимит WebP) даунскейлятся sharp'ом.
+  Аргументы: `--routes`, `--priority`, `--all`, `--viewports`, `--locales`,
+  `--themes`, `--base`.
+- **Проверено:** `/` mobile 390 (ru, light+dark) + desktop 1440 — 4 webp
+  ок, тема переключается, страница рендерится полностью. Файлы в
+  `_audit/screenshots/home/`.
+
+### Состояние
+
+- Branch: `feat/editorial-visual-audit` @ `50581d8` (= main, без коммитов)
+- Прод-сервер запущен на :3000 (для следующей сессии: проверить
+  `lsof -ti:3000`, при необходимости `npm run build && npm start`)
+- Чистого коммита по `_audit/` ещё нет — артефакты аудита можно
+  коммитить отдельно или в конце.
+
+### Следующий шаг — Шаг 2: проход страниц (mobile-first)
+
+1. Прогнать `screenshot.mjs --priority P0,P1` по mobile 390 (ru/en/tr,
+   light/dark) — это базовый приоритет.
+2. По каждой странице — Шаг 3 (редакционный анализ блоков, JSON) +
+   Шаг 4 (`_audit/pages/<route>.md`).
+3. Затем P2-P4 выборочно/полностью, Lighthouse mobile по P0.
+4. Финал — `_audit/REPORT.md`.
+
+Объём Шагов 2-5 (54 маршрута × вьюпорты × локали × темы + поблочный
+анализ + отчёты) — это многочасовая основная работа, идёт отдельными
+проходами; контекст-лимит → доделать текущую страницу, обновить этот
+файл, остановиться.
+
+
+---
+
+## Сессия 2026-05-14 (продолжение) — Редакционный аудит: P0-страницы
+
+**Смена стратегии по скриншотам (указание Алексея):** скриншоты делаются ТОЛЬКО
+для проблемных блоков (`<route>/<issue-id>.webp`), «ок»-страницы — без файлов,
+пометка `status: ok`. Папка `_audit/screenshots/` добавлена в `.gitignore` —
+скриншоты локальные, в коммитах только JSON/MD.
+
+### Сделано — все 4 P0-страницы
+
+| Страница | Статус | Проблемных блоков |
+|---|---|---|
+| `/` | ✅ сильная | 1 (дубль счётчиков) |
+| `/products` | ⚠️ тонкая | 2 (дубль главной + пустая desktop-зона) |
+| `/service` | ⚠️ нет визуала | 2 (нет фото сервиса + пустая desktop-зона) |
+| `/contacts` | ✅ чистая | 0 |
+
+Артефакты: `_audit/pages/{home,products,service,contacts}.md` + `.blocks.json`,
+`_audit/REPORT-interim-P0.md`, скриншоты-доказательства в
+`_audit/screenshots/{home,products,service}/` (gitignored, локальные).
+
+### Ключевые выводы по P0
+
+- P0 в хорошем состоянии, критичных блокеров нет. 4 правки «переделать» — все
+  структурные/контентные, ждут решения Алексея. Мелких визуальных багов
+  (которые можно фиксить без согласования) на P0 НЕ найдено — раздел «зафиксил
+  сам» пустой.
+- Сквозное хорошее: i18n RU/EN/TR переведён полностью (fallback'ов нет), dark-
+  тема нигде не разваливается, реальная продуктовая фотография — сильная сторона.
+- **Паттерн-проблема:** desktop-hero внутренних страниц — H1+интро в левой
+  половине, правая пустая (подтверждено на /products и /service). Проверить на
+  P1 family-landing.
+- `/hero-e`: dev-страница, нет ссылок из навигации, нет в sitemap.xml, в
+  robots.ts — disallow. Рекомендация: удалить из роутинга (P4).
+- `/contacts` карта: в headless-скриншотах пустой бокс — ПРОВЕРЕНО, артефакт
+  headless-рендера, НЕ баг (iframe грузится, запросы 200, контент виджета в DOM).
+  Алексею мельком подтвердить в обычном браузере.
+
+### Тех. состояние
+
+- Branch `feat/editorial-visual-audit` — артефакты `_audit/` готовы к коммиту
+  (JSON+MD; скриншоты gitignored).
+- Прод-сервер `npm start` на :3000 (может быть ещё запущен; для след. сессии —
+  `lsof -ti:3000`, при необходимости `unset NODE_ENV && npm run build && npm start`).
+- Скриншот-пайплайн: `_audit/screenshot.mjs` (batch, `--outdir /tmp/audit-scratch`),
+  `_audit/shoot.mjs` (одиночный/clip). Scratch-скрины — в `/tmp/audit-scratch/`.
+- **NODE_ENV trap снова актуален** — все next-команды с `unset NODE_ENV`.
+
+### Следующий шаг — P1 (7 страниц)
+
+`/documents`, `/projects`, `/service/request`, `/products/pumps`,
+`/products/control-systems`, `/products/heating-unit`, `/products/water-treatment`.
+На family-landing отдельно проверить паттерн пустой desktop-зоны hero.
+Затем P2/P3/P4 и финальный `_audit/REPORT.md`.
+
+
+---
+
+## Сессия 2026-05-14 (продолжение 2) — Решения по P0 + применение
+
+Алексей принял P0-отчёт и дал решения по 5 находкам. Лог решений —
+`_audit/DECISIONS.md` (закоммичен).
+
+### Применено
+
+- `bc6abcb fix(home)` — решение #1: убран дублирующий блок счётчиков
+  150+/12+/4+/24+ из `AboutSection` (+ удалён неиспользуемый `Stat`).
+  «4 направления» убрано из счётчиков `ProductionSection`, оставлено
+  только в hero; сетка статов Производства 4→3 колонки.
+- `26a5933 fix(routing)` — решение #5: удалён `src/app/[locale]/hero-e/`,
+  убран `/hero-e` из `robots.ts`, поправлен комментарий в `HeroBgCarousel`.
+
+Проверено: `tsc` чисто, `npm run build` — ✓ 166 страниц (было 169),
+`/hero-e` → 404. Layout «О компании» и «Производство» проверен скриншотами
+на mobile 390 + desktop 1440 — держится (Производство: 3 стата, desktop
+3-в-ряд / mobile 2+1).
+
+### Отложено / ждёт
+
+- **#2** `/products` тонкий каталог — backlog после запуска (структурная
+  задача, Алексей продумает наполнение).
+- **#3** пустая правая зона desktop hero (/products + /service) — Алексею
+  отправлены 2 desktop-скриншота, ждёт его решения. НЕ фиксить автономно.
+- **#4** `/service` без фото — backlog, ждёт фотоматериалов от заказчика.
+- Карта `/contacts` — Алексей подтвердил, на проде работает. Не трогать.
+- Тех.долг: осиротевшие i18n-ключи `home.about.stats.*` +
+  `home.production.stats.directions_caption` в `messages/*/home.json` —
+  безвредны, почистить отдельным коммитом.
+
+### Состояние
+
+- Branch `feat/editorial-visual-audit`: `ddc4023` (audit P0) → `bc6abcb`
+  (fix counters) → `26a5933` (fix hero-e) → `docs(audit): decisions log`.
+- Прод-сервер пересобран и перезапущен на :3000 (новый build).
+- `_audit/screenshots/` gitignored; `_audit/DECISIONS.md` закоммичен.
+
+### Следующий шаг — P1 (7 страниц)
+
+Не начат в этой сессии (контекст исчерпан на P0 + применении решений).
+P1: `/documents`, `/projects`, `/service/request`, `/products/pumps`,
+`/products/control-systems`, `/products/heating-unit`,
+`/products/water-treatment`.
+На family-landing отдельно проверить паттерн пустой desktop-зоны hero
+(#3) — но саму правку #3 не делать до ответа Алексея.
+Скриншоты — только проблемных блоков (`<route>/<issue-id>.webp`).
+
+
+---
+
+## Сессия 2026-05-14 (продолжение 3) — Решение #3 + push + preview
+
+Алексей по #3: переделать hero `/products` и `/service` в типографический
+одноколоночный формат. Сделано.
+
+### Применено
+
+- `7db772f fix(hero)` — hero обеих страниц переведён в одну левую
+  колонку `max-w-4xl`, выровненную по левому краю. `/service`: убрана
+  сетка `md:grid-cols-12` + `md:col-span-7` (это и был «пустой правый
+  столбец»). `/products`: контent обёрнут в один `max-w-4xl`, убраны
+  рассогласованные per-element max-width у H1. Mobile не затронут
+  (там колонка и так одна — проверено скриншотом).
+- Проверено: `tsc` + `npm run build` чисто, 166 страниц. Desktop и
+  mobile heroes сверены скриншотами.
+
+### Push + Vercel preview
+
+- Ветка `feat/editorial-visual-audit` запушена в origin (5 коммитов:
+  `ddc4023` → `bc6abcb` → `26a5933` → `82cfc7f` → `7db772f`, далее
+  ещё docs-коммит этой записи).
+- Vercel branch-preview (стабильный branchAlias):
+  **https://anhel-website-git-feat-editorial-515bd3-anurin7-5494s-projects.vercel.app**
+- Алексей смотрит на preview сразу 3 фикса: #1 счётчики (главная),
+  #5 /hero-e (→404), #3 hero (/products + /service).
+
+### Статус решений P0
+
+| # | Решение | Статус |
+|---|---|---|
+| 1 счётчики | убрать | ✅ `bc6abcb` |
+| 2 каталог тонкий | отложить | 📋 backlog после запуска |
+| 3 пустой desktop-hero | типографический hero | ✅ `7db772f` — ждёт ОК на preview |
+| 4 /service без фото | backlog | 📋 ждёт фото от заказчика |
+| 5 /hero-e | удалить из роутинга | ✅ `26a5933` |
+
+### Следующий шаг
+
+Ждём ОК Алексея по preview. После ОК — **P1 (7 страниц)** в новой
+сессии: `/documents`, `/projects`, `/service/request`, 4 family-landing.
+Скриншоты — только проблемных блоков. Тех.долг (осиротевшие i18n-ключи
+`home.about.stats.*`) — в финальную уборку кода после всего аудита.
+
+
+---
+
+## Сессия 2026-05-14 — закрытие. Preview ОК, P1 → новая сессия
+
+Алексей проверил Vercel preview — **все 3 фикса (#1, #5, #3) подтверждены,
+работают**. Сессия закрыта на завершённом блоке.
+
+### Итог сессии
+
+- P0-аудит (4 страницы) + interim-отчёт — сделано.
+- Решения Алексея применены: #1 (счётчики), #5 (/hero-e), #3 (типографический
+  hero) — закоммичены, запушены, подтверждены на preview.
+- #2 и #4 — в backlog после запуска (см. `_audit/DECISIONS.md`).
+- Ветка `feat/editorial-visual-audit` в origin, актуальна.
+
+### ПРЕД-АВТОРИЗАЦИЯ для следующей сессии (P1)
+
+Алексей заранее разрешил, спрашивать отдельно НЕ нужно:
+- **Family-landing страницы** (`/products/pumps`, `/products/control-systems`,
+  `/products/heating-unit`, `/products/water-treatment`): если на них тот же
+  паттерн пустого desktop-hero — **применять то же решение типографического
+  hero** (одна колонка `max-w-4xl`, без двухколоночной сетки), автономно.
+  Эталон правки — коммит `7db772f` (`/products` + `/service`).
+
+### Следующий шаг — P1 (7 страниц), новая сессия
+
+`/documents`, `/projects`, `/service/request`, `/products/pumps`,
+`/products/control-systems`, `/products/heating-unit`,
+`/products/water-treatment`.
+
+Workflow (без изменений):
+- mobile-first, RU/EN/TR, light/dark, роль главного инженера.
+- Скриншоты — ТОЛЬКО проблемных блоков (`_audit/screenshots/<route>/<issue-id>.webp`,
+  gitignored). «ok»-страницы — без файлов, пометка `status: ok`.
+- Per-page `_audit/pages/<route>.md` + `.blocks.json`.
+- Прод-сервер: `lsof -ti:3000`, при необходимости `unset NODE_ENV &&
+  npm run build && npm start`. Скрипты: `_audit/screenshot.mjs` (batch,
+  `--outdir /tmp/audit-scratch`), `_audit/shoot.mjs` (одиночный/clip).
+- В конце всего аудита — финальный `_audit/REPORT.md` + уборка кода
+  (осиротевшие i18n-ключи `home.about.stats.*` +
+  `home.production.stats.directions_caption`).
+
+
+---
+
+## Сессия 2026-05-14 (продолжение) — P1-аудит (7 страниц)
+
+Редакционный визуальный аудит, блок P1. Ветка `feat/editorial-visual-audit`,
+без новых тэгов. Контекст подхвачен из `_PROGRESS.md` + `_audit/DECISIONS.md`.
+
+### Проверено
+
+7 P1-страниц: `/documents`, `/projects`, `/service/request`,
+`/products/pumps`, `/products/control-systems`, `/products/heating-unit`,
+`/products/water-treatment`. Mobile 390 (приоритет) + desktop 1440 ·
+RU/EN/TR · light/dark. 84 скриншота через `_audit/screenshot.mjs` +
+адресные viewport-only и chunked-снимки для верификации.
+
+### Итог
+
+**Блокеров запуска по P1 нет.** Все 3 локали переведены (RU-fallback нет),
+dark не разваливается, реальные фото/рендеры, честные placeholder'ы.
+
+### Зафиксил сам (по пред-авторизации)
+
+- `fix(hero)` — `/products/pumps` + `/products/control-systems`: найден
+  тот же паттерн пустого desktop-hero, что закрывали #3 на /products и
+  /service (H1 в `max-w-[860px]`, прибит влево, правая половина пустая).
+  Применён типографический hero (`div max-w-4xl`, снят `max-w-[860px]`
+  с H1) — один-в-один `7db772f`. Покрыто пред-авторизацией Алексея для
+  family-landing, отдельного согласования не требовало. `tsc` + `build`
+  чистые, desktop-hero сверен скриншотом после фикса. Mobile не затронут.
+- `/products/heating-unit` + `/products/water-treatment` — паттерна
+  пустого hero НЕТ (это полноценные продуктовые страницы с `ProductHero`).
+  Фикс не применялся.
+
+### Артефакт, не баг
+
+- `/service/request` — full-page скриншот показывает sticky-навигацию
+  наезжающей на поля. Проверено viewport-only снимками (top/mid/bottom,
+  390+1440): штатное поведение frosted-glass sticky-панели, тот же класс
+  артефактов, что пустая карта `/contacts`. Правка не нужна.
+
+### Мелочи P1 (косметика, не блокеры — ждут решения Алексея)
+
+- `/documents` desktop — нечётные группы карточек, полупустая последняя строка.
+- `/service/request` mobile — высокая шапка формы + sticky-бар сжимают
+  первый экран; дубль подписи шага.
+- `/products/heating-unit` + `/water-treatment` — `line-clamp` в
+  `AdvantagesGrid` режет описания части пунктов.
+- `/products/water-treatment` — `BrandsStrip` на mobile «гуляет» (flex-wrap).
+
+### Артефакты аудита
+
+- Per-page `_audit/pages/<route>.md` + `.blocks.json` на все 7 P1-страниц.
+- `_audit/REPORT-interim-P1.md` — промежуточный отчёт.
+- `_audit/DECISIONS.md` — добавлен раздел «P1 — раунд 1».
+- Скриншоты — `_audit/screenshots/` gitignored; в этой сессии скриншоты
+  жили в `/tmp` + scratch (не в репозитории).
+
+### Состояние
+
+- Branch `feat/editorial-visual-audit`: P0-коммиты → `44b8a82` →
+  `fix(hero)` (pumps + control-systems) → `docs(audit)` (P1 отчёт).
+- Прод-сервер пересобран (`npm run build` чистый) и перезапущен на :3000.
+
+### Следующий шаг
+
+Ждём ОК Алексея по preview на 2 применённые правки (`fix(hero)`).
+Дальше — P2 (продуктовые detail-страницы, сценарии firefighting,
+детальные `/projects/*`, квизы) на той же ветке, без новых тэгов.
+Тех.долг (осиротевшие i18n-ключи `home.about.stats.*`) — в финальную
+уборку после всего аудита.
+
+
+---
+
+## Сессия 2026-05-14 (продолжение) — P2-аудит (35 маршрутов) + 4 фикса с P1
+
+Редакционный визуальный аудит, блок P2. Ветка `feat/editorial-visual-audit`,
+без новых тэгов. Контекст подхвачен из `_PROGRESS.md` + `_audit/DECISIONS.md`.
+
+### Проверено
+
+35 P2-маршрутов: 5 насосных деталей, 5 шкафов деталей, 8 ИТП-модулей,
+4 firefighting-сценария, 13 объектов `/projects/[slug]`. Типовые
+представители + перенос на остальные (страницы из одного компонентного
+стека). Mobile 390 + desktop 1440 · RU/EN · light/dark.
+
+### Применено в этой сессии
+
+**4 пред-авторизованных косметических фикса с P1** (`fix:`):
+- C1 `/documents` нечётные сетки — последняя карточка нечётной группы
+  тянется на 2 колонки.
+- C2 `/service/request` — сжат mobile-ритм отступов (шапка + sticky
+  больше не съедают первый экран); desktop не тронут.
+- C3 убран `line-clamp` в `AdvantagesGrid` + `DocumentsGrid` — описания
+  на heating-unit/water-treatment читаются целиком.
+- C4 `BrandsStrip` — 2-колоночная сетка <sm, flex-стрип со sm+.
+
+**3 реальных бага P2 — найдены и исправлены автономно:**
+- P2-5 `fix(product-page)` — `TechSpecsGrid` на mobile: длинные значения
+  ТТХ наезжали на label и на свои перенесённые строки. value-блок →
+  `flex-1 min-w-0 justify-end text-right`, `leading-none` → `leading-tight`.
+- P2-6 `fix(product-page)` — `TechSpecsGrid` серая «дыра» при нечётном
+  числе ТТХ (7 у ИТП-модулей) → filler-ячейки. Тот же фикс — сетка
+  «Применение» на ИТП-модульных страницах.
+- P2-7 `fix(projects)` — `break-words` на H1 `/projects/[slug]`: длинное
+  составное слово («Многофункциональный…») вылезало за край на 390px.
+
+`tsc` + `npm run build` чисто после всех фиксов. Каждый фикс сверён
+скриншотом (медленный скролл, чтобы обойти headless-флейк framer-motion).
+
+### Артефакт, не баг
+
+- `TechSpecsGrid` иногда рендерился серым боксом на full-page скриншотах
+  с быстрым stepped-скроллом. Диагностика (slow scroll + scrollIntoView,
+  замер opacity): плитки = opacity 1, текст на месте на всех 5 проверенных
+  страницах. Headless-флейк `whileInView` — как карта `/contacts`.
+
+### Требует решения Алексея (не блокер)
+
+- `firefighting/scenario-{a,b,c,d}` — `redirect()`-заглушки (HTTP 307 →
+  firefighting). Sandbox-маршруты после дизайн-ревью, в коде помечены к
+  удалению. Рекомендация: удалить из роутинга (как `/hero-e` в P0).
+
+### Артефакты аудита
+
+- `_audit/pages/p2-product-details.md` (5+5+8+4), `p2-projects-detail.md` (13).
+- `_audit/REPORT-interim-P2.md` — промежуточный отчёт.
+- `_audit/DECISIONS.md` — добавлен раздел «P2 — раунд 1».
+- Скриншоты — `_audit/screenshots/` gitignored; в этой сессии жили в `/tmp`.
+
+### Состояние
+
+- Branch `feat/editorial-visual-audit`: P1-коммиты → `fix:` (4 косметич.) →
+  `fix(product-page)` → `fix(projects)` → `docs(audit)` (P2).
+- Прод-сервер пересобран (`.next` чистился — был stale-`.nft.json` ENOENT)
+  и перезапущен на :3000.
+
+### Следующий шаг
+
+P3 (квизы `/quiz/*`, 5 шт) + P4 (`/privacy-policy`,
+`/personal-data-consent`) — в этой же сессии если контекст позволит,
+иначе в новой. После — финальный `_audit/REPORT.md` + уборка кода
+(осиротевшие i18n-ключи `home.about.stats.*`).
+
+
+---
+
+## Сессия 2026-05-14 — закрытие P2-блока
+
+Алексей проверил Vercel preview — **все 7 P2-фиксов подтверждены, работают**.
+По `firefighting/scenario-*` дал добро на удаление.
+
+### Доделано в закрытии
+
+- `fix(routing)` `0db8383` — удалены 4 dev-маршрута
+  `src/app/[locale]/products/pumps/firefighting/scenario-{a,b,c,d}/` (были
+  `redirect()`-заглушки) + убраны scenario-* disallow из `robots.ts`.
+  Компоненты `src/components/products/firefighting/scenario-*/` оставлены
+  по указанию Алексея. Проверено: маршруты → 404, `robots.txt` чистый,
+  `tsc` + `build` чисто (166 → 162 статических страницы).
+- Ветка `feat/editorial-visual-audit` в origin, актуальна.
+
+### Итог P0–P2
+
+- **P0** (4 страницы) — закрыто, фиксы подтверждены.
+- **P1** (7 страниц) — закрыто, 1 фикс (типографический hero pumps +
+  control-systems) подтверждён.
+- **P2** (35 маршрутов) — закрыто. 4 пред-авторизованных косметических
+  фикса с P1 + 3 реальных бага P2 + удаление scenario-* — всё применено,
+  подтверждено на preview.
+- Блокеров запуска по P0–P2 — нет.
+
+### Следующий шаг — P3 + P4 (новая сессия)
+
+- **P3** — квизы `/quiz/{pumps,aupd,itp,vpu,control-systems}` (5 шт,
+  интерактивные формы на QuizShell; визуальный язык как у
+  `/service/request`).
+- **P4** — `/privacy-policy`, `/personal-data-consent` (2 шт, статические
+  юр.страницы).
+- Та же ветка `feat/editorial-visual-audit`, без новых тэгов, pre-flight
+  не нужен. Контекст — этот файл + `_audit/DECISIONS.md`.
+- После P3+P4 — финальный `_audit/REPORT.md` + уборка кода (осиротевшие
+  i18n-ключи `home.about.stats.*` + `home.production.stats
+  .directions_caption`, тянутся с P0).
+
+
+---
+
+## Сессия 2026-05-15 — P3-аудит (5 квизов) + P4-аудит (2 юр.) + финальный REPORT
+
+Редакционный визуальный аудит, последний заход — блоки P3 + P4. Ветка
+`feat/editorial-visual-audit`, без новых тэгов. Контекст подхвачен из
+`_PROGRESS.md` + `_audit/DECISIONS.md`.
+
+### Проверено
+
+- **P3** — 5 квизов: `/quiz/{pumps,vpu,itp,aupd,control-systems}`. Mobile 390
+  (приоритет) + desktop 1440 · RU/EN/TR · light/dark. 84 статических снимка
+  (`_audit/screenshot.mjs`) + интерактивные прогоны: валидация по шагам ×3
+  локали со сбором геометрии сообщений, отдельный прогон control-systems до
+  шага 4 «Согласие», viewport-only снимки первого экрана.
+- **P4** — 2 юр.страницы: `/privacy-policy`, `/personal-data-consent`. Те же
+  матрицы. 24 снимка + адресные кропы.
+
+### Итог
+
+**Блокеров запуска по P3+P4 нет.** P4 — чисто (status: ok). P3 — 4 реальных
+бага найдено и исправлено автономно (класс «чинить — сам», как P2-5…P2-7).
+
+### Зафиксил сам (4 фикса, 3 коммита)
+
+- `fix(quiz)` `1c8e836` — **P3-1**: QuizShell-шапка (pumps/vpu/itp/aupd)
+  налезала на фикс-хедер сайта на mobile и desktop. `py-10 sm:py-16` →
+  `pt-24 pb-10 sm:pt-28 sm:pb-16`, ритм как у control-systems/юр.страниц.
+- `fix(quiz)` `0a37c99` — **P3-2**: сломанный fallback в
+  `useTranslatedConfig.tr()` светил битый ключ `quiz.{itp,aupd}.description`
+  в UI вместо RU-исходника. next-intl на промахе возвращает абсолютный путь
+  (`quiz.itp.description`), а guard сверял с относительным `key`. Чинит
+  fallback для всех label/hint/option в 4 квизах.
+- `fix(quiz)` `371d361` — **P3-3 + P3-4**: control-systems-форма. Ошибка
+  «Согласие» была `ml-auto` в строке лейбла → сплющивалась в ~120px полоску
+  (RU 5 строк). Вынесена под строку чекбокса, full-width, `pl-7`. Кнопки
+  навигации `< 44px` → `min-h-11`; sticky-бар получил
+  `pb-[calc(1rem+env(safe-area-inset-bottom))]`.
+
+`tsc` + `npm run build` чисто после всех фиксов (поймал одну опечатку —
+`{/* */}` после `&& (` — поправил до коммита). Прод-сервер пересобран и
+перезапущен на :3000, каждый фикс сверён скриншотом «после».
+
+### Проверено, правок не требует
+
+- Валидация во всех 5 квизах × 3 локали — сообщения одной строкой, overflow
+  нет ни в одном.
+- Тач-таргеты QuizShell (`min-h-11` с P2-эпохи), sticky-бар первый экран не
+  съедает, localStorage-восстановление работает, EN/TR прогружены.
+- P4 — обе юр.страницы: шапка отбита (`pt-24 md:pt-32`), типографика
+  длинного текста на mobile держится, dark не разваливается, перекрёстные
+  ссылки и связка с чекбоксом согласия в квизах работают.
+
+### Требует решения Алексея (не блокер)
+
+- `control-systems` (и `/service/request` с P1) — дубль подписи шага
+  «ШАГ N ИЗ M» + «ШАГ N / M». Не правлю автономно — единообразно с тем, как
+  это оставили в P1. В backlog `_audit/DECISIONS.md`.
+
+### Артефакты сессии
+
+- `_audit/pages/p3-quizzes.md`, `_audit/pages/p4-legal.md` — per-block.
+- `_audit/REPORT.md` — **финальный сводный отчёт по всему аудиту P0–P4**
+  (таблица всех 18 фиксов по категориям + коммиты, backlog после запуска,
+  готовность к запуску — YES).
+- `_audit/DECISIONS.md` — добавлены разделы «P3 — раунд 1», «P4 — раунд 1»,
+  backlog дополнен.
+- Скриншоты-доказательства «до/после» — `_audit/screenshots/quiz-*/`
+  (gitignored). 84+24 статических снимка и интерактивные прогоны жили в
+  `/tmp/audit-scratch`, как в P1–P2.
+
+### Состояние
+
+- Branch `feat/editorial-visual-audit`: P2-коммиты → `1c8e836` → `0a37c99`
+  → `371d361` (fix) → `docs(audit)` (P3+P4 + финальный REPORT).
+- Прод-сервер пересобран (`npm run build` чистый) и перезапущен на :3000.
+
+### Следующий шаг
+
+Ждём ОК Алексея на `_audit/REPORT.md`. После ОК — опциональный `chore` на
+уборку осиротевших i18n-ключей `home.about.stats.*` (если даст добро) →
+финальный PR со squash-merge `feat/editorial-visual-audit` в `main` → тэг
+`v1.12-editorial-audit-complete`. Весь аудит P0–P4 на этом закрыт.

@@ -82,9 +82,9 @@ function AdvantageCard({
       aria-label={`${item.mono} · ${item.title}`}
       className={[
         "group relative flex bg-[var(--color-primary)] outline-none transition-colors duration-300",
-        // Mobile compact row — фикс-высота 64px, малый padding,
-        // line-clamp на title (1 строка) и body (2 строки) — 9
-        // преимуществ помещаются в 2-3 экрана.
+        // Mobile compact row — min-высота 64px (растёт под контент),
+        // малый padding. Описание больше НЕ обрезается line-clamp'ом —
+        // посетитель должен дочитывать преимущество целиком.
         "min-h-[64px] flex-row items-baseline gap-3 px-4 py-3",
         // Tablet+ card.
         "sm:min-h-[240px] sm:flex-col sm:justify-between sm:gap-0 sm:p-6 md:min-h-[280px] md:p-8",
@@ -105,13 +105,13 @@ function AdvantageCard({
         {item.mono}
       </p>
 
-      {/* Title + body — на mobile compact (line-clamp 1 + 2);
-          на sm+ — раскрывается полностью в карточке. */}
+      {/* Title + body — раскрываются полностью на всех брейкпоинтах.
+          line-clamp убран: описание преимущества должно дочитываться. */}
       <div className="flex min-w-0 flex-1 flex-col gap-1 sm:mt-10 sm:gap-3">
-        <h3 className="line-clamp-1 font-display text-[14px] font-medium leading-tight text-[var(--color-secondary)] sm:line-clamp-none sm:text-[22px] md:text-[24px]">
+        <h3 className="font-display text-[14px] font-medium leading-tight text-[var(--color-secondary)] sm:text-[22px] md:text-[24px]">
           {item.title}
         </h3>
-        <p className="line-clamp-2 text-[11px] leading-snug text-[var(--color-secondary)]/65 sm:line-clamp-none sm:text-sm sm:leading-relaxed">
+        <p className="text-[11px] leading-snug text-[var(--color-secondary)]/65 sm:text-sm sm:leading-relaxed">
           {item.body}
         </p>
       </div>

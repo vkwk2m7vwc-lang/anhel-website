@@ -414,7 +414,7 @@ function DirectionGroup({
         {title}
       </p>
       <ul className="grid gap-3 md:grid-cols-2">
-        {items.map((doc) => (
+        {items.map((doc, i) => (
           <DocCard
             key={doc.href}
             title={doc.title}
@@ -422,6 +422,7 @@ function DirectionGroup({
             size={doc.size}
             note={doc.note}
             icon={icon}
+            wide={items.length % 2 === 1 && i === items.length - 1}
           />
         ))}
       </ul>
@@ -435,6 +436,7 @@ function DocCard({
   size,
   note,
   icon: Icon,
+  wide,
 }: {
   title: string;
   href: string;
@@ -443,6 +445,9 @@ function DocCard({
    *  whose PDF body is in Russian only ("Original document (Russian)"). */
   note?: string;
   icon: typeof FileText;
+  /** Span both grid columns — fills the trailing gap left by an
+   *  odd-count card group on the md+ 2-column grid. */
+  wide?: boolean;
 }) {
   // Static PDFs live in /public — they are NOT app routes. The
   // next-intl <Link> would (a) prepend the locale prefix on EN/TR
@@ -451,7 +456,7 @@ function DocCard({
   // lets the browser fetch the file directly. Same pattern as
   // ProductHero.ProductCtaButton and the /contacts download button.
   return (
-    <li>
+    <li className={wide ? "md:col-span-2" : undefined}>
       <a
         href={href}
         download

@@ -373,15 +373,15 @@ export function QuizControlSystemsForm() {
             className="mt-14 border-t border-[var(--color-hairline)] pt-10 md:mt-16 md:pt-12"
             aria-labelledby={`step-${step.index}-title`}
           >
-            <p className="mono-tag">
-              {t('step_short', {
-                current: stepIdx + 1,
-                total: localizedSteps.length,
-              })}
-            </p>
+            {/*
+             * Step number is already shown in the progress block above
+             * ("ШАГ N ИЗ M") — the per-step mono-tag duplicated it. Dropped
+             * for consistency with the QuizShell quizzes, where the step
+             * heading carries no separate "step N of M" label.
+             */}
             <h2
               id={`step-${step.index}-title`}
-              className="mt-4 font-display text-3xl font-medium leading-tight md:text-4xl"
+              className="font-display text-3xl font-medium leading-tight md:text-4xl"
             >
               {step.title}
             </h2>
@@ -412,15 +412,22 @@ export function QuizControlSystemsForm() {
         </AnimatePresence>
       )}
 
-      {/* Sticky bottom nav */}
+      {/*
+       * Sticky bottom nav.
+       * pb-[calc(1rem+env(safe-area-inset-bottom))] keeps the py-4 (1rem)
+       * base padding AND adds the iOS home-indicator inset (~34px on
+       * iPhone X+) so the bar never sits under it. min-h-11 on the three
+       * buttons brings tap targets to the 44px WCAG minimum (py-2 /
+       * py-2.5 alone gave ~36-40px).
+       */}
       {submitState !== 'done' && (
-        <div className="sticky bottom-0 z-20 -mx-6 mt-14 flex items-center justify-between gap-4 border-t border-[var(--color-hairline)] bg-[var(--color-primary)]/85 px-6 py-4 backdrop-blur md:-mx-12 md:px-12">
+        <div className="sticky bottom-0 z-20 -mx-6 mt-14 flex items-center justify-between gap-4 border-t border-[var(--color-hairline)] bg-[var(--color-primary)]/85 px-6 py-4 pb-[calc(1rem+env(safe-area-inset-bottom))] backdrop-blur md:-mx-12 md:px-12">
           <button
             type="button"
             onClick={handlePrev}
             disabled={stepIdx === 0}
             className={
-              'inline-flex items-center gap-2 px-3 py-2 text-sm transition-colors ' +
+              'inline-flex min-h-11 items-center gap-2 px-3 py-2 text-sm transition-colors ' +
               (stepIdx === 0
                 ? 'cursor-not-allowed text-[var(--color-secondary)]/30'
                 : 'text-[var(--color-secondary)]/75 hover:text-[var(--color-secondary)]')
@@ -435,7 +442,7 @@ export function QuizControlSystemsForm() {
               type="button"
               onClick={handleNext}
               data-cursor="hover"
-              className="group inline-flex items-center gap-2 border border-[var(--color-secondary)] bg-[var(--color-secondary)] px-5 py-2.5 text-sm font-medium text-[var(--color-primary)] transition-colors hover:bg-transparent hover:text-[var(--color-secondary)]"
+              className="group inline-flex min-h-11 items-center gap-2 border border-[var(--color-secondary)] bg-[var(--color-secondary)] px-5 py-2.5 text-sm font-medium text-[var(--color-primary)] transition-colors hover:bg-transparent hover:text-[var(--color-secondary)]"
             >
               {t('next')}
               <ArrowRight size={16} strokeWidth={1.5} aria-hidden="true" />
@@ -446,7 +453,7 @@ export function QuizControlSystemsForm() {
               onClick={handleSubmit}
               disabled={submitState === 'submitting'}
               data-cursor="hover"
-              className="group inline-flex items-center gap-2 border border-[var(--color-secondary)] bg-[var(--color-secondary)] px-5 py-2.5 text-sm font-medium text-[var(--color-primary)] transition-colors hover:bg-transparent hover:text-[var(--color-secondary)] disabled:cursor-not-allowed disabled:opacity-50"
+              className="group inline-flex min-h-11 items-center gap-2 border border-[var(--color-secondary)] bg-[var(--color-secondary)] px-5 py-2.5 text-sm font-medium text-[var(--color-primary)] transition-colors hover:bg-transparent hover:text-[var(--color-secondary)] disabled:cursor-not-allowed disabled:opacity-50"
             >
               {submitState === 'submitting' ? t('submitting') : t('submit')}
               <Send size={16} strokeWidth={1.5} aria-hidden="true" />
@@ -491,35 +498,44 @@ function FieldRow({
   if (field.kind === 'checkbox') {
     const checked = value === true;
     return (
-      <label
-        htmlFor={id}
-        className="col-span-full flex cursor-pointer items-start gap-3 border-t border-[var(--color-hairline)] py-4 first:border-t-0"
-      >
-        <input
-          id={id}
-          type="checkbox"
-          checked={checked}
-          required={field.required}
-          aria-invalid={Boolean(error) || undefined}
-          aria-describedby={describedBy}
-          onChange={(e) => onChange(field.name, e.target.checked)}
-          className="mt-0.5 h-4 w-4 shrink-0 cursor-pointer accent-[var(--color-secondary)]"
-        />
-        <span className="text-sm leading-relaxed text-[var(--color-secondary)]/85 md:text-[15px]">
-          {field.label}
-          {field.required && (
-            <span
-              aria-hidden="true"
-              className="ml-1 text-[var(--color-secondary)]/55"
-            >
-              *
-            </span>
-          )}
-        </span>
+      <div className="col-span-full border-t border-[var(--color-hairline)] py-4 first:border-t-0">
+        <label
+          htmlFor={id}
+          className="flex cursor-pointer items-start gap-3"
+        >
+          <input
+            id={id}
+            type="checkbox"
+            checked={checked}
+            required={field.required}
+            aria-invalid={Boolean(error) || undefined}
+            aria-describedby={describedBy}
+            onChange={(e) => onChange(field.name, e.target.checked)}
+            className="mt-0.5 h-4 w-4 shrink-0 cursor-pointer accent-[var(--color-secondary)]"
+          />
+          <span className="text-sm leading-relaxed text-[var(--color-secondary)]/85 md:text-[15px]">
+            {field.label}
+            {field.required && (
+              <span
+                aria-hidden="true"
+                className="ml-1 text-[var(--color-secondary)]/55"
+              >
+                *
+              </span>
+            )}
+          </span>
+        </label>
+        {/*
+         * Error rendered BELOW the row, full width. The old `ml-auto`
+         * placement inside the flex row crushed the long consent message
+         * (RU «Необходимо согласие…», EN/TR equivalents) into a ~120px
+         * sliver next to the label — 4-5 wrapped lines. pl-7 aligns it
+         * under the label text (checkbox 16px + gap 12px).
+         */}
         {error && (
-          <FieldError id={errorId!} message={error} className="ml-auto" />
+          <FieldError id={errorId!} message={error} className="mt-2 pl-7" />
         )}
-      </label>
+      </div>
     );
   }
 

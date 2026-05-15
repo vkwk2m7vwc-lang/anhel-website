@@ -22,14 +22,6 @@
     "paragraph_1": "ANHEL® is a brand of Profit LLC. We design and manufacture modular pumping stations, block-modular heat substations, water treatment systems and control cabinets. We work with industrial and commercial facilities across Russia.",
     "paragraph_2": "We run our own engineering office and assembly shop. Every module passes hydraulic and electrical bench testing before shipment — equipment arrives on site ready for commissioning.",
     "paragraph_3": "We cover the full cycle with a single team: sizing and selection → engineering → manufacturing → installation and commissioning → service. One contract, one point of responsibility, one schedule.",
-    "stats_aria": "Key metrics",
-    "stats": {
-      "objects_caption": "Projects",
-      "years_caption": "Years of experience",
-      "directions_caption": "Product lines",
-      "warranty_caption": "Warranty",
-      "warranty_unit": "months"
-    },
     "cta": "About our manufacturing"
   },
   "production": {
@@ -55,7 +47,6 @@
       "lead_time_value": "from 30",
       "lead_time_unit": "days",
       "lead_time_caption": "Lead time",
-      "directions_caption": "Product lines",
       "testing_caption": "Bench-tested",
       "in_house_value": "In-house",
       "in_house_caption": "Manufacturing & assembly"

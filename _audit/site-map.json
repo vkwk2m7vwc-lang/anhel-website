@@ -1,0 +1,65 @@
+[
+  { "route": "/", "name": "Главная", "priority": "P0", "type": "landing" },
+  { "route": "/products", "name": "Каталог продукции", "priority": "P0", "type": "catalog" },
+  { "route": "/service", "name": "Сервис и диагностика", "priority": "P0", "type": "section" },
+  { "route": "/contacts", "name": "Контакты", "priority": "P0", "type": "section" },
+
+  { "route": "/documents", "name": "Документы", "priority": "P1", "type": "section" },
+  { "route": "/projects", "name": "Объекты (портфолио)", "priority": "P1", "type": "section" },
+  { "route": "/service/request", "name": "Заявка на диагностику (форма)", "priority": "P1", "type": "form" },
+  { "route": "/products/pumps", "name": "Насосные установки — family landing", "priority": "P1", "type": "family-landing" },
+  { "route": "/products/control-systems", "name": "Шкафы управления — family landing", "priority": "P1", "type": "family-landing" },
+  { "route": "/products/heating-unit", "name": "Тепловые пункты (ИТП) — family landing", "priority": "P1", "type": "family-landing" },
+  { "route": "/products/water-treatment", "name": "Водоподготовка", "priority": "P1", "type": "family-landing", "note": "ТЗ относит к P2, но детальных подстраниц нет — это и есть страница направления" },
+
+  { "route": "/products/pumps/firefighting", "name": "Насосы — Пожаротушение", "priority": "P2", "type": "product-detail" },
+  { "route": "/products/pumps/water-supply", "name": "Насосы — Водоснабжение", "priority": "P2", "type": "product-detail" },
+  { "route": "/products/pumps/heating-cooling", "name": "Насосы — Отопление и охлаждение", "priority": "P2", "type": "product-detail" },
+  { "route": "/products/pumps/pressure-boost", "name": "Насосы — Повышение давления", "priority": "P2", "type": "product-detail" },
+  { "route": "/products/pumps/special", "name": "Насосы — Специальные установки", "priority": "P2", "type": "product-detail" },
+
+  { "route": "/products/pumps/firefighting/scenario-a", "name": "Пожаротушение — сценарий A", "priority": "P2", "type": "product-scenario", "note": "интерактивный deep-dive под firefighting" },
+  { "route": "/products/pumps/firefighting/scenario-b", "name": "Пожаротушение — сценарий B", "priority": "P2", "type": "product-scenario" },
+  { "route": "/products/pumps/firefighting/scenario-c", "name": "Пожаротушение — сценарий C", "priority": "P2", "type": "product-scenario" },
+  { "route": "/products/pumps/firefighting/scenario-d", "name": "Пожаротушение — сценарий D", "priority": "P2", "type": "product-scenario" },
+
+  { "route": "/products/control-systems/variable-frequency", "name": "Шкафы — Частотное регулирование", "priority": "P2", "type": "product-detail" },
+  { "route": "/products/control-systems/fire-suppression", "name": "Шкафы — Пожаротушение", "priority": "P2", "type": "product-detail" },
+  { "route": "/products/control-systems/smoke-control", "name": "Шкафы — Дымоудаление", "priority": "P2", "type": "product-detail" },
+  { "route": "/products/control-systems/sewage-pumping", "name": "Шкафы — Канализационные станции", "priority": "P2", "type": "product-detail" },
+  { "route": "/products/control-systems/electric-actuators", "name": "Шкафы — Электроприводы", "priority": "P2", "type": "product-detail", "note": "ТЗ указывает «4 шкафа», фактически 5 детальных страниц" },
+
+  { "route": "/products/heating-unit/input-metering", "name": "ИТП — Модуль ввода и учёта тепла", "priority": "P2", "type": "product-detail" },
+  { "route": "/products/heating-unit/open-heating", "name": "ИТП — Модуль открытой системы отопления", "priority": "P2", "type": "product-detail" },
+  { "route": "/products/heating-unit/closed-heating", "name": "ИТП — Модуль закрытой системы отопления", "priority": "P2", "type": "product-detail" },
+  { "route": "/products/heating-unit/makeup", "name": "ИТП — Модуль заполнения и подпитки", "priority": "P2", "type": "product-detail" },
+  { "route": "/products/heating-unit/single-stage-dhw", "name": "ИТП — Модуль одноступенчатой ГВС", "priority": "P2", "type": "product-detail" },
+  { "route": "/products/heating-unit/two-stage-dhw", "name": "ИТП — Модуль двухступенчатой ГВС", "priority": "P2", "type": "product-detail" },
+  { "route": "/products/heating-unit/two-stage-dhw-monoblock", "name": "ИТП — Двухступенчатая ГВС на моноблоке", "priority": "P2", "type": "product-detail" },
+  { "route": "/products/heating-unit/steam-condensate", "name": "ИТП — Пароконденсатные системы (СРП)", "priority": "P2", "type": "product-detail" },
+
+  { "route": "/projects/sogaz-medical-complex", "name": "Объект — Медицинский комплекс СОГАЗ", "priority": "P2", "type": "project-detail" },
+  { "route": "/projects/zhk-imperial-club", "name": "Объект — ЖК Imperial Club", "priority": "P2", "type": "project-detail" },
+  { "route": "/projects/zhk-grand-view", "name": "Объект — ЖК Grand View", "priority": "P2", "type": "project-detail" },
+  { "route": "/projects/zhk-svetlana-park", "name": "Объект — ЖК Светлана Парк", "priority": "P2", "type": "project-detail" },
+  { "route": "/projects/zhk-astra-continental", "name": "Объект — ЖК Astra Continental", "priority": "P2", "type": "project-detail" },
+  { "route": "/projects/zhk-astra-marine", "name": "Объект — ЖК Astra Marine", "priority": "P2", "type": "project-detail" },
+  { "route": "/projects/zhk-titul", "name": "Объект — ЖК Титул", "priority": "P2", "type": "project-detail" },
+  { "route": "/projects/zhk-amber-club", "name": "Объект — ЖК Amber Club", "priority": "P2", "type": "project-detail" },
+  { "route": "/projects/zhk-senat", "name": "Объект — ЖК Сенат", "priority": "P2", "type": "project-detail" },
+  { "route": "/projects/zhk-panorama-park", "name": "Объект — ЖК Панорама Парк", "priority": "P2", "type": "project-detail" },
+  { "route": "/projects/zhk-vitebsky-park", "name": "Объект — ЖК Витебский Парк", "priority": "P2", "type": "project-detail" },
+  { "route": "/projects/zhk-upoint", "name": "Объект — ЖК UPoint", "priority": "P2", "type": "project-detail" },
+  { "route": "/projects/zhk-graf-orlov", "name": "Объект — ЖК Граф Орлов", "priority": "P2", "type": "project-detail" },
+
+  { "route": "/quiz/pumps", "name": "Квиз — подбор насосных установок", "priority": "P3", "type": "quiz" },
+  { "route": "/quiz/aupd", "name": "Квиз — подбор АУ повышения давления", "priority": "P3", "type": "quiz" },
+  { "route": "/quiz/itp", "name": "Квиз — подбор теплового пункта", "priority": "P3", "type": "quiz" },
+  { "route": "/quiz/vpu", "name": "Квиз — подбор водоподготовки", "priority": "P3", "type": "quiz" },
+  { "route": "/quiz/control-systems", "name": "Квиз — подбор шкафа управления", "priority": "P3", "type": "quiz" },
+
+  { "route": "/privacy-policy", "name": "Политика конфиденциальности", "priority": "P4", "type": "legal" },
+  { "route": "/personal-data-consent", "name": "Согласие на обработку перс. данных", "priority": "P4", "type": "legal" },
+
+  { "route": "/hero-e", "name": "hero-e — экспериментальная/dev-страница", "priority": "P4", "type": "dev-experimental", "note": "ФЛАГ: похоже на тестовую страницу hero-варианта, не должна быть публичной — проверить и, вероятно, удалить из роутинга" }
+]

@@ -99,9 +99,13 @@ export default function ProjectDetailPage({ params }: { params: Params }) {
         className="mx-auto w-full max-w-[1440px] px-6 pb-12 pt-8 md:px-12 md:pb-20 md:pt-12"
       >
         <p className="mono-tag">{tCats(project.category)}</p>
+        {/* break-words: длинные составные названия объектов
+            («Многофункциональный…») на 390px вылезали за правый край —
+            одно слово шире контентного бокса H1. overflow-wrap позволяет
+            такому слову перенестись. */}
         <h1
           id="project-title"
-          className="mt-6 max-w-[1100px] font-display text-section font-medium tracking-[-0.02em]"
+          className="mt-6 max-w-[1100px] break-words font-display text-section font-medium tracking-[-0.02em]"
         >
           {title}
         </h1>

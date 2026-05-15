@@ -67,7 +67,6 @@
     "subtitle": "Formu doldurun, mühendis ziyaretini birlikte planlayalım. Görevlendirme kararı, doldurulmuş ve kaşeli talep alındıktan sonra verilir.",
     "step_aria": "Adım {current}: {title}",
     "step_of": "{total} adımdan {current}.",
-    "step_short": "Adım {current} / {total}",
     "back": "Geri",
     "next": "İleri",
     "submit": "Talebi gönder",

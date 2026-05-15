@@ -16,9 +16,10 @@ import { useTranslations } from "next-intl";
  * When real SVG logos arrive the BrandItem shape grows an `svg` field
  * and this component learns a second branch — chore commit.
  *
- * The rows run flex-wrap with large horizontal gaps; on viewport <md
- * they collapse into 2–3 wide columns gracefully without forcing a
- * special mobile layout.
+ * On viewport <sm the rows render as a clean 2-column grid (evenly
+ * aligned word-marks); from sm+ they switch to a flex-wrap strip with
+ * large horizontal gaps. The grid on mobile keeps the brand names from
+ * wrapping unevenly into a ragged stack.
  */
 export function BrandsStrip({ content }: { content: BrandsContent }) {
   const tUi = useTranslations("common.ui");
@@ -49,7 +50,7 @@ export function BrandsStrip({ content }: { content: BrandsContent }) {
         {/* Row 1 — pump brands */}
         <div className="mt-14 md:mt-20">
           <p className="mb-6 font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/65">{tUi("brands_tier_pumps")}</p>
-          <ul className="flex flex-wrap items-baseline gap-x-12 gap-y-8 md:gap-x-16">
+          <ul className="grid grid-cols-2 gap-x-8 gap-y-8 sm:flex sm:flex-wrap sm:items-baseline sm:gap-x-12 md:gap-x-16">
             {content.rowPumps.map((b, i) => (
               <BrandWordMark key={b.id} brand={b} tier="pump" index={i} />
             ))}
@@ -59,7 +60,7 @@ export function BrandsStrip({ content }: { content: BrandsContent }) {
         {/* Row 2 — components */}
         <div className="mt-14 border-t border-[var(--color-hairline)] pt-10 md:mt-20 md:pt-14">
           <p className="mb-6 font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/65">{tUi("brands_tier_components")}</p>
-          <ul className="flex flex-wrap items-baseline gap-x-10 gap-y-6 md:gap-x-12">
+          <ul className="grid grid-cols-2 gap-x-8 gap-y-6 sm:flex sm:flex-wrap sm:items-baseline sm:gap-x-10 md:gap-x-12">
             {content.rowComponents.map((b, i) => (
               <BrandWordMark key={b.id} brand={b} tier="component" index={i} />
             ))}

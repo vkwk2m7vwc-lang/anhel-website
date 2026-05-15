@@ -17,8 +17,8 @@ type HeroBgCarouselProps = {
    * a play/pause toggle + progress bar. If `false`, the user must
    * click the numbered tabs to switch cards.
    *
-   * `/` and `/hero-e` both pass `true` today — the only two routes
-   * that mount this component after the A/B/D variants were pruned.
+   * Only `/` passes `true` today (the `/hero-e` dev-alias route was
+   * removed in the 2026-05 editorial audit).
    */
   autoplay?: boolean;
 };

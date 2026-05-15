@@ -1,0 +1,80 @@
+{
+  "page": "/products/water-treatment",
+  "date": "2026-05-14",
+  "priority": "P1",
+  "priority_note": "В site-map P1; ТЗ относит к P2 — детальных подстраниц нет, это и есть страница направления.",
+  "status": "ok",
+  "viewports_checked": ["mobile 390", "desktop 1440"],
+  "locales_checked": ["ru", "en", "tr"],
+  "themes_checked": ["light", "dark"],
+  "overall": "Как и heating-unit — полноценная продуктовая страница (ProductPageShell + ProductHero), не тонкий каталог. Паттерна пустого desktop-hero НЕТ. Section map: hero -> ТТХ -> описание -> применение -> бренды -> преимущества -> галерея -> кейсы -> документация -> CTA. Mobile/desktop/dark/EN — чисто. Мелочи: BrandsStrip на mobile визуально слегка «гуляет» (flex-wrap), line-clamp режет описания преимуществ.",
+  "blocks": [
+    {
+      "block": "Hero — H1 «Установки водоподготовки ANHEL» + лид + 2 CTA + рендер RO-установки",
+      "needed": "yes", "readable": "yes", "real_value": "yes",
+      "real_value_notes": "Полноценный hero с реальным рендером мембранной стойки. Паттерна пустого правого столбца здесь НЕТ — фикс family-landing hero не требуется.",
+      "verdict": "оставить",
+      "recommendation": "Без правок."
+    },
+    {
+      "block": "ТТХ — таблица параметров серии",
+      "needed": "yes", "readable": "yes", "real_value": "yes",
+      "real_value_notes": "Конкретные цифры: производительность 0,5-80 м3/ч, давление, температура, степень очистки RO до 99,5%, срок службы.",
+      "verdict": "оставить",
+      "recommendation": "Без правок."
+    },
+    {
+      "block": "Описание — назначение и принцип работы",
+      "needed": "yes", "readable": "yes", "real_value": "yes",
+      "verdict": "оставить",
+      "recommendation": "Без правок."
+    },
+    {
+      "block": "Применение",
+      "needed": "yes", "readable": "yes", "real_value": "yes",
+      "verdict": "оставить",
+      "recommendation": "Без правок."
+    },
+    {
+      "block": "Бренды — фильтрующие среды + автоматика и комплектующие",
+      "viewport": "mobile 390",
+      "needed": "yes", "readable": "yes", "real_value": "yes",
+      "readable_issues": ["BrandsStrip на mobile: названия брендов выложены flow-стрипом, часть строк прижата влево, часть с отступом/по-центру, межстрочные интервалы неровные — стрип визуально слегка «гуляет»"],
+      "verdict": "оставить",
+      "recommendation": "Не блокер, читается. Если причёсывать — отдельной задачей по компоненту BrandsStrip, не по этой странице."
+    },
+    {
+      "block": "Преимущества — 6 пунктов",
+      "needed": "yes", "readable": "yes", "real_value": "yes",
+      "readable_issues": ["line-clamp режет описания пунктов 04 и 06 многоточием — тот же эффект, что на /products/heating-unit"],
+      "verdict": "оставить",
+      "recommendation": "Без обязательных правок. Косметика."
+    },
+    {
+      "block": "Галерея",
+      "needed": "yes", "readable": "yes", "real_value": "yes",
+      "verdict": "оставить",
+      "recommendation": "Без правок."
+    },
+    {
+      "block": "Кейсы (RelatedProjects) — карточки объектов с реальными фото",
+      "needed": "yes", "readable": "yes", "real_value": "yes",
+      "verdict": "оставить",
+      "recommendation": "Без правок."
+    },
+    {
+      "block": "Документация — 2 PDF-карточки",
+      "needed": "yes", "readable": "yes", "real_value": "yes",
+      "verdict": "оставить",
+      "recommendation": "Без правок."
+    },
+    {
+      "block": "Финальный CTA + Footer",
+      "needed": "yes", "readable": "yes", "real_value": "yes",
+      "verdict": "оставить",
+      "recommendation": "Без правок."
+    }
+  ],
+  "cross_locale": "RU/EN/TR — переведено, RU-fallback нет.",
+  "dark_theme": "В норме, рендер на тёмном grid-фоне читается, контраст держится."
+}

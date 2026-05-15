@@ -1,0 +1,60 @@
+{
+  "page": "/service/request",
+  "date": "2026-05-14",
+  "priority": "P1",
+  "status": "ok",
+  "viewports_checked": ["mobile 390", "desktop 1440"],
+  "locales_checked": ["ru", "en", "tr"],
+  "themes_checked": ["light", "dark"],
+  "overall": "Многошаговая форма (5 шагов), аккуратно сделана: полоса прогресса + точки, live-проценты, floating-label инпуты, sticky-навигация снизу. Реальных багов не найдено. На full-page скриншоте sticky-панель выглядит наезжающей на поля — ПРОВЕРЕНО viewport-only снимками: это headless-артефакт (как пустая карта на /contacts), у реального пользователя frosted-glass панель штатно скроллится, внизу отлипает в нормальный поток. RU/EN/TR переведено, dark в норме.",
+  "blocks": [
+    {
+      "block": "Header формы — mono-tag + H1 «Сервисная заявка ANHEL» + лид",
+      "viewport": "mobile 390",
+      "needed": "yes", "readable": "yes", "real_value": "yes",
+      "readable_issues": ["Mobile: шапка до первого поля высокая (~1000+ px с прогресс-блоком) — первое поле уходит под фолд при загрузке"],
+      "verdict": "оставить",
+      "recommendation": "Без обязательных правок. Опционально на mobile ужать прогресс-блок — требует решения Алексея."
+    },
+    {
+      "block": "Прогресс — тонкая полоса + 5 точек-маркеров + счётчик",
+      "needed": "yes", "readable": "yes", "real_value": "yes",
+      "real_value_notes": "Дублирование подписи шага: есть «ШАГ 1 ИЗ 5» в прогресс-блоке и ниже «ШАГ 1 / 5» в заголовке шага. Не баг, но можно подумать об устранении дубля на mobile.",
+      "verdict": "оставить",
+      "recommendation": "Без правок. Опционально — убрать дубль подписи шага."
+    },
+    {
+      "block": "Контент текущего шага — заголовок + сетка полей",
+      "needed": "yes", "readable": "yes", "real_value": "yes",
+      "real_value_notes": "Floating-label инпуты, на mobile 1 колонка, на desktop sm:grid-cols-2. Поля конкретные (номер заявки, название компании, объект, адрес).",
+      "verdict": "оставить",
+      "recommendation": "Без правок."
+    },
+    {
+      "block": "Sticky-навигация — ghost «Назад» + filled «Далее/Отправить»",
+      "needed": "yes", "readable": "yes", "real_value": "yes",
+      "real_value_notes": "position: sticky; bottom-0; bg-primary/85 + backdrop-blur. На full-page скриншоте выглядит наезжающей на поля — это артефакт headless-рендера, проверено viewport-only снимками. У реального пользователя ведёт себя штатно. На шаге 1 «Назад» в disabled-состоянии (opacity 30%) — корректно, но приглушение читается слабовато.",
+      "verdict": "оставить",
+      "recommendation": "Без правок. Артефакт скриншота не выносить как баг."
+    },
+    {
+      "block": "Ссылка «Передумали? Вернуться к описанию услуг»",
+      "needed": "yes", "readable": "yes", "real_value": "yes",
+      "verdict": "оставить",
+      "recommendation": "Без правок."
+    },
+    {
+      "block": "Footer",
+      "needed": "yes", "readable": "yes", "real_value": "yes",
+      "verdict": "оставить",
+      "recommendation": "Без правок."
+    }
+  ],
+  "screenshot_artifact": {
+    "title": "Full-page скриншот показывает sticky-панель наезжающей на поля формы",
+    "verdict": "не баг — артефакт headless-рендера",
+    "notes": "Подтверждено viewport-only снимками (svcreq_*_top/mid/bottom). Тот же класс артефактов, что пустая карта на /contacts. На _bottom-снимке наложения нет — панель отлипает в нормальный поток. Реальному пользователю показывать нечего, правка не нужна."
+  },
+  "cross_locale": "RU/EN/TR — всё переведено, RU-fallback нет, вёрстка формы на EN/TR не ломается.",
+  "dark_theme": "В норме, frosted-glass панель и hairline инпутов держатся."
+}

@@ -22,14 +22,6 @@
     "paragraph_1": "ANHEL® — Profit LLC markasıdır. Modüler pompa istasyonları, blok-modüler ısı istasyonları, su arıtma sistemleri ve kontrol panoları tasarlıyor ve üretiyoruz. Rusya genelinde endüstriyel ve ticari tesislerle çalışıyoruz.",
     "paragraph_2": "Kendi mühendislik ofisimiz ve montaj atölyemiz var. Her modül sevkiyat öncesi hidrolik ve elektriksel test tezgâhından geçer — ekipman tesise devreye almaya hazır halde varır.",
     "paragraph_3": "Tüm döngüyü tek bir ekiple kapatıyoruz: hesaplama ve seçim → tasarım → üretim → montaj ve devreye alma → servis. Tek sözleşme, tek sorumluluk noktası, tek takvim.",
-    "stats_aria": "Temel göstergeler",
-    "stats": {
-      "objects_caption": "Proje",
-      "years_caption": "Yıllık deneyim",
-      "directions_caption": "Ürün hattı",
-      "warranty_caption": "Garanti",
-      "warranty_unit": "ay"
-    },
     "cta": "Üretimimiz hakkında"
   },
   "production": {
@@ -55,7 +47,6 @@
       "lead_time_value": "30 günden",
       "lead_time_unit": "itibaren",
       "lead_time_caption": "Üretim süresi",
-      "directions_caption": "Ürün grubu",
       "testing_caption": "Tezgâhta test",
       "in_house_value": "Kendi",
       "in_house_caption": "Üretim ve montaj"

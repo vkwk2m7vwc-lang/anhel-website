@@ -154,7 +154,7 @@ function DocCard({ doc, index }: { doc: DocumentItem; index: number }) {
 
         {/* Title + (mobile-inline size) + download affordance */}
         <div className="flex min-w-0 flex-1 flex-col gap-0.5 sm:mt-10 sm:gap-4">
-          <h3 className="line-clamp-2 font-display text-[13px] font-medium leading-snug text-[var(--color-secondary)] sm:line-clamp-none sm:text-[18px] md:text-[20px]">
+          <h3 className="font-display text-[13px] font-medium leading-snug text-[var(--color-secondary)] sm:text-[18px] md:text-[20px]">
             {doc.title}
           </h3>
           {/* Mobile: размер inline под title; sm+: размер уже выведен сверху. */}

@@ -74,6 +74,20 @@ export function TechSpecsGrid({ specs }: { specs: readonly TechSpecTile[] }) {
           {visibleSpecs.map((spec, i) => (
             <TechSpecCard key={spec.label} spec={spec} index={i} />
           ))}
+          {/* Filler-ячейки для lg-сетки (4 колонки). Нечётное число ТТХ
+              (напр. 7 у ИТП-модулей) оставляло в последнем ряду «дыру»
+              цвета hairline — подложка грида просвечивала. Filler рисует
+              пустую ячейку цветом фона. Только lg: на sm фон грида
+              прозрачный, на mobile 1 колонка — partial-рядов нет. */}
+          {Array.from({
+            length: (4 - (visibleSpecs.length % 4)) % 4,
+          }).map((_, i) => (
+            <li
+              key={`spec-filler-${i}`}
+              aria-hidden="true"
+              className="hidden bg-[var(--color-primary)] lg:block"
+            />
+          ))}
         </ul>
       </div>
     </section>
@@ -146,10 +160,17 @@ function TechSpecCard({ spec, index }: { spec: TechSpecTile; index: number }) {
       </p>
 
       {/* Value + unit — на mobile inline справа, на sm+ block ниже label
-          с большим font-size. Long values ("от 2 до 6", "релейное /
-          частотное") wrap cleanly thanks to flex-wrap baseline-row. */}
-      <div className="flex flex-wrap items-baseline gap-x-2 sm:mt-4 md:mt-6">
-        <span className="font-display text-[16px] font-medium leading-none text-[var(--color-secondary)] sm:text-[22px] md:text-[28px] lg:text-[32px]">
+          с большим font-size.
+          На mobile value-блок — flex-1 + min-w-0 + justify-end + text-right:
+          делит строку 50/50 с label, чтобы длинные значения
+          ("с контроллером / на каждый насос / с плавным пуском",
+          "3×380 / 660 В / 6 / 10") не наезжали на label. Раньше у value
+          был flex-basis: auto — он забирал всю ширину строки, а label
+          схлопывался в 0. На sm+ возвращаемся к колоночной карточке.
+          leading-tight (не leading-none): при переносе строки значения
+          с leading-none накладывались друг на друга. */}
+      <div className="flex min-w-0 flex-1 flex-wrap items-baseline justify-end gap-x-2 text-right sm:mt-4 sm:flex-none sm:justify-start sm:text-left md:mt-6">
+        <span className="font-display text-[16px] font-medium leading-tight text-[var(--color-secondary)] sm:text-[22px] md:text-[28px] lg:text-[32px]">
           {spec.value}
         </span>
         {spec.unit && (
