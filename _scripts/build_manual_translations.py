@@ -1,985 +1,501 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """
-Generate EN and TR PDF versions of the ANHEL® pumping-unit operating
-manual (СПД type). Output files are written to public/docs/ and then
-duplicated into each of the 5 pump subcategory folders so that the
-existing per-product `manual.pdf` reference scheme keeps working with
-a locale-suffixed variant.
+build_manual_translations.py  —  PDF localization wave-2 (rewrite)
 
-The RU source (public/docs/firefighting/manual.pdf — 16 pages, byte-
-identical copies sit in the other 4 subcategories) was produced by
-the earlier rebrand_manual.py overlay pipeline. Re-rendering EN/TR
-from translated content here keeps the catalogue self-contained while
-matching the master RU register (Grundfos / Wilo for EN; Vansan /
-Sempa for TR). All numbered chapter headings, safety blocks and
-parameter tables are preserved 1-to-1 with the RU original.
+Generates EN and TR versions of the 16-page ANHEL® operating manual
+(SPD-type pumping units) that match the Russian master
+``public/docs/<cat>/manual.pdf``: same white cover with the equipment
+photo, same header band, company requisites, section markers, heading
+accents, warning bars, footer and 16-page geometry.
 
-Output layout per locale: A4, single-column body, minimal-premium
-header + footer, mono ⨯ display font pair (DejaVu Sans family for
-Cyrillic glyphs that might appear in retained terms).
+Why a rewrite
+-------------
+The wave-3 manual was composed from scratch with a different visual
+language — a black cover, no equipment photo, a single-line header and,
+worst of all, the Cyrillic ОГРН / ИНН / КПП block left untranslated on
+the EN/TR cover.  This rewrite renders the (already reviewed) EN/TR
+content from _manual_content.py *onto the RU master*:
+
+  * the header band, footer, page indicators and the cover photo are
+    kept from the master (redact-in-place of the few header strings);
+  * the whole body of every content page is cleared (text + the
+    position-locked heading accents / warning bars / table rules) and
+    re-laid-out fresh in the master's exact typography, because the
+    accents are pinned to the Russian text flow and cannot simply be
+    kept.
+
+Fonts: DejaVu Sans / Sans-Bold from _scripts/fonts/ — the family the RU
+master was built with.
+
+Run:
+    python3 _scripts/build_manual_translations.py
 """
 
-from pathlib import Path
-from reportlab.lib.colors import HexColor, black, white
-from reportlab.lib.enums import TA_LEFT, TA_JUSTIFY
-from reportlab.lib.pagesizes import A4
-from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
-from reportlab.lib.units import mm
-from reportlab.pdfbase import pdfmetrics
-from reportlab.pdfbase.ttfonts import TTFont
-from reportlab.platypus import (
-    BaseDocTemplate,
-    Frame,
-    PageBreak,
-    PageTemplate,
-    Paragraph,
-    Spacer,
-    Table,
-    TableStyle,
-)
+from __future__ import annotations
+
 import shutil
+import sys
+from pathlib import Path
 
-ROOT = Path("/Users/alexeyanurin/Desktop/ANHEL Сайт/ANHEL  Сайт")
+import fitz  # PyMuPDF
+
+from build_questionnaire_translations import (  # shared engine
+    FONT_REG, FONT_BLD, _FONT_R, _FONT_B, _text_width, _rgb,
+    _redact_rect, _draw, _wrap, REQUISITES, _PAGE_RE,
+)
+from _manual_content import EN_PAGES, TR_PAGES
+
+ROOT = Path(__file__).resolve().parent.parent
 DOCS = ROOT / "public" / "docs"
+# the 5 pump subcategories share one byte-identical RU manual master
+LEAD = "firefighting"
+SIBLINGS = ["water-supply", "pressure-boost", "heating-cooling", "special"]
 
-PRIMARY = HexColor("#0A0A0A")
-SECONDARY = HexColor("#F5F5F3")
-HAIRLINE = HexColor("#26262C")
-MUTED = HexColor("#A8A8A8")
-ACCENT = HexColor("#D72638")
+# --------------------------------------------------------------------------
+# Typography — measured from the RU master
+# --------------------------------------------------------------------------
+X_LEFT = 62.4
+X_RIGHT = 532.9
+WIDTH = X_RIGHT - X_LEFT                       # 470.5
+CONTENT_TOP = 98.0                             # baseline of the section marker
+CONTENT_BOTTOM = 790.0                         # last usable baseline
 
-FONT_BODY_PATHS = [
-    "/Library/Fonts/Arial Unicode.ttf",
-    "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
-    "/Library/Fonts/DejaVuSans.ttf",
-    "/System/Library/Fonts/Supplemental/Arial Unicode.ttf",
-]
-FONT_BOLD_PATHS = [
-    "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",
-    "/Library/Fonts/DejaVuSans-Bold.ttf",
-]
+COL_GREY = 0x7A7A7A
+COL_DARK = 0x0A0A0A
+COL_BODY = 0x3A3A3A
+COL_RED = 0xD72638
 
+# block fonts (size, bold, colour)
+F_SECTION = (7.5, False, COL_GREY)
+F_H2 = (16.0, True, COL_DARK)
+F_H3 = (11.0, True, COL_DARK)
+F_INTRO = (9.5, False, COL_DARK)
+F_PARA = (9.5, False, COL_BODY)
+F_BULLET = (9.5, False, COL_BODY)
+F_WARN_TITLE = (9.0, True, COL_RED)
+F_WARN_BODY = (9.0, False, COL_DARK)
+F_TBL_KEY = (9.0, True, COL_DARK)
+F_TBL_VAL = (9.0, False, COL_BODY)
+F_TOC = (10.0, False, COL_DARK)
+F_TOC_NUM = (10.0, True, COL_DARK)
 
-def register_fonts() -> tuple[str, str]:
-    reg = next((p for p in FONT_BODY_PATHS if Path(p).exists()), None)
-    bold = next((p for p in FONT_BOLD_PATHS if Path(p).exists()), reg)
-    if not reg:
-        raise RuntimeError("No Unicode-capable TTF font found on this system")
-    pdfmetrics.registerFont(TTFont("Body", reg))
-    pdfmetrics.registerFont(TTFont("Bold", bold or reg))
-    return "Body", "Bold"
+# all gaps measured baseline-to-baseline from the RU master
+LEAD_BODY = 14.5        # line leading inside a paragraph / bullet
+LEAD_WARN = 13.5
+LEAD_TBL = 15.0
+GAP_SECTION_H2 = 18.0   # section marker baseline -> h2 baseline
+GAP_H2_BODY = 32.0      # h2 baseline -> first body baseline
+GAP_PARA = 8.0          # extra gap between consecutive paragraphs
+GAP_BEFORE_H3 = 18.0    # extra gap before an h3
+GAP_AFTER_H3 = 14.0     # h3 baseline -> body baseline
+GAP_BEFORE_BULLETS = 4.0
+GAP_BULLET = 4.0        # extra gap between bullet items
+GAP_BEFORE_SECTION = 14.0
+GAP_BEFORE_WARN = 20.0
+GAP_TABLE_ROW = 23.0    # last line of a row -> first line of the next
+H2_RULE_DY = 10.0       # h2 baseline -> accent underline y
+H2_RULE_X1 = 122.4
+HAIRLINE = (0.886, 0.886, 0.886)
+ACCENT_RULE = (0.039, 0.039, 0.039)
 
+# table column geometry
+TBL_KEY_X = 62.4
+TBL_VAL_X = 262.4
+TBL_KEY_W = TBL_VAL_X - TBL_KEY_X - 10
+TBL_VAL_W = X_RIGHT - TBL_VAL_X
 
-# -------------------------------------------------------------- content
+# footer text (per the RU master)
+FOOTER = {
+    "en": "Operating manual — ANHEL® SPD pumping units",
+    "tr": "Kullanım kılavuzu — ANHEL® SPD pompa istasyonları",
+}
 
-# Each entry: (chapter_tag, page_title, body_blocks)
-# body_blocks: list of dicts: {"kind": "para"|"h2"|"warn"|"table"|"bullets", ...}
-
-EN_PAGES = [
-    {
-        "cover": True,
-        "title": "Operating Manual",
-        "subtitle": "ANHEL® pumping units · SPD type",
-        "version": "Version 1.0   Edition 2026   Saint Petersburg",
+# --------------------------------------------------------------------------
+# Cover page (page 1) — fixed strings
+# --------------------------------------------------------------------------
+COVER_REQUISITES = {
+    "ООО «Профит» · г. Санкт-Петербург": {
+        "en": "Profit LLC · Saint Petersburg, Russia",
+        "tr": "Profit LLC · Saint Petersburg, Rusya",
     },
-    {
-        "tag": "01 · NAVIGATION",
-        "title": "Contents",
-        "toc": [
-            ("Technical description", 3),
-            ("Transportation", 3),
-            ("Safety precautions", 4),
-            ("Application area", 6),
-            ("Operating principle", 7),
-            ("Installation", 11),
-            ("Start / stop", 12),
-            ("Service and warranty", 14),
-            ("Pumping unit documentation", 15),
-            ("End-of-life disposal", 16),
-        ],
+    "Политехническая ул., д. 6, стр. 1, пом. Н-7, 194021": {
+        "en": "6/1 Polytechnicheskaya St., suite Н-7, 194021",
+        "tr": "6/1 Polytechnicheskaya St., daire Н-7, 194021",
     },
-    {
-        "tag": "02 · UNIT COMPOSITION",
-        "h2": "Technical description",
-        "intro": "The ANHEL® SPD-type pumping unit consists of:",
-        "bullets": [
-            "1 to 6 vertical multistage pumps, end-suction / horizontal pumps, or in-line pumps;",
-            "isolating valves;",
-            "suction and discharge manifolds;",
-            "an instrumentation set;",
-            "expansion vessel(s) protecting the instrumentation from water hammer;",
-            "a steel base with a protective coating;",
-            "differential-pressure switch, pressure-switch contacts or pressure transmitter (quantity and type vary with system and ordered options);",
-            "dry-running protection (relay, electrical-contact gauges, pressure transmitter or another method per the order);",
-            "an ANHEL® electrical control cabinet (see the cabinet manual or the catalogue summary).",
-        ],
-        "h2_2": "Transportation",
-        "tag_2": "03 · DELIVERY AND STORAGE",
-        "para_2": "To keep the pumping unit stable, transport in accordance with the symbols on the packaging: arrows up, keep the packaging dry, handle as fragile. If this is not feasible, take measures to prevent the pumping unit from tipping over.",
+    "+7 (812) 416-4500 · info@anhelspb.com": {
+        "en": "+7 (812) 416-4500 · info@anhelspb.com",
+        "tr": "+7 (812) 416-4500 · info@anhelspb.com",
     },
-    {
-        "tag": "04 · SAFE OPERATION",
-        "h2": "Safety precautions",
-        "paras": [
-            "This installation and operating manual contains essential, mandatory instructions for the installation, operation and maintenance of the unit. The installer or operator must read every section of the manual before installing or operating the pumping unit.",
-            "A copy of this manual must always be kept on site where the unit is located. In addition to the safety notes referred to in this section, all standard personnel-health precautions must be observed.",
-        ],
-        "h3": "Safety markings used in this manual",
-        "para_b": "Safety notes that may cause harm to people are marked with the general-hazard symbol and the electrical-power symbol. Other instructions related to damage to the unit are labelled with the word CAUTION.",
-        "h3_2": "Personnel qualification and training",
-        "para_c": "Personnel responsible for the operation, maintenance, inspection and installation of the pumping unit must be qualified for these activities. The owner of the unit must distribute responsibility, competence and supervision among the personnel. Where necessary, the manufacturer or distributor can arrange training.",
-        "h3_3": "Damage caused by non-compliance",
-        "para_d": "Failure to follow safety instructions may be hazardous to people, the environment and the pumping unit. Damage caused by ignoring instructions is not covered by the manufacturer's or distributor's warranty.",
+    "ТЕХНИЧЕСКАЯ ДОКУМЕНТАЦИЯ  ·  ANHEL®  ·  2026": {
+        "en": "TECHNICAL DOCUMENTATION  ·  ANHEL®  ·  2026",
+        "tr": "TEKNİK DOKÜMANTASYON  ·  ANHEL®  ·  2026",
     },
-    {
-        "tag": "04 · OPERATOR INSTRUCTIONS",
-        "h2": "Safety precautions (continued)",
-        "intro": "Failure to follow the operating manual may result in:",
-        "bullets": [
-            "failure of essential unit functions;",
-            "personal hazard from electrical, mechanical or chemical exposure;",
-            "environmental hazard from leakage of hazardous fluids.",
-        ],
-        "warn": "CAUTION — The pumping unit control panel must always be locked during operation. The pumps must always be operated with the coupling guards in place. If hot or cold components present a hazard, direct contact must be prevented. Damage caused by mains-supply quality is excluded from the manufacturer's responsibility.",
-        "h3": "Service, inspection and installation",
-        "paras": [
-            "Inspection and installation must be carried out by authorised personnel who have fully studied this operating manual. Service must be performed by qualified personnel who have studied the separate repair manual. When pumping units handle hazardous liquids, make sure that any component that came into contact with the medium is immediately decontaminated after work.",
-        ],
-        "h3_2": "Design changes and spare parts",
-        "para_b": "Original spare parts and accessories approved by the manufacturer comply with safety standards. Design changes, modifications and the use of non-original spare parts void the warranty.",
-        "h3_3": "UNAUTHORISED OPERATION",
-        "para_c": "The product's technical characteristics are only guaranteed when used in accordance with the \"Application area\" section. The operating limits given in that section must not be exceeded.",
+    "Руководство": {"en": "Operating", "tr": "Kullanım"},
+    "по эксплуатации": {"en": "Manual", "tr": "Kılavuzu"},
+    "Насосные установки ANHEL® · тип СПД": {
+        "en": "ANHEL® pumping units · SPD type",
+        "tr": "ANHEL® pompa istasyonları · SPD tipi",
     },
-    {
-        "tag": "05 · PURPOSE AND LIMITS",
-        "h2": "Application area",
-        "para": "The ANHEL® SPD-type pumping unit is intended for use in cold- and hot-water supply systems (including drinking water), heating, air conditioning, firefighting and water treatment, as well as in various process applications in industry and agriculture.",
-        "h3": "Operating ranges",
-        "table": [
-            ["Maximum ambient temperature", "50 °C"],
-            ["Maximum operating-fluid temperature", "70 °C (180 °C on request)"],
-            ["Maximum working pressure", "up to 25 bar (or as specified in the order)"],
-            ["Minimum suction pressure", "see pump curves"],
-            ["Maximum suction pressure", "current inlet + discharge pressure (closed discharge valve) must be below maximum allowable"],
-        ],
-        "warn": "CAUTION — The operating limits above must not be exceeded.",
-        "h3_2": "Frost protection",
-        "para_b": "A pumping unit that is not used for an extended period and may be exposed to sub-zero temperatures must be drained. To drain the unit, close the isolating valves of the building piping system, remove the air-bleed plugs on the upper pump brackets and the drain plugs at the lowest points of the pumps and check valves.",
-        "para_c": "All isolating valves and drain cocks of the unit must be open. Before restarting, refit the air-bleed and drain plugs only after the pump-chamber priming is complete. If the unit has been stored below 0 °C, hold it at above-freezing temperature for at least 24 hours before the first start-up.",
+    "Версия 1.0   Редакция 2026   Санкт-Петербург": {
+        "en": "Version 1.0   Edition 2026   Saint Petersburg",
+        "tr": "Sürüm 1.0   Baskı 2026   Saint Petersburg",
     },
-    {
-        "tag": "06 · CONTROL LOGIC",
-        "h2": "Operating principle — water-supply systems",
-        "paras": [
-            "The ANHEL® SPD-type pumping unit has Manual and Automatic control modes. The mode is selected by the user on the controller panel. In Manual mode the pumps are started and stopped from the controller panel by pressing the corresponding Start / Stop buttons; status is displayed without automation involvement.",
-        ],
-        "warn": "CAUTION — Manual mode is used only for commissioning or in critical situations when this is required.",
-        "paras_2": [
-            "In Automatic mode the pumps are controlled from external sensor signals (pressure, differential pressure, temperature, flow, level, etc.). The cabinet operates on cascade-staging based on the feedback sensor.",
-            "The pressure transmitter signal (4...20 mA) is compared with a fixed setpoint in the controller defined by the user. The error between the two sets the impeller speed. Before starting, the lead pump is selected by minimum-running-time or start-count balancing.",
-            "The master pump is the one currently driven by the variable-frequency drive (VFD). Additional pumps are connected directly to the mains, via a soft starter, or via VFDs — depending on the cabinet configuration. To reduce water hammer, the master pump speed drops when an additional pump starts and rises when it stops. The cabinet allows the user to set the number of duty and standby pumps (1 to 6) on the controller panel.",
-        ],
+    "ОГРН 1137847188357   ·   ИНН 7802825464   ·   КПП 780201001": {
+        "en": "OGRN 1137847188357   ·   Tax ID (INN) 7802825464   ·   KPP 780201001",
+        "tr": "OGRN 1137847188357   ·   Vergi No (INN) 7802825464   ·   KPP 780201001",
     },
-    {
-        "tag": "06 · CONNECTIONS AND PROTECTION",
-        "h2": "Operating principle (continued)",
-        "h3": "External connections",
-        "table": [
-            ["Dry-running protection", "Relay / transmitter per ordered options"],
-            ["Analogue input", "4–20 mA transmitter"],
-            ["Motor protection", "Motor thermal contact or PTC sensor per configuration"],
-            ["Output signals (SCADA)", "Per the wiring diagram appendix"],
-            ["Indication", "\"Mains\", \"VFD fault\", pump \"Run\", pump \"Fault\". Other indicators per the wiring diagram."],
-        ],
-        "h3_2": "Protections",
-        "table_2": [
-            ["Short-circuit", "Standard"],
-            ["Over-current", "Standard"],
-            ["Phase loss / asymmetry", "Reverse phase-sequence or other protections per the wiring diagram"],
-            ["Ingress protection", "IP54 or as ordered"],
-            ["Cabinet enclosure", "Steel"],
-        ],
-    },
-    {
-        "tag": "06 · FIREFIGHTING SYSTEM",
-        "h2": "Operating principle (continued)",
-        "paras": [
-            "The ANHEL® SPD-type pumping unit for firefighting systems has Manual and Automatic control modes. The mode is selected on the cabinet front panel and shown by the status indicators. In Manual mode the pumps are operated from the front panel via the Start / Stop buttons, primarily for trial runs and short tests.",
-            "In Automatic mode the unit operates on external signals from instrumentation. The pumps run on a duty / standby schedule — if the duty pump fails, the cabinet automatically starts the standby pump, the \"Fault\" lamp lights up on the affected pump and the SCADA contacts flip.",
-        ],
-        "h3": "Automatic fire-suppression system (APT)",
-        "para_b": "The duty pump is started by a signal from the pressure switches. When a sprinkler bulb breaks at a given temperature, the system pressure drops sharply, the \"Fire\" indicator lights up on the cabinet front panel and the duty pump starts. If the pressure does not reach the design level during operation, the duty pump stops and the standby pump starts. The firefighting mode is stopped by switching the selector to Stop on the front panel.",
-        "h3_2": "Indoor fire-water riser (VPV)",
-        "para_c": "The cabinet enters firefighting mode on an external \"Fire\" signal from the fire-alarm control panel, the fire-alarm cabinet, or when the \"Fire\" button on the front panel is pressed. The duty pump starts with the configured time delay and the pipework is filled with water. If the system already holds the required suppression pressure, the start is deferred until the pressure drops. If the design pressure is not reached, the duty pump stops and the standby pump starts. The firefighting mode is stopped via the front-panel selector.",
-    },
-    {
-        "tag": "07 · ATS, INDICATION, PROTECTION",
-        "h2": "ANHEL® control cabinet",
-        "h3": "Automatic transfer switch (ATS)",
-        "para": "The ANHEL® SPD-type firefighting pumping unit control cabinet is equipped with an Automatic Transfer Switch (ATS) fed from two independent power sources to meet the first-category supply reliability requirement. If one of the phases is lost, distorted, mis-sequenced, over- or under-voltage, the cabinet switches over to the standby feed automatically; it returns to the primary feed once it recovers.",
-        "para_b": "The cabinet implements the technical-regulation requirements: tamper-protected controls (a protective window on the cabinet door), automatic short-circuit and open-circuit checks on the instrumentation circuits and on the duty / standby / make-up pump power circuits and other actuators. If a short or open circuit is detected on any of these, the \"General fault\" indication lights up and the \"Attention\" audible signal is generated.",
-        "h3_2": "Signals, indication, protections",
-        "table": [
-            ["Input signals (external)", "\"Start device\" (duty / standby / make-up), discrete SCADA input for water-source presence with open/short detection, duty fire-pump start monitoring, \"Fire\" signal."],
-            ["Output signals (SCADA)", "Pump \"Run\" / \"Fault\", power presence on each feed, \"Fire\", \"General fault\", \"Auto\" / \"Manual\" mode, blocking of domestic and jockey pumps and ventilation. ANHEL® indicator-device protocol."],
-            ["Indication", "\"Primary feed\", \"Standby feed\", \"Primary run\", \"Standby run\", pump \"Run\" / \"Fault\", \"Fire\", valve state (open / closed / fault), \"Auto\" / \"Manual\" mode. \"General fault\" — audible \"Attention\" signal."],
-            ["Protections", "Short-circuit. Thermal over-current. Control-circuit open / short. Phase loss, distortion, mis-sequence, over- / under-voltage. Tamper-protected controls."],
-            ["Ambient temperature", "0 °C – 40 °C (average ≤ 35 °C)"],
-            ["Relative humidity", "20 % – 90 % (non-condensing)"],
-            ["Optional modules", "Soft starter, valve-control cabinet link (optional)"],
-            ["Ingress protection", "IP54 or as ordered"],
-            ["Cabinet enclosure", "Steel"],
-        ],
-    },
-    {
-        "tag": "08 · ON-SITE INSTALLATION",
-        "h2": "Installation",
-        "para": "The ANHEL® SPD-type pumping unit must be installed in a clean, dry, dust-free, well-lit, frost-free room on a smooth concrete surface.",
-        "intro": "To prevent possible noise complaints, observe the following requirements:",
-        "bullets": [
-            "The concrete pad surface must be level. A rubber gasket of about 20 mm is recommended between the concrete and the unit to compensate for any unevenness;",
-            "Soundproofing materials may be used in the installation room if required;",
-            "The suction and discharge pipework must be firmly fixed to avoid vibration and noise, and must not be anchored in loose concrete;",
-            "Compensators should be fitted on suction and discharge pipework to avoid resonance;",
-            "Flexible inserts between the manifold flanges and the connecting pipework are mandatory. Loads must not be transferred onto the manifolds;",
-            "Connecting pipework must have sufficient diameter to avoid flow-induced noise;",
-            "If contaminated water is possible, install a strainer on the suction line immediately before the unit;",
-            "The unit must not be exposed to direct sunlight. The room must be well ventilated to ensure sufficient cooling of the pumps and the control cabinet.",
-        ],
-        "para_b": "When connecting the pipework, fit isolating valves on the suction and discharge lines to prevent draining the building piping during maintenance.",
-    },
-    {
-        "tag": "09 · CONNECTION AND START-UP",
-        "h2": "Electrical connections",
-        "warn": "CAUTION — Connection and repair of the unit must only be carried out after it has been disconnected from the mains via an external circuit breaker or disconnector. If an ATS is fitted, both feeds must be disconnected.",
-        "paras": [
-            "The pumping units undergo full functional testing at the factory. When connecting the equipment, do not short the leads of electrical circuits or force the contactors closed. Electrical connections must be made by authorised personnel in accordance with the rules for operating electrical equipment. Make sure that the supply parameters match the cabinet data. The unit must be connected through a circuit breaker rated to the cabinet's nominal current.",
-            "The ANHEL® SPD-type pumping unit is equipped with a main switch through which the primary power is fed. After installation, the control-panel door must be locked. The key must only be accessible to authorised operating personnel.",
-        ],
-        "tag_2": "10 · COMMISSIONING",
-        "h2_2": "Start / stop",
-        "warn_2": "CAUTION — All isolating valves of the unit must be fully open during operation. While the unit is idle or being transported, set the butterfly-valve disc to 45° and all other valves to the open position.",
-        "para_b": "After installation, but before commissioning, the unit must be thoroughly flushed. Ingress of foreign objects (slag, scale, etc.) may damage the equipment. Each ANHEL® SPD-type unit is supplied to the customer pre-tested. Refer to the ANHEL® AShU control-cabinet operating manual for output-parameter (e.g. pressure) setup.",
-    },
-    {
-        "tag": "10 · FIRST-START PROCEDURE",
-        "h2": "Filling the unit with water",
-        "warn": "CAUTION — Never allow the pump to run dry. If for any reason the unit must be stopped during operation, switch off the main switch. If the ANHEL® SPD-type unit has been stored below 0 °C, hold it at above-freezing temperature for at least 24 hours before the first start-up.",
-        "h3": "Filling procedure for a unit with pumps",
-        "bullets_ordered": [
-            "Close the isolating valve on the discharge line; open the isolating valve on the suction line.",
-            "Unscrew the air-bleed plug and slowly pour fluid through the filling port.",
-            "Refit the air-bleed plug and tighten it firmly.",
-            "Determine the correct direction of rotation indicated by the arrow on the pump head and on the fan cover.",
-            "Energise the unit by closing the main feed switch of the control cabinet. Set the pump circuit breakers to ON.",
-            "Start the pump in Manual mode from the operator panel (see the data sheet) and verify the direction of rotation. If the unit has several pumps, check each one by stopping the previous pump and starting the next.",
-            "Vent the pump through the air-bleed valve on the pump head. At the same time, open the isolating valve on the discharge line slightly.",
-            "Continue venting. Open the discharge valve a little further while the pump is running.",
-            "When the fluid starts to flow through the air-bleed valve, close it. Open the discharge valve fully.",
-            "Repeat the procedure for the remaining pumps (if any).",
-        ],
-    },
-    {
-        "tag": "10 · LIQUID ABOVE THE PUMP AXIS",
-        "h2": "Priming the pump",
-        "intro": "For closed or open hydraulic systems in which the level of the pumped fluid is above the horizontal axis of the pump suction pipe:",
-        "bullets_ordered": [
-            "Close the isolating valve on the discharge pipe and slowly open the isolating valve on the suction pipe. Both the pump and the suction pipe must be completely filled with the pumped fluid.",
-            "Loosen the priming plug to bleed air. Close it as soon as fluid emerges through the valve.",
-        ],
-        "tag_2": "11 · SERVICE AND SUPPORT",
-        "h2_2": "Service",
-        "paras_2": [
-            "Regular service is required for reliable and economical operation of the pumping unit. We recommend that inspections and service be carried out by trained specialists only. In the event of faults, please contact your supplier.",
-            "The Profit LLC service department, staffed by highly qualified service engineers, provides warranty and post-warranty service and repair under contract. Service and repair may be performed at the customer's site or at the Profit LLC service centre.",
-            "Profit LLC supplies spare parts for equipment repair to customers and service partners for the full range of supplied equipment for at least five years after delivery. A sufficient spare-parts and consumables stock for the core equipment guarantees short service and repair lead times.",
-        ],
-    },
-    {
-        "tag": "12 · TERMS AND CONDITIONS",
-        "h2": "Warranty",
-        "para": "The warranty period for all ANHEL® SPD-type units is two years (24 months). The warranty period begins on the date of the first start-up specified in the corresponding Act but in any case may not exceed 30 (thirty) months from the date of delivery to the buyer specified in the bill of lading or hand-over act.",
-        "intro": "The warranty does not cover faults caused by:",
-        "bullets": [
-            "ingress of foreign objects, substances or liquids; household factors (humidity, low or high temperature, dust, animals, insects); natural disasters or force majeure (fire, accident, etc.);",
-            "any repairs, upgrades, troubleshooting or service carried out on the units by the buyers themselves or by third parties not specifically authorised by the manufacturer;",
-            "absence of scheduled preventive maintenance by manufacturer specialists or by a manufacturer-accredited service centre, performed in accordance with the manufacturer-approved PPO schedule;",
-            "scheduled preventive maintenance or commissioning carried out without a written agreement from the manufacturer by persons or organisations not authorised by the manufacturer;",
-            "inadequate training of operating-organisation staff or end users (including installation and assembly);",
-            "mechanical damage or defects in the equipment or its parts caused by failure to observe transportation, storage, installation or operation rules;",
-            "damage to the equipment or its parts caused by ingress of corrosive chemicals;",
-            "use of the unit other than as intended, or contrary to the operating manual, TU, GOST and other technical documentation;",
-            "violations of acceptance, storage, transportation, packaging, loading-unloading or operation rules established by the operating manual, TU, GOST and other technical documentation;",
-            "damage to the equipment caused by established unlawful actions of any persons.",
-        ],
-    },
-    {
-        "tag": "13 · DELIVERY SCOPE",
-        "h2": "Documentation included",
-        "intro": "Each ANHEL® SPD-type pumping unit is delivered with the following documentation:",
-        "bullets": [
-            "ANHEL® SPD-type pumping-unit operating manual;",
-            "ANHEL® AShU-type control-cabinet operating manual;",
-            "pump installation and operating instructions;",
-            "data sheet.",
-        ],
-        "tag_2": "14 · END OF LIFE",
-        "h2_2": "Disposal",
-        "intro_2": "The main criterion for end-of-life condition is:",
-        "bullets_ordered_2": [
-            "failure of one or more components for which repair or replacement is not provided; or an increase in repair and maintenance costs that makes continued operation economically unjustified;",
-            "the product and its assemblies and parts must be collected and disposed of in accordance with local environmental legislation.",
-        ],
-        "h3_2": "ANHEL® service and support",
-        "para_b": "Profit LLC  ·  +7 (812) 416-4500  ·  info@anhelspb.com  ·  anhelspb.com",
-    },
-]
-
-TR_PAGES = [
-    {
-        "cover": True,
-        "title": "Kullanım Kılavuzu",
-        "subtitle": "ANHEL® pompa istasyonları · SPD tipi",
-        "version": "Sürüm 1.0   Baskı 2026   Saint Petersburg",
-    },
-    {
-        "tag": "01 · NAVİGASYON",
-        "title": "İçindekiler",
-        "toc": [
-            ("Teknik açıklama", 3),
-            ("Nakliye", 3),
-            ("Güvenlik önlemleri", 4),
-            ("Uygulama alanı", 6),
-            ("Çalışma prensibi", 7),
-            ("Montaj", 11),
-            ("Devreye alma / durdurma", 12),
-            ("Servis ve garanti", 14),
-            ("Pompa istasyonu dokümantasyonu", 15),
-            ("Ömür sonu bertarafı", 16),
-        ],
-    },
-    {
-        "tag": "02 · ÜNİTE BİLEŞENLERİ",
-        "h2": "Teknik açıklama",
-        "intro": "ANHEL® SPD tipi pompa istasyonu aşağıdakilerden oluşur:",
-        "bullets": [
-            "1'den 6'ya kadar dikey çok kademeli pompa, monoblok / yatay pompa veya in-line pompa;",
-            "kesme vanaları;",
-            "emme ve basma kollektörleri;",
-            "kontrol ve ölçüm cihazları seti;",
-            "kontrol cihazlarını koç darbesinden koruyan genleşme tank(lar)ı;",
-            "koruyucu kaplamalı çelik şase;",
-            "diferansiyel basınç anahtarı, basınç anahtarı kontakları veya basınç transmitteri (miktar ve tip sistem ile sipariş seçeneklerine göre değişir);",
-            "kuru çalışma koruması (röle, elektrik kontaklı manometre, basınç transmitteri veya sipariş seçeneklerine göre başka bir yöntem);",
-            "ANHEL® elektrik kontrol panosu (pano kılavuzuna veya katalog özetine bakın).",
-        ],
-        "h2_2": "Nakliye",
-        "tag_2": "03 · TESLİMAT VE DEPOLAMA",
-        "para_2": "Pompa istasyonunun dengesini korumak için, ambalaj üzerindeki sembollere uygun şekilde taşıyın: oklar yukarı, ambalajı kuru tutun, kırılgan içerik. Bu mümkün değilse pompa istasyonunun devrilmesini önleyecek önlemler alın.",
-    },
-    {
-        "tag": "04 · GÜVENLİ İŞLETME",
-        "h2": "Güvenlik önlemleri",
-        "paras": [
-            "Bu montaj ve kullanım kılavuzu, ünitenin montajı, işletilmesi ve bakımı için gerekli ve uyulması zorunlu temel talimatları içerir. Montajcı veya operatör, pompa istasyonunu monte edip çalıştırmadan önce kılavuzun tüm bölümlerini okumalıdır.",
-            "Kılavuzun bir kopyası, ünitenin bulunduğu yerde her zaman erişilebilir olmalıdır. Bu bölümde belirtilen güvenlik notlarına ek olarak, personel sağlığını koruyan tüm standart önlemler alınmalıdır.",
-        ],
-        "h3": "Kılavuzda kullanılan güvenlik işaretleri",
-        "para_b": "İnsanlara zarar verebilecek güvenlik notları genel tehlike ve elektrik enerjisi uyarı sembolleri ile işaretlenmiştir. Ünite hasarına ilişkin diğer talimatlar DİKKAT sözcüğü ile gösterilmiştir.",
-        "h3_2": "Personel yeterliliği ve eğitim",
-        "para_c": "Pompa istasyonunun işletilmesi, bakımı, denetlenmesi ve montajından sorumlu personel bu işler için gerekli niteliklere sahip olmalıdır. Sorumluluk, yetki ve denetim hususları ünite sahibinin personeli arasında dağıtılmalıdır. Gerektiğinde üretici veya distribütör eğitim düzenleyebilir.",
-        "h3_3": "Talimatlara uyulmamasının yol açtığı hasar",
-        "para_d": "Güvenlik talimatlarına uyulmaması; insanlar, çevre ve pompa istasyonu için tehlike yaratabilir. Talimatların göz ardı edilmesinden kaynaklanan hasarlar üreticinin veya distribütörün garantisi kapsamı dışındadır.",
-    },
-    {
-        "tag": "04 · OPERATÖR TALİMATLARI",
-        "h2": "Güvenlik önlemleri (devam)",
-        "intro": "Kullanım kılavuzuna uyulmaması şunlara neden olabilir:",
-        "bullets": [
-            "ünitenin temel işlevlerinin arızalanması;",
-            "elektrik, mekanik veya kimyasal etkilerden kaynaklanan kişisel tehlike;",
-            "tehlikeli sıvıların sızıntısından kaynaklanan çevresel tehlike.",
-        ],
-        "warn": "DİKKAT — Pompa istasyonu kontrol panosu, çalışma sırasında her zaman kilitli olmalıdır. Pompalar her zaman kavrama koruyucuları takılı olarak çalıştırılmalıdır. Sıcak veya soğuk parçalar tehlike oluşturuyorsa doğrudan temas önlenmelidir. Şebeke besleme kalitesinden kaynaklanan hasar üreticinin sorumluluğu dışındadır.",
-        "h3": "Servis, denetim ve montaj",
-        "paras": [
-            "Denetim ve montaj, bu kullanım kılavuzunu eksiksiz inceleyen yetkili personel tarafından yapılmalıdır. Servis, ayrı tamir kılavuzunu inceleyen nitelikli personel tarafından yürütülmelidir. Tehlikeli sıvılarla çalışan pompa istasyonlarında, işlem bittikten sonra akışkanla temas eden tüm bileşenler derhal dekontamine edilmelidir.",
-        ],
-        "h3_2": "Tasarım değişiklikleri ve yedek parçalar",
-        "para_b": "Üretici tarafından onaylanmış orijinal yedek parçalar ve aksesuarlar güvenlik standartlarına uygundur. Tasarım değişiklikleri, modifikasyonlar ve orijinal olmayan yedek parça kullanımı garantiyi geçersiz kılar.",
-        "h3_3": "YETKİSİZ İŞLETME",
-        "para_c": "Ürünün teknik özellikleri yalnızca \"Uygulama alanı\" bölümüne uygun kullanımda garanti edilir. Bu bölümde belirtilen işletme sınırları aşılamaz.",
-    },
-    {
-        "tag": "05 · AMAÇ VE SINIRLAR",
-        "h2": "Uygulama alanı",
-        "para": "ANHEL® SPD tipi pompa istasyonu, soğuk ve sıcak su temin sistemlerinde (içme suyu dahil), ısıtma, iklimlendirme, yangın söndürme, su arıtma sistemlerinde ve endüstri ile tarımdaki çeşitli proseslerde kullanılmak üzere tasarlanmıştır.",
-        "h3": "İşletme aralıkları",
-        "table": [
-            ["Maksimum ortam sıcaklığı", "50 °C"],
-            ["Maksimum işletme sıvısı sıcaklığı", "70 °C (talep üzerine 180 °C)"],
-            ["Maksimum işletme basıncı", "25 bar'a kadar (veya siparişte belirtilen değer)"],
-            ["Minimum emme basıncı", "pompa eğrilerine bakın"],
-            ["Maksimum emme basıncı", "mevcut giriş + basma basıncı (kapalı vana durumunda) maksimum izin verilenden düşük olmalıdır"],
-        ],
-        "warn": "DİKKAT — Yukarıdaki işletme sınırları aşılmamalıdır.",
-        "h3_2": "Donma koruması",
-        "para_b": "Uzun süre kullanılmayacak ve donma sıcaklıklarına maruz kalabilecek pompa istasyonu drene edilmelidir. Üniteyi boşaltmak için, bina boru sisteminin kesme vanalarını kapatın, üst pompa braketlerindeki hava tahliye tapalarını ve pompa ile çek vana alt noktalarındaki tahliye tapalarını çıkarın.",
-        "para_c": "Ünitenin tüm kesme vanaları ve tahliye muslukları açık olmalıdır. Yeniden çalıştırmadan önce, hava tahliye ve tahliye tapaları yalnızca pompa odaları sıvı ile doldurulduktan sonra yerine takılmalıdır. Ünite 0 °C altında depolanmışsa, ilk çalıştırmadan önce en az 24 saat sıfırın üzerinde sıcaklıkta bekletin.",
-    },
-    {
-        "tag": "06 · KONTROL MANTIĞI",
-        "h2": "Çalışma prensibi — su temin sistemleri",
-        "paras": [
-            "ANHEL® SPD tipi pompa istasyonu Manuel ve Otomatik kontrol moduna sahiptir. Mod, kullanıcı tarafından kontrolör panelinden seçilir. Manuel modda pompalar, ilgili Start / Stop düğmelerine basılarak kontrolör panelinden çalıştırılır ve durdurulur; durum, otomasyon devreye girmeden gösterilir.",
-        ],
-        "warn": "DİKKAT — Manuel mod yalnızca devreye alma için veya gerektiğinde kritik durumlarda kullanılır.",
-        "paras_2": [
-            "Otomatik modda pompalar, harici sensör sinyalleri (basınç, diferansiyel basınç, sıcaklık, debi, seviye vb.) ile kontrol edilir. Pano, geri besleme sensöründen gelen sinyale göre kaskat sıralama prensibi ile çalışır.",
-            "Basınç transmitteri sinyali (4...20 mA), kullanıcı tarafından kontrolörde tanımlanan sabit ayar değeri ile karşılaştırılır. İki sinyal arasındaki hata, çark hızını belirler. Çalıştırmadan önce, minimum çalışma süresi veya başlatma sayısı dengeleme ile lider pompa seçilir.",
-            "Master pompa, o anda frekans konvertöründen (VFD) beslenen pompadır. Ek pompalar, pano konfigürasyonuna göre doğrudan şebekeye, yumuşak yol vericiye veya VFD'lere bağlanır. Koç darbesini azaltmak için, ek pompa devreye girdiğinde master pompanın hızı düşer, devreden çıktığında ise hızı artar. Pano, kontrolör paneli üzerinden çalışan ve yedek pompa sayısının (1 ile 6 arasında) kullanıcı tarafından ayarlanmasına izin verir.",
-        ],
-    },
-    {
-        "tag": "06 · BAĞLANTILAR VE KORUMALAR",
-        "h2": "Çalışma prensibi (devam)",
-        "h3": "Harici bağlantılar",
-        "table": [
-            ["Kuru çalışma koruması", "Sipariş seçeneklerine göre röle / transmitter"],
-            ["Analog giriş", "4–20 mA transmitter"],
-            ["Motor koruması", "Konfigürasyona göre motor termik kontağı veya PTC sensörü"],
-            ["Çıkış sinyalleri (SCADA)", "Elektrik şeması ekine göre"],
-            ["Göstergeler", "\"Şebeke\", \"VFD arıza\", pompa \"Çalışma\", pompa \"Arıza\". Diğer göstergeler elektrik şemasına göre."],
-        ],
-        "h3_2": "Korumalar",
-        "table_2": [
-            ["Kısa devre", "Standart"],
-            ["Aşırı akım", "Standart"],
-            ["Faz kaybı / asimetri", "Ters faz sırası veya elektrik şemasına göre diğer korumalar"],
-            ["Koruma sınıfı", "IP54 veya siparişe göre"],
-            ["Pano gövdesi", "Çelik"],
-        ],
-    },
-    {
-        "tag": "06 · YANGIN SÖNDÜRME SİSTEMİ",
-        "h2": "Çalışma prensibi (devam)",
-        "paras": [
-            "Yangın söndürme sistemleri için ANHEL® SPD tipi pompa istasyonu Manuel ve Otomatik kontrol moduna sahiptir. Mod, pano ön panelinden seçilir ve durum göstergelerinden izlenir. Manuel modda pompalar, deneme çalışmaları ve kısa testler için temel olarak ön paneldeki Start / Stop düğmeleriyle çalıştırılır.",
-            "Otomatik modda ünite, kontrol ve ölçüm cihazlarından gelen harici sinyallere göre çalışır. Pompalar görev / yedek planına göre çalışır — görev pompasında arıza durumunda pano otomatik olarak yedek pompayı çalıştırır, ilgili pompada \"Arıza\" lambası yanar ve SCADA kontakları yön değiştirir.",
-        ],
-        "h3": "Otomatik yangın söndürme sistemi (APT)",
-        "para_b": "Görev pompası, basınç anahtarlarından gelen sinyalle başlatılır. Sprinkler balonu belirli bir sıcaklıkta kırıldığında sistem basıncı keskin biçimde düşer, pano ön panelinde \"Yangın\" göstergesi yanar ve görev pompası çalışır. Çalışma sırasında basınç tasarım seviyesine ulaşmazsa görev pompası durur ve yedek pompa devreye girer. Yangın söndürme modu, ön paneldeki seçici Stop konumuna alınarak durdurulur.",
-        "h3_2": "İç yangın hattı (VPV)",
-        "para_c": "Pano; yangın alarm kontrol panosundan, yangın alarm kabininden veya ön paneldeki \"Yangın\" düğmesine basılarak gelen harici \"Yangın\" sinyali ile yangın söndürme moduna geçer. Görev pompası ayarlanan gecikme ile başlatılır ve borular suyla doldurulur. Sistemde söndürme için gerekli basınç zaten varsa, basınç düşene kadar başlatma ertelenir. Tasarım basıncına ulaşılmazsa görev pompası durur ve yedek pompa devreye girer. Yangın söndürme modu ön paneldeki seçici ile durdurulur.",
-    },
-    {
-        "tag": "07 · ATS, GÖSTERGELER, KORUMALAR",
-        "h2": "ANHEL® kontrol panosu",
-        "h3": "Otomatik transfer şalteri (ATS)",
-        "para": "ANHEL® SPD tipi yangın pompa istasyonu kontrol panosu, birinci kategori beslenme güvenilirliği gereksinimini karşılamak üzere iki bağımsız güç kaynağından beslenen bir Otomatik Transfer Şalteri (ATS) ile donatılmıştır. Fazlardan biri kaybolursa, çarpılırsa, yanlış sırada bağlanırsa, aşırı veya düşük gerilimde olursa pano otomatik olarak yedek beslemeye geçer; ana besleme normale döndüğünde geri döner.",
-        "para_b": "Pano teknik regülasyon gereksinimlerini uygular: yetkisiz erişime karşı korumalı kumandalar (pano kapağında koruyucu pencere), KÖM devrelerinde ve görev / yedek / takviye pompa güç devrelerinde ve diğer aktüatörlerde otomatik kısa devre ve kopuk devre kontrolü. Bu cihazlardan birinde KD veya kopuk algılanırsa \"Genel arıza\" göstergesi yanar ve \"Dikkat\" sesli sinyali verilir.",
-        "h3_2": "Sinyaller, göstergeler, korumalar",
-        "table": [
-            ["Giriş sinyalleri (harici)", "\"Başlatma cihazı\" (görev / yedek / takviye), su kaynağı varlığı için kopuk ve KD denetimli ayrık SCADA girişi, görev yangın pompası başlatma denetimi, \"Yangın\" sinyali."],
-            ["Çıkış sinyalleri (SCADA)", "Her pompada \"Çalışma\" / \"Arıza\", her beslemede güç mevcudiyeti, \"Yangın\", \"Genel arıza\", \"Otomatik\" / \"Manuel\" modu, evsel ve jokey pompaların ve havalandırmanın blokajı. ANHEL® gösterge cihazı protokolü."],
-            ["Göstergeler", "\"Ana besleme\", \"Yedek besleme\", \"Ana çalışma\", \"Yedek çalışma\", her pompada \"Çalışma\" / \"Arıza\", \"Yangın\", vana durumu (açık / kapalı / arıza), \"Otomatik\" / \"Manuel\" modu. \"Genel arıza\" — sesli \"Dikkat\" sinyali."],
-            ["Korumalar", "Kısa devre. Termal aşırı akım. Kontrol devrelerinde kopuk / KD. Faz kaybı, çarpılma, yanlış sıra, aşırı / düşük gerilim. Yetkisiz erişime karşı korumalı kumandalar."],
-            ["Ortam sıcaklığı", "0 °C – 40 °C (ortalama ≤ 35 °C)"],
-            ["Bağıl nem", "20 % – 90 % (yoğuşmasız)"],
-            ["Opsiyonel modüller", "Yumuşak yol verici, vana kontrol panosu bağlantısı (opsiyonel)"],
-            ["Koruma sınıfı", "IP54 veya siparişe göre"],
-            ["Pano gövdesi", "Çelik"],
-        ],
-    },
-    {
-        "tag": "08 · SAHADA MONTAJ",
-        "h2": "Montaj",
-        "para": "ANHEL® SPD tipi pompa istasyonu, temiz, kuru, tozsuz, iyi aydınlatılmış, donmaz bir odada düz beton yüzey üzerine monte edilmelidir.",
-        "intro": "Gürültü şikayetlerini önlemek için aşağıdaki gereksinimlere uyun:",
-        "bullets": [
-            "Beton zemin yüzeyi düz olmalıdır. Olası düzensizlikleri telafi etmek için beton ile ünite arasına yaklaşık 20 mm kalınlığında lastik conta önerilir;",
-            "Gerekirse montaj odasında ses yalıtım malzemeleri kullanılabilir;",
-            "Emme ve basma boruları titreşim ve gürültüyü önlemek için sağlam şekilde sabitlenmeli, gevşek betona tutturulmamalıdır;",
-            "Emme ve basma borularına rezonansı önlemek için kompansatör takılmalıdır;",
-            "Kollektör flanşları ile bağlantı boruları arasında esnek bağlantı kullanılması zorunludur. Yükler kollektörlere aktarılmamalıdır;",
-            "Bağlantı boruları, akış kaynaklı gürültüyü önlemek için yeterli çapta olmalıdır;",
-            "Kirli su olasılığı varsa, emme hattına ünite hemen öncesinde süzgeç takın;",
-            "Ünite doğrudan güneş ışığına maruz kalmamalıdır. Pompaların ve kontrol panosunun yeterince soğumasını sağlamak için oda iyi havalandırılmalıdır.",
-        ],
-        "para_b": "Boruları bağlarken, bakım sırasında binanın boru sisteminin boşalmasını önlemek için emme ve basma hatlarına kesme vanaları takın.",
-    },
-    {
-        "tag": "09 · BAĞLANTI VE DEVREYE ALMA",
-        "h2": "Elektrik bağlantıları",
-        "warn": "DİKKAT — Ünitenin bağlantısı ve onarımı, yalnızca harici bir devre kesici veya ayırıcı ile şebekeden ayrıldıktan sonra yapılmalıdır. ATS varsa her iki besleme de ayrılmalıdır.",
-        "paras": [
-            "Pompa istasyonları fabrikada tam fonksiyonel teste tabi tutulur. Ekipmanı bağlarken elektrik devrelerinin uçlarını kısa devre yapmayın veya kontaktörleri zorla kapatmayın. Elektrik bağlantıları, elektrik ekipmanı işletme kurallarına uygun olarak yetkili personel tarafından yapılmalıdır. Besleme parametrelerinin pano verileriyle uyumlu olduğunu doğrulayın. Ünite, panonun nominal akımına uygun bir devre kesici üzerinden bağlanmalıdır.",
-            "ANHEL® SPD tipi pompa istasyonu, ana gücün beslendiği bir ana şalter ile donatılmıştır. Montajdan sonra kontrol panosu kapısı kilitlenmelidir. Anahtar yalnızca yetkili operatör personeline açık olmalıdır.",
-        ],
-        "tag_2": "10 · DEVREYE ALMA",
-        "h2_2": "Devreye alma / durdurma",
-        "warn_2": "DİKKAT — Çalışma sırasında ünitenin tüm kesme vanaları tam açık olmalıdır. Ünite atılırken veya taşınırken kelebek vana diskini 45°'ye, diğer vanaları açık konuma alın.",
-        "para_b": "Montajdan sonra, devreye almadan önce ünite iyice yıkanmalıdır. Yabancı maddelerin (cüruf, tortu vb.) girmesi ekipman arızasına yol açabilir. Her ANHEL® SPD tipi ünite müşteriye test edilmiş olarak teslim edilir. Çıkış parametrelerinin (örn. basınç) ayarlanması için ANHEL® AShU tipi kontrol panosu kullanım kılavuzuna bakın.",
-    },
-    {
-        "tag": "10 · İLK ÇALIŞTIRMA PROSEDÜRÜ",
-        "h2": "Üniteyi suyla doldurma",
-        "warn": "DİKKAT — Pompanın kuru çalışmasına asla izin vermeyin. Herhangi bir nedenle ünite çalışma sırasında durdurulmalıysa ana şalteri kapatın. ANHEL® SPD tipi ünite 0 °C'nin altında depolanmışsa, ilk çalıştırmadan önce en az 24 saat sıfırın üzerinde sıcaklıkta bekletin.",
-        "h3": "Pompalı ünite için doldurma prosedürü",
-        "bullets_ordered": [
-            "Basma hattındaki kesme vanasını kapatın; emme hattındaki kesme vanasını açın.",
-            "Hava tahliye tapasını sökün ve doldurma ağzından sıvıyı yavaşça boşaltın.",
-            "Hava tahliye tapasını tekrar takın ve sıkıca sıkın.",
-            "Pompa başlığındaki ve fan kapağındaki ok ile gösterilen doğru dönüş yönünü belirleyin.",
-            "Pano ana besleme şalterini kapatarak üniteyi enerjilendirin. Pompa devre kesicilerini ON konumuna alın.",
-            "Operatör panelinden pompayı Manuel modda çalıştırın (veri sayfasına bakın) ve dönüş yönünü doğrulayın. Birden fazla pompa varsa, önceki pompayı durdurup sonraki pompayı çalıştırarak her birini kontrol edin.",
-            "Pompa başındaki hava tahliye vanasından pompanın havasını alın. Aynı anda basma hattındaki kesme vanasını biraz açın.",
-            "Havayı tahliye etmeye devam edin. Pompa çalışırken basma vanasını biraz daha açın.",
-            "Sıvı hava tahliye vanasından akmaya başladığında vanayı kapatın. Basma vanasını tam açın.",
-            "Kalan pompalar için (varsa) prosedürü tekrarlayın.",
-        ],
-    },
-    {
-        "tag": "10 · POMPA EKSENİNİN ÜZERİNDEKİ SIVI",
-        "h2": "Pompayı doldurma",
-        "intro": "Pompalanan sıvı seviyesinin pompa emme borusunun yatay ekseninden yüksek olduğu kapalı veya açık hidrolik sistemler için:",
-        "bullets_ordered": [
-            "Basma borusundaki kesme vanasını kapatın ve emme borusundaki kesme vanasını yavaşça açın. Hem pompa hem de emme borusu pompalanan sıvıyla tamamen dolu olmalıdır.",
-            "Havayı tahliye etmek için doldurma tapasını gevşetin. Vanadan sıvı çıkmaya başlar başlamaz kapatın.",
-        ],
-        "tag_2": "11 · SERVİS VE DESTEK",
-        "h2_2": "Servis",
-        "paras_2": [
-            "Pompa istasyonunun güvenilir ve ekonomik çalışması için düzenli servis gereklidir. Denetim ve servisin yalnızca eğitimli uzmanlar tarafından yapılmasını öneririz. Arıza durumunda lütfen tedarikçinizle iletişime geçin.",
-            "Profit LLC'nin servis departmanı, yüksek nitelikli servis mühendislerinden oluşur ve sözleşme kapsamında garanti ve garanti sonrası servis ile onarım sağlar. Servis ve onarım, müşteri sahasında veya Profit LLC servis merkezinde yapılabilir.",
-            "Profit LLC, tedarik edilen tüm ekipman yelpazesi için müşterilerine ve servis ortaklarına ekipman onarımı için yedek parça temin eder; teslimattan sonra en az beş yıl boyunca. Temel ekipman için yeterli yedek parça ve sarf malzeme stoğu, servis ve onarım sürelerini kısaltır.",
-        ],
-    },
-    {
-        "tag": "12 · KOŞULLAR VE SINIRLAMALAR",
-        "h2": "Garanti",
-        "para": "Tüm ANHEL® SPD tipi üniteler için garanti süresi iki yıldır (24 ay). Garanti süresi, ilgili Tutanakta belirtilen ilk çalıştırma tarihinden başlar; ancak hiçbir durumda alıcıya teslim tarihinden (irsaliye veya teslim-tesellüm tutanağında belirtilen) itibaren 30 (otuz) ayı geçemez.",
-        "intro": "Garanti aşağıdaki nedenlerden kaynaklanan arızaları kapsamaz:",
-        "bullets": [
-            "yabancı madde, sıvı veya kimyasalların girmesi; ev içi etkenler (nem, düşük veya yüksek sıcaklık, toz, hayvanlar, böcekler); doğal afetler veya mücbir sebep (yangın, kaza vb.);",
-            "üreticinin özel olarak yetkilendirmediği üçüncü kişiler veya alıcıların kendileri tarafından üniteler üzerinde gerçekleştirilen onarımlar, yükseltmeler, arıza giderme veya servis;",
-            "üreticinin onayladığı PPO planına uygun olarak üretici uzmanları veya üretici tarafından akredite edilmiş bir servis merkezi tarafından gerçekleştirilen planlı önleyici bakımın yokluğu;",
-            "üreticinin yazılı onayı olmadan, üretici tarafından yetkilendirilmemiş kişi veya kuruluşlar tarafından gerçekleştirilen planlı önleyici bakım veya devreye alma çalışmaları;",
-            "işletme kuruluşu çalışanlarının veya kullanıcının yetersiz eğitimi (montaj ve kurulum dahil);",
-            "taşıma, depolama, montaj veya işletme kurallarına uyulmamasından kaynaklanan ekipman veya parçalarındaki mekanik hasar veya kusurlar;",
-            "korozif kimyasalların ekipmana veya parçalarına girmesinden kaynaklanan hasar;",
-            "ünitenin amacı dışında kullanılması veya kullanım kılavuzu, TU, GOST ve diğer teknik dokümana aykırı kullanım;",
-            "kullanım kılavuzu, TU, GOST ve diğer teknik dokümanlarda belirtilen kabul, depolama, taşıma, ambalajlama, yükleme-boşaltma veya işletme kurallarının ihlali;",
-            "herhangi bir kişinin tespit edilmiş hukuka aykırı eylemleri sonucu ekipman hasarı.",
-        ],
-    },
-    {
-        "tag": "13 · TESLİMAT KAPSAMI",
-        "h2": "Birlikte verilen dokümantasyon",
-        "intro": "Her ANHEL® SPD tipi pompa istasyonu aşağıdaki dokümantasyon ile birlikte teslim edilir:",
-        "bullets": [
-            "ANHEL® SPD tipi pompa istasyonu kullanım kılavuzu;",
-            "ANHEL® AShU tipi kontrol panosu kullanım kılavuzu;",
-            "pompa montaj ve kullanım talimatları;",
-            "veri sayfası.",
-        ],
-        "tag_2": "14 · ÖMÜR SONU",
-        "h2_2": "Bertaraf",
-        "intro_2": "Ömür sonu durumunun ana kriterleri:",
-        "bullets_ordered_2": [
-            "onarımı veya değiştirilmesi öngörülmeyen bir veya daha fazla bileşenin arızası; veya işletmenin ekonomik olarak gerekçesiz hale gelmesine yol açan onarım ve bakım maliyet artışı;",
-            "ürün ve onun parçaları yerel çevre mevzuatına uygun şekilde toplanıp bertaraf edilmelidir.",
-        ],
-        "h3_2": "ANHEL® servis ve destek",
-        "para_b": "Profit LLC  ·  +7 (812) 416-4500  ·  info@anhelspb.com  ·  anhelspb.com",
-    },
-]
+}
 
 
-# -------------------------------------------------------------- render
+# --------------------------------------------------------------------------
+# EN/TR page -> ordered list of canonical content blocks
+#   block = ("section"|"h2"|"h3"|"para"|"intro"|"bullets"|"warn"|"table", data)
+# --------------------------------------------------------------------------
+def page_blocks(page: dict):
+    """Flatten one EN_PAGES / TR_PAGES dict into ordered render blocks."""
+    keys = list(page.keys())
+    # the only authored-order glitch: on page 3 h2_2 precedes tag_2
+    if "h2_2" in keys and "tag_2" in keys:
+        i, j = keys.index("h2_2"), keys.index("tag_2")
+        if i < j:
+            keys[i], keys[j] = keys[j], keys[i]
+    blocks = []
+    for k in keys:
+        v = page[k]
+        if k in ("tag", "tag_2"):
+            blocks.append(("section", v))
+        elif k in ("h2", "h2_2", "title"):
+            blocks.append(("h2", v))
+        elif k in ("h3", "h3_2", "h3_3"):
+            blocks.append(("h3", v))
+        elif k in ("intro", "intro_2"):
+            blocks.append(("intro", v))
+        elif k in ("para", "para_2", "para_b", "para_c", "para_d"):
+            blocks.append(("para", v))
+        elif k in ("paras", "paras_2"):
+            for p in v:
+                blocks.append(("para", p))
+        elif k in ("bullets", "bullets_ordered", "bullets_ordered_2"):
+            ordered = k.startswith("bullets_ordered")
+            blocks.append(("bullets", {"items": v, "ordered": ordered}))
+        elif k in ("warn", "warn_2"):
+            blocks.append(("warn", v))
+        elif k in ("table", "table_2"):
+            blocks.append(("table", v))
+        elif k == "toc":
+            blocks.append(("toc", v))
+        # cover/title/subtitle/version handled by the cover routine
+    return blocks
 
 
-def header_footer(canv, doc, locale: str, page_num: int, total: int):
-    """Black header band + ANHEL wordmark, hairline footer with company line."""
-    canv.saveState()
-    w, h = A4
-
-    # Top hairline above title bar (kept minimal)
-    canv.setStrokeColor(MUTED)
-    canv.setLineWidth(0.4)
-    canv.line(15 * mm, h - 22 * mm, w - 15 * mm, h - 22 * mm)
-
-    # ANHEL wordmark top-left
-    canv.setFillColor(PRIMARY)
-    canv.setFont("Bold", 14)
-    canv.drawString(15 * mm, h - 16 * mm, "ANHEL")
-    canv.setFont("Body", 8)
-    canv.drawString(15 * mm + canv.stringWidth("ANHEL", "Bold", 14) + 1.2 * mm, h - 12 * mm, "®")
-
-    # Right-aligned company line top
-    canv.setFillColor(MUTED)
-    canv.setFont("Body", 8)
-    line_r_1 = "Profit LLC · Saint Petersburg" if locale == "en" else (
-        "Profit LLC · Saint Petersburg" if locale == "tr" else "Profit LLC · Saint Petersburg"
-    )
-    canv.drawRightString(w - 15 * mm, h - 14 * mm, line_r_1)
-    canv.drawRightString(w - 15 * mm, h - 18 * mm, "+7 (812) 416-4500 · info@anhelspb.com")
-
-    # Footer hairline
-    canv.setStrokeColor(MUTED)
-    canv.setLineWidth(0.4)
-    canv.line(15 * mm, 18 * mm, w - 15 * mm, 18 * mm)
-
-    # Footer left — page number
-    canv.setFillColor(MUTED)
-    canv.setFont("Body", 8)
-    label = "page" if locale == "en" else ("sayfa" if locale == "tr" else "стр.")
-    canv.drawString(15 * mm, 12 * mm, f"{label} {page_num} / {total}")
-
-    # Footer center — manual mark
-    mark_map = {
-        "en": "ANHEL® SPD pumping-unit operating manual",
-        "tr": "ANHEL® SPD pompa istasyonu kullanım kılavuzu",
-        "ru": "Руководство по эксплуатации — НУ ANHEL® СПД",
-    }
-    canv.drawCentredString(w / 2, 12 * mm, mark_map[locale])
-
-    # Footer right — site
-    canv.drawRightString(w - 15 * mm, 12 * mm, "anhelspb.com")
-    canv.restoreState()
+# --------------------------------------------------------------------------
+# Low-level drawing
+# --------------------------------------------------------------------------
+def _put(page, x, y, text, font_spec):
+    size, bold, color = font_spec
+    _draw(page, (x, y), text, bold, size, color)
 
 
-def cover(canv, doc, page: dict):
-    w, h = A4
-    canv.saveState()
-    canv.setFillColor(PRIMARY)
-    canv.rect(0, 0, w, h, fill=1, stroke=0)
-
-    canv.setFillColor(SECONDARY)
-    canv.setFont("Bold", 36)
-    canv.drawString(20 * mm, h - 35 * mm, "ANHEL")
-    canv.setFont("Body", 16)
-    canv.drawString(20 * mm + canv.stringWidth("ANHEL", "Bold", 36) + 3 * mm, h - 25 * mm, "®")
-
-    canv.setStrokeColor(ACCENT)
-    canv.setLineWidth(2)
-    canv.line(20 * mm, h - 50 * mm, w - 20 * mm, h - 50 * mm)
-
-    canv.setFillColor(SECONDARY)
-    canv.setFont("Body", 10)
-    canv.drawString(20 * mm, h - 60 * mm, "TECHNICAL DOCUMENTATION  ·  ANHEL®  ·  2026")
-
-    canv.setFont("Bold", 44)
-    canv.setFillColor(SECONDARY)
-    canv.drawString(20 * mm, h / 2 + 10 * mm, page["title"].split(" ")[0])
-    rest = " ".join(page["title"].split(" ")[1:])
-    if rest:
-        canv.setFont("Bold", 32)
-        canv.drawString(20 * mm, h / 2 - 8 * mm, rest)
-
-    canv.setFont("Body", 14)
-    canv.setFillColor(MUTED)
-    canv.drawString(20 * mm, h / 2 - 30 * mm, page["subtitle"])
-
-    canv.setFont("Body", 9)
-    canv.drawString(20 * mm, 35 * mm, page["version"])
-    canv.drawString(20 * mm, 28 * mm, "ОГРН 1137847188357   ·   ИНН 7802825464   ·   КПП 780201001")
-    canv.setFont("Body", 8)
-    canv.drawString(20 * mm, 21 * mm, "Profit LLC · 6/1 Polytechnicheskaya St., Saint Petersburg 194021, Russia")
-    canv.drawString(20 * mm, 16 * mm, "+7 (812) 416-4500 · info@anhelspb.com · anhelspb.com")
-
-    canv.restoreState()
+def _line(page, x0, y, x1, color, width=0.4):
+    page.draw_line(fitz.Point(x0, y), fitz.Point(x1, y),
+                   color=color, width=width)
 
 
-def build_styles() -> dict:
-    """ParagraphStyles tuned for engineering-manual readability."""
-    return {
-        "tag": ParagraphStyle(
-            "tag",
-            fontName="Body",
-            fontSize=8,
-            leading=10,
-            textColor=MUTED,
-            spaceAfter=2,
-        ),
-        "h1": ParagraphStyle(
-            "h1",
-            fontName="Bold",
-            fontSize=18,
-            leading=22,
-            textColor=PRIMARY,
-            spaceAfter=10,
-        ),
-        "h2": ParagraphStyle(
-            "h2",
-            fontName="Bold",
-            fontSize=12,
-            leading=16,
-            textColor=PRIMARY,
-            spaceBefore=14,
-            spaceAfter=6,
-        ),
-        "h3": ParagraphStyle(
-            "h3",
-            fontName="Bold",
-            fontSize=9.5,
-            leading=14,
-            textColor=PRIMARY,
-            spaceBefore=10,
-            spaceAfter=4,
-        ),
-        "body": ParagraphStyle(
-            "body",
-            fontName="Body",
-            fontSize=9,
-            leading=12.5,
-            textColor=PRIMARY,
-            alignment=TA_JUSTIFY,
-            spaceAfter=6,
-        ),
-        "bullet": ParagraphStyle(
-            "bullet",
-            fontName="Body",
-            fontSize=9,
-            leading=12.5,
-            textColor=PRIMARY,
-            leftIndent=10,
-            bulletIndent=2,
-            spaceAfter=3,
-        ),
-        "warn": ParagraphStyle(
-            "warn",
-            fontName="Body",
-            fontSize=9,
-            leading=12.5,
-            textColor=ACCENT,
-            leftIndent=8,
-            spaceBefore=6,
-            spaceAfter=6,
-            borderColor=ACCENT,
-            borderWidth=0,
-            borderPadding=0,
-        ),
-        "toc_row": ParagraphStyle(
-            "toc_row",
-            fontName="Body",
-            fontSize=10,
-            leading=18,
-            textColor=PRIMARY,
-        ),
-    }
+def draw_section(page, y, text):
+    _put(page, X_LEFT, y, text, F_SECTION)
+    return y
 
 
-def render_page(page: dict, styles: dict) -> list:
-    """Turn one declarative page-dict into a list of flowables."""
-    flow = []
-
-    if "cover" in page:
-        # Handled by separate page template
-        return flow
-
-    if "tag" in page:
-        flow.append(Paragraph(page["tag"], styles["tag"]))
-
-    if "title" in page:
-        flow.append(Paragraph(page["title"], styles["h1"]))
-        flow.append(Spacer(1, 2 * mm))
-
-    if "toc" in page:
-        rows = [[Paragraph(f"{label}", styles["toc_row"]), Paragraph(str(p), styles["toc_row"])] for label, p in page["toc"]]
-        t = Table(rows, colWidths=[145 * mm, 15 * mm])
-        t.setStyle(
-            TableStyle(
-                [
-                    ("LINEBELOW", (0, 0), (-1, -1), 0.3, MUTED),
-                    ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
-                    ("ALIGN", (1, 0), (1, -1), "RIGHT"),
-                    ("BOTTOMPADDING", (0, 0), (-1, -1), 6),
-                    ("TOPPADDING", (0, 0), (-1, -1), 6),
-                ]
-            )
-        )
-        flow.append(t)
-        return flow
-
-    if "h2" in page:
-        flow.append(Paragraph(page["h2"], styles["h2"]))
-    if "intro" in page:
-        flow.append(Paragraph(page["intro"], styles["body"]))
-
-    if "para" in page:
-        flow.append(Paragraph(page["para"], styles["body"]))
-    if "paras" in page:
-        for p in page["paras"]:
-            flow.append(Paragraph(p, styles["body"]))
-
-    if "bullets" in page:
-        for b in page["bullets"]:
-            flow.append(Paragraph(f"•  {b}", styles["bullet"]))
-
-    if "bullets_ordered" in page:
-        for i, b in enumerate(page["bullets_ordered"], 1):
-            flow.append(Paragraph(f"{i}.  {b}", styles["bullet"]))
-
-    if "table" in page:
-        rows = [[Paragraph(f"<b>{r[0]}</b>", styles["body"]), Paragraph(r[1], styles["body"])] for r in page["table"]]
-        t = Table(rows, colWidths=[70 * mm, 90 * mm])
-        t.setStyle(
-            TableStyle(
-                [
-                    ("LINEABOVE", (0, 0), (-1, 0), 0.4, MUTED),
-                    ("LINEBELOW", (0, 0), (-1, -1), 0.3, MUTED),
-                    ("VALIGN", (0, 0), (-1, -1), "TOP"),
-                    ("BOTTOMPADDING", (0, 0), (-1, -1), 6),
-                    ("TOPPADDING", (0, 0), (-1, -1), 6),
-                ]
-            )
-        )
-        flow.append(t)
-
-    if "h3" in page:
-        flow.append(Paragraph(page["h3"], styles["h3"]))
-    if "para_b" in page:
-        flow.append(Paragraph(page["para_b"], styles["body"]))
-
-    if "warn" in page:
-        flow.append(Paragraph(f"<b>{page['warn']}</b>", styles["warn"]))
-
-    if "h3_2" in page:
-        flow.append(Paragraph(page["h3_2"], styles["h3"]))
-    if "para_c" in page:
-        flow.append(Paragraph(page["para_c"], styles["body"]))
-
-    if "table_2" in page:
-        rows = [[Paragraph(f"<b>{r[0]}</b>", styles["body"]), Paragraph(r[1], styles["body"])] for r in page["table_2"]]
-        t = Table(rows, colWidths=[70 * mm, 90 * mm])
-        t.setStyle(
-            TableStyle(
-                [
-                    ("LINEABOVE", (0, 0), (-1, 0), 0.4, MUTED),
-                    ("LINEBELOW", (0, 0), (-1, -1), 0.3, MUTED),
-                    ("VALIGN", (0, 0), (-1, -1), "TOP"),
-                    ("BOTTOMPADDING", (0, 0), (-1, -1), 6),
-                    ("TOPPADDING", (0, 0), (-1, -1), 6),
-                ]
-            )
-        )
-        flow.append(t)
-
-    if "h3_3" in page:
-        flow.append(Paragraph(page["h3_3"], styles["h3"]))
-    if "para_d" in page:
-        flow.append(Paragraph(page["para_d"], styles["body"]))
-
-    if "paras_2" in page:
-        for p in page["paras_2"]:
-            flow.append(Paragraph(p, styles["body"]))
-
-    if "warn_2" in page:
-        flow.append(Paragraph(f"<b>{page['warn_2']}</b>", styles["warn"]))
-
-    if "tag_2" in page:
-        flow.append(Spacer(1, 4 * mm))
-        flow.append(Paragraph(page["tag_2"], styles["tag"]))
-
-    if "h2_2" in page:
-        flow.append(Paragraph(page["h2_2"], styles["h2"]))
-
-    if "para_2" in page:
-        flow.append(Paragraph(page["para_2"], styles["body"]))
-
-    if "intro_2" in page:
-        flow.append(Paragraph(page["intro_2"], styles["body"]))
-
-    if "bullets_ordered_2" in page:
-        for i, b in enumerate(page["bullets_ordered_2"], 1):
-            flow.append(Paragraph(f"{i}.  {b}", styles["bullet"]))
-
-    return flow
+def draw_h2(page, y, text):
+    _put(page, X_LEFT, y, text, F_H2)
+    _line(page, X_LEFT, y + H2_RULE_DY, H2_RULE_X1, ACCENT_RULE, 0.8)
+    return y
 
 
-def build_pdf(locale: str, pages: list[dict], out_path: Path):
-    register_fonts()
-    styles = build_styles()
+def draw_h3(page, y, text):
+    _put(page, X_LEFT, y, text, F_H3)
+    return y
 
-    w, h = A4
-    body_frame = Frame(
-        15 * mm,
-        22 * mm,
-        w - 30 * mm,
-        h - 50 * mm,
-        leftPadding=0,
-        rightPadding=0,
-        topPadding=0,
-        bottomPadding=0,
+
+def draw_paragraph(page, y, text, font_spec, x=X_LEFT, width=WIDTH,
+                   leading=LEAD_BODY):
+    size, bold, _ = font_spec
+    for ln in _wrap(text, bold, size, width):
+        _put(page, x, y, ln, font_spec)
+        y += leading
+    return y - leading            # baseline of the last line drawn
+
+
+def draw_bullets(page, y, items, ordered=False):
+    size, bold, color = F_BULLET
+    for i, item in enumerate(items):
+        marker = f"{i + 1}." if ordered else "•"
+        _put(page, X_LEFT, y, marker, F_BULLET)
+        last = draw_paragraph(page, y, item, F_BULLET,
+                              x=X_LEFT + 14.0, width=WIDTH - 14.0)
+        y = last + LEAD_BODY + GAP_BULLET
+    return y - LEAD_BODY - GAP_BULLET
+
+
+def draw_warn(page, y, text):
+    """y = baseline of the marker word.  Returns the last body baseline."""
+    # split the leading marker word (CAUTION — / DİKKAT —) from the body
+    title, _, body = text.partition(" — ")
+    if not body:
+        title, _, body = text.partition(" – ")
+    _put(page, X_LEFT + 12.0, y, title, F_WARN_TITLE)
+    by = y + 16.0
+    size, bold, _ = F_WARN_BODY
+    for ln in _wrap(body, bold, size, WIDTH - 12.0):
+        _put(page, X_LEFT + 12.0, by, ln, F_WARN_BODY)
+        by += LEAD_WARN
+    bottom = by - LEAD_WARN
+    page.draw_line(fitz.Point(X_LEFT, y - 6.0),
+                   fitz.Point(X_LEFT, bottom + 5.0),
+                   color=(0.843, 0.149, 0.22), width=2.0)
+    return bottom
+
+
+def draw_table(page, y, rows):
+    """y = baseline of the first row's first line.  Returns the last
+    baseline drawn."""
+    ks, kb, _ = F_TBL_KEY
+    vs, vb, _ = F_TBL_VAL
+    last = y
+    for ri, (key, val) in enumerate(rows):
+        key_lines = _wrap(key, kb, ks, TBL_KEY_W)
+        val_lines = _wrap(val, vb, vs, TBL_VAL_W)
+        if ri:
+            _line(page, X_LEFT, y - 11.0, X_RIGHT, HAIRLINE, 0.4)
+        for i, ln in enumerate(key_lines):
+            _put(page, TBL_KEY_X, y + i * LEAD_TBL, ln, F_TBL_KEY)
+        for i, ln in enumerate(val_lines):
+            _put(page, TBL_VAL_X, y + i * LEAD_TBL, ln, F_TBL_VAL)
+        n = max(len(key_lines), len(val_lines))
+        last = y + (n - 1) * LEAD_TBL
+        y = last + GAP_TABLE_ROW
+    return last
+
+
+def draw_toc(page, y, entries):
+    size, bold, _ = F_TOC
+    for name, num in entries:
+        _put(page, X_LEFT, y, name, F_TOC)
+        nw = _text_width(str(num), True, size)
+        _put(page, X_RIGHT - nw, y, str(num), F_TOC_NUM)
+        # dotted leader
+        name_w = _text_width(name, bold, size)
+        dot_x0 = X_LEFT + name_w + 6
+        dot_x1 = X_RIGHT - nw - 6
+        dots = "." * max(0, int((dot_x1 - dot_x0) / _text_width(".", False, 9)))
+        if dots:
+            _draw(page, (dot_x0, y), dots, False, 9.0, COL_GREY)
+        y += 22.0
+    return y
+
+
+# --------------------------------------------------------------------------
+# Page layout
+# --------------------------------------------------------------------------
+def layout_content_page(page, blocks, locale, report):
+    """Clear the body of a content page and re-lay-out the translated blocks."""
+    # 1. wipe the whole body (text + position-locked accents / rules),
+    #    keeping the header band (y < 86) and the footer hairline
+    #    (y = 796.9).  The rect runs wider than the text column because a
+    #    few RU warning lines overshoot the right margin.
+    page.add_redact_annot(fitz.Rect(40.0, 86.0, 555.0, 795.0), fill=False)
+    page.apply_redactions(
+        images=fitz.PDF_REDACT_IMAGE_NONE,
+        graphics=fitz.PDF_REDACT_LINE_ART_REMOVE_IF_TOUCHED,
+        text=fitz.PDF_REDACT_TEXT_REMOVE,
     )
 
-    total = len(pages)
+    # 2. re-flow the blocks
+    y = CONTENT_TOP
+    first = True
+    prev = None
+    for kind, data in blocks:
+        if kind == "section":
+            if not first:
+                y += GAP_BEFORE_SECTION
+            draw_section(page, y, data)
+            y += GAP_SECTION_H2
+            prev = "section"
+        elif kind == "h2":
+            if prev not in (None, "section") and not first:
+                y += GAP_BEFORE_SECTION
+            draw_h2(page, y, data)
+            y += GAP_H2_BODY
+            prev = "h2"
+        elif kind == "h3":
+            if not first:
+                y += GAP_BEFORE_H3
+            draw_h3(page, y, data)
+            y += GAP_AFTER_H3
+            prev = "h3"
+        elif kind in ("para", "intro"):
+            if prev in ("para", "intro", "warn", "bullets"):
+                y += GAP_PARA
+            spec = F_INTRO if kind == "intro" else F_PARA
+            last = draw_paragraph(page, y, data, spec)
+            y = last + LEAD_BODY
+            prev = kind
+        elif kind == "bullets":
+            y += GAP_BEFORE_BULLETS
+            last = draw_bullets(page, y, data["items"], data["ordered"])
+            y = last + LEAD_BODY
+            prev = "bullets"
+        elif kind == "warn":
+            y += GAP_BEFORE_WARN
+            bottom = draw_warn(page, y, data)
+            y = bottom + LEAD_WARN
+            prev = "warn"
+        elif kind == "table":
+            last = draw_table(page, y, data)
+            y = last + GAP_TABLE_ROW
+            prev = "table"
+        elif kind == "toc":
+            y = draw_toc(page, y, data)
+            prev = "toc"
+        first = False
 
-    class ManualDoc(BaseDocTemplate):
-        def __init__(self, *a, **kw):
-            super().__init__(*a, **kw)
-            self._page_no = 0
-
-        def afterPage(self):
-            pass
-
-    def on_page(canv, doc):
-        page_idx = doc.page  # 1-based
-        if page_idx == 1:
-            cover(canv, doc, pages[0])
-        else:
-            header_footer(canv, doc, locale, page_idx, total)
-
-    body_template = PageTemplate(id="body", frames=[body_frame], onPage=on_page)
-    doc = ManualDoc(str(out_path), pagesize=A4)
-    doc.addPageTemplates([body_template])
-
-    flowables = []
-    flowables.append(Spacer(1, 1))  # placeholder for page 1 (cover)
-    flowables.append(PageBreak())
-
-    for i, page in enumerate(pages[1:], start=2):
-        flowables.extend(render_page(page, styles))
-        if i != total:
-            flowables.append(PageBreak())
-
-    doc.build(flowables)
-    print(f"  wrote {out_path}  ({out_path.stat().st_size // 1024} KB)")
+    if y > CONTENT_BOTTOM + 6:
+        report["overflow"].append((report["_page"], round(y, 1)))
 
 
-def main():
-    out_dir = DOCS / "_built"
-    out_dir.mkdir(parents=True, exist_ok=True)
-
-    en = out_dir / "manual-en.pdf"
-    tr = out_dir / "manual-tr.pdf"
-    print("Building EN…")
-    build_pdf("en", EN_PAGES, en)
-    print("Building TR…")
-    build_pdf("tr", TR_PAGES, tr)
-
-    # Copy each translated manual into the 5 pump-subcategory folders
-    # (firefighting / water-supply / heating-cooling / pressure-boost / special),
-    # mirroring the existing per-category manual.pdf placement.
-    SUBCATS = [
-        "firefighting",
-        "water-supply",
-        "heating-cooling",
-        "pressure-boost",
-        "special",
-    ]
-    print("Copying into pump subcategories…")
-    for sub in SUBCATS:
-        target_dir = DOCS / sub
-        if not target_dir.exists():
+def localize_header_footer(page, locale, total):
+    """Translate the running header requisites, page indicator and footer."""
+    redactions, draws = [], []
+    for block in page.get_text("dict")["blocks"]:
+        if block.get("type") == 1:
             continue
-        shutil.copy(en, target_dir / "manual-en.pdf")
-        shutil.copy(tr, target_dir / "manual-tr.pdf")
-        print(f"  → {target_dir}/manual-{{en,tr}}.pdf")
+        for line in block["lines"]:
+            for sp in line["spans"]:
+                text = sp["text"].strip()
+                if not text:
+                    continue
+                bold = "Bold" in sp["font"]
+                size, color = sp["size"], sp["color"]
+                bbox, origin = sp["bbox"], sp["origin"]
+                if text in REQUISITES:
+                    tr = REQUISITES[text][locale]
+                    redactions.append(_redact_rect(bbox))
+                    w = _text_width(tr, bold, size)
+                    draws.append(((bbox[2] - w, origin[1]), tr, bold,
+                                  size, color))
+                    continue
+                m = _PAGE_RE.match(text)
+                if m:
+                    tr = ("page " if locale == "en" else "sayfa ") + \
+                         f"{m.group(1)} / {m.group(2)}"
+                    redactions.append(_redact_rect(bbox))
+                    w = _text_width(tr, bold, size)
+                    draws.append(((bbox[2] - w, origin[1]), tr, bold,
+                                  size, color))
+                    continue
+                if text.startswith("Руководство по эксплуатации"):
+                    tr = FOOTER[locale]
+                    redactions.append(_redact_rect(bbox))
+                    draws.append(((origin[0], origin[1]), tr, bold,
+                                  size, color))
+                    continue
+    for rect in redactions:
+        page.add_redact_annot(rect, fill=False)
+    if redactions:
+        page.apply_redactions(
+            images=fitz.PDF_REDACT_IMAGE_NONE,
+            graphics=fitz.PDF_REDACT_LINE_ART_NONE,
+            text=fitz.PDF_REDACT_TEXT_REMOVE,
+        )
+    for origin, text, bold, size, color in draws:
+        _draw(page, origin, text, bold, size, color)
 
-    print("Done.")
+
+def localize_cover(page, locale):
+    """Translate the cover-page strings; keep the equipment photo."""
+    redactions, draws = [], []
+    for block in page.get_text("dict")["blocks"]:
+        if block.get("type") == 1:
+            continue
+        for line in block["lines"]:
+            for sp in line["spans"]:
+                text = sp["text"].strip()
+                if not text or text in ("ANHEL", "®", "anhelspb.com"):
+                    continue
+                bold = "Bold" in sp["font"]
+                size, color = sp["size"], sp["color"]
+                bbox, origin = sp["bbox"], sp["origin"]
+                if text not in COVER_REQUISITES:
+                    raise RuntimeError(f"cover: untranslated {text!r}")
+                tr = COVER_REQUISITES[text][locale]
+                redactions.append(_redact_rect(bbox))
+                # the three requisite lines + the footer line are right- or
+                # block-aligned; everything else keeps its left origin
+                right_aligned = bbox[2] >= X_RIGHT - 1 and origin[0] > X_LEFT + 5
+                if right_aligned:
+                    w = _text_width(tr, bold, size)
+                    draws.append(((bbox[2] - w, origin[1]), tr, bold,
+                                  size, color))
+                else:
+                    draws.append(((origin[0], origin[1]), tr, bold,
+                                  size, color))
+    for rect in redactions:
+        page.add_redact_annot(rect, fill=False)
+    if redactions:
+        page.apply_redactions(
+            images=fitz.PDF_REDACT_IMAGE_NONE,
+            graphics=fitz.PDF_REDACT_LINE_ART_NONE,
+            text=fitz.PDF_REDACT_TEXT_REMOVE,
+        )
+    for origin, text, bold, size, color in draws:
+        _draw(page, origin, text, bold, size, color)
+
+
+def localize(master: Path, out: Path, locale: str) -> dict:
+    pages = EN_PAGES if locale == "en" else TR_PAGES
+    report = {"file": out.name, "overflow": [], "_page": 0}
+    doc = fitz.open(master)
+    total = doc.page_count
+    for i, page in enumerate(doc):
+        report["_page"] = i + 1
+        if i == 0:
+            localize_cover(page, locale)
+            continue
+        localize_header_footer(page, locale, total)
+        layout_content_page(page, page_blocks(pages[i]), locale, report)
+    try:
+        doc.subset_fonts()
+    except Exception:
+        pass
+    out.parent.mkdir(parents=True, exist_ok=True)
+    doc.save(str(out), deflate=True, garbage=4, clean=True)
+    doc.close()
+    return report
+
+
+def build():
+    master = DOCS / LEAD / "manual.pdf"
+    reports = []
+    for locale in ("en", "tr"):
+        out = DOCS / LEAD / f"manual-{locale}.pdf"
+        rep = localize(master, out, locale)
+        reports.append(rep)
+        kb = out.stat().st_size // 1024
+        status = "OK" if not rep["overflow"] else f"OVERFLOW {rep['overflow']}"
+        print(f"  {out.relative_to(ROOT)}  [{kb} KB]  {status}")
+        for sib in SIBLINGS:
+            sib_out = DOCS / sib / f"manual-{locale}.pdf"
+            sib_out.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(out, sib_out)
+            print(f"     -> copied to {sib_out.relative_to(ROOT)}")
+    return reports
 
 
 if __name__ == "__main__":
-    main()
+    reports = build()
+    over = sum(len(r["overflow"]) for r in reports)
+    if over:
+        print(f"\n!! {over} page(s) overflow — tighten spacing")
+        sys.exit(1)
+    print("\nDone.")
