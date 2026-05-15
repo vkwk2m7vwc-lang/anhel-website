@@ -89,6 +89,24 @@ def _text_width(text: str, bold: bool, size: float) -> float:
     return _font(bold).text_length(text, size)
 
 
+# right-hand text margin of every master in this project
+RIGHT_LIMIT = 535.0
+
+
+def _fit_size(text: str, bold: bool, size: float, origin_x: float,
+              limit: float = RIGHT_LIMIT) -> float:
+    """Shrink the font just enough to keep a left-aligned span on the page.
+
+    A translated label is occasionally a few points wider than its Russian
+    original (e.g. a value inside the fixed-width tariff card).  Rather than
+    let it run off the edge we scale it down a touch — only when it would
+    actually overflow, never otherwise."""
+    w = _text_width(text, bold, size)
+    if origin_x + w <= limit or w <= 0:
+        return size
+    return max(size * (limit - origin_x) / w, size * 0.62)
+
+
 def _rgb(color_int: int):
     return (
         ((color_int >> 16) & 0xFF) / 255.0,
@@ -965,16 +983,22 @@ def _localize_page(page: fitz.Page, locale: str, report: dict):
         if text in SIMPLE:
             tr = SIMPLE[text][locale]
             redactions.append(_redact_rect(bbox))
-            draws.append(((origin[0], origin[1]), tr, bold, size, color))
+            draw_size = _fit_size(tr, bold, size, origin[0])
+            draws.append(((origin[0], origin[1]), tr, bold,
+                          draw_size, color))
             report["translated"] += 1
             continue
 
         # --- nothing matched ------------------------------------------
         report["missing"].append(text)
 
-    # phase 2 — remove the Russian glyphs, keep everything else
+    # phase 2 — remove the Russian glyphs, keep everything else.
+    # fill=False: the redaction must NOT paint a rectangle — it only
+    # removes the glyphs and reveals whatever was beneath (white page,
+    # a grey field box, a dark card …), so it is correct on any
+    # background colour.
     for rect in redactions:
-        page.add_redact_annot(rect, fill=(1, 1, 1))
+        page.add_redact_annot(rect, fill=False)
     if redactions:
         page.apply_redactions(
             images=fitz.PDF_REDACT_IMAGE_NONE,
