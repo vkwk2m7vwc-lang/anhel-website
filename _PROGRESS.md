@@ -2121,3 +2121,57 @@ stub-обработчики форм на реальную отправку пи
 
 Ветка `feat/resend-integration` от `main` (`5eeca2b`), 5 атомарных
 коммитов. PR открыт — **не мерджить до подтверждения Алексея.**
+
+
+---
+
+## Сессия 2026-05-15 — Этап 4 v2: правки шаблонов писем
+
+Источник: launch-plan v2 + сообщение Алексея. Три правки шаблонов после
+визуальной проверки v1 (бэкенд работал — 21/21 = 200, Resend-id у всех).
+
+### 1. Тёмная тема → светлая (B2B-классика)
+
+`_layout.ts` переписан: белый card (`#FFFFFF`) на светлом page-фоне
+(`#F2F2F1`), тёмный текст, hairline-разделители, `color-scheme: light`.
+Добавлен sans-serif стек `Arial, Helvetica` на body и каждую text-ячейку
+(Outlook сбрасывает наследование font-family; без этого письмо рендерилось
+serif'ом).
+
+### 2. Продуктовые цвета акцентов
+
+`src/lib/email/accents.ts` — палитра из globals.css (light-варианты):
+water `#1e6fd9` · fire `#d72638` · treatment `#5c6670` · heat `#c7711e` ·
+neutral `#2a323a`. Акцент тинтит ®-знак, линейку под шапкой, заголовки
+секций и левую границу контакт-карточки.
+
+Маппинг: pumps — по `?from=` (firefighting→fire, water-supply→water,
+heating-cooling→heat, special→treatment, без from→water); vpu→treatment;
+itp→heat; aupd→water; control-systems / service / contacts → neutral.
+Прокинут через `accent` в payload (QuizShell ← quiz-страницы) для pumps,
+для остальных квизов задаётся на quiz-странице, для не-квизов — в роуте.
+
+### 3. Универсальный билдер полей квиза
+
+`src/components/quiz/build-quiz-sections.ts` — `buildQuizSections` ходит
+по всем шагам→секциям→полям конфига, отдаёт по одной EmailSection на шаг,
+только заполненные поля, без пустых строк. radio→лейбл опции,
+checkbox→«Да», number→строка. `buildSubmission.ts` теперь использует его.
+
+Раньше в письме было ~10 полей (это были синтетические тест-данные curl,
+не баг билдера). Проверка на полном itp-квизе: **92 поля в 6 секциях**
+(97 полей конфига − 6 контактных/consent). Теперь менеджер видит всё.
+
+### Тесты
+
+- `tsc` + `next lint` — чисто.
+- Рендер 4 писем (itp full / pumps fire / service / contacts) — 33/33
+  ассерта: светлая тема, акценты, кириллица, sans-serif, no sales@.
+- Визуальная проверка itp и pumps-fire в браузере — чисто, акценты верные.
+- Осталось на preview: UI-прогон itp + pumps-firefighting со скринами,
+  mail-tester, Outlook web.
+
+### Состояние
+
+Доп. коммиты в `feat/resend-integration` поверх v1. PR #22 — не мерджить
+до v2-проверки Алексеем.
