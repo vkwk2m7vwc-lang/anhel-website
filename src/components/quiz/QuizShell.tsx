@@ -210,7 +210,13 @@ export function QuizShell({ config: rawConfig, prefill }: Props) {
 
   return (
     <FormProvider {...methods}>
-      <form onSubmit={onSubmit} noValidate className="mx-auto max-w-3xl px-5 py-10 sm:py-16">
+      {/*
+       * pt-24/sm:pt-28 — clear the fixed site Header (h-16 mobile / h-20
+       * desktop). Previously py-10/sm:py-16 left the quiz tag + H1 tucked
+       * under the header. Matches the rhythm of /quiz/control-systems and
+       * the legal pages.
+       */}
+      <form onSubmit={onSubmit} noValidate className="mx-auto max-w-3xl px-5 pt-24 pb-10 sm:pt-28 sm:pb-16">
         {/* Header */}
         <header className="mb-10">
           <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-secondary/55">
