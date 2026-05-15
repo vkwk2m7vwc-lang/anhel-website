@@ -67,7 +67,6 @@
     "subtitle": "Fill in the form and we will arrange the engineer visit. The dispatch decision is made after we receive the completed and stamped request.",
     "step_aria": "Step {current}: {title}",
     "step_of": "Step {current} of {total}",
-    "step_short": "Step {current} / {total}",
     "back": "Back",
     "next": "Next",
     "submit": "Submit request",

@@ -51,7 +51,6 @@
     "subtitle": "Six steps — from contacts to special requirements. We respond with a quote within one business day.",
     "step_aria": "Step {current}: {title}",
     "step_of": "Step {current} of {total}",
-    "step_short": "Step {current} / {total}",
     "back": "Back",
     "next": "Next",
     "submit": "Submit",
