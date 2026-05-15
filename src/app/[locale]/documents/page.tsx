@@ -452,16 +452,32 @@ function DocCard({
   // Static PDFs live in /public — they are NOT app routes. The
   // next-intl <Link> would (a) prepend the locale prefix on EN/TR
   // (→ /en/docs/… → 404) and (b) intercept the click for client-side
-  // routing on RU (→ no such route → 404 page). Plain <a download>
-  // lets the browser fetch the file directly. Same pattern as
-  // ProductHero.ProductCtaButton and the /contacts download button.
+  // routing on RU (→ no such route → 404 page). Plain <a> lets the
+  // browser fetch the file directly.
+  //
+  // Two distinct actions per card:
+  //   • the card body opens the PDF inline in a new tab (preview) —
+  //     `target="_blank"` with NO `download` attribute, which is the
+  //     one combination that works reliably in iOS Safari (the file
+  //     opens in the native viewer; the visitor can save from there);
+  //   • a separate, bordered «Download» segment carries the `download`
+  //     attribute for visitors who want the file straight away.
+  const tUi = useTranslations("common.ui");
   return (
-    <li className={wide ? "md:col-span-2" : undefined}>
+    <li
+      className={[
+        "group flex items-stretch overflow-hidden rounded-sm border border-[var(--color-hairline)] transition-colors hover:border-[var(--color-secondary)]/40",
+        wide ? "md:col-span-2" : "",
+      ].join(" ")}
+    >
+      {/* Preview — opens the PDF in a new tab. */}
       <a
         href={href}
-        download
+        target="_blank"
+        rel="noopener noreferrer"
         data-cursor="hover"
-        className="group flex items-center gap-4 rounded-sm border border-[var(--color-hairline)] p-4 transition-colors hover:border-[var(--color-secondary)]/40 hover:bg-[var(--color-hover-tint)] md:p-5"
+        title={`${tUi("preview")} — ${title}`}
+        className="flex min-w-0 flex-1 items-center gap-4 p-4 transition-colors hover:bg-[var(--color-hover-tint)] md:p-5"
       >
         <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[var(--color-hairline)] text-[var(--color-secondary)]/70 transition-colors group-hover:border-[var(--color-secondary)]/40 group-hover:text-[var(--color-secondary)]">
           <Icon size={18} strokeWidth={1.5} aria-hidden="true" />
@@ -479,12 +495,20 @@ function DocCard({
             </span>
           ) : null}
         </span>
-        <Download
-          size={16}
-          strokeWidth={1.5}
-          aria-hidden="true"
-          className="shrink-0 text-[var(--color-secondary)]/35 transition-all group-hover:translate-y-0.5 group-hover:text-[var(--color-secondary)]"
-        />
+      </a>
+      {/* Download — separate segment, forces save. */}
+      <a
+        href={href}
+        download
+        data-cursor="hover"
+        aria-label={`${tUi("download")} — ${title}`}
+        title={`${tUi("download")} — ${title}`}
+        className="flex shrink-0 items-center gap-1.5 self-stretch border-l border-[var(--color-hairline)] px-4 text-[var(--color-secondary)]/55 transition-colors hover:bg-[var(--color-hover-tint)] hover:text-[var(--color-secondary)] md:px-5"
+      >
+        <Download size={16} strokeWidth={1.5} aria-hidden="true" />
+        <span className="hidden font-mono text-[10px] uppercase tracking-[0.12em] sm:inline">
+          {tUi("download")}
+        </span>
       </a>
     </li>
   );
