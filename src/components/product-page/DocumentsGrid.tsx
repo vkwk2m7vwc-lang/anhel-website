@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { Download, Eye } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import type {
   DocumentsContent,
@@ -100,96 +101,138 @@ function DocCard({ doc, index }: { doc: DocumentItem; index: number }) {
     locale !== "ru" && RU_ONLY_DOC_IDS.has(doc.id)
       ? tDocs("original_note")
       : undefined;
+
+  // Static PDF / external file — plain <a>, NOT next-intl <Link>. The
+  // i18n <Link> would prepend the locale prefix on EN/TR (→ /en/docs/…
+  // → 404) and intercept the click for SPA routing on RU.
+  //
+  // Local PDFs get two actions: the card body opens the file inline in
+  // a new tab (preview — `target="_blank"`, no `download` attribute,
+  // the combination iOS Safari handles reliably) and a separate
+  // bordered «Download» segment carries the `download` attribute.
+  // `doc.external` links have no local file to save, so they keep the
+  // single open-in-new-tab affordance.
+  const cardBase = [
+    "group relative flex bg-[var(--color-primary)] transition-colors duration-300",
+    "min-h-[64px] flex-row items-stretch",
+    "sm:min-h-[220px] sm:flex-col md:min-h-[260px]",
+  ].join(" ");
+  const accentRing = (
+    <span
+      aria-hidden="true"
+      className="pointer-events-none absolute inset-0 ring-1 ring-transparent transition-[box-shadow,ring-color] duration-300 [@media(hover:hover)]:group-hover:ring-[var(--accent-current)]"
+    />
+  );
+
+  if (doc.external) {
+    return (
+      <motion.li
+        initial={{ opacity: 0, y: 16 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-80px" }}
+        transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1], delay: Math.min(index, 3) * 0.06 }}
+        className="relative"
+      >
+        <a
+          href={doc.href}
+          target="_blank"
+          rel="noreferrer noopener"
+          data-cursor="hover"
+          className={`${cardBase} items-center gap-3 px-4 py-3 sm:items-stretch sm:justify-between sm:p-6 md:p-8 [@media(hover:hover)]:hover:bg-[var(--color-hover-tint)] active:ring-1 active:ring-[var(--accent-current)]`}
+        >
+          {accentRing}
+          <CardMeta doc={doc} ruNote={ruNote} />
+          <span className="ml-auto inline-flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/55 sm:mt-auto sm:ml-0">
+            {tUi("open_external")} <span aria-hidden="true">→</span>
+          </span>
+        </a>
+      </motion.li>
+    );
+  }
+
   return (
     <motion.li
       initial={{ opacity: 0, y: 16 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-80px" }}
-      transition={{
-        duration: 0.55,
-        ease: [0.16, 1, 0.3, 1],
-        delay: Math.min(index, 3) * 0.06,
-      }}
+      transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1], delay: Math.min(index, 3) * 0.06 }}
       className="relative"
     >
-      {/* Static PDF / external file — plain <a>, NOT next-intl <Link>.
-          The i18n <Link> would prepend the locale prefix on EN/TR
-          (→ /en/docs/… → 404) and intercept the click for SPA routing
-          on RU. Mirrors ProductHero.ProductCtaButton + /contacts. */}
-      <a
-        href={doc.href}
-        target={doc.external ? "_blank" : undefined}
-        rel={doc.external ? "noreferrer noopener" : undefined}
-        data-cursor="hover"
-        download={doc.external ? undefined : doc.title}
-        className={[
-          "group relative flex bg-[var(--color-primary)] transition-colors duration-300",
-          // Mobile: compact 1 visual unit — [PDF][title+size][→]
-          // в одной строке, без пустот.
-          "min-h-[64px] flex-row items-center gap-3 px-4 py-3",
-          // Tablet+ : block-card (PDF/size сверху, title+CTA снизу).
-          "sm:min-h-[220px] sm:flex-col sm:items-stretch sm:justify-between sm:gap-0 sm:p-6 md:min-h-[260px] md:p-8",
-          "[@media(hover:hover)]:hover:bg-[var(--color-hover-tint)]",
-          "active:ring-1 active:ring-[var(--accent-current)]",
-        ].join(" ")}
-      >
-        {/* Accent ring — same language as the Applications/Advantages
-            grids, so every card on the page reads as a single family. */}
-        <span
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-0 ring-1 ring-transparent transition-[box-shadow,ring-color] duration-300 [@media(hover:hover)]:group-hover:ring-[var(--accent-current)]"
-        />
-
-        {/* PDF-badge: на mobile inline-слева, на sm+ — top-row блок. */}
-        <div className="flex items-start gap-3 sm:justify-between">
-          <span className="font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/65 transition-colors [@media(hover:hover)]:group-hover:text-[var(--accent-current)] sm:text-[11px]">
-            PDF
-          </span>
-          {doc.size ? (
-            <span className="hidden font-mono text-[10px] uppercase tracking-[0.08em] text-[var(--color-secondary)]/65 sm:inline">
-              {doc.size}
-            </span>
-          ) : null}
-        </div>
-
-        {/* Title + (mobile-inline size) + download affordance */}
-        <div className="flex min-w-0 flex-1 flex-col gap-0.5 sm:mt-10 sm:gap-4">
-          <h3 className="font-display text-[13px] font-medium leading-snug text-[var(--color-secondary)] sm:text-[18px] md:text-[20px]">
-            {doc.title}
-          </h3>
-          {/* Mobile: размер inline под title; sm+: размер уже выведен сверху. */}
-          {doc.size ? (
-            <span className="font-mono text-[10px] uppercase tracking-[0.08em] text-[var(--color-secondary)]/55 sm:hidden">
-              {doc.size}
-            </span>
-          ) : null}
-          {/* RU-only badge for `oprosnik` / `cert-deklaratsiya` on EN/TR.
-              See RU_ONLY_DOC_IDS above for the rationale. */}
-          {ruNote ? (
-            <span className="text-[11px] italic text-[var(--color-secondary)]/45 sm:text-xs">
-              {ruNote}
-            </span>
-          ) : null}
-          {/* На sm+ — отдельный CTA «Скачать →»; на mobile это место занимает arrow справа от строки. */}
-          <span className="hidden items-center gap-2 font-mono text-[11px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/55 transition-colors [@media(hover:hover)]:group-hover:text-[var(--color-secondary)] sm:inline-flex">
-            {doc.external ? tUi("open_external") : tUi("download")}
-            <span
-              aria-hidden="true"
-              className="inline-block transition-transform duration-300 ease-out-expo [@media(hover:hover)]:group-hover:translate-x-1"
-            >
-              →
-            </span>
-          </span>
-        </div>
-
-        {/* Mobile-only arrow справа (визуальный affordance скачивания). */}
-        <span
-          aria-hidden="true"
-          className="font-mono text-[14px] text-[var(--color-secondary)]/55 sm:hidden"
+      <div className={cardBase}>
+        {accentRing}
+        {/* Preview — opens the PDF inline in a new tab. */}
+        <a
+          href={doc.href}
+          target="_blank"
+          rel="noreferrer noopener"
+          data-cursor="hover"
+          title={`${tUi("preview")} — ${doc.title}`}
+          className="flex min-w-0 flex-1 flex-row items-center gap-3 px-4 py-3 transition-colors sm:flex-col sm:items-stretch sm:justify-between sm:gap-0 sm:p-6 md:p-8 [@media(hover:hover)]:hover:bg-[var(--color-hover-tint)] active:ring-1 active:ring-[var(--accent-current)]"
         >
-          →
-        </span>
-      </a>
+          <CardMeta doc={doc} ruNote={ruNote} />
+          <span className="hidden items-center gap-2 font-mono text-[11px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/55 transition-colors [@media(hover:hover)]:group-hover:text-[var(--color-secondary)] sm:mt-6 sm:inline-flex">
+            {tUi("preview")}
+            <Eye size={14} strokeWidth={1.5} aria-hidden="true" />
+          </span>
+        </a>
+        {/* Download — separate segment, forces save. Border-left on the
+            mobile row, border-top on the sm+ block card. */}
+        <a
+          href={doc.href}
+          download={doc.title}
+          data-cursor="hover"
+          aria-label={`${tUi("download")} — ${doc.title}`}
+          title={`${tUi("download")} — ${doc.title}`}
+          className="flex shrink-0 items-center justify-center gap-1.5 self-stretch border-l border-[var(--color-hairline)] px-4 text-[var(--color-secondary)]/60 transition-colors sm:self-auto sm:border-l-0 sm:border-t sm:px-6 sm:py-4 [@media(hover:hover)]:hover:bg-[var(--color-hover-tint)] [@media(hover:hover)]:hover:text-[var(--color-secondary)] active:text-[var(--accent-current)]"
+        >
+          <Download size={16} strokeWidth={1.5} aria-hidden="true" />
+          <span className="hidden font-mono text-[11px] uppercase tracking-[0.12em] sm:inline">
+            {tUi("download")}
+          </span>
+        </a>
+      </div>
     </motion.li>
+  );
+}
+
+/** Shared inner content of a document card — PDF badge, title, size,
+ *  and the optional «Original document (Russian)» note. */
+function CardMeta({
+  doc,
+  ruNote,
+}: {
+  doc: DocumentItem;
+  ruNote: string | undefined;
+}) {
+  return (
+    <>
+      {/* PDF badge: inline-left on mobile, top-row block on sm+. */}
+      <div className="flex items-start gap-3 sm:justify-between">
+        <span className="font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/65 transition-colors [@media(hover:hover)]:group-hover:text-[var(--accent-current)] sm:text-[11px]">
+          PDF
+        </span>
+        {doc.size ? (
+          <span className="hidden font-mono text-[10px] uppercase tracking-[0.08em] text-[var(--color-secondary)]/65 sm:inline">
+            {doc.size}
+          </span>
+        ) : null}
+      </div>
+      {/* Title + (mobile-inline size) + optional RU-only note. */}
+      <div className="flex min-w-0 flex-1 flex-col gap-0.5 sm:mt-10 sm:flex-none sm:gap-4">
+        <h3 className="font-display text-[13px] font-medium leading-snug text-[var(--color-secondary)] sm:text-[18px] md:text-[20px]">
+          {doc.title}
+        </h3>
+        {doc.size ? (
+          <span className="font-mono text-[10px] uppercase tracking-[0.08em] text-[var(--color-secondary)]/55 sm:hidden">
+            {doc.size}
+          </span>
+        ) : null}
+        {ruNote ? (
+          <span className="text-[11px] italic text-[var(--color-secondary)]/45 sm:text-xs">
+            {ruNote}
+          </span>
+        ) : null}
+      </div>
+    </>
   );
 }
