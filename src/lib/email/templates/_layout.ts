@@ -7,10 +7,15 @@
  *   JSX needs a server renderer; plain template strings are simpler,
  *   dependency-free and produce exactly the markup we control.
  *
- * Branding (per Stage 4 launch plan — intentionally darker/simpler than
- * the full site palette so it survives every mail client):
- *   bg     #0A0A0A   text   #F5F5F3   accent #FF6B35
- *   panel  #141414   hairline rgba(255,255,255,0.08)
+ * Theme — light B2B classic (v2):
+ *   page  #F2F2F1   card  #FFFFFF   text  #1A1A1A   muted #6E6E6E
+ *   panel #F7F7F6   hairline rgba(10,10,10,0.10)
+ *   font  Arial / Helvetica sans-serif stack — no web fonts (unreliable
+ *         in mail clients); set on body AND every text cell because
+ *         Outlook resets inherited font-family.
+ *   accent — per product, passed in (see lib/email/accents.ts):
+ *     water синий · fire красный · treatment сталь · heat оранжевый ·
+ *     neutral графит
  *
  * The email chrome (headings, section labels, footer) is always in
  * Russian — it is read by the ANHEL manager. The customer's UI locale
@@ -36,13 +41,17 @@ export const LOCALE_LABEL: Record<EmailLocale, string> = {
 };
 
 const COLORS = {
-  bg: '#0A0A0A',
-  panel: '#141414',
-  text: '#F5F5F3',
-  muted: '#9A9A98',
-  accent: '#FF6B35',
-  hairline: 'rgba(255,255,255,0.08)',
+  page: '#F2F2F1',
+  card: '#FFFFFF',
+  panel: '#F7F7F6',
+  text: '#1A1A1A',
+  heading: '#0A0A0A',
+  muted: '#6E6E6E',
+  hairline: 'rgba(10,10,10,0.10)',
 } as const;
+
+/** B2B-safe sans-serif stack — no web fonts (mail clients can't load them). */
+const FONT = "Arial, 'Helvetica Neue', Helvetica, sans-serif";
 
 /** Escape user-supplied text before putting it into HTML. */
 export function escapeHtml(input: unknown): string {
@@ -67,16 +76,16 @@ export function formatMoscowTimestamp(date: Date = new Date()): string {
   return `${formatted} МСК`;
 }
 
-/** Render a "Поле → Значение" table for one section. */
-export function renderSection(section: EmailSection): string {
+/** Render a "Поле → Значение" table for one section. `accent` tints the title. */
+export function renderSection(section: EmailSection, accent: string): string {
   const rows = section.rows
     .map(
       (row) => `
         <tr>
-          <td style="padding:8px 16px 8px 0;vertical-align:top;width:42%;font-size:13px;line-height:1.45;color:${COLORS.muted};">
+          <td style="padding:7px 16px 7px 0;vertical-align:top;width:42%;font-family:${FONT};font-size:13px;line-height:1.45;color:${COLORS.muted};border-top:1px solid ${COLORS.hairline};">
             ${escapeHtml(row.label)}
           </td>
-          <td style="padding:8px 0;vertical-align:top;font-size:14px;line-height:1.5;color:${COLORS.text};">
+          <td style="padding:7px 0;vertical-align:top;font-family:${FONT};font-size:14px;line-height:1.5;color:${COLORS.text};border-top:1px solid ${COLORS.hairline};">
             ${escapeHtml(row.value) || '&mdash;'}
           </td>
         </tr>`,
@@ -84,17 +93,17 @@ export function renderSection(section: EmailSection): string {
     .join('');
 
   const title = section.title
-    ? `<p style="margin:0 0 6px;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:${COLORS.accent};">
+    ? `<p style="margin:0 0 4px;font-family:${FONT};font-size:11px;letter-spacing:0.10em;text-transform:uppercase;font-weight:700;color:${accent};">
          ${escapeHtml(section.title)}
        </p>`
     : '';
 
   return `
-    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 24px;border-collapse:collapse;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 22px;border-collapse:collapse;">
       <tr><td style="padding:0;">${title}</td></tr>
       <tr>
         <td style="padding:0;">
-          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;border-top:1px solid ${COLORS.hairline};">
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;">
             ${rows}
           </table>
         </td>
@@ -103,7 +112,10 @@ export function renderSection(section: EmailSection): string {
 }
 
 /** Contact card — the person who submitted the form. */
-export function renderCustomerBlock(customer: EmailCustomer): string {
+export function renderCustomerBlock(
+  customer: EmailCustomer,
+  accent: string,
+): string {
   const rows: EmailField[] = [];
   if (customer.company) rows.push({ label: 'Компания', value: customer.company });
   rows.push({ label: 'Контактное лицо', value: customer.name });
@@ -112,10 +124,10 @@ export function renderCustomerBlock(customer: EmailCustomer): string {
   if (customer.email) rows.push({ label: 'E-mail', value: customer.email });
 
   return `
-    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 24px;border-collapse:collapse;background:${COLORS.panel};border:1px solid ${COLORS.hairline};">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 24px;border-collapse:collapse;background:${COLORS.panel};border:1px solid ${COLORS.hairline};border-left:3px solid ${accent};">
       <tr>
-        <td style="padding:18px 20px;">
-          ${renderSection({ title: 'Контакт', rows }).trim()}
+        <td style="padding:16px 20px 2px;">
+          ${renderSection({ title: 'Контакт', rows }, accent).trim()}
         </td>
       </tr>
     </table>`;
@@ -123,16 +135,18 @@ export function renderCustomerBlock(customer: EmailCustomer): string {
 
 /**
  * Wrap a body in the full ANHEL email shell — header (text logo + locale
- * tag), heading, Moscow timestamp, body, footer.
+ * tag), heading, Moscow timestamp, body, footer. Light B2B theme; `accent`
+ * (a hex colour) tints the rule, the ® mark and section labels.
  */
 export function renderEmailShell(args: {
   heading: string;
   locale: EmailLocale;
   bodyHtml: string;
+  accent: string;
   /** Optional one-line intro under the heading. */
   intro?: string;
 }): string {
-  const { heading, locale, bodyHtml, intro } = args;
+  const { heading, locale, bodyHtml, intro, accent } = args;
   const timestamp = formatMoscowTimestamp();
 
   return `<!DOCTYPE html>
@@ -140,71 +154,68 @@ export function renderEmailShell(args: {
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <meta name="color-scheme" content="dark" />
+  <meta name="color-scheme" content="light" />
+  <meta name="supported-color-schemes" content="light" />
   <title>${escapeHtml(heading)}</title>
 </head>
-<body style="margin:0;padding:0;background:${COLORS.bg};">
-  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:${COLORS.bg};">
+<body style="margin:0;padding:0;background:${COLORS.page};font-family:${FONT};-webkit-text-size-adjust:100%;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:${COLORS.page};">
     <tr>
       <td align="center" style="padding:32px 16px;">
-        <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="width:600px;max-width:100%;border-collapse:collapse;">
-
-          <!-- Header -->
+        <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="width:600px;max-width:100%;border-collapse:collapse;background:${COLORS.card};border:1px solid ${COLORS.hairline};">
           <tr>
-            <td style="padding:0 0 20px;">
+            <td style="padding:32px 36px 36px;font-family:${FONT};">
+
+              <!-- Header -->
               <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
                 <tr>
-                  <td style="font-size:22px;font-weight:600;letter-spacing:0.04em;color:${COLORS.text};">
-                    ANHEL<span style="color:${COLORS.accent};font-size:13px;vertical-align:super;">&reg;</span>
+                  <td style="font-family:${FONT};font-size:22px;font-weight:700;letter-spacing:0.03em;color:${COLORS.heading};">
+                    ANHEL<span style="color:${accent};font-size:13px;vertical-align:super;">&reg;</span>
                   </td>
-                  <td align="right" style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:${COLORS.muted};">
-                    Язык:&nbsp;<span style="color:${COLORS.text};">${LOCALE_LABEL[locale]}</span>
+                  <td align="right" style="font-family:${FONT};font-size:11px;letter-spacing:0.10em;text-transform:uppercase;color:${COLORS.muted};">
+                    Язык:&nbsp;<span style="color:${COLORS.heading};font-weight:700;">${LOCALE_LABEL[locale]}</span>
                   </td>
                 </tr>
               </table>
-            </td>
-          </tr>
 
-          <!-- Accent rule -->
-          <tr><td style="padding:0;"><div style="height:2px;background:${COLORS.accent};font-size:0;line-height:0;">&nbsp;</div></td></tr>
+              <!-- Accent rule -->
+              <div style="height:3px;background:${accent};font-size:0;line-height:0;margin:18px 0 0;">&nbsp;</div>
 
-          <!-- Heading + timestamp -->
-          <tr>
-            <td style="padding:24px 0 4px;">
-              <h1 style="margin:0;font-size:21px;line-height:1.3;font-weight:600;color:${COLORS.text};">
+              <!-- Heading + timestamp -->
+              <h1 style="margin:24px 0 4px;font-family:${FONT};font-size:21px;line-height:1.3;font-weight:700;color:${COLORS.heading};">
                 ${escapeHtml(heading)}
               </h1>
-            </td>
-          </tr>
-          <tr>
-            <td style="padding:0 0 ${intro ? '8' : '24'}px;font-size:12px;letter-spacing:0.06em;color:${COLORS.muted};">
-              ${escapeHtml(timestamp)}
-            </td>
-          </tr>
-          ${
-            intro
-              ? `<tr><td style="padding:0 0 24px;font-size:14px;line-height:1.55;color:${COLORS.muted};">${escapeHtml(intro)}</td></tr>`
-              : ''
-          }
-
-          <!-- Body -->
-          <tr><td style="padding:0;">${bodyHtml}</td></tr>
-
-          <!-- Footer -->
-          <tr>
-            <td style="padding:24px 0 0;border-top:1px solid ${COLORS.hairline};">
-              <p style="margin:0;font-size:12px;line-height:1.6;color:${COLORS.muted};">
-                ANHEL<span style="color:${COLORS.accent};">&reg;</span>
-                &nbsp;&middot;&nbsp; ООО «ПРОФИТ»
-                &nbsp;&middot;&nbsp; <a href="https://anhelspb.com" style="color:${COLORS.muted};text-decoration:underline;">anhelspb.com</a>
-                &nbsp;&middot;&nbsp; <a href="mailto:info@anhelspb.com" style="color:${COLORS.muted};text-decoration:underline;">info@anhelspb.com</a>
+              <p style="margin:0 0 ${intro ? '8' : '24'}px;font-family:${FONT};font-size:12px;letter-spacing:0.04em;color:${COLORS.muted};">
+                ${escapeHtml(timestamp)}
               </p>
-              <p style="margin:8px 0 0;font-size:11px;line-height:1.6;color:${COLORS.muted};">
-                Письмо сформировано автоматически с сайта anhelspb.com. Чтобы ответить клиенту — просто нажмите «Ответить».
-              </p>
+              ${
+                intro
+                  ? `<p style="margin:0 0 24px;font-family:${FONT};font-size:14px;line-height:1.55;color:${COLORS.muted};">${escapeHtml(intro)}</p>`
+                  : ''
+              }
+
+              <!-- Body -->
+              ${bodyHtml}
+
+              <!-- Footer -->
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:8px 0 0;border-top:1px solid ${COLORS.hairline};">
+                <tr>
+                  <td style="padding:20px 0 0;font-family:${FONT};">
+                    <p style="margin:0;font-family:${FONT};font-size:12px;line-height:1.6;color:${COLORS.muted};">
+                      ANHEL<span style="color:${accent};">&reg;</span>
+                      &nbsp;&middot;&nbsp; ООО «ПРОФИТ»
+                      &nbsp;&middot;&nbsp; <a href="https://anhelspb.com" style="color:${COLORS.muted};text-decoration:underline;">anhelspb.com</a>
+                      &nbsp;&middot;&nbsp; <a href="mailto:info@anhelspb.com" style="color:${COLORS.muted};text-decoration:underline;">info@anhelspb.com</a>
+                    </p>
+                    <p style="margin:8px 0 0;font-family:${FONT};font-size:11px;line-height:1.6;color:${COLORS.muted};">
+                      Письмо сформировано автоматически с сайта anhelspb.com. Чтобы ответить клиенту — просто нажмите «Ответить».
+                    </p>
+                  </td>
+                </tr>
+              </table>
+
             </td>
           </tr>
-
         </table>
       </td>
     </tr>

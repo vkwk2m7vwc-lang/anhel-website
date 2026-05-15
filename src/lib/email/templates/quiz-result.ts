@@ -21,6 +21,8 @@ export type QuizResultEmailData = {
   productName: string;
   /** Visitor's UI locale — shown as a tag in the header. */
   locale: EmailLocale;
+  /** Product accent colour (hex) — tints the email. */
+  accent: string;
   customer: EmailCustomer;
   /** Ordered, pre-formatted sections (Russian labels from the source config). */
   sections: EmailSection[];
@@ -35,12 +37,13 @@ export function renderQuizResultEmail(data: QuizResultEmailData): {
 
   const filledSections = data.sections.filter((s) => s.rows.length > 0);
   const bodyHtml =
-    renderCustomerBlock(data.customer) +
-    filledSections.map(renderSection).join('');
+    renderCustomerBlock(data.customer, data.accent) +
+    filledSections.map((s) => renderSection(s, data.accent)).join('');
 
   const html = renderEmailShell({
     heading,
     locale: data.locale,
+    accent: data.accent,
     bodyHtml,
     intro:
       'Клиент заполнил опросный лист на сайте. Все указанные параметры — ниже.',

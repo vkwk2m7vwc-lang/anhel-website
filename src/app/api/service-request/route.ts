@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { parseSubmissionPayload, looksLikeEmail } from '@/lib/email/payload';
+import { accentHex } from '@/lib/email/accents';
 import { renderServiceRequestEmail } from '@/lib/email/templates/service-request';
 import { sendEmail } from '@/lib/email/sendEmail';
 
@@ -42,8 +43,10 @@ export async function POST(req: Request) {
     );
   }
 
+  // Service request isn't tied to one product line — neutral graphite accent.
   const { subject, html } = renderServiceRequestEmail({
     locale: payload.locale,
+    accent: accentHex('neutral'),
     customer: payload.customer,
     sections: payload.sections,
   });

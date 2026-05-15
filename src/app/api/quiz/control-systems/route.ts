@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { parseSubmissionPayload, looksLikeEmail } from '@/lib/email/payload';
+import { accentHex } from '@/lib/email/accents';
 import { renderQuizResultEmail } from '@/lib/email/templates/quiz-result';
 import { sendEmail } from '@/lib/email/sendEmail';
 
@@ -43,9 +44,12 @@ export async function POST(req: Request) {
     );
   }
 
+  // Generic control-systems quiz covers all 5 cabinet series — no single
+  // product colour fits, so the email uses the neutral graphite accent.
   const { subject, html } = renderQuizResultEmail({
     productName: 'Шкафы управления',
     locale: payload.locale,
+    accent: accentHex('neutral'),
     customer: payload.customer,
     sections: payload.sections,
   });

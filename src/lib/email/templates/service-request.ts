@@ -16,6 +16,8 @@ import {
 
 export type ServiceRequestEmailData = {
   locale: EmailLocale;
+  /** Accent colour (hex) — tints the email. */
+  accent: string;
   customer: EmailCustomer;
   /** Ordered, pre-formatted sections (Russian labels from the source config). */
   sections: EmailSection[];
@@ -30,12 +32,13 @@ export function renderServiceRequestEmail(data: ServiceRequestEmailData): {
 
   const filledSections = data.sections.filter((s) => s.rows.length > 0);
   const bodyHtml =
-    renderCustomerBlock(data.customer) +
-    filledSections.map(renderSection).join('');
+    renderCustomerBlock(data.customer, data.accent) +
+    filledSections.map((s) => renderSection(s, data.accent)).join('');
 
   const html = renderEmailShell({
     heading,
     locale: data.locale,
+    accent: data.accent,
     bodyHtml,
     intro:
       'Клиент оставил заявку на сервисное обслуживание оборудования ANHEL.',

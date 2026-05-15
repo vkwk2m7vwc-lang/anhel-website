@@ -26,7 +26,7 @@ export default function ItpQuizPage() {
 
   return (
     <main className="min-h-screen bg-primary text-secondary" style={accentStyle}>
-      <QuizShell config={itpQuizConfig} />
+      <QuizShell config={itpQuizConfig} accent="heat" />
     </main>
   );
 }

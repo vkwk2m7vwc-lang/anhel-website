@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { coerceLocale, looksLikeEmail } from '@/lib/email/payload';
+import { accentHex } from '@/lib/email/accents';
 import { renderContactFormEmail } from '@/lib/email/templates/contact-form';
 import { sendEmail } from '@/lib/email/sendEmail';
 
@@ -46,6 +47,7 @@ export async function POST(req: Request) {
 
   const { subject, html } = renderContactFormEmail({
     locale: coerceLocale(root.locale),
+    accent: accentHex('neutral'),
     customer: { name, email, phone: phone || undefined },
     message,
   });

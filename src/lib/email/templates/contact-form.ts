@@ -14,6 +14,8 @@ import {
 
 export type ContactFormEmailData = {
   locale: EmailLocale;
+  /** Accent colour (hex) — tints the email. */
+  accent: string;
   customer: EmailCustomer;
   /** Free-text message from the visitor (may be empty). */
   message: string;
@@ -27,15 +29,19 @@ export function renderContactFormEmail(data: ContactFormEmailData): {
   const heading = 'Сообщение через форму обратной связи';
 
   const bodyHtml =
-    renderCustomerBlock(data.customer) +
-    renderSection({
-      title: 'Сообщение',
-      rows: [{ label: 'Текст обращения', value: data.message }],
-    });
+    renderCustomerBlock(data.customer, data.accent) +
+    renderSection(
+      {
+        title: 'Сообщение',
+        rows: [{ label: 'Текст обращения', value: data.message }],
+      },
+      data.accent,
+    );
 
   const html = renderEmailShell({
     heading,
     locale: data.locale,
+    accent: data.accent,
     bodyHtml,
     intro: 'Новое обращение через форму обратной связи на сайте.',
   });

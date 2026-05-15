@@ -9,6 +9,7 @@ import { allVpuFieldNames } from '@/content/quiz/vpu-fields';
 import { allItpFieldNames } from '@/content/quiz/itp-fields';
 import { allAupdFieldNames } from '@/content/quiz/aupd-fields';
 import { parseSubmissionPayload } from '@/lib/email/payload';
+import { accentHex } from '@/lib/email/accents';
 import { renderQuizResultEmail } from '@/lib/email/templates/quiz-result';
 import { sendEmail } from '@/lib/email/sendEmail';
 
@@ -116,6 +117,7 @@ export async function POST(req: Request) {
   const { subject, html } = renderQuizResultEmail({
     productName: PRODUCT_NAMES[kind],
     locale: payload.locale,
+    accent: accentHex(payload.accent),
     customer: payload.customer,
     sections: payload.sections,
   });

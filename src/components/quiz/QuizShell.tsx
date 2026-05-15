@@ -22,7 +22,7 @@ import { makeAupdQuizSchema, aupdQuizSchema } from '@/content/quiz/aupd-schema';
 import type { QuizConfig, QuizKind } from '@/content/quiz/quiz-config';
 import { useTranslatedConfig } from './useTranslatedConfig';
 import { buildQuizSubmission } from './buildSubmission';
-import { coerceLocale } from '@/lib/email/payload';
+import { coerceLocale, type EmailAccent } from '@/lib/email/payload';
 
 /**
  * Static schemas (RU messages) used as a fallback for quizzes whose
@@ -50,9 +50,11 @@ type Props = {
   config: QuizConfig;
   /** initial pre-fill values from URL query */
   prefill?: Record<string, unknown>;
+  /** Product accent key — tints the result email. Defaults to 'water'. */
+  accent?: EmailAccent;
 };
 
-export function QuizShell({ config: rawConfig, prefill }: Props) {
+export function QuizShell({ config: rawConfig, prefill, accent }: Props) {
   const config = useTranslatedConfig(rawConfig);
   const locale = coerceLocale(useLocale());
   const t = useTranslations('quiz.shell');
@@ -176,7 +178,12 @@ export function QuizShell({ config: rawConfig, prefill }: Props) {
   const onSubmit = handleSubmit(async (values) => {
     setIsSubmitting(true);
     try {
-      const submission = buildQuizSubmission(rawConfig, values, locale);
+      const submission = buildQuizSubmission(
+        rawConfig,
+        values,
+        locale,
+        accent ?? 'water',
+      );
       const res = await fetch('/api/questionnaire', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

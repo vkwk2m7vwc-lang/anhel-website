@@ -571,3 +571,20 @@ export const pumpsAccentMap: Record<string, string> = {
   'heating-cooling': 'var(--accent-heat)',
   special: 'var(--accent-treatment)',
 };
+
+/**
+ * Accent KEY (not CSS var) per подкатегория — feeds the transactional
+ * email's product colour via QuizShell → submission payload. Mirrors
+ * `pumpsAccentMap` but as plain `EmailAccent` keys (см. lib/email/accents).
+ * Default when `from` is absent: 'water'.
+ */
+export const pumpsAccentKeyMap: Record<
+  string,
+  'water' | 'fire' | 'treatment' | 'heat'
+> = {
+  firefighting: 'fire',
+  'water-supply': 'water',
+  'pressure-boost': 'water',
+  'heating-cooling': 'heat',
+  special: 'treatment',
+};

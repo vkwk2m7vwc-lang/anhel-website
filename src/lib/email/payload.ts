@@ -9,6 +9,10 @@
  * it, renders an HTML template and sends it through Resend.
  */
 
+import { coerceAccent, type EmailAccent } from './accents';
+
+export type { EmailAccent };
+
 export type EmailLocale = 'ru' | 'en' | 'tr';
 
 /** One "Поле → Значение" row. */
@@ -29,6 +33,8 @@ export type EmailCustomer = {
 /** The base JSON body every form POSTs. */
 export type FormSubmissionPayload = {
   locale: EmailLocale;
+  /** Product accent key — tints the email. Routes may override per form. */
+  accent: EmailAccent;
   customer: EmailCustomer;
   sections: EmailSection[];
 };
@@ -73,6 +79,7 @@ export function parseSubmissionPayload(
 
   const payload: FormSubmissionPayload = {
     locale: coerceLocale(b.locale),
+    accent: coerceAccent(b.accent),
     customer: {
       name,
       email:
