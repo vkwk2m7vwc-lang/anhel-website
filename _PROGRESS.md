@@ -1988,11 +1988,21 @@ RU-мастер `control-systems/oprosnyi-list.pdf` — это **непереб�
 брендом. Сначала нужно перебрендировать сам RU-мастер на ANHEL/Профит.
 EN/TR control-systems пока остаются в wave-3 виде.
 
-### Следующий шаг
+### Дополнительно — предпросмотр PDF на /documents
 
-Финальный squash-merge `feat/pdf-localization-wave-2` → main, тэг
-`v1.13-pdf-localization-v2`. После — предпросмотр PDF на `/documents`
-(этап 3), Resend (этап 4), тех.аудит (этап 5), запуск (этап 6).
+Клик по карточке документа на `/documents` (RU/EN/TR) и в продуктовом
+`DocumentsGrid` теперь открывает PDF в новой вкладке (предпросмотр),
+рядом — отдельная кнопка «Скачать». Реализация — `target="_blank"`
+без `download` (надёжно открывается в iOS Safari). `/contacts` CTA
+«Скачать карточку организации» не тронут (сразу скачивает — это CTA).
+Алексей подтвердил на iPhone. Коммиты `fee7cbb`, `ba7692a`.
+
+### Финал
+
+Ветка `feat/pdf-localization-wave-2` (8 коммитов) → squash-merge в
+`main`, тэг `v1.13-pdf-and-preview`. control-systems отложен (нужно
+сперва перебрендировать МФМК-мастер «Омега Control» на ANHEL/Профит).
+Дальше — Resend-интеграция (этап 4), тех.аудит (этап 5), запуск.
 
 
 ---
