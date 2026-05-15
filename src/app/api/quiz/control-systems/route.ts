@@ -3,6 +3,7 @@ import { parseSubmissionPayload, looksLikeEmail } from '@/lib/email/payload';
 import { accentHex } from '@/lib/email/accents';
 import { renderQuizResultEmail } from '@/lib/email/templates/quiz-result';
 import { sendEmail } from '@/lib/email/sendEmail';
+import { fillQuestionnaire } from '@/lib/pdf/fill-questionnaire';
 
 export const runtime = 'nodejs';
 
@@ -46,12 +47,33 @@ export async function POST(req: Request) {
 
   // Generic control-systems quiz covers all 5 cabinet series — no single
   // product colour fits, so the email uses the neutral graphite accent.
+  const accentValue = accentHex('neutral');
+  const fieldCount = payload.sections.reduce((acc, s) => acc + s.rows.length, 0);
+
+  let pdf;
+  try {
+    pdf = await fillQuestionnaire({
+      kind: 'quiz',
+      productName: 'Шкафы управления',
+      accentHex: accentValue,
+      locale: payload.locale,
+      customer: payload.customer,
+      sections: payload.sections,
+    });
+  } catch (err) {
+    console.error('[quiz:control-systems] PDF generation failed:', err);
+    return NextResponse.json(
+      { success: false, message: 'Не удалось сформировать опросный лист. Попробуйте позже.' },
+      { status: 500 },
+    );
+  }
+
   const { subject, html } = renderQuizResultEmail({
     productName: 'Шкафы управления',
     locale: payload.locale,
-    accent: accentHex('neutral'),
+    accent: accentValue,
     customer: payload.customer,
-    sections: payload.sections,
+    fieldCount,
   });
 
   const recipient = process.env.QUIZ_RECIPIENT_EMAIL ?? '';
@@ -60,6 +82,9 @@ export async function POST(req: Request) {
     subject,
     html,
     replyTo: payload.customer.email,
+    attachments: [
+      { filename: pdf.filename, content: pdf.content, contentType: 'application/pdf' },
+    ],
   });
 
   if (!sent.ok) {
@@ -72,7 +97,7 @@ export async function POST(req: Request) {
 
   console.log(
     `[quiz:control-systems] email sent id=${sent.id} → ${recipient} ` +
-      `(sections: ${payload.sections.length})`,
+      `(sections: ${payload.sections.length}, PDF: ${pdf.filename})`,
   );
 
   return NextResponse.json({

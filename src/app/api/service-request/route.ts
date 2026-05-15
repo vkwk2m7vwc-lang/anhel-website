@@ -3,6 +3,7 @@ import { parseSubmissionPayload, looksLikeEmail } from '@/lib/email/payload';
 import { accentHex } from '@/lib/email/accents';
 import { renderServiceRequestEmail } from '@/lib/email/templates/service-request';
 import { sendEmail } from '@/lib/email/sendEmail';
+import { fillQuestionnaire } from '@/lib/pdf/fill-questionnaire';
 
 export const runtime = 'nodejs';
 
@@ -44,11 +45,32 @@ export async function POST(req: Request) {
   }
 
   // Service request isn't tied to one product line — neutral graphite accent.
+  const accentValue = accentHex('neutral');
+  const fieldCount = payload.sections.reduce((acc, s) => acc + s.rows.length, 0);
+
+  let pdf;
+  try {
+    pdf = await fillQuestionnaire({
+      kind: 'service',
+      productName: '',
+      accentHex: accentValue,
+      locale: payload.locale,
+      customer: payload.customer,
+      sections: payload.sections,
+    });
+  } catch (err) {
+    console.error('[service-request] PDF generation failed:', err);
+    return NextResponse.json(
+      { success: false, message: 'Не удалось сформировать заявку. Попробуйте позже.' },
+      { status: 500 },
+    );
+  }
+
   const { subject, html } = renderServiceRequestEmail({
     locale: payload.locale,
-    accent: accentHex('neutral'),
+    accent: accentValue,
     customer: payload.customer,
-    sections: payload.sections,
+    fieldCount,
   });
 
   const recipient = process.env.QUIZ_RECIPIENT_EMAIL ?? '';
@@ -57,6 +79,9 @@ export async function POST(req: Request) {
     subject,
     html,
     replyTo: payload.customer.email,
+    attachments: [
+      { filename: pdf.filename, content: pdf.content, contentType: 'application/pdf' },
+    ],
   });
 
   if (!sent.ok) {
@@ -69,7 +94,7 @@ export async function POST(req: Request) {
 
   console.log(
     `[service-request] email sent id=${sent.id} → ${recipient} ` +
-      `(sections: ${payload.sections.length})`,
+      `(sections: ${payload.sections.length}, PDF: ${pdf.filename})`,
   );
 
   return NextResponse.json({

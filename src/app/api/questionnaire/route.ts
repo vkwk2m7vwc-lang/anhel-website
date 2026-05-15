@@ -12,6 +12,7 @@ import { parseSubmissionPayload } from '@/lib/email/payload';
 import { accentHex } from '@/lib/email/accents';
 import { renderQuizResultEmail } from '@/lib/email/templates/quiz-result';
 import { sendEmail } from '@/lib/email/sendEmail';
+import { fillQuestionnaire } from '@/lib/pdf/fill-questionnaire';
 
 export const runtime = 'nodejs';
 
@@ -113,13 +114,34 @@ export async function POST(req: Request) {
   }
   const { payload } = payloadResult;
 
-  // === 4. Рендер шаблона + отправка ===
+  // === 4. PDF-вложение (полный опросный лист) + короткое тело письма ===
+  const accentValue = accentHex(payload.accent);
+  const fieldCount = payload.sections.reduce((acc, s) => acc + s.rows.length, 0);
+
+  let pdf;
+  try {
+    pdf = await fillQuestionnaire({
+      kind: 'quiz',
+      productName: PRODUCT_NAMES[kind],
+      accentHex: accentValue,
+      locale: payload.locale,
+      customer: payload.customer,
+      sections: payload.sections,
+    });
+  } catch (err) {
+    console.error(`[questionnaire:${kind}] PDF generation failed:`, err);
+    return NextResponse.json(
+      { success: false, message: 'Не удалось сформировать опросный лист. Попробуйте позже.' },
+      { status: 500 },
+    );
+  }
+
   const { subject, html } = renderQuizResultEmail({
     productName: PRODUCT_NAMES[kind],
     locale: payload.locale,
-    accent: accentHex(payload.accent),
+    accent: accentValue,
     customer: payload.customer,
-    sections: payload.sections,
+    fieldCount,
   });
 
   const recipient = process.env.QUIZ_RECIPIENT_EMAIL ?? '';
@@ -128,6 +150,9 @@ export async function POST(req: Request) {
     subject,
     html,
     replyTo: payload.customer.email,
+    attachments: [
+      { filename: pdf.filename, content: pdf.content, contentType: 'application/pdf' },
+    ],
   });
 
   if (!sent.ok) {
@@ -140,7 +165,8 @@ export async function POST(req: Request) {
 
   console.log(
     `[questionnaire:${kind}] email sent id=${sent.id} → ${recipient} ` +
-      `(fields: ${Object.keys(data).length}, PDF mismatches: ${mismatches.length})`,
+      `(fields: ${Object.keys(data).length}, PDF mismatches: ${mismatches.length}, ` +
+      `PDF: ${pdf.filename})`,
   );
 
   return NextResponse.json({

@@ -43,6 +43,8 @@ export function buildQuizSubmission(
     phone: str('contact_phone') || undefined,
     company: str('contact_organization') || undefined,
     position: str('contact_position') || undefined,
+    city: str('contact_city') || undefined,
+    objectName: str('object_name') || undefined,
   };
 
   return {

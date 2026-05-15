@@ -35,6 +35,8 @@ const CONTACT_FIELD_NAMES = {
 
 const SKIP_FROM_SECTIONS = new Set<string>([
   ...Object.values(CONTACT_FIELD_NAMES),
+  'object_name',
+  'object_address',
   'consent_pd',
 ]);
 
@@ -80,6 +82,8 @@ export function buildStepsSubmission(
     phone: str(CONTACT_FIELD_NAMES.phone) || undefined,
     company: str(CONTACT_FIELD_NAMES.company) || undefined,
     position: str(CONTACT_FIELD_NAMES.position) || undefined,
+    objectName: str('object_name') || undefined,
+    objectAddress: str('object_address') || undefined,
   };
 
   return { locale, customer, sections };

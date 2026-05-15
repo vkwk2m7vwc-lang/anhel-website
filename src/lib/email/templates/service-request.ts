@@ -1,17 +1,17 @@
 /**
  * Email template — service request (/service/request → /api/service-request).
  *
- * The visitor reports a fault on already-installed ANHEL equipment. The
- * sections carry the object / equipment / fault details; the customer
- * block carries who the service engineer will meet on site.
+ * v3 structure: the body carries only the contact card + object info +
+ * a PDF-attachment notice. The full request (equipment, serials, fault
+ * description, commitments) travels as a separate PDF attachment —
+ * archiving service requests as a document matters for the service team.
  */
 import {
   renderEmailShell,
   renderCustomerBlock,
-  renderSection,
+  renderPdfCta,
   type EmailLocale,
   type EmailCustomer,
-  type EmailSection,
 } from './_layout';
 
 export type ServiceRequestEmailData = {
@@ -19,8 +19,8 @@ export type ServiceRequestEmailData = {
   /** Accent colour (hex) — tints the email. */
   accent: string;
   customer: EmailCustomer;
-  /** Ordered, pre-formatted sections (Russian labels from the source config). */
-  sections: EmailSection[];
+  /** Number of filled fields — shown in the PDF-attachment notice. */
+  fieldCount: number;
 };
 
 export function renderServiceRequestEmail(data: ServiceRequestEmailData): {
@@ -30,10 +30,12 @@ export function renderServiceRequestEmail(data: ServiceRequestEmailData): {
   const subject = '[ANHEL] Заявка на сервис';
   const heading = 'Заявка на сервисное обслуживание';
 
-  const filledSections = data.sections.filter((s) => s.rows.length > 0);
   const bodyHtml =
     renderCustomerBlock(data.customer, data.accent) +
-    filledSections.map((s) => renderSection(s, data.accent)).join('');
+    renderPdfCta(data.accent, {
+      title: 'Заявка на сервис приложена к письму',
+      note: 'Полная заявка — оборудование, серийные номера, описание неисправности — отдельным PDF-файлом. Вложение в конце письма ↓',
+    });
 
   const html = renderEmailShell({
     heading,
@@ -41,7 +43,7 @@ export function renderServiceRequestEmail(data: ServiceRequestEmailData): {
     accent: data.accent,
     bodyHtml,
     intro:
-      'Клиент оставил заявку на сервисное обслуживание оборудования ANHEL.',
+      'Клиент оставил заявку на сервисное обслуживание. Контакт — ниже, детали — в PDF.',
   });
 
   return { subject, html };

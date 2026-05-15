@@ -22,6 +22,13 @@ import { Resend } from 'resend';
 /** Friendly sender. Swap the address (not the name) when the domain is verified. */
 const FROM_ADDRESS = 'ANHEL <onboarding@resend.dev>';
 
+/** A file attached to the email — e.g. the filled questionnaire PDF. */
+export type EmailAttachment = {
+  filename: string;
+  content: Buffer;
+  contentType?: string;
+};
+
 export type SendEmailArgs = {
   /** Recipient inbox — always process.env.QUIZ_RECIPIENT_EMAIL in this app. */
   to: string;
@@ -34,6 +41,8 @@ export type SendEmailArgs = {
    * still sends, just without a reply target.
    */
   replyTo?: string;
+  /** Optional attachments (the v3 questionnaire PDF). */
+  attachments?: EmailAttachment[];
 };
 
 export type SendEmailResult =
@@ -52,6 +61,7 @@ export async function sendEmail({
   subject,
   html,
   replyTo,
+  attachments,
 }: SendEmailArgs): Promise<SendEmailResult> {
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) {
@@ -72,6 +82,7 @@ export async function sendEmail({
       subject,
       html,
       ...(replyTo ? { replyTo } : {}),
+      ...(attachments && attachments.length > 0 ? { attachments } : {}),
     });
 
     if (error) {

@@ -122,12 +122,39 @@ export function renderCustomerBlock(
   if (customer.position) rows.push({ label: 'Должность', value: customer.position });
   if (customer.phone) rows.push({ label: 'Телефон', value: customer.phone });
   if (customer.email) rows.push({ label: 'E-mail', value: customer.email });
+  if (customer.city) rows.push({ label: 'Город', value: customer.city });
+  if (customer.objectName) rows.push({ label: 'Объект', value: customer.objectName });
+  if (customer.objectAddress)
+    rows.push({ label: 'Адрес объекта', value: customer.objectAddress });
 
   return `
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 24px;border-collapse:collapse;background:${COLORS.panel};border:1px solid ${COLORS.hairline};border-left:3px solid ${accent};">
       <tr>
         <td style="padding:16px 20px 2px;">
           ${renderSection({ title: 'Контакт', rows }, accent).trim()}
+        </td>
+      </tr>
+    </table>`;
+}
+
+/**
+ * PDF-attachment notice block (v3). Email attachments have no clickable
+ * URL inside the body, so this is an accent-tinted informational panel
+ * that points the manager at the attachment, not a real link.
+ */
+export function renderPdfCta(
+  accent: string,
+  args: { title: string; note: string },
+): string {
+  return `
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 8px;border-collapse:collapse;background:${COLORS.panel};border:1px solid ${COLORS.hairline};border-left:3px solid ${accent};">
+      <tr>
+        <td style="padding:16px 20px;font-family:${FONT};">
+          <span style="display:inline-block;background:${accent};color:#FFFFFF;font-family:${FONT};font-size:10px;font-weight:700;letter-spacing:0.08em;padding:5px 9px;border-radius:3px;">PDF</span>
+          <span style="font-family:${FONT};font-size:14px;font-weight:700;color:${COLORS.heading};">&nbsp;&nbsp;${escapeHtml(args.title)}</span>
+          <p style="margin:6px 0 0;font-family:${FONT};font-size:12px;line-height:1.5;color:${COLORS.muted};">
+            ${escapeHtml(args.note)}
+          </p>
         </td>
       </tr>
     </table>`;

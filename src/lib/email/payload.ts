@@ -28,6 +28,10 @@ export type EmailCustomer = {
   phone?: string;
   company?: string;
   position?: string;
+  /** City + object identity — shown in the email body (v3: kept out of the PDF-only section list). */
+  city?: string;
+  objectName?: string;
+  objectAddress?: string;
 };
 
 /** The base JSON body every form POSTs. */
@@ -75,6 +79,10 @@ export function parseSubmissionPayload(
     return { ok: false, error: 'Не указано контактное лицо' };
   }
 
+  /** Trimmed string or undefined for an optional customer field. */
+  const optStr = (v: unknown): string | undefined =>
+    typeof v === 'string' && v.trim() ? v.trim() : undefined;
+
   const sections = Array.isArray(b.sections) ? (b.sections as EmailSection[]) : [];
 
   const payload: FormSubmissionPayload = {
@@ -82,22 +90,13 @@ export function parseSubmissionPayload(
     accent: coerceAccent(b.accent),
     customer: {
       name,
-      email:
-        typeof customer.email === 'string' && customer.email.trim()
-          ? customer.email.trim()
-          : undefined,
-      phone:
-        typeof customer.phone === 'string' && customer.phone.trim()
-          ? customer.phone.trim()
-          : undefined,
-      company:
-        typeof customer.company === 'string' && customer.company.trim()
-          ? customer.company.trim()
-          : undefined,
-      position:
-        typeof customer.position === 'string' && customer.position.trim()
-          ? customer.position.trim()
-          : undefined,
+      email: optStr(customer.email),
+      phone: optStr(customer.phone),
+      company: optStr(customer.company),
+      position: optStr(customer.position),
+      city: optStr(customer.city),
+      objectName: optStr(customer.objectName),
+      objectAddress: optStr(customer.objectAddress),
     },
     sections: sections
       .filter((s) => s && typeof s === 'object' && Array.isArray(s.rows))

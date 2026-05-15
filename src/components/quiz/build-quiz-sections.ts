@@ -15,9 +15,10 @@ import type { QuizField } from '@/content/quiz/pumps-fields';
 import type { EmailSection } from '@/lib/email/payload';
 
 /**
- * Contact-identity fields are lifted into the email's contact card, so
- * they're skipped while building sections. `consent_pdn` is the mandatory
- * PD-consent checkbox — implied true on every submission, not a data row.
+ * Contact-identity + object fields are lifted into the email's contact
+ * card (and the PDF's contact panel), so they're skipped while building
+ * the section rows. `consent_pdn` is the mandatory PD-consent checkbox —
+ * implied true on every submission, not a data row.
  */
 const SKIP_FIELD_NAMES = new Set<string>([
   'contact_organization',
@@ -25,6 +26,8 @@ const SKIP_FIELD_NAMES = new Set<string>([
   'contact_position',
   'contact_email',
   'contact_phone',
+  'contact_city',
+  'object_name',
   'consent_pdn',
 ]);
 
