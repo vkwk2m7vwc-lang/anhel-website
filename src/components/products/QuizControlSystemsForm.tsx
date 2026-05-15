@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import { ArrowLeft, ArrowRight, Send, Check } from 'lucide-react';
 import {
   FORM_STEPS,
@@ -13,6 +13,8 @@ import {
   type FormField,
   type FormStep,
 } from '@/content/products/control-systems/quiz-config';
+import { buildStepsSubmission } from '@/lib/email/buildStepsSubmission';
+import { coerceLocale } from '@/lib/email/payload';
 import { useTranslatedControlSystemsSteps } from './useTranslatedControlSystemsSteps';
 
 /**
@@ -133,6 +135,8 @@ export function QuizControlSystemsForm() {
   const router = useRouter();
   const t = useTranslations('quiz.control_systems');
   const tValidation = useTranslations('quiz.shell.validation') as unknown as Tfn;
+  const tShell = useTranslations('quiz.shell');
+  const locale = coerceLocale(useLocale());
   const localizedSteps = useTranslatedControlSystemsSteps();
   const [values, setValues] = useState<Values>(emptyValues);
   const [stepIdx, setStepIdx] = useState(0);
@@ -141,6 +145,7 @@ export function QuizControlSystemsForm() {
   const [submitState, setSubmitState] = useState<
     'idle' | 'submitting' | 'done'
   >('idle');
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const restoredRef = useRef(false);
 
   // Restore from localStorage
@@ -219,7 +224,7 @@ export function QuizControlSystemsForm() {
       window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [stepIdx]);
 
-  const handleSubmit = useCallback(() => {
+  const handleSubmit = useCallback(async () => {
     const allErrs: Errors = {};
     for (const s of localizedSteps)
       Object.assign(allErrs, validateStep(s, values, tValidation));
@@ -231,20 +236,42 @@ export function QuizControlSystemsForm() {
       if (firstErrStep) setStepIdx(firstErrStep.index);
       return;
     }
+
+    setSubmitError(null);
     setSubmitState('submitting');
-    setTimeout(() => {
-      setSubmitState('done');
-      try {
-        window.localStorage.removeItem(FORM_STORAGE_KEY);
-      } catch {
-        /* ignore */
+    try {
+      // RU labels for the manager — build from the source FORM_STEPS,
+      // not the locale-translated ones.
+      const submission = buildStepsSubmission(FORM_STEPS, values, locale);
+      const res = await fetch('/api/quiz/control-systems', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(submission),
+      });
+      const data = (await res.json().catch(() => ({}))) as {
+        success?: boolean;
+        message?: string;
+      };
+      if (res.ok && data.success) {
+        try {
+          window.localStorage.removeItem(FORM_STORAGE_KEY);
+        } catch {
+          /* ignore */
+        }
+        setSubmitState('done');
+        setTimeout(
+          () => router.push('/products/control-systems?submitted=1'),
+          1600,
+        );
+      } else {
+        setSubmitState('idle');
+        setSubmitError(data.message || tShell('error_default'));
       }
-      setTimeout(
-        () => router.push('/products/control-systems?submitted=1'),
-        1600,
-      );
-    }, 700);
-  }, [values, router, localizedSteps, tValidation]);
+    } catch {
+      setSubmitState('idle');
+      setSubmitError(tShell('error_network'));
+    }
+  }, [values, router, localizedSteps, tValidation, locale, tShell]);
 
   const goToStep = useCallback(
     (idx: number) => {
@@ -410,6 +437,16 @@ export function QuizControlSystemsForm() {
             )}
           </motion.section>
         </AnimatePresence>
+      )}
+
+      {/* Submit error — network failure or server-side rejection. */}
+      {submitError && submitState !== 'done' && (
+        <p
+          role="alert"
+          className="mt-8 border-t border-[var(--color-hairline)] pt-6 text-sm text-[var(--accent-fire)]"
+        >
+          {submitError}
+        </p>
       )}
 
       {/*

@@ -2,7 +2,8 @@
 
 import { useState, type FormEvent } from "react";
 import { Link } from "@/navigation";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
+import { coerceLocale } from "@/lib/email/payload";
 
 /**
  * Форма обратной связи на странице `/contacts`.
@@ -23,15 +24,50 @@ import { useTranslations } from "next-intl";
  */
 export function ContactForm() {
   const t = useTranslations("contacts.form");
+  const tShell = useTranslations("quiz.shell");
+  const locale = coerceLocale(useLocale());
   const [consent, setConsent] = useState(false);
   const [status, setStatus] = useState<"idle" | "sending" | "sent">("idle");
+  const [error, setError] = useState<string | null>(null);
 
-  function onSubmit(e: FormEvent<HTMLFormElement>) {
+  async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (!consent) return;
+
+    // The inputs are uncontrolled — read the values via FormData.
+    const fd = new FormData(e.currentTarget);
+    const payload = {
+      locale,
+      customer: {
+        name: String(fd.get("name") ?? "").trim(),
+        email: String(fd.get("email") ?? "").trim(),
+        phone: String(fd.get("phone") ?? "").trim(),
+      },
+      message: String(fd.get("message") ?? "").trim(),
+    };
+
+    setError(null);
     setStatus("sending");
-    // TODO: integrate Resend.
-    window.setTimeout(() => setStatus("sent"), 600);
+    try {
+      const res = await fetch("/api/contacts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      const data = (await res.json().catch(() => ({}))) as {
+        success?: boolean;
+        message?: string;
+      };
+      if (res.ok && data.success) {
+        setStatus("sent");
+      } else {
+        setStatus("idle");
+        setError(data.message || tShell("error_default"));
+      }
+    } catch {
+      setStatus("idle");
+      setError(tShell("error_network"));
+    }
   }
 
   if (status === "sent") {
@@ -110,6 +146,12 @@ export function ContactForm() {
           {t("consent.dot")}
         </span>
       </label>
+
+      {error && (
+        <p role="alert" className="text-sm text-[var(--accent-fire)]">
+          {error}
+        </p>
+      )}
 
       <button
         type="submit"
