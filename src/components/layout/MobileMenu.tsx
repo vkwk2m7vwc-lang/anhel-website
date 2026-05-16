@@ -2,11 +2,9 @@
 
 import { AnimatePresence, motion, type PanInfo } from "framer-motion";
 import { Link } from "@/navigation";
-import { useEffect, useRef, useState } from "react";
-import { X, Phone, Mail, ChevronDown } from "lucide-react";
+import { useEffect, useRef } from "react";
+import { X, Phone, Mail } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { PRODUCTS_MEGA_CATEGORIES } from "./MegaMenu";
-import { DOCUMENTS_MEGA_CATEGORIES } from "./DocumentsMegaMenu";
 import { CONTACTS } from "@/lib/contacts";
 import { PROJECTS_PATH } from "@/lib/routes";
 
@@ -19,26 +17,23 @@ import { PROJECTS_PATH } from "@/lib/routes";
  *   - Slides in from the top with the page below scroll-locked
  *   - Swipe down past 120px or a fast flick closes the panel
  *   - Esc key closes; Tab cycles within the panel (focus trap)
- *   - First focusable element (first live product link) receives
- *     focus on open so screen readers announce where they landed
+ *   - First focusable element (first nav link) receives focus on open
+ *     so screen readers announce where they landed
  *
- * Contents (single-column list, large type like terminal-industries):
- *   1. Продукты — 4 cards from PRODUCTS_MEGA_CATEGORIES (i18n keys)
- *   2. Документация — 3 cards from DOCUMENTS_MEGA_CATEGORIES
- *   3. Навигация — home-page anchors (Объекты, О компании, etc.)
- *   4. Контакты — phone + email + one-line address
+ * Contents (single flat list, large type like terminal-industries):
+ *   1. Навигация — Продукты, Документация, Объекты, Сервис, О компании,
+ *      Контакты. Plain links, no accordions.
+ *   2. Контакты — phone + email + one-line address
  *
- * Socials intentionally omitted until the брендбук lists official
- * channels — a badge bar with blank icons would read as a mistake.
+ * Mega-menu accordions for Продукты / Документация were removed in
+ * v1.20.3 (feat/header-simplify-megamenu) together with the desktop
+ * dropdowns — Продукты now points at /products (4-direction grid) and
+ * Документация at /documents (all PDFs by type).
  *
- * Rendered only below md via the parent Header; the desktop nav
- * row in Header replaces this component on larger viewports.
+ * Rendered only below md via the parent Header.
  *
- * i18n: section titles, NAV labels, accordion strings and aria-labels
- * resolve from `common.mobile_menu` / `common.nav` / `common.aria`.
- * Product/Documents category titles live in `common.mega_menu.*` —
- * the same key the desktop dropdowns read from, so labels stay
- * consistent.
+ * i18n: section titles and aria-labels resolve from `common.mobile_menu`,
+ * nav labels from `common.nav`.
  */
 
 export function MobileMenu({
@@ -56,10 +51,13 @@ export function MobileMenu({
   const firstLinkRef = useRef<HTMLAnchorElement>(null);
 
   /**
-   * Bottom nav anchors — same list as Header desktop NAV, rebuilt
-   * each render so labels follow t() refresh. Hrefs static.
+   * Flat nav — same items as Header desktop NAV, rebuilt each render so
+   * labels follow t() refresh. Hrefs static. Order matches the desktop
+   * row.
    */
-  const NAV_ANCHORS = [
+  const NAV = [
+    { label: tNav("products"), href: "/products" },
+    { label: tNav("documents"), href: "/documents" },
     { label: tNav("projects"), href: PROJECTS_PATH },
     { label: tNav("service"), href: "/service" },
     { label: tNav("about"), href: "/#about" },
@@ -176,50 +174,20 @@ export function MobileMenu({
 
             <nav
               aria-label={tAria("main_nav")}
-              className="flex flex-1 flex-col gap-10 overflow-y-auto px-6 py-8"
+              className="flex flex-1 flex-col gap-8 overflow-y-auto px-6 py-8"
             >
               <section>
-                <p className="mono-tag mb-4">{tMobile("section_products")}</p>
-                <ul className="flex flex-col gap-0">
-                  {PRODUCTS_MEGA_CATEGORIES.map((cat, i) => (
-                    <li key={cat.href}>
-                      <ProductAccordionItem
-                        cat={cat}
-                        categoryNs="products"
-                        onClose={onClose}
-                        firstLinkRef={i === 0 ? firstLinkRef : undefined}
-                      />
-                    </li>
-                  ))}
-                </ul>
-              </section>
-
-              <section>
-                <p className="mono-tag mb-4">{tMobile("section_documents")}</p>
-                <ul className="flex flex-col gap-0">
-                  {DOCUMENTS_MEGA_CATEGORIES.map((cat) => (
-                    <li key={cat.href}>
-                      <ProductAccordionItem
-                        cat={cat}
-                        categoryNs="documents"
-                        onClose={onClose}
-                      />
-                    </li>
-                  ))}
-                </ul>
-              </section>
-
-              <section>
                 <p className="mono-tag mb-4">{tMobile("section_navigation")}</p>
-                <ul className="flex flex-col gap-1">
-                  {NAV_ANCHORS.map((a) => (
-                    <li key={a.href}>
+                <ul className="flex flex-col divide-y divide-[var(--color-hairline)]">
+                  {NAV.map((item, i) => (
+                    <li key={item.href}>
                       <Link
-                        href={a.href}
+                        ref={i === 0 ? firstLinkRef : undefined}
+                        href={item.href}
                         onClick={onClose}
-                        className="block py-3 text-lg text-[var(--color-secondary)]/80 transition-colors hover:text-[var(--color-secondary)]"
+                        className="block py-4 font-display text-2xl font-medium text-[var(--color-secondary)] transition-colors hover:text-[var(--color-secondary)]/80"
                       >
-                        {a.label}
+                        {item.label}
                       </Link>
                     </li>
                   ))}
@@ -253,82 +221,5 @@ export function MobileMenu({
         </motion.div>
       )}
     </AnimatePresence>
-  );
-}
-
-/**
- * Аккордеон-карточка для категории продуктов в mobile-menu.
- * Тап по заголовку — разворачивает описание. Тап по «Перейти» — навигация.
- * Сделано отдельным компонентом, чтобы у каждой карточки был свой
- * useState для open/closed без поднятия в parent (5 категорий).
- *
- * `categoryNs` указывает, из какого подсловаря `common.mega_menu.*`
- * читать title/description — `products` или `documents`. Это позволяет
- * переиспользовать один компонент для обеих секций без копирования
- * структуры.
- */
-function ProductAccordionItem({
-  cat,
-  categoryNs,
-  onClose,
-  firstLinkRef,
-}: {
-  cat:
-    | (typeof PRODUCTS_MEGA_CATEGORIES)[number]
-    | (typeof DOCUMENTS_MEGA_CATEGORIES)[number];
-  categoryNs: "products" | "documents";
-  onClose: () => void;
-  firstLinkRef?: React.Ref<HTMLAnchorElement>;
-}) {
-  const t = useTranslations(`common.mega_menu.${categoryNs}`);
-  const tMobile = useTranslations("common.mobile_menu");
-  const [open, setOpen] = useState(false);
-  const Icon = cat.Icon;
-  return (
-    <div className="border-b border-[var(--color-hairline)] py-3">
-      <button
-        type="button"
-        onClick={() => setOpen((v) => !v)}
-        aria-expanded={open}
-        className="flex w-full items-center justify-between gap-4 text-left text-[var(--color-secondary)]"
-      >
-        <span className="flex items-center gap-3">
-          <Icon
-            size={20}
-            strokeWidth={1.5}
-            aria-hidden="true"
-            className="text-[var(--color-secondary)]/65"
-          />
-          <span className="font-display text-2xl font-medium">
-            {t(`${cat.key}.title`)}
-          </span>
-        </span>
-        <ChevronDown
-          size={18}
-          strokeWidth={1.5}
-          aria-hidden="true"
-          className={
-            "transition-transform duration-200 " +
-            (open ? "rotate-180" : "rotate-0")
-          }
-        />
-      </button>
-      {open && (
-        <div className="mt-3 space-y-3 pl-9">
-          <p className="text-sm leading-relaxed text-[var(--color-secondary)]/70">
-            {t(`${cat.key}.description`)}
-          </p>
-          <Link
-            ref={firstLinkRef}
-            href={cat.href}
-            onClick={onClose}
-            className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.12em] text-[var(--color-secondary)] underline decoration-[var(--color-hairline)] underline-offset-[3px] hover:decoration-[var(--color-secondary)]"
-          >
-            {tMobile("go_to_section")}
-            <span aria-hidden="true">→</span>
-          </Link>
-        </div>
-      )}
-    </div>
   );
 }

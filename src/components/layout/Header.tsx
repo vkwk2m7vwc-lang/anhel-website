@@ -10,8 +10,6 @@ import { cn } from "@/lib/utils";
 import { CONTACTS } from "@/lib/contacts";
 import { PROJECTS_PATH } from "@/lib/routes";
 import { MobileMenu } from "./MobileMenu";
-import { ProductsMenu } from "./ProductsMenu";
-import { DocumentsMenu } from "./DocumentsMenu";
 import { ThemeToggle } from "./ThemeToggle";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 
@@ -22,11 +20,17 @@ import { LanguageSwitcher } from "./LanguageSwitcher";
  *  2. After a small scroll threshold we darken/blur the bar so it stays
  *     legible over any hero content.
  *
- * Navigation: гибридная структура — «О компании» ведёт на якорь
- * секции главной (#about), Контакты — отдельная страница `/contacts`
- * с реквизитами, картой и формой обратной связи. Пункт «Производство»
- * удалён перед запуском (v1.20-pre-launch-fixes) — секция вернётся
- * отдельной задачей после съёмки видео производственной площадки.
+ * Navigation: плоский ряд ссылок — Продукты, Документация, Объекты,
+ * Сервис, О компании, Контакты. Мега-меню для Продуктов/Документации
+ * убрано в v1.20.3 (feat/header-simplify-megamenu) — это были тяжёлые
+ * dropdown'ы, которые редко открывались статистически и усложняли
+ * mobile-сценарий. Теперь Продукты ведут на `/products` (там грид
+ * 4 направлений), Документация — на `/documents` (там список всех PDF).
+ *
+ * «О компании» ведёт на якорь главной (#about), Контакты — на отдельную
+ * страницу `/contacts`. Пункт «Производство» удалён перед запуском
+ * (v1.20-pre-launch-fixes) — секция вернётся отдельной задачей после
+ * съёмки видео производственной площадки.
  *
  * i18n: nav labels and aria-strings are pulled from the `common`
  * namespace. The href targets are locale-agnostic — next-intl's
@@ -45,13 +49,17 @@ export function Header() {
   /**
    * NAV is rebuilt on every render because labels depend on the
    * translation function `t`. Stable hrefs only — keys come from the
-   * common.nav namespace. Order: Objects · Service · About · Contacts.
-   * «Products» and «Documents» live in their own dropdown components
-   * (ProductsMenu, DocumentsMenu) and are inserted around this slice.
-   * «Производство» removed in v1.20-pre-launch-fixes — section pending
-   * video rework, see app/[locale]/page.tsx for context.
+   * common.nav namespace. Order: Products · Documents · Objects ·
+   * Service · About · Contacts.
+   *
+   * Products / Documents used to live in their own dropdown
+   * (ProductsMenu / DocumentsMenu mega-menus); v1.20.3 simplified them
+   * to plain links pointing at the index pages. «Производство» removed
+   * in v1.20 — section pending video rework.
    */
   const NAV = [
+    { label: t("nav.products"), href: "/products" },
+    { label: t("nav.documents"), href: "/documents" },
     { label: t("nav.projects"), href: PROJECTS_PATH },
     { label: t("nav.service"), href: "/service" },
     { label: t("nav.about"), href: "/#about" },
@@ -100,19 +108,7 @@ export function Header() {
             aria-label={t("aria.main_nav")}
             className="hidden items-center gap-6 md:flex lg:gap-8"
           >
-            <ProductsMenu />
-            {NAV.slice(0, 2).map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                data-cursor="hover"
-                className="text-sm text-[var(--color-secondary)]/70 transition-colors hover:text-[var(--color-secondary)]"
-              >
-                {item.label}
-              </Link>
-            ))}
-            <DocumentsMenu />
-            {NAV.slice(2).map((item) => (
+            {NAV.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
