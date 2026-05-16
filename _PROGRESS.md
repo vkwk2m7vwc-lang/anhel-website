@@ -2347,3 +2347,94 @@ Slug действующего продукта переименован `water-t
 ### Состояние
 
 PR открыт, не мержится — ждёт визуальной проверки Алексея на iPhone.
+
+
+---
+
+## Этап 5, Сессия 1 — Performance audit (2026-05-16)
+
+**Ветка:** `perf/audit-session-1` → squash-merge в main, тэг `v1.18-perf-audit`
+**ТЗ:** uploads/cowork_stage_5_session_1_perf.md
+**Режим:** автономный (Alexey AFK)
+
+### Состояние ДО (baseline)
+
+| Метрика | Значение |
+|---|---|
+| First Load JS shared | 87.9 kB |
+| Largest page (product) | 231 kB |
+| .next/static/chunks | 1.9 MB |
+| Hero PNG (variable-frequency, на Home) | 850 KB |
+| Hero PNG max (smoke-control) | 1234 KB |
+| Все 5 control-systems hero PNG (сумма) | 3822 KB |
+| PageTransition curtain + fade duration | 600 ms + 350 ms = ~950 ms |
+
+### Аудит — что уже было сделано раньше
+
+- **Self-host шрифтов (Задача 1)** — ✅ закрыта до этой сессии. `next/font/google` удалён, woff2 файлы лежат в `public/fonts/{inter,inter-tight,jetbrains-mono}/`, регистрируются через `public/fonts/fonts.css` (импорт в `globals.css`), preload в `<head>` для критического Cyrillic 400. Регенерация — `npm run fonts:fetch` (`scripts/fetch-fonts.sh`). Действий не требовалось.
+- **Three.js (Задача 3)** — ✅ уже отсутствует. `three` нет в `package.json` и `node_modules`. Lakhta-сцена реализована на inline SVG + GSAP + CSS keyframes, не WebGL. -600 KB из bundle, упомянутых в ТЗ, на этом этапе уже сэкономлены.
+
+### Сделано в этой сессии
+
+1. **perf(transitions): drop curtain wipe, shorten fade to 200ms** — `src/components/layout/PageTransition.tsx`
+   - Убран curtain `motion.div` с `clip-path: inset(...)` 600 мс.
+   - Duration opacity-fade с 350 → 200 мс.
+   - Добавлено `will-change: opacity` чтобы fade ушёл на GPU compositor.
+   - Сохранены `mode="wait"` и `initial={false}`.
+   - **Итого:** ощутимая задержка перехода ~950 мс → ~200 мс.
+
+2. **perf(images): convert 5 control-systems hero PNGs to AVIF+WebP** — `public/assets/products/control-systems/*/hero.{avif,webp}`, `next.config.mjs`, `src/lib/{hero-products,products}.ts`, `src/content/products/locales/{ru,en,tr}/control-systems/*.ts`, `scripts/convert-heroes.mjs`
+   - `next.config.mjs`: `images.formats: ['image/avif','image/webp']` — next/image отдаёт AVIF современным браузерам, WebP — остальным.
+   - Sharp-конвертация PNG → AVIF (q=60, effort=6) + перегенерация WebP (q=80). Скрипт `scripts/convert-heroes.mjs` коммитится для воспроизводимости.
+   - Все content-ссылки в `ru/en/tr` под `control-systems/*`, в `src/lib/hero-products.ts` (Home carousel) и `src/lib/products.ts` — переведены с `.png` на `.webp`.
+   - PNG-исходники удалены из `public/`.
+
+### Метрики ПОСЛЕ
+
+**Image weight (5 control-systems heroes):**
+
+| Файл | PNG (было) | WebP (есть) | AVIF (новое) |
+|---|---|---|---|
+| electric-actuators/hero | 690 KB | 37 KB | **13 KB** |
+| fire-suppression/hero | 628 KB | 38 KB | **17 KB** |
+| sewage-pumping/hero | 420 KB | 30 KB | **11 KB** |
+| smoke-control/hero | 1234 KB | 75 KB | **35 KB** |
+| variable-frequency/hero | 850 KB | 72 KB | **24 KB** |
+| **Сумма** | **3822 KB** | **252 KB** | **100 KB** |
+
+Сокращение на главное Hero-изображение (variable-frequency на Home через `HERO_PRODUCTS`): 850 KB → 24 KB AVIF = **35×**.
+
+**Bundle (next build):**
+
+| Метрика | ДО | ПОСЛЕ |
+|---|---|---|
+| First Load JS shared | 87.9 kB | 87.9 kB |
+| Largest page (product) | 231 kB | 231 kB |
+| .next/static/chunks | 1.9 MB | 1.9 MB |
+
+JS-bundle не менялся — оптимизация в этой сессии прицельно по transition+изображениям. -600 KB из ТЗ за Three.js уже были сэкономлены раньше.
+
+**Lighthouse (local production, `next start -p 4178`, 3 прогона):**
+
+| Категория | Mobile (median 3 runs) | Desktop |
+|---|---|---|
+| Performance | **83** | **100** |
+| Accessibility | 100 | 100 |
+| Best Practices | 100 | 100 |
+| SEO | 92 | 92 |
+| LCP | 3.7 s | 0.7 s |
+| FCP | 1.3 s | 0.30 s |
+| TBT | 229 ms | 0 ms |
+| CLS | 0 | 0 |
+
+Mobile Performance 83 — выше порога 70+ из ТЗ. LCP 3.7s остаётся выше green-зоны Core Web Vitals (<2.5s), но это узкое место уже у JS-bundle (framer-motion/GSAP/lenis на splash+hero) — для дальнейшего улучшения см. Сессию 3 (`'use client'` аудит) в ТЗ.
+
+**Дымовой тест локально:** `/`, `/products/pumps/firefighting`, `/products/control-systems/variable-frequency`, `/products/control-systems/smoke-control`, `/quiz/itp`, `/service`, `/contacts` — все 200, Hero рендерит `_next/image?url=...hero.webp`, AVIF отдаётся next/image сервером при `Accept: image/avif`.
+
+### Что НЕ сделано (отложено в ТЗ)
+
+- Задача 5 «`'use client'` аудит 47 компонентов» — по ТЗ переносится в Сессию 3 (отдельная сессия). Не трогаем в Сессии 1.
+
+### Merge
+
+Squash-merge ветки `perf/audit-session-1` в `main` + тэг `v1.18-perf-audit`. Vercel перевыпустит production автоматически.
