@@ -96,7 +96,7 @@ export default function VpuAnhelSeriesPage({
     description: content.metaDescription,
     image: content.hero.image.src,
     category: "Water treatment / Filtration / UV disinfection",
-    model: "VPU-Anhel-Series",
+    model: "VPU-ANHEL-Series",
     routePath: `/products/water-treatment/${slug}`,
   });
   const breadcrumbJsonLd = breadcrumbLd(

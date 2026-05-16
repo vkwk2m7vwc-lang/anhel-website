@@ -13,7 +13,7 @@ import { motion } from "framer-motion";
 export type VpuModification = {
   /** Stable id (e.g. "lines-2"). */
   id: string;
-  /** Display station name, e.g. «ВПУ Anhel (2 линии)». */
+  /** Display station name, e.g. «ВПУ ANHEL (2 линии)». */
   station: string;
   /** Compact lines label shown in the leftmost column, e.g. «2 линии». */
   linesLabel: string;
@@ -47,10 +47,10 @@ export type VpuModificationsContent = {
  *   ┌──────────────────────────┬───────────┬──────────────────────┐
  *   │ Тип станции              │ Линии     │ Макс. расход         │
  *   ├──────────────────────────┼───────────┼──────────────────────┤
- *   │ ВПУ Anhel (2 линии)      │  2 линии  │ до 21,9 м³/ч         │
- *   │ ВПУ Anhel (3 линии)      │  3 линии  │ от 22,0 до 35,9 м³/ч │
- *   │ ВПУ Anhel (4 линии)      │  4 линии  │ от 36,0 до 45,9 м³/ч │
- *   │ ВПУ Anhel (5 линий)      │  5 линий  │ от 46,0 до 55,9 м³/ч │
+ *   │ ВПУ ANHEL (2 линии)      │  2 линии  │ до 21,9 м³/ч         │
+ *   │ ВПУ ANHEL (3 линии)      │  3 линии  │ от 22,0 до 35,9 м³/ч │
+ *   │ ВПУ ANHEL (4 линии)      │  4 линии  │ от 36,0 до 45,9 м³/ч │
+ *   │ ВПУ ANHEL (5 линий)      │  5 линий  │ от 46,0 до 55,9 м³/ч │
  *   └──────────────────────────┴───────────┴──────────────────────┘
  *
  * Mobile: collapses to one column per row — each modification renders

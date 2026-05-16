@@ -4,7 +4,7 @@ import type { CompositionContent } from "@/components/products/water-treatment/C
 import type { AutomationContent } from "@/components/products/water-treatment/AutomationSection";
 
 /**
- * VPU Anhel Series — TR translation. RU master in
+ * VPU ANHEL Series — TR translation. RU master in
  * ./../ru/water-treatment-anhel-series.ts. SanPiN and ГОСТ names kept
  * in their official forms (industry / regulatory references).
  */
