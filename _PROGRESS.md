@@ -2747,3 +2747,48 @@ Squash-merge ветки `perf/audit-session-2-typography` в `main` + тэг `v1
 Отчёт сдан в _PROGRESS.md по правилам задачи 3 пакета v1.20-pre-launch-fixes.
 Реализация улучшений — отдельной мини-задачей после согласования с
 Алексеем приоритетов.
+
+---
+
+## v1.20 / Pre-launch fixes — итоги
+
+Ветка `feat/pre-launch-fixes` от main. 5 атомарных коммитов:
+
+1. **`feat(routing)`** — удалён модуль `/production` целиком. Секция
+   ProductionSection снята с главной (вместе с CTA «О производстве»
+   из AboutSection), пункт «Производство» убран из Header / Footer /
+   MobileMenu, ключи `nav.production`, `footer.company.production`
+   и блок `home.production` сняты из 3 локалей. Sitemap не трогался —
+   `/production` никогда не был отдельным маршрутом, только якорь.
+   Секция вернётся отдельной задачей после съёмки видео цеха.
+
+2. **`feat(control-systems)`** — RU опросный лист шкафов управления
+   перебрендирован: на месте 1.9 МБ МФМК-оригинала теперь 44 КБ
+   ANHEL-PDF (2 страницы), сгенерированный wave-3 генератором
+   (resurrected из commit 03254aa, добавлен «ru» CHROME, цикл сужен
+   до control_systems × ru). Web-квиз перепроверен — МФМК-брендинга
+   в UI нет (только в комментариях кода как документация upstream).
+   Скрипт сохранён в `_scripts/build_control_systems_ru_questionnaire.py`
+   для повторного запуска.
+
+3. **`docs(progress)`** — UX-аудит секции `QuickQuoteSection` на
+   `/products/water-treatment/anhel-series`. 15 точек трения, 12
+   предложений, приоритеты 🔴🟡🟢. Реализация улучшений — отдельной
+   мини-задачей после согласования.
+
+4. **`feat(content)`** — глобальный rename «КП» → «ТКП» (Технико-
+   Коммерческое Предложение) в RU UI, PDF (заголовок, шапка, имя
+   файла KP→TKP), email (тема + тело), 12 продуктовых файлов
+   контента, словарь _glossary.md. EN/TR не менялись — «quote» и
+   «teklif» там уже идиоматичны для B2B. ППКП / КЗ (технические
+   термины fire-fighting) сохранены — это не та аббревиатура.
+
+5. **`feat(ui)`** — непрозрачный фон у 3 dropdown-меню в шапке:
+   LanguageSwitcher, ProductsMenu (MegaMenu), DocumentsMegaMenu.
+   `bg-[var(--color-primary)]/95 backdrop-blur-xl` → `bg-[var(--
+   color-primary)] backdrop-blur-sm` (CSS-vars дают сплошной
+   #fafafa в светлой и #0a0a0a в тёмной).
+
+**Verify:** `npm run build` clean · `npm run lint` clean · 3 локали
+переключаются. Готово к squash-merge в main + тэг
+`v1.20-pre-launch-fixes`.
