@@ -88,6 +88,16 @@
       "title": "Kanalizasyon pompası",
       "tagline": "Drenaj ve kanalizasyon pompaları, yağmur suyu pompalama kontrolü. Şamandıralar ve seviye sensörleri, manuel / otomatik mod, 4 pompaya kadar.",
       "image_alt": "ANHEL — kanalizasyon pompa istasyonu kontrol panosu"
+    },
+    "installations": {
+      "title": "ANHEL su arıtma üniteleri",
+      "tagline": "Sipariş üzerine: filtrasyon, yumuşatma, demir giderme, ters osmoz. Giriş suyu analizine göre konfigürasyon.",
+      "image_alt": "ANHEL — su arıtma ünitesi"
+    },
+    "anhel-series": {
+      "title": "ANHEL Su Arıtma Serisi",
+      "tagline": "Filtrasyon hatlarına göre 4 modifikasyonlu seri yelpazesi. 56 m³/saat'e kadar kapasite, UV dezenfeksiyon, СанПиН 2.1.4.1074-01.",
+      "image_alt": "ANHEL — su arıtma ünitesi, Anhel serisi"
     }
   },
   "related_projects": {
@@ -128,6 +138,23 @@
         "showcase_mono_tag": "03 · SERİLER",
         "showcase_title": "Beş seri",
         "showcase_lede": "Teknik veriler, uygulama, avantajlar ve teknik veri formu için karta tıklayın."
+      }
+    },
+    "water-treatment": {
+      "meta": {
+        "title": "Su arıtma",
+        "description": "ANHEL® su arıtma — sipariş üzerine üniteler (filtrasyon, yumuşatma, demir giderme, ters osmoz) ve Anhel Su Arıtma Serisi (4 modifikasyon, UV dezenfeksiyon). Fabrika montajı ve sertifikasyon.",
+        "og_title": "Su arıtma",
+        "og_description": "Su arıtma bölümünde iki ürün — sipariş üzerine üniteler ve Anhel Su Arıtma Serisi.",
+        "breadcrumb": "Su arıtma"
+      },
+      "page": {
+        "mono_tag": "02 · SU ARITMA",
+        "heading": "Su arıtma görevleri için iki ürün",
+        "lede": "ANHEL sipariş üzerine üniteleri filtrasyon, yumuşatma, demir giderme ve ters osmozu kapsar; giriş suyu analizine göre boyutlandırılır. Anhel Su Arıtma Serisi, UV dezenfeksiyonlu içme suyu kalitesinde su için 4 modifikasyonlu seri yelpazesidir.",
+        "showcase_mono_tag": "03 · ÜRÜNLER",
+        "showcase_title": "İki ürün",
+        "showcase_lede": "Teknik veriler, uygulama, dokümantasyon ve anket formu için karta tıklayın."
       }
     }
   }
