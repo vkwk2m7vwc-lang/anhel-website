@@ -107,29 +107,7 @@
     "section_navigation": "Navigasyon",
     "section_contacts": "İletişim",
     "go_to_section": "Bölüme git",
-    "office_line": "St. Petersburg, Rusya",
-    "eyebrow_products": "ÜRÜNLER",
-    "eyebrow_company": "ŞİRKET",
-    "phone_label": "TELEFON",
-    "email_label": "EMAIL",
-    "families": {
-      "pumps": {
-        "title": "Pompa istasyonları",
-        "subtitle": "5 seri — su temini, yangın söndürme, ısıtma"
-      },
-      "heating_unit": {
-        "title": "Isı merkezleri",
-        "subtitle": "8 BİTP modülü"
-      },
-      "water_treatment": {
-        "title": "Su arıtma",
-        "subtitle": "Filtrasyon, yumuşatma"
-      },
-      "control_systems": {
-        "title": "Kontrol panoları",
-        "subtitle": "5 seri — VFD, FPS, SCS, SPS"
-      }
-    }
+    "office_line": "St. Petersburg, Rusya"
   },
   "ui": {
     "breadcrumbs_aria": "Yol haritası",
