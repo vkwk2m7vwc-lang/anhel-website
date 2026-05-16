@@ -38,7 +38,7 @@ export function HeroTitle() {
   // garbled output to the user.
   if (idx === -1) {
     return (
-      <h1 className="font-display text-[34px] font-semibold leading-[0.95] tracking-[-0.04em] text-[var(--color-secondary)] md:text-[44px] lg:text-hero lg:font-medium lg:tracking-[-0.025em]">
+      <h1 className="font-display text-[42px] font-semibold leading-[0.95] tracking-[-0.04em] text-[var(--color-secondary)] md:text-[44px] lg:text-hero lg:font-medium lg:tracking-[-0.025em]">
         {title}
       </h1>
     );
@@ -48,7 +48,7 @@ export function HeroTitle() {
   const trailing = title.slice(idx + emphasized.length);
 
   return (
-    <h1 className="font-display text-[34px] leading-[0.95] tracking-[-0.04em] text-[var(--color-secondary)] md:text-[44px] lg:text-hero lg:tracking-[-0.025em]">
+    <h1 className="font-display text-[42px] leading-[0.95] tracking-[-0.04em] text-[var(--color-secondary)] md:text-[44px] lg:text-hero lg:tracking-[-0.025em]">
       {leading ? (
         <span className="font-normal text-[var(--color-secondary)]/55 lg:font-medium lg:text-[var(--color-secondary)]">
           {leading}
