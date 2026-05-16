@@ -179,10 +179,23 @@ async function drawTitlePage(args: {
   modification: VpuModification;
   objectAddress: string;
   customerCompany: string;
+  developerCompany: string;
+  designerCompany: string;
   date: Date;
 }) {
-  const { page, font, fontBold, doc, flow, modification, objectAddress, customerCompany, date } =
-    args;
+  const {
+    page,
+    font,
+    fontBold,
+    doc,
+    flow,
+    modification,
+    objectAddress,
+    customerCompany,
+    developerCompany,
+    designerCompany,
+    date,
+  } = args;
 
   drawHeader(page, fontBold);
   let y = A4.h - MARGIN - 80;
@@ -217,26 +230,34 @@ async function drawTitlePage(args: {
   );
   y -= 30;
 
-  // Карточка «Объект»
-  const cardH = 80;
+  // Карточка «Объект» — расширенная: объект + застройщик + проектировщик
+  // + компания-получатель КП (т.е. кто запросил).
+  const cardH = 124;
   drawPanel(page, MARGIN, y - cardH, CONTENT_W, cardH);
-  drawText(page, "ОБЪЕКТ", MARGIN + 16, y - 20, {
+  drawText(page, "ОБЪЕКТ И УЧАСТНИКИ", MARGIN + 16, y - 20, {
     font: fontBold,
     size: 9,
     color: ACCENT,
   });
-  drawWrappedText(page, objectAddress || "Не указан", MARGIN + 16, y - 36, CONTENT_W - 32, {
+  let cy = y - 38;
+  // Объект — крупно
+  cy = drawWrappedText(page, objectAddress || "Не указан", MARGIN + 16, cy, CONTENT_W - 32, {
     font: fontBold,
     size: 12,
     color: HEADING,
   });
-  drawText(
-    page,
-    `Заказчик: ${customerCompany || "Не указан"}`,
-    MARGIN + 16,
-    y - 62,
-    { font, size: 10, color: TEXT },
-  );
+  cy -= 4;
+  // Застройщик / Проектировщик / Получатель КП — мелко в 1 строке каждый
+  const fieldRows: Array<[string, string]> = [
+    ["Застройщик:", developerCompany || "Не указан"],
+    ["Проектировщик:", designerCompany || "Не указан"],
+    ["Получатель КП:", customerCompany || "Не указан"],
+  ];
+  for (const [label, value] of fieldRows) {
+    drawText(page, label, MARGIN + 16, cy, { font, size: 9, color: MUTED });
+    drawText(page, value, MARGIN + 16 + 96, cy, { font: fontBold, size: 9, color: TEXT });
+    cy -= 12;
+  }
   y -= cardH + 24;
 
   // Фото установки (если есть)
@@ -460,6 +481,10 @@ export type KpPdfInput = {
   modification: VpuModification;
   objectAddress: string;
   customerCompany: string;
+  /** Застройщик (developer / building owner). */
+  developerCompany: string;
+  /** Проектировщик (designer / architect). */
+  designerCompany: string;
   date: Date;
 };
 
@@ -474,7 +499,19 @@ export async function generateVpuKpPdf(input: KpPdfInput): Promise<Uint8Array> {
 
   // Page 1 — Title
   const p1 = doc.addPage([A4.w, A4.h]);
-  await drawTitlePage({ page: p1, font, fontBold, doc, ...input });
+  await drawTitlePage({
+    page: p1,
+    font,
+    fontBold,
+    doc,
+    flow: input.flow,
+    modification: input.modification,
+    objectAddress: input.objectAddress,
+    customerCompany: input.customerCompany,
+    developerCompany: input.developerCompany,
+    designerCompany: input.designerCompany,
+    date: input.date,
+  });
   drawFooter(p1, font, fontBold, 1, TOTAL_PAGES);
 
   // Page 2 — Purpose + Scheme

@@ -33,20 +33,52 @@ import { coerceLocale } from "@/lib/email/payload";
 
 export const runtime = "nodejs";
 
+/**
+ * Phone — допускаем «+», цифры, пробелы, дефисы, скобки. После очистки
+ * должно остаться 7-15 цифр (E.164 без верхней границы 15).
+ */
+const phoneSchema = z
+  .string()
+  .min(5, "Укажите телефон")
+  .max(40)
+  .refine((v) => {
+    const digits = v.replace(/\D/g, "");
+    return digits.length >= 7 && digits.length <= 15;
+  }, "Некорректный телефон — нужны 7–15 цифр");
+
 const quoteSchema = z.object({
   flow: z
     .number()
     .positive("Производительность должна быть положительной")
     .max(VPU_ANHEL_MAX_TYPICAL_FLOW, "Расход больше типового — нужен нестандартный подбор"),
   customerName: z.string().min(2, "Укажите контактное лицо").max(120),
-  customerPhone: z.string().min(5, "Укажите телефон").max(40),
+  customerPhone: phoneSchema,
   customerEmail: z.string().email("Некорректный email").max(120),
-  customerCompany: z.string().max(200).optional().default(""),
+  // Теперь обязательное: КП обычно запрашивают проектные компании,
+  // менеджеру важно знать кто звонил (компания) ещё до контакта.
+  customerCompany: z.string().min(2, "Укажите компанию").max(200),
+  // Дополнительные обязательные поля специально под B2B-проектную
+  // аудиторию ВПУ: знаем заказчика-застройщика и проектировщика,
+  // чтобы менеджер мог сразу строить разговор в правильной плоскости.
+  developerCompany: z.string().min(2, "Укажите застройщика").max(200),
+  designerCompany: z.string().min(2, "Укажите проектировщика").max(200),
   objectAddress: z.string().min(2, "Укажите объект").max(300),
   consent: z.literal(true, {
     errorMap: () => ({ message: "Требуется согласие на обработку ПД" }),
   }),
   locale: z.enum(["ru", "en", "tr"]).optional().default("ru"),
+  /**
+   * Двух-этапный submit:
+   *   false (default) — preview: API генерирует PDF и возвращает его,
+   *                      email НЕ отправляется. Клиент показывает
+   *                      превью; лид логируется как «просмотрел КП».
+   *   true            — confirm: PDF + email менеджеру + лид логируется
+   *                      как «подтвердил отправку».
+   *
+   * Без флага клиент мог бы получить PDF, но менеджер получал бы спам
+   * от пользователей, которые передумали или просто проверяли подбор.
+   */
+  confirm: z.boolean().optional().default(false),
 });
 
 export async function POST(req: Request) {
@@ -98,7 +130,9 @@ export async function POST(req: Request) {
       flow: data.flow,
       modification,
       objectAddress: data.objectAddress,
-      customerCompany: data.customerCompany || "—",
+      customerCompany: data.customerCompany,
+      developerCompany: data.developerCompany,
+      designerCompany: data.designerCompany,
       date: now,
     });
   } catch (err) {
@@ -115,63 +149,82 @@ export async function POST(req: Request) {
     date: now,
   });
 
-  // 5. Send manager email (best-effort: ошибка отправки не блокирует
-  //    выдачу PDF клиенту — он своё КП всё равно получит, а проблема
-  //    Resend попадёт в Vercel logs).
-  const accent = SOURCE_TO_ACCENT["vpu-quote-quick"];
-  const accentValue = accentHex(accent);
-  const locale = coerceLocale(data.locale);
+  // 5. Lead tracking — каждое касание логируем (preview и confirm),
+  //    так менеджер потом сможет посмотреть в Vercel logs «кто
+  //    смотрел КП, кто подтвердил». В прод-варианте логи уедут в
+  //    отдельную таблицу/Sentry/Slack, пока — Vercel runtime logs.
+  const stage = data.confirm ? "confirm" : "preview";
+  console.log(
+    `[vpu-quote-quick:${stage}] flow=${data.flow} → ${modification.typeLabel}` +
+      ` · company="${data.customerCompany}" developer="${data.developerCompany}"` +
+      ` designer="${data.designerCompany}" object="${data.objectAddress}"` +
+      ` · ${data.customerName} <${data.customerEmail}> ${data.customerPhone}`,
+  );
 
-  const { subject, html } = renderVpuQuoteQuickEmail({
-    locale,
-    accent: accentValue,
-    customer: {
-      name: data.customerName,
-      email: data.customerEmail,
-      phone: data.customerPhone,
-      company: data.customerCompany || undefined,
-      objectAddress: data.objectAddress,
-    },
-    flow: data.flow,
-    modificationName: modification.nameRu,
-    modificationType: modification.typeLabel,
-    modificationFlowRange: modification.flowLabel.ru,
-  });
+  // 6. Email менеджеру — только на confirm. На превью клиент видит
+  //    PDF локально (в blob iframe), менеджер ничего не получает.
+  let emailSent = false;
+  if (data.confirm) {
+    const accent = SOURCE_TO_ACCENT["vpu-quote-quick"];
+    const accentValue = accentHex(accent);
+    const locale = coerceLocale(data.locale);
 
-  const recipient = process.env.QUIZ_RECIPIENT_EMAIL ?? "";
-  const sent = await sendEmail({
-    to: recipient,
-    subject,
-    html,
-    replyTo: data.customerEmail,
-    attachments: [
-      {
-        filename,
-        content: pdfBuffer,
-        contentType: "application/pdf",
+    const { subject, html } = renderVpuQuoteQuickEmail({
+      locale,
+      accent: accentValue,
+      customer: {
+        name: data.customerName,
+        email: data.customerEmail,
+        phone: data.customerPhone,
+        company: data.customerCompany,
+        objectAddress: data.objectAddress,
       },
-    ],
-  });
+      flow: data.flow,
+      modificationName: modification.nameRu,
+      modificationType: modification.typeLabel,
+      modificationFlowRange: modification.flowLabel.ru,
+      developerCompany: data.developerCompany,
+      designerCompany: data.designerCompany,
+    });
 
-  if (!sent.ok) {
-    console.error("[vpu-quote-quick] manager email failed:", sent.error);
-    // Continue: клиент всё равно получит PDF, но в респонсе сигнализируем,
-    // что менеджеру письмо не ушло — поможет в дебаге.
-  } else {
-    console.log(
-      `[vpu-quote-quick] email sent id=${sent.id} → ${recipient} (filename: ${filename})`,
-    );
+    const recipient = process.env.QUIZ_RECIPIENT_EMAIL ?? "";
+    const sent = await sendEmail({
+      to: recipient,
+      subject,
+      html,
+      replyTo: data.customerEmail,
+      attachments: [
+        {
+          filename,
+          content: pdfBuffer,
+          contentType: "application/pdf",
+        },
+      ],
+    });
+
+    if (!sent.ok) {
+      console.error("[vpu-quote-quick:confirm] manager email failed:", sent.error);
+    } else {
+      emailSent = true;
+      console.log(
+        `[vpu-quote-quick:confirm] email sent id=${sent.id} → ${recipient} (filename: ${filename})`,
+      );
+    }
   }
 
-  // 6. Stream PDF back to client
+  // 7. Stream PDF back to client — content-disposition зависит от стадии:
+  //    preview → inline (показываем в iframe), confirm → attachment
+  //    (браузер скачивает).
+  const disposition = data.confirm ? "attachment" : "inline";
   return new NextResponse(pdfBuffer, {
     status: 200,
     headers: {
       "Content-Type": "application/pdf",
-      "Content-Disposition": `attachment; filename="${filename}"`,
+      "Content-Disposition": `${disposition}; filename="${filename}"`,
       "Content-Length": String(pdfBuffer.byteLength),
       "Cache-Control": "no-store",
-      "X-Manager-Email-Sent": sent.ok ? "1" : "0",
+      "X-Stage": stage,
+      "X-Manager-Email-Sent": emailSent ? "1" : "0",
     },
   });
 }

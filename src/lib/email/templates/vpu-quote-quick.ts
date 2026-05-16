@@ -35,6 +35,10 @@ export type VpuQuoteQuickEmailData = {
   modificationType: string;
   /** Диапазон расхода модификации (для строки «Диапазон»). */
   modificationFlowRange: string;
+  /** Застройщик объекта. */
+  developerCompany: string;
+  /** Проектировщик объекта. */
+  designerCompany: string;
 };
 
 export function renderVpuQuoteQuickEmail(data: VpuQuoteQuickEmailData): {
@@ -46,7 +50,7 @@ export function renderVpuQuoteQuickEmail(data: VpuQuoteQuickEmailData): {
   const subject = `[ANHEL] Новый КП — Серия ВПУ (${data.modificationType}) — ${subjectObject}`;
   const heading = "Новый КП по серии ВПУ ANHEL";
 
-  // Sections: один блок «Параметры подбора»
+  // Sections: «Параметры подбора» + «Проектная цепочка»
   const paramsSection = renderSection(
     {
       title: "Параметры подбора",
@@ -68,14 +72,28 @@ export function renderVpuQuoteQuickEmail(data: VpuQuoteQuickEmailData): {
     data.accent,
   );
 
+  const projectChainSection = renderSection(
+    {
+      title: "Проектная цепочка",
+      rows: [
+        { label: "Застройщик", value: data.developerCompany },
+        { label: "Проектировщик", value: data.designerCompany },
+        { label: "Получатель КП (компания)", value: data.customer.company ?? "—" },
+        { label: "Объект (адрес)", value: data.customer.objectAddress ?? "—" },
+      ],
+    },
+    data.accent,
+  );
+
   const bodyHtml =
     renderCustomerBlock(data.customer, data.accent) +
     paramsSection +
+    projectChainSection +
     renderPdfCta(data.accent, {
       title: "Коммерческое предложение приложено к письму",
       note:
         "PDF КП — отдельным вложением. Это тот же файл, который скачал " +
-        "клиент после заполнения формы. Чтобы перезвонить — кнопка «Reply».",
+        "клиент после подтверждения предпросмотра. Чтобы перезвонить — кнопка «Reply».",
     });
 
   const html = renderEmailShell({
