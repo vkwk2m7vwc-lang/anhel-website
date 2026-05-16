@@ -8,7 +8,7 @@ import type { ProductContent } from "../../types";
  * 'softening', 'iron removal', 'regeneration').
  */
 export const content: ProductContent = {
-  slug: "water-treatment",
+  slug: "installations",
   accent: "treatment",
 
   metaTitle: "ANHEL water-treatment units",
@@ -19,7 +19,8 @@ export const content: ProductContent = {
     breadcrumbs: [
       { label: "Home", href: "/" },
       { label: "Catalogue", href: "/products" },
-      { label: "Water treatment" },
+      { label: "Water treatment", href: "/products/water-treatment" },
+      { label: "ANHEL water-treatment units" },
     ],
     sectionTag: "01 · ENGINEERING EQUIPMENT · WATER TREATMENT",
     title: "ANHEL water-treatment units",

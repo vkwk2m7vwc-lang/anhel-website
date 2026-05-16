@@ -202,6 +202,21 @@ export function ProductHero({
                 className="object-contain"
               />
             </motion.div>
+            {/* Optional caption — used for series-pages where the hero
+                photo represents one specific modification. Rendered as
+                a small mono-caps line directly under the image, in the
+                image column so it visually belongs to it. */}
+            {content.imageCaption ? (
+              <motion.p
+                initial={{ opacity: 0, y: 6 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-40px" }}
+                transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], delay: 0.7 }}
+                className="mt-3 max-w-[480px] text-center text-[11px] leading-snug text-[var(--color-secondary)]/55 md:mt-4 md:text-left"
+              >
+                {content.imageCaption}
+              </motion.p>
+            ) : null}
           </div>
         </div>
       </div>

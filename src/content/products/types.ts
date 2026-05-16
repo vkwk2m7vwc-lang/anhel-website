@@ -77,6 +77,13 @@ export type ProductHeroContent = {
     src: string;
     alt: string;
   };
+  /**
+   * Optional caption shown under the hero image, small mono caps.
+   * Used for "пример исполнения" notes when the photo represents a
+   * series rather than a single product (e.g. VPU Anhel Series — фото
+   * 2-линейной модификации). Other products leave this undefined.
+   */
+  imageCaption?: string;
   primaryCta: ProductCTA;
   secondaryCta?: ProductCTA;
 };
@@ -351,8 +358,15 @@ export type FooterCtaContent = {
   title: string;
   /** One-liner sub-hook. */
   subtitle?: string;
-  /** CTA label + href (usually the quiz anchor). */
+  /** Primary CTA label + href (usually the quiz anchor). */
   cta: { label: string; href: string };
+  /**
+   * Optional secondary CTA — rendered as a ghost button next to the
+   * primary. Used on pages that need both a quote request and a direct
+   * contact link (e.g. /water-treatment/anhel-series with «Получить КП»
+   * + «Связаться»). Omit on pages that have a single hook.
+   */
+  secondaryCta?: { label: string; href: string };
   /** Column caption for the right-hand strip, e.g. «Остальные продукты». */
   neighboursCaption?: string;
 };
