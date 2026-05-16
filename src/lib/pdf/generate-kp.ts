@@ -215,15 +215,24 @@ async function drawTitlePage(args: {
   });
   y -= 28;
 
-  // Заголовок — категория продукта одной строкой. Модификация (Тип N)
-  // переехала в callout с расходом — это пара «ввод клиента / результат
-  // подбора», логичнее держать их вместе.
-  drawText(page, "Комплексная система водоподготовки ANHEL", MARGIN, y, {
-    font: fontBold,
-    size: 22,
-    color: HEADING,
-  });
-  y -= 36;
+  // Заголовок — категория продукта. Длинная строка («…водоподготовки
+  // ANHEL» с кириллицей) на 22 pt не помещается в CONTENT_W — режется
+  // на правом краю. Решение: автоперенос через wrapText + понижение до
+  // 21 pt с межстрочным интервалом 1.15. ANHEL обычно встаёт во вторую
+  // строку как акцент.
+  const titleText = "Комплексная система водоподготовки ANHEL";
+  const titleSize = 21;
+  const titleLineHeight = titleSize * 1.15;
+  const titleLines = wrapText(titleText, fontBold, titleSize, CONTENT_W);
+  for (const line of titleLines) {
+    drawText(page, line, MARGIN, y, {
+      font: fontBold,
+      size: titleSize,
+      color: HEADING,
+    });
+    y -= titleLineHeight;
+  }
+  y -= 16;
 
   // Flow callout + Тип pill — главный «маркер» подбора.
   // Слева: ▍ 25 м³/час / ПРОИЗВОДИТЕЛЬНОСТЬ ПО ОЧИЩЕННОЙ ВОДЕ
@@ -621,55 +630,71 @@ export async function generateVpuKpPdf(input: KpPdfInput): Promise<Uint8Array> {
   drawSpecsPage({ page: p3, font, fontBold, flow: input.flow, modification: input.modification });
   drawFooter(p3, font, fontBold, 3, TOTAL_PAGES);
 
-  // Page 4 — Drawing
+  // Page 4 — Drawing. По образцу старого КП клиента — чертёж занимает
+  // почти всю страницу, обвязка минимальная: шапка ANHEL® + один
+  // короткий заголовок + чертёж на максимум, внизу DWG-ссылка и
+  // финальная сноска про размеры.
   const p4 = doc.addPage([A4.w, A4.h]);
   drawHeader(p4, fontBold);
-  let p4y = A4.h - MARGIN - 80;
+  let p4y = A4.h - MARGIN - 60; // короче, чем на других страницах
   drawText(p4, "3 · ГАБАРИТНЫЙ ЧЕРТЁЖ", MARGIN, p4y, {
     font: fontBold,
     size: 10,
     color: ACCENT,
   });
-  p4y -= 18;
+  p4y -= 14;
   drawText(
     p4,
     `${input.modification.nameRu} · ${input.modification.dimensions} мм`,
     MARGIN,
     p4y,
-    { font, size: 10, color: MUTED },
+    { font, size: 9, color: MUTED },
   );
-  p4y -= 14;
+  p4y -= 10;
+
+  // Сужаем поля под чертёж: 24 pt по краям вместо 48. Высота — всё
+  // что есть до подвала с DWG/сноской (44 pt снизу под текст).
+  const drawingMargin = 24;
+  const drawingW = A4.w - drawingMargin * 2;
+  const annotationY = FOOTER_BOTTOM + 50;
+  const drawingH = p4y - annotationY - 8;
   await embedAndDrawImage({
     page: p4,
     doc,
     publicPath: input.modification.drawingPath.replace(/^\//, ""),
-    x: MARGIN,
+    x: drawingMargin,
     y: p4y,
-    maxW: CONTENT_W,
-    maxH: p4y - FOOTER_BOTTOM - 60,
+    maxW: drawingW,
+    maxH: drawingH,
   });
+
+  // DWG-ссылка — печатается только если у модификации задан
+  // drawingDwgUrl. 4 линии пока без линка (папка не выложена). Лейбл и
+  // URL разводятся динамически по ширине лейбла, чтобы текст не слипался.
+  if (input.modification.drawingDwgUrl) {
+    const dwgLabel = "DWG-версия чертежа:";
+    const dwgLabelSize = 9;
+    const dwgLabelWidth = fontBold.widthOfTextAtSize(dwgLabel, dwgLabelSize);
+    drawText(p4, dwgLabel, MARGIN, annotationY, {
+      font: fontBold,
+      size: dwgLabelSize,
+      color: ACCENT,
+    });
+    drawText(
+      p4,
+      input.modification.drawingDwgUrl,
+      MARGIN + dwgLabelWidth + 10,
+      annotationY,
+      { font, size: dwgLabelSize, color: TEXT },
+    );
+  }
   drawText(
     p4,
     "Размеры справочные. Покрытие — RAL 5005 (по согласованию). Масса — см. характеристики.",
     MARGIN,
-    FOOTER_BOTTOM + 32,
+    annotationY - 14,
     { font, size: 8, color: MUTED },
   );
-  // DWG-ссылка — печатаем только если у модификации задан drawingDwgUrl.
-  // 4-линии модификация её пока не имеет, на других — линк ведёт на
-  // подпапку Яндекс.Диска (после замены root-URL).
-  if (input.modification.drawingDwgUrl) {
-    drawText(p4, "DWG-версия чертежа:", MARGIN, FOOTER_BOTTOM + 50, {
-      font: fontBold,
-      size: 8,
-      color: ACCENT,
-    });
-    drawText(p4, input.modification.drawingDwgUrl, MARGIN + 96, FOOTER_BOTTOM + 50, {
-      font,
-      size: 8,
-      color: TEXT,
-    });
-  }
   drawFooter(p4, font, fontBold, 4, TOTAL_PAGES);
 
   // Page 5 — Certificate p1
