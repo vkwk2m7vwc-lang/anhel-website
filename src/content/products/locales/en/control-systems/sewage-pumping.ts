@@ -20,7 +20,7 @@ export const content: ProductContent = {
     subtitle:
       "Control of drainage and sewage pumps, stormwater and foul-water flows, and storage tanks. Inputs from float switches, electrodes and level transmitters. Local and automatic modes — switched from the front panel.",
     image: {
-      src: "/assets/products/control-systems/sewage-pumping/hero.png",
+      src: "/assets/products/control-systems/sewage-pumping/hero.webp",
       alt: "ANHEL — control cabinet for sewage-pumping stations, grey enclosure with a transparent door",
     },
     primaryCta: { label: "Request a quote", href: "#documents", variant: "primary" },

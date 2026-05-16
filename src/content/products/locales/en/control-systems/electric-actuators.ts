@@ -20,7 +20,7 @@ export const content: ProductContent = {
     subtitle:
       "Control of electric actuators on shut-off and modulating valves driven by signals from the supervisory system. Local mode — front-panel selector with valve-state indication. Remote mode — external discrete signals.",
     image: {
-      src: "/assets/products/control-systems/electric-actuators/hero.png",
+      src: "/assets/products/control-systems/electric-actuators/hero.webp",
       alt: "ANHEL — control cabinet for electric-actuated valves, grey enclosure with valve-state indication",
     },
     primaryCta: { label: "Request a quote", href: "#documents", variant: "primary" },

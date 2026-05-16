@@ -30,7 +30,7 @@ export const content: ProductContent = {
     subtitle:
       "Управление вентиляторами дымоудаления, клапанами и системами подпора воздуха. Автоматический переход в режим дымоудаления по сигналу «Пожар». Пожарный сертификат ФЗ-123, IP54+, отличительный красный корпус.",
     image: {
-      src: "/assets/products/control-systems/smoke-control/hero.png",
+      src: "/assets/products/control-systems/smoke-control/hero.webp",
       alt: "ANHEL — шкаф управления противодымной вентиляцией, красный корпус с органами управления вентиляторами",
     },
     primaryCta: {

@@ -30,7 +30,7 @@ export const content: ProductContent = {
     subtitle:
       "Управление электроприводами запорных и регулирующих задвижек по входным сигналам системы автоматизации. Ручной режим — переключатель и индикация состояния на лицевой панели. Автоматический — внешние дискретные сигналы.",
     image: {
-      src: "/assets/products/control-systems/electric-actuators/hero.png",
+      src: "/assets/products/control-systems/electric-actuators/hero.webp",
       alt: "ANHEL — шкаф управления электрифицированной арматурой, серый корпус с индикацией состояния задвижек",
     },
     primaryCta: {

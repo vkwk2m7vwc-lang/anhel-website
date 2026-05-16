@@ -20,7 +20,7 @@ export const content: ProductContent = {
     subtitle:
       "Control of duty and jockey pumps that hold pressure and water reserve in fire-suppression systems — both in standby and during a fire. Automatic start on the Fire signal, priority of water for fire suppression, ATS on the supply side.",
     image: {
-      src: "/assets/products/control-systems/fire-suppression/hero.png",
+      src: "/assets/products/control-systems/fire-suppression/hero.webp",
       alt: "ANHEL — control cabinet for fire-suppression systems, tall red enclosure with mimic diagram",
     },
     primaryCta: { label: "Request a quote", href: "#documents", variant: "primary" },

@@ -20,7 +20,7 @@ export const content: ProductContent = {
     subtitle:
       "Duman tahliye fanlarının, damperlerin ve hava basınçlandırma sistemlerinin yönetimi. «Yangın» sinyaliyle duman tahliye moduna otomatik geçiş. FZ-123 yangın güvenliği sertifikası, IP54+, ayırt edici kırmızı gövde.",
     image: {
-      src: "/assets/products/control-systems/smoke-control/hero.png",
+      src: "/assets/products/control-systems/smoke-control/hero.webp",
       alt: "ANHEL — duman tahliye havalandırması kontrol panosu, fan kumanda elemanlı kırmızı gövde",
     },
     primaryCta: { label: "Teklif iste", href: "#documents", variant: "primary" },

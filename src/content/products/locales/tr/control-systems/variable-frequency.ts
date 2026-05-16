@@ -20,7 +20,7 @@ export const content: ProductContent = {
     subtitle:
       "Asenkron motorlu basınç artırma pompa gruplarının kontrolü. PID kontrol, yumuşak yol verme, 6 pompaya kadar kademe kontrolü. Soğuk su, sıcak kullanım suyu, ısıtma, soğutma sistemleri ve mevcut pompa istasyonlarının modernizasyonu için.",
     image: {
-      src: "/assets/products/control-systems/variable-frequency/hero.png",
+      src: "/assets/products/control-systems/variable-frequency/hero.webp",
       alt: "ANHEL — değişken frekanslı kontrol panosu, HMI ve kontrolörlü 4 bölmeli montaj",
     },
     primaryCta: { label: "Teklif iste", href: "#documents", variant: "primary" },

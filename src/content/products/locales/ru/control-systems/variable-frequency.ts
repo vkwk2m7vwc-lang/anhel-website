@@ -31,7 +31,7 @@ export const content: ProductContent = {
     subtitle:
       "Управление группами повысительных насосов с асинхронными электродвигателями. ПИД-регулирование, плавный пуск, каскадное управление до 6 насосов. Для систем ХВС, ГВС, отопления, кондиционирования и модернизации существующих насосных станций ЖКХ.",
     image: {
-      src: "/assets/products/control-systems/variable-frequency/hero.png",
+      src: "/assets/products/control-systems/variable-frequency/hero.webp",
       alt: "ANHEL — шкаф управления с частотным регулированием, составной 4-секционный с HMI и контроллером",
     },
     primaryCta: {
