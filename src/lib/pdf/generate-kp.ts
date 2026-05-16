@@ -1,5 +1,5 @@
 /**
- * Генератор PDF КП — Серия ВПУ ANHEL (6 страниц).
+ * Генератор PDF ТКП — Серия ВПУ ANHEL (6 страниц).
  *
  * Структура подсмотрена с «ПРИМЕР ТКП.pdf» (`~/Desktop/ANHEL Сайт/ВПУ/
  * Доки техника/`) — инженерно-сухой стиль, без рекламных эпитетов.
@@ -142,7 +142,7 @@ function drawHeader(page: PDFPage, fontBold: PDFFont) {
   drawText(page, "ANHEL®", MARGIN, A4.h - MARGIN, { font: fontBold, size: 16, color: HEADING });
   drawText(
     page,
-    "Серия ВПУ — коммерческое предложение",
+    "Серия ВПУ — технико-коммерческое предложение",
     A4.w - MARGIN - 250,
     A4.h - MARGIN,
     { font: fontBold, size: 9, color: MUTED },
@@ -210,7 +210,7 @@ async function drawTitlePage(args: {
   drawHeader(page, fontBold);
   let y = A4.h - MARGIN - 80;
 
-  // Метка документа: «КОММЕРЧЕСКОЕ ПРЕДЛОЖЕНИЕ · 16 МАЯ 2026» —
+  // Метка документа: «ТЕХНИКО-КОММЕРЧЕСКОЕ ПРЕДЛОЖЕНИЕ · 16 МАЯ 2026» —
   // дата теперь часть реквизитов документа, видна сразу сверху. Раньше
   // болталась внизу страницы под контактами — терялась.
   const dateUpper = new Intl.DateTimeFormat("ru-RU", {
@@ -219,7 +219,7 @@ async function drawTitlePage(args: {
     month: "long",
     year: "numeric",
   }).format(date).replace(/\s+г\.?$/, "").toUpperCase();
-  drawText(page, `КОММЕРЧЕСКОЕ ПРЕДЛОЖЕНИЕ · ${dateUpper}`, MARGIN, y, {
+  drawText(page, `ТЕХНИКО-КОММЕРЧЕСКОЕ ПРЕДЛОЖЕНИЕ · ${dateUpper}`, MARGIN, y, {
     font: fontBold,
     size: 10,
     color: ACCENT,
@@ -304,7 +304,7 @@ async function drawTitlePage(args: {
 
   y -= 64;
 
-  // Карточка «Объект» — объект + (опц.) кадастр + застройщик + получатель КП.
+  // Карточка «Объект» — объект + (опц.) кадастр + застройщик + получатель ТКП.
   // Высота карточки динамическая: если кадастра нет, не оставляем пустую
   // строку «Кадастровый: —».
   const hasCadastral = Boolean(cadastralNumber && cadastralNumber.trim());
@@ -347,7 +347,7 @@ async function drawTitlePage(args: {
   }
 
   // Застройщик / Подготовлено для — нейтральная формулировка вместо
-  // «Получатель КП» (та звучала канцелярски). «Подготовлено для» не
+  // «Получатель ТКП» (та звучала канцелярски). «Подготовлено для» не
   // приписывает роль (это может быть проектная компания или фрилансер).
   const fieldRows: Array<[string, string]> = [
     ["Застройщик:", developerCompany || "Не указан"],
@@ -700,7 +700,7 @@ export async function generateVpuKpPdf(input: KpPdfInput): Promise<Uint8Array> {
 
   // Page 5 — Certificate (только первая страница декларации).
   // Вторая страница (перечень оборудования + подписи) убрана: при
-  // отгрузке отдаём полный комплект документов, а в КП достаточно
+  // отгрузке отдаём полный комплект документов, а в ТКП достаточно
   // самой декларации.
   const p5 = doc.addPage([A4.w, A4.h]);
   drawHeader(p5, fontBold);

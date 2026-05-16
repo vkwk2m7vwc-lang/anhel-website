@@ -7,7 +7,6 @@
     "products": "Ürünler",
     "documents": "Belgeler",
     "projects": "Projeler",
-    "production": "Üretim",
     "service": "Servis",
     "about": "Hakkımızda",
     "contacts": "İletişim"
@@ -42,7 +41,6 @@
     },
     "company": {
       "about": "Hakkımızda",
-      "production": "Üretim",
       "service": "Servis",
       "projects": "Projeler"
     },

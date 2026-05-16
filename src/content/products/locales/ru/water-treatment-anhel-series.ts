@@ -20,8 +20,8 @@ import type { QuickQuoteContent } from "@/components/products/water-treatment/Qu
  *
  * Серия НЕ публикует паспорт/РЭ (по требованию заказчика), а также не
  * раскрывает установочную мощность и габариты — эти параметры зависят
- * от модификации и определяются при подборе. КП-конфигуратор —
- * post-launch задача, текущая кнопка «Получить КП» ведёт на /quiz/vpu.
+ * от модификации и определяются при подборе. ТКП-конфигуратор —
+ * post-launch задача, текущая кнопка «Получить ТКП» ведёт на /quiz/vpu.
  *
  * Sections — adapted 10-section pattern from pump pages, modified for
  * a series-with-modifications product:
@@ -34,7 +34,7 @@ import type { QuickQuoteContent } from "@/components/products/water-treatment/Qu
  *   07 Режимы работы и автоматика
  *   08 Преимущества (6 пунктов по правилу проекта)
  *   09 Документация (переиспользованная)
- *   10 CTA-блок: «Получить КП» (→ /quiz/vpu) + «Связаться» (→ /contacts)
+ *   10 CTA-блок: «Получить ТКП» (→ /quiz/vpu) + «Связаться» (→ /contacts)
  *
  * Источник данных: ТЗ от заказчика (cowork_vpu_series_final.md).
  * Бренды-сторонние НЕ упоминаются (правило проекта). Конкретные
@@ -67,10 +67,10 @@ export const content: ProductContent = {
       "На фото — пример исполнения 2-линейной модификации. Конкретная конфигурация зависит от модели серии.",
     primaryCta: {
       // Ведёт вниз к секции «Быстрый подбор» — основной CTA серии.
-      // Не на /quiz/vpu (как было), потому что путь к КП теперь именно
+      // Не на /quiz/vpu (как было), потому что путь к ТКП теперь именно
       // через быстрый подбор: 1 параметр → подобранная модификация →
-      // персональный PDF КП на email клиенту и менеджеру.
-      label: "Получить КП",
+      // персональный PDF ТКП на email клиенту и менеджеру.
+      label: "Получить ТКП",
       href: "#quick-quote",
       variant: "primary",
     },
@@ -248,11 +248,11 @@ export const content: ProductContent = {
   },
 
   footerCta: {
-    tag: "11 · ЗАПРОС КП",
+    tag: "11 · ЗАПРОС ТКП",
     title: "Подберём модификацию под расход вашего объекта",
     subtitle:
       "Заполните опросный лист — ответим в течение рабочего дня. Расчёт подбора бесплатный.",
-    cta: { label: "Получить КП", href: "/quiz/vpu" },
+    cta: { label: "Получить ТКП", href: "/quiz/vpu" },
     secondaryCta: { label: "Связаться", href: "/contacts" },
     neighboursCaption: "Остальные разделы",
   },
@@ -332,7 +332,7 @@ export const composition: CompositionContent = {
 
 export const quickQuote: QuickQuoteContent = {
   tag: "02 · БЫСТРЫЙ ПОДБОР",
-  title: "За 30 секунд — КП на email",
+  title: "За 30 секунд — ТКП на email",
   lede: "Введите требуемую производительность — система подберёт модификацию и сгенерирует коммерческое предложение в PDF.",
   flowLabel: "Производительность",
   flowPlaceholder: "25",
@@ -344,11 +344,11 @@ export const quickQuote: QuickQuoteContent = {
     "Серия рассчитана до 55,9 м³/ч. Для нестандартного исполнения свяжитесь с нами — подберём конфигурацию под ваш объект.",
   oversizeCtaLabel: "Связаться",
   oversizeCtaHref: "/contacts",
-  ctaPrimaryLabel: "Получить КП",
+  ctaPrimaryLabel: "Получить ТКП",
   ctaSecondaryLabel: "Опросный лист (PDF)",
   ctaSecondaryHref: "/docs/water-treatment/oprosnyi-list.pdf",
   divider: "или",
-  formTitle: "Данные для подготовки КП",
+  formTitle: "Данные для подготовки ТКП",
   fieldName: "Контактное лицо",
   fieldNamePlaceholder: "Иванов Иван",
   fieldPhone: "Телефон",
@@ -365,19 +365,19 @@ export const quickQuote: QuickQuoteContent = {
   fieldObjectPlaceholder: "ЖК «...», корпус, улица",
   fieldCadastral: "Кадастровый № (если есть)",
   fieldCadastralPlaceholder: "47:07:0000000:00000",
-  fieldCadastralHint: "Опционально. Если укажете — попадёт на титул КП.",
+  fieldCadastralHint: "Опционально. Если укажете — попадёт на титул ТКП.",
   consentLabel:
     "Я согласен на обработку персональных данных в соответствии с политикой конфиденциальности.",
-  submitLabel: "Сформировать КП",
+  submitLabel: "Сформировать ТКП",
   submitting: "Формируем…",
-  successTitle: "КП отправлено менеджеру и скачано",
+  successTitle: "ТКП отправлено менеджеру и скачано",
   successBody:
     "PDF коммерческого предложения скачался автоматически. Копия с теми же параметрами ушла менеджеру ANHEL — он перезвонит в течение рабочего дня для уточнения деталей.",
   errorTitle: "Не удалось отправить",
   errorGeneric: "Что-то пошло не так. Попробуйте ещё раз или свяжитесь с нами напрямую.",
   errorPhone: "Некорректный телефон — нужны 7–15 цифр (можно с «+», пробелами, дефисами)",
   errorEmail: "Некорректный email — проверьте адрес",
-  previewTitle: "Проверьте предпросмотр КП",
+  previewTitle: "Проверьте предпросмотр ТКП",
   previewBody:
     "Это коммерческое предложение, которое получит менеджер ANHEL и которое скачаете вы. Письмо менеджеру отправится только после подтверждения.",
   previewConfirmLabel: "Подтвердить — отправить менеджеру и скачать",

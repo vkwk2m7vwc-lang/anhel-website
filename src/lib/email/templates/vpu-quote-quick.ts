@@ -1,16 +1,16 @@
 /**
  * Email-шаблон для менеджера ANHEL — быстрый подбор серии ВПУ.
  *
- * Срабатывает когда клиент жмёт «Получить КП» в форме quick quote на
+ * Срабатывает когда клиент жмёт «Получить ТКП» в форме quick quote на
  * /products/water-treatment/anhel-series. Письмо идёт на
  * QUIZ_RECIPIENT_EMAIL (в тест-фазе — anurin7@gmail.com).
  *
  * Структура по образцу quiz-result.ts (этап 4 v2): renderEmailShell +
  * renderCustomerBlock + renderPdfCta. Sections содержат «Параметры
- * подбора» (расход + подобранная модификация). PDF с КП клиента
+ * подбора» (расход + подобранная модификация). PDF с ТКП клиента
  * прикладывается отдельным вложением.
  *
- * Тема письма: `[ANHEL] Новый КП — Серия ВПУ (Тип N) — <объект 40 char>`.
+ * Тема письма: `[ANHEL] Новое ТКП — Серия ВПУ (Тип N) — <объект 40 char>`.
  */
 import {
   renderEmailShell,
@@ -47,8 +47,8 @@ export function renderVpuQuoteQuickEmail(data: VpuQuoteQuickEmailData): {
 } {
   const objectShort = (data.customer.objectAddress ?? "").trim().slice(0, 40);
   const subjectObject = objectShort || data.customer.company || data.customer.name;
-  const subject = `[ANHEL] Новый КП — Серия ВПУ (${data.modificationType}) — ${subjectObject}`;
-  const heading = "Новый КП по серии ВПУ ANHEL";
+  const subject = `[ANHEL] Новое ТКП — Серия ВПУ (${data.modificationType}) — ${subjectObject}`;
+  const heading = "Новое ТКП по серии ВПУ ANHEL";
 
   // Sections: «Параметры подбора» + «Проектная цепочка»
   const paramsSection = renderSection(
@@ -100,9 +100,9 @@ export function renderVpuQuoteQuickEmail(data: VpuQuoteQuickEmailData): {
     paramsSection +
     projectChainSection +
     renderPdfCta(data.accent, {
-      title: "Коммерческое предложение приложено к письму",
+      title: "Технико-коммерческое предложение приложено к письму",
       note:
-        "PDF КП — отдельным вложением. Это тот же файл, который скачал " +
+        "PDF ТКП — отдельным вложением. Это тот же файл, который скачал " +
         "клиент после подтверждения предпросмотра. Чтобы перезвонить — кнопка «Reply».",
     });
 

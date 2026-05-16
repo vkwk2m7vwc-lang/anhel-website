@@ -65,8 +65,8 @@ export function transliterateForFilename(input: string): string {
 }
 
 /**
- * Имя файла PDF КП. Формат:
- *   KP-ANHEL-VPU-{N}-lines-{transliteratedObject}-{YYYY-MM-DD}.pdf
+ * Имя файла PDF ТКП. Формат:
+ *   TKP-ANHEL-VPU-{N}-lines-{transliteratedObject}-{YYYY-MM-DD}.pdf
  *
  * Объект транслитерируется и обрезается до 60 символов чтобы итоговое
  * имя файла не вылазило за лимиты файловых систем.
@@ -82,5 +82,5 @@ export function buildKpFilename({
 }): string {
   const obj = transliterateForFilename(objectAddress).slice(0, 60) || "object";
   const iso = date.toISOString().slice(0, 10);
-  return `KP-ANHEL-VPU-${modification.linesCount}-lines-${obj}-${iso}.pdf`;
+  return `TKP-ANHEL-VPU-${modification.linesCount}-lines-${obj}-${iso}.pdf`;
 }

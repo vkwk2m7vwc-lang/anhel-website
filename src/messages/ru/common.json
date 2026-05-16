@@ -7,7 +7,6 @@
     "products": "Продукты",
     "documents": "Документация",
     "projects": "Объекты",
-    "production": "Производство",
     "service": "Сервис",
     "about": "О компании",
     "contacts": "Контакты"
@@ -42,7 +41,6 @@
     },
     "company": {
       "about": "О компании",
-      "production": "Производство",
       "service": "Сервис",
       "projects": "Проекты"
     },
@@ -59,7 +57,7 @@
     "personal_data_consent": "Согласие на обработку данных"
   },
   "actions": {
-    "request_quote": "Запросить КП",
+    "request_quote": "Запросить ТКП",
     "download_catalog": "Скачать каталог",
     "contact_engineer": "Связаться с инженером",
     "learn_more": "Подробнее",

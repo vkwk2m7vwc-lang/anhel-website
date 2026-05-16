@@ -5,7 +5,7 @@
  *   1. Zod-валидация полей формы (расход + минимальные контакты)
  *   2. `selectVpuModification(flow)` → модификация или null
  *   3. Параллельно:
- *      • Генерирует PDF КП (`generateVpuKpPdf`) с подставленными данными
+ *      • Генерирует PDF ТКП (`generateVpuKpPdf`) с подставленными данными
  *      • Отправляет письмо менеджеру через Resend + PDF в attachment
  *   4. Возвращает клиенту PDF с заголовком Content-Disposition:attachment
  *
@@ -54,7 +54,7 @@ const quoteSchema = z.object({
   customerName: z.string().min(2, "Укажите контактное лицо").max(120),
   customerPhone: phoneSchema,
   customerEmail: z.string().email("Некорректный email").max(120),
-  // Теперь обязательное: КП обычно запрашивают проектные компании
+  // Теперь обязательное: ТКП обычно запрашивают проектные компании
   // или фрилансеры-проектировщики. «Ваша компания» = название
   // проектной/эксплуатационной фирмы или ИП фрилансера.
   customerCompany: z.string().min(2, "Укажите вашу компанию").max(200),
@@ -67,7 +67,7 @@ const quoteSchema = z.object({
   city: z.string().min(2, "Укажите город").max(120),
   objectAddress: z.string().min(2, "Укажите объект").max(300),
   // Кадастровый номер участка — опционально. Если есть — попадает на
-  // титул КП в карточке «Объект»; если нет — строка не печатается
+  // титул ТКП в карточке «Объект»; если нет — строка не печатается
   // (в PDF не остаётся пустое поле «Кадастровый: —»).
   cadastralNumber: z.string().max(60).optional().default(""),
   consent: z.literal(true, {
@@ -78,7 +78,7 @@ const quoteSchema = z.object({
    * Двух-этапный submit:
    *   false (default) — preview: API генерирует PDF и возвращает его,
    *                      email НЕ отправляется. Клиент показывает
-   *                      превью; лид логируется как «просмотрел КП».
+   *                      превью; лид логируется как «просмотрел ТКП».
    *   true            — confirm: PDF + email менеджеру + лид логируется
    *                      как «подтвердил отправку».
    *
@@ -159,7 +159,7 @@ export async function POST(req: Request) {
 
   // 5. Lead tracking — каждое касание логируем (preview и confirm),
   //    так менеджер потом сможет посмотреть в Vercel logs «кто
-  //    смотрел КП, кто подтвердил». В прод-варианте логи уедут в
+  //    смотрел ТКП, кто подтвердил». В прод-варианте логи уедут в
   //    отдельную таблицу/Sentry/Slack, пока — Vercel runtime logs.
   const stage = data.confirm ? "confirm" : "preview";
   console.log(

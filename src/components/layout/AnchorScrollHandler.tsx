@@ -11,7 +11,7 @@ import { usePathname } from "@/navigation";
  * (smoothWheel) перехватывает события и нативный scroll-to-hash
  * срабатывает невыборочно. Этот компонент в client-зоне выполняет
  * `scrollIntoView` после mount страницы — двойной rAF гарантирует,
- * что секции `#about` и `#production` уже отрисованы.
+ * что секция `#about` (и другие якоря на главной) уже отрисована.
  *
  * Триггеры: `usePathname()` (на смену маршрута) + `hashchange`
  * (на изменение якоря внутри одной страницы — например, mobile-menu

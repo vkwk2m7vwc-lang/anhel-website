@@ -106,7 +106,7 @@ export function LanguageSwitcher() {
         <div
           role="menu"
           aria-label="Language menu"
-          className="absolute right-0 top-full z-40 mt-2 w-[200px] overflow-hidden rounded border border-[var(--color-secondary)]/15 bg-[var(--color-primary)]/95 py-1 shadow-2xl shadow-black/30 backdrop-blur-xl"
+          className="absolute right-0 top-full z-40 mt-2 w-[200px] overflow-hidden rounded border border-[var(--color-secondary)]/15 bg-[var(--color-primary)] py-1 shadow-2xl shadow-black/30 backdrop-blur-sm"
         >
           {locales.map((l) => {
             const isActive = l === currentLocale;
