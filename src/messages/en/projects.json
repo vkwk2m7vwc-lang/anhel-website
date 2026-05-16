@@ -6,12 +6,12 @@
   "hero": {
     "mono_tag": "Projects · {count}",
     "title": "Where our equipment runs.",
-    "lede": "Completed projects featuring ANHEL® pumping stations and water treatment systems. Residential developments by Setl Group and PIK, medical centres, commercial buildings. Full list — with the equipment supplied to each project."
+    "lede": "Completed projects featuring ANHEL® pumping stations and water treatment systems. Since 2016 — premium and comfort-class residential developments in St. Petersburg, medical centres, commercial buildings. Full list — with the equipment supplied to each project."
   },
   "note": {
-    "mono_tag": "Note",
+    "mono_tag": "* Note",
     "title": "Not every site runs entirely on our equipment.",
-    "body": "On larger projects the supply scope often varies by phase — in one phase an ANHEL® pumping station with a control cabinet, in another phase third-party brands per the client's requirements. The card lists exactly what was physically supplied and installed on the specific site."
+    "body": "On larger projects the supplied equipment often varies by phase and building — depending on the year of supply and design decisions. The card lists exactly what was physically supplied and installed on the specific site."
   },
   "filter": {
     "all": "All",
@@ -103,6 +103,58 @@
     "zhk-graf-orlov": {
       "title": "Graf Orlov residential complex",
       "cover_alt_suffix": "facade"
+    },
+    "zhk-petrovsky-kvartal-na-vode": {
+      "title": "Petrovsky Kvartal Residence",
+      "cover_alt_suffix": "complex"
+    },
+    "zhk-art-line": {
+      "title": "ArtLine residential complex",
+      "cover_alt_suffix": "facade"
+    },
+    "zhk-avtograf-v-centre": {
+      "title": "Avtograf v Tsentre residential complex",
+      "cover_alt_suffix": "facade"
+    },
+    "zhk-prityazhenie": {
+      "title": "Prityazhenie residential complex",
+      "cover_alt_suffix": "development"
+    },
+    "zhk-pulse-premier": {
+      "title": "Pulse Premier residential complex",
+      "cover_alt_suffix": "complex"
+    },
+    "zhk-solnechny-gorod-rezidentsii": {
+      "title": "Solnechny Gorod Residences",
+      "cover_alt_suffix": "development"
+    },
+    "zhk-strizhi-v-nevskom": {
+      "title": "Strizhi v Nevskom residential complex",
+      "cover_alt_suffix": "facade"
+    },
+    "zhk-bionika-zapovednaya": {
+      "title": "Bionika Zapovednaya residential complex",
+      "cover_alt_suffix": "facade"
+    },
+    "zhk-gorod-zvezd": {
+      "title": "Gorod Zvezd residential complex",
+      "cover_alt_suffix": "development"
+    },
+    "zhk-univer-city": {
+      "title": "Univer City residential complex",
+      "cover_alt_suffix": "development"
+    },
+    "zhk-dvortsovy-fasad": {
+      "title": "Dvortsovy Fasad residential complex",
+      "cover_alt_suffix": "complex"
+    },
+    "zhk-praim-primorsky": {
+      "title": "Prime Primorsky residential complex",
+      "cover_alt_suffix": "facade"
+    },
+    "zhk-paradny-ansambl": {
+      "title": "Paradny Ansambl residential complex",
+      "cover_alt_suffix": "complex"
     }
   }
 }

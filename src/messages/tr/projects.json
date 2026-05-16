@@ -6,12 +6,12 @@
   "hero": {
     "mono_tag": "Projeler · {count}",
     "title": "Ekipmanlarımızın çalıştığı yerler.",
-    "lede": "ANHEL® pompa istasyonları ve su arıtma sistemlerinin yer aldığı tamamlanmış projeler. Setl Group ve PIK'in konut projeleri, tıbbi merkezler, ticari binalar. Tam liste — her projeye sevk edilen ekipman bilgisiyle birlikte."
+    "lede": "ANHEL® pompa istasyonları ve su arıtma sistemlerinin yer aldığı tamamlanmış projeler. 2016'dan bu yana — Saint Petersburg'da premium ve konfor sınıfı konut projeleri, tıbbi merkezler, ticari binalar. Tam liste — her projeye sevk edilen ekipman bilgisiyle birlikte."
   },
   "note": {
-    "mono_tag": "Not",
+    "mono_tag": "* Not",
     "title": "Her tesis tamamen bizim ekipmanlarımızla çalışmıyor.",
-    "body": "Büyük projelerde tedarik kapsamı genellikle faza göre değişir — bir fazda kontrol panolu ANHEL® pompa istasyonu, başka bir fazda müşteri şartnamesine göre üçüncü taraf markalar. Karttaki bilgiler, ilgili sahaya fiziksel olarak sevk edilen ve monte edilen ekipmanı gösterir."
+    "body": "Büyük projelerde sevk edilen ekipman genellikle faza ve bloka göre değişir — sevkiyat yılına ve tasarım kararlarına bağlı olarak. Karttaki bilgiler, ilgili sahaya fiziksel olarak sevk edilen ve monte edilen ekipmanı gösterir."
   },
   "filter": {
     "all": "Tümü",
@@ -103,6 +103,58 @@
     "zhk-graf-orlov": {
       "title": "Graf Orlov konut kompleksi",
       "cover_alt_suffix": "facade"
+    },
+    "zhk-petrovsky-kvartal-na-vode": {
+      "title": "Petrovsky Kvartal konutları",
+      "cover_alt_suffix": "complex"
+    },
+    "zhk-art-line": {
+      "title": "ArtLine konut kompleksi",
+      "cover_alt_suffix": "facade"
+    },
+    "zhk-avtograf-v-centre": {
+      "title": "Avtograf v Tsentre konut kompleksi",
+      "cover_alt_suffix": "facade"
+    },
+    "zhk-prityazhenie": {
+      "title": "Prityazhenie konut kompleksi",
+      "cover_alt_suffix": "development"
+    },
+    "zhk-pulse-premier": {
+      "title": "Pulse Premier konut kompleksi",
+      "cover_alt_suffix": "complex"
+    },
+    "zhk-solnechny-gorod-rezidentsii": {
+      "title": "Solnechny Gorod Rezidansları",
+      "cover_alt_suffix": "development"
+    },
+    "zhk-strizhi-v-nevskom": {
+      "title": "Strizhi v Nevskom konut kompleksi",
+      "cover_alt_suffix": "facade"
+    },
+    "zhk-bionika-zapovednaya": {
+      "title": "Bionika Zapovednaya konut kompleksi",
+      "cover_alt_suffix": "facade"
+    },
+    "zhk-gorod-zvezd": {
+      "title": "Gorod Zvezd konut kompleksi",
+      "cover_alt_suffix": "development"
+    },
+    "zhk-univer-city": {
+      "title": "Univer City konut kompleksi",
+      "cover_alt_suffix": "development"
+    },
+    "zhk-dvortsovy-fasad": {
+      "title": "Dvortsovy Fasad konut kompleksi",
+      "cover_alt_suffix": "complex"
+    },
+    "zhk-praim-primorsky": {
+      "title": "Prime Primorsky konut kompleksi",
+      "cover_alt_suffix": "facade"
+    },
+    "zhk-paradny-ansambl": {
+      "title": "Paradny Ansambl konut kompleksi",
+      "cover_alt_suffix": "complex"
     }
   }
 }
