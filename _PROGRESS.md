@@ -2257,3 +2257,93 @@ PDF-контент остаётся на русском (архив для ме�
 
 3 v3-коммита в `feat/resend-integration` поверх v2. PR #22 — Алексей
 делает один squash-merge v2+v3 после визуальной проверки.
+
+---
+
+## Сессия 2026-05-16 — Серия ВПУ Anhel (контент-волна, до этапа 5)
+
+**Ветка:** `feat/vpu-product-anhel-series` (от main после merge PR #22 / тег v1.14-resend).
+
+**Контекст:** перед запуском этапа 5 (оптимизация производительности)
+стартовала волна контентных правок. Первая задача — добавить второй
+продукт в раздел Водоподготовка: серию ВПУ Anhel с 4 модификациями.
+
+### Архитектурное решение
+
+До: `/products/water-treatment` — единственный продукт раздела (slug
+`water-treatment`, модель VPU-NU). После: 3-уровневая структура по
+аналогии с `/products/pumps`:
+
+```
+/products/water-treatment                  — каталог (2 карточки)
+/products/water-treatment/installations    — существующий продукт (slug change)
+/products/water-treatment/anhel-series     — новая серия ВПУ Anhel
+```
+
+Slug действующего продукта переименован `water-treatment` → `installations`
+во всех 3 локалях (минимальное касание контента; тексты, ТТХ, фото,
+документы оставлены без изменений). Breadcrumbs: добавлен 4-й уровень.
+
+### Что сделано
+
+- **Компоненты (3 новых):**
+  - `VpuModificationsTable.tsx` — главный визуальный блок страницы серии
+    (таблица 4 модификаций: 2/3/4/5 линий, расходы 0-56 м³/ч)
+  - `CompositionList.tsx` — секция «Состав установки» (numbered 01..NN)
+  - `AutomationSection.tsx` — 3-блок «Режимы и автоматика»
+- **Расширения общих типов:**
+  - `ProductHeroContent.imageCaption` — подпись под hero-фото
+  - `FooterCtaContent.secondaryCta` — вторая (ghost) CTA-кнопка
+- **Контент серии (RU/EN/TR):** полный 10-секционный конфиг
+  + per-section экспорты для new components.
+- **Страница:** `app/[locale]/products/water-treatment/anhel-series/page.tsx`
+  — 10 секций, accent treatment, productLd + breadcrumbLd.
+- **Реструктуризация:**
+  - `lib/products.ts` — `WATER_TREATMENT_PRODUCTS` (2 продукта),
+    обновлён `getTopLevelCategory` и плоский `PRODUCTS`.
+  - `lib/related-projects.ts` — entries для `installations` + `anhel-series`
+    (оба маппятся на `water-treatment` + `mixed`).
+- **i18n:** `families.water-treatment.{meta,page}` + новые
+  `items.installations` + `items.anhel-series` (RU/EN/TR).
+- **Hero-фото:** `public/assets/products/water-treatment/anhel-series/hero.jpg`
+  (фото 2-линейной модификации, используется с подписью «пример»).
+
+### Документация
+
+Документация (сертификат, опросный лист) — общая для обоих продуктов
+раздела. Новая страница ссылается на те же PDF под
+`/docs/water-treatment/`. Никаких дубликатов не создано.
+
+### Опросный лист / КП
+
+Кнопки «Получить КП» и «Опросный лист» ведут на существующий
+`/quiz/vpu`. КП-конфигуратор — post-launch задача; сейчас задел кнопки.
+
+### Что НЕ сделано (по правилам ТЗ)
+
+- ❌ Паспорт/РЭ как PDF — не выгружены
+- ❌ Конкретные числа мощности/габаритов — не указаны (зависят от мод.)
+- ❌ КП-конфигуратор — отложен post-launch
+- ❌ Брендов сторонних производителей — нет упоминаний
+- ❌ Конкретных клиентов из портфолио — нет упоминаний
+
+### Тестирование
+
+- `npm run build` — успешно (3 новых маршрута на 3 локалях = 9 страниц)
+- `npm run lint` — чисто (0 warnings / 0 errors)
+- Действующий продукт по URL `/products/water-treatment/installations` —
+  построен корректно, контент не затронут
+
+### PR
+
+`feat/vpu-product-anhel-series` → main, 6 атомарных коммитов:
+1. `feat(product-page): extend ProductHero and FooterCta with optional fields`
+2. `feat(components): VPU series section components`
+3. `feat(content): VPU Anhel Series — RU/EN/TR content + dispatcher`
+4. `feat(page): /products/water-treatment/anhel-series page + hero image`
+5. `refactor(catalog): restructure /products/water-treatment to sub-routes`
+6. `feat(i18n): water-treatment family + new product cards (RU/EN/TR)`
+
+### Состояние
+
+PR открыт, не мержится — ждёт визуальной проверки Алексея на iPhone.

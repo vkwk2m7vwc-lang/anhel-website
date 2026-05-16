@@ -24,8 +24,13 @@ const PRODUCT_TO_PROJECT_CATEGORIES: Record<string, ProjectItem["category"][]> =
     "pressure-boost": ["pumps", "mixed"],
     special: ["pumps", "mixed"],
 
-    // Water treatment.
+    // Water treatment — top-level slug сохраняется для обратной
+    // совместимости с консумерами, которые ходят по семейному slug
+    // (например, projects-фильтр). Реальные продуктовые страницы теперь
+    // используют installations + anhel-series.
     "water-treatment": ["water-treatment", "mixed"],
+    installations: ["water-treatment", "mixed"],
+    "anhel-series": ["water-treatment", "mixed"],
 
     // Control systems (5 серий шкафов). Шкафы устанавливаются на
     // объекты с насосами, водоподготовкой и комбинированных — поэтому

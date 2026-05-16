@@ -74,7 +74,7 @@ export function ProductCtaFooter({
               </p>
             ) : null}
 
-            <div>
+            <div className="flex flex-wrap items-center gap-4">
               <Link
                 href={content.cta.href}
                 data-cursor="hover"
@@ -88,6 +88,21 @@ export function ProductCtaFooter({
                   →
                 </span>
               </Link>
+              {content.secondaryCta ? (
+                <Link
+                  href={content.secondaryCta.href}
+                  data-cursor="hover"
+                  className="group inline-flex items-center gap-3 rounded-md border-[0.5px] border-[var(--color-secondary)]/40 bg-transparent px-6 py-[14px] text-sm font-medium text-[var(--color-secondary)]/85 transition-colors hover:border-[var(--color-secondary)] hover:text-[var(--color-secondary)]"
+                >
+                  {content.secondaryCta.label}
+                  <span
+                    aria-hidden="true"
+                    className="inline-block font-mono transition-transform duration-300 ease-out-expo group-hover:translate-x-1"
+                  >
+                    →
+                  </span>
+                </Link>
+              ) : null}
             </div>
           </motion.div>
 

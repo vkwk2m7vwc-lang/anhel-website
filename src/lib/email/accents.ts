@@ -44,3 +44,12 @@ export function coerceAccent(value: unknown): EmailAccent {
 export function accentHex(accent: EmailAccent): string {
   return EMAIL_ACCENTS[accent];
 }
+
+/**
+ * Маппинг источников писем (form-source) на акцент-ключ. Используется
+ * бизнес-кодом, который знает только slug своего источника. Расширяется
+ * по мере появления новых form-каналов.
+ */
+export const SOURCE_TO_ACCENT: Record<string, EmailAccent> = {
+  "vpu-quote-quick": "treatment",
+};

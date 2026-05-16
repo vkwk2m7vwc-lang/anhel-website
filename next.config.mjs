@@ -23,7 +23,13 @@ const nextConfig = {
    */
   experimental: {
     outputFileTracingIncludes: {
+      // Шрифты для всех PDF-генераторов (questionnaire + KP)
       "/api/**": ["./src/lib/pdf/fonts/**"],
+      // Картинки для генератора КП серии ВПУ (чертежи, схемы, скан
+      // декларации, фото). Серверная функция читает их через
+      // fs.readFileSync, поэтому Next не может автоматически их
+      // протрассировать — форсируем включение.
+      "/api/vpu-quote-quick": ["./public/kp/**"],
     },
   },
   /**
