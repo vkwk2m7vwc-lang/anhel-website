@@ -15,9 +15,9 @@ export const content: ProductContent = {
   slug: "anhel-series",
   accent: "treatment",
 
-  metaTitle: "ANHEL Water Treatment Series — for new residential developments up to 56 m³/h — ANHEL®",
+  metaTitle: "ANHEL Water Treatment Series — for multi-unit residential up to 56 m³/h — ANHEL®",
   metaDescription:
-    "ANHEL Water Treatment Series for new multi-unit residential developments. Capacity up to 56 m³/h, four modifications by filtration lines, UV disinfection. Compliant with СанПиН 2.1.4.1074-01.",
+    "ANHEL Water Treatment Series for multi-unit residential buildings and complexes — both new builds and retrofits. Capacity up to 56 m³/h, four modifications by filtration lines, UV disinfection. Compliant with СанПиН 2.1.4.1074-01.",
 
   hero: {
     breadcrumbs: [
@@ -29,7 +29,7 @@ export const content: ProductContent = {
     sectionTag: "01 · ENGINEERED EQUIPMENT · WATER TREATMENT",
     title: "ANHEL Water Treatment Series",
     subtitle:
-      "Water treatment units up to 56 m³/h for new multi-unit residential developments. Multi-stage mechanical filtration and ultraviolet disinfection. Four modifications by filtration lines — matched to the building's flow rate.",
+      "Water treatment units up to 56 m³/h for multi-unit residential buildings and complexes — both new builds and retrofits. Multi-stage mechanical filtration and ultraviolet disinfection. Four modifications by filtration lines — matched to the building's flow rate.",
     image: {
       src: "/assets/products/water-treatment/anhel-series/hero.webp",
       alt: "ANHEL Water Treatment Series — 2-line modification (example)",
@@ -38,12 +38,12 @@ export const content: ProductContent = {
       "Photo shows the 2-line modification as an example. The actual configuration depends on the series model.",
     primaryCta: {
       label: "Request a quote",
-      href: "/quiz/vpu",
+      href: "#quick-quote",
       variant: "primary",
     },
     secondaryCta: {
       label: "Questionnaire",
-      href: "/quiz/vpu",
+      href: "/docs/water-treatment/oprosnyi-list-en.pdf",
       variant: "ghost",
     },
   },
@@ -63,7 +63,7 @@ export const content: ProductContent = {
     tag: "03 · PURPOSE",
     title: "Purified potable water in line with СанПиН requirements",
     paragraphs: [
-      "The ANHEL Water Treatment Series is built primarily for water treatment in new multi-unit residential developments. The unit sits in the building's plant room upstream of the pressure-boosting pump station and brings central drinking-water supply up to the level required by СанПиН 2.1.4.1074-01 (Drinking water. Hygienic requirements for water quality of centralised drinking water supply systems. Quality control).",
+      "The ANHEL Water Treatment Series is built primarily for water treatment in multi-unit residential buildings and complexes — both new builds and retrofits. The unit sits in the building's plant room upstream of the pressure-boosting pump station and brings central drinking-water supply up to the level required by СанПиН 2.1.4.1074-01 (Drinking water. Hygienic requirements for water quality of centralised drinking water supply systems. Quality control).",
       "Beyond residential, the series serves business centres, medical and public institutions, and production facilities with technological-water quality requirements. The unit must be installed in an enclosed heated room upstream of the pressure-boosting pump station in the building's water supply system.",
     ],
   },
@@ -71,13 +71,13 @@ export const content: ProductContent = {
   applications: {
     tag: "04 · APPLICATION",
     title: "Where the series fits",
-    lede: "Primary application — new multi-unit residential construction. Also used at other sites with СанПиН 2.1.4.1074-01 requirements.",
+    lede: "Primary application — multi-unit residential buildings and complexes. Also used at other sites with СанПиН 2.1.4.1074-01 requirements.",
     items: [
       {
         id: "residential",
         mono: "01",
-        title: "New residential developments",
-        example: "New multi-unit residential buildings — the primary use case",
+        title: "Multi-unit residential",
+        example: "Both new builds and retrofits — the primary use case",
       },
       {
         id: "business",
@@ -127,8 +127,8 @@ export const content: ProductContent = {
       {
         id: "modular-range",
         mono: "01",
-        title: "Model range for any flow rate",
-        body: "Four modifications in the series — from 22 to 56 m³/h. Selection by the facility's actual flow rate.",
+        title: "Model range for any building",
+        body: "Four modifications in the series — from a small multi-unit building to a full residential complex. Capacity 22-56 m³/h, selected by the facility's actual flow rate.",
       },
       {
         id: "multi-stage",
@@ -146,7 +146,7 @@ export const content: ProductContent = {
         id: "factory-skid",
         mono: "04",
         title: "Factory skid assembly",
-        body: "Modular design — the unit arrives on site ready for connection. Piping, valves and the control cabinet are assembled and tested at the factory.",
+        body: "Modular design — the unit arrives on site ready for connection. Piping, valves and the control cabinet are assembled and tested at the factory. Speeds up commissioning of new builds and simplifies plant-room retrofits in existing developments.",
       },
       {
         id: "sanpin",
@@ -288,29 +288,41 @@ export const quickQuote: QuickQuoteContent = {
   oversizeCtaLabel: "Contact us",
   oversizeCtaHref: "/contacts",
   ctaPrimaryLabel: "Get the quote",
-  ctaSecondaryLabel: "Questionnaire",
-  ctaSecondaryHref: "/quiz/vpu",
+  ctaSecondaryLabel: "Questionnaire (PDF)",
+  ctaSecondaryHref: "/docs/water-treatment/oprosnyi-list-en.pdf",
   divider: "or",
-  formTitle: "Contact details for the quote",
+  formTitle: "Details for the quote",
   fieldName: "Contact person",
   fieldNamePlaceholder: "John Smith",
   fieldPhone: "Phone",
   fieldPhonePlaceholder: "+7 ...",
   fieldEmail: "Email",
   fieldEmailPlaceholder: "name@company.com",
-  fieldCompany: "Company (optional)",
-  fieldCompanyPlaceholder: "Your company",
-  fieldObject: "Facility address",
+  fieldCompany: "Your company",
+  fieldCompanyPlaceholder: "Design / operating company",
+  fieldDeveloper: "Developer",
+  fieldDeveloperPlaceholder: "Owner / building developer",
+  fieldDesigner: "Designer",
+  fieldDesignerPlaceholder: "Project designer / architect",
+  fieldObject: "Facility (address)",
   fieldObjectPlaceholder: "City, project name, building...",
   consentLabel:
     "I consent to the processing of my personal data in accordance with the privacy policy.",
-  submitLabel: "Get the quote",
+  submitLabel: "Generate quote",
   submitting: "Generating…",
-  successTitle: "Quote generated and sent",
+  successTitle: "Quote sent to sales and downloaded",
   successBody:
     "The PDF quote downloaded automatically. A copy with the same parameters has gone to the ANHEL sales team — we'll call you within one business day.",
   errorTitle: "Sending failed",
   errorGeneric: "Something went wrong. Please try again or contact us directly.",
+  errorPhone: "Invalid phone — 7–15 digits required (may use «+», spaces, dashes)",
+  errorEmail: "Invalid email — please check the address",
+  previewTitle: "Review the quote preview",
+  previewBody:
+    "This is the commercial proposal that will be sent to the ANHEL sales team and downloaded to your device. The email is sent only after you confirm.",
+  previewConfirmLabel: "Confirm — send to sales and download",
+  previewCancelLabel: "Close without sending",
+  previewSending: "Sending…",
 };
 
 export const automation: AutomationContent = {

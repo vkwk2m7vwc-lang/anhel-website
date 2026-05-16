@@ -13,9 +13,9 @@ export const content: ProductContent = {
   slug: "anhel-series",
   accent: "treatment",
 
-  metaTitle: "ANHEL Su Arıtma Serisi — yeni konut yapımı için 56 m³/saat'e kadar — ANHEL®",
+  metaTitle: "ANHEL Su Arıtma Serisi — çok daireli konutlar için 56 m³/saat'e kadar — ANHEL®",
   metaDescription:
-    "Yeni çok daireli konut yapıları için ANHEL Su Arıtma Serisi. 56 m³/saat'e kadar kapasite, filtrasyon hatlarına göre 4 modifikasyon, UV dezenfeksiyon. СанПиН 2.1.4.1074-01 uyumlu.",
+    "Çok daireli konut yapıları ve siteler için ANHEL Su Arıtma Serisi — yeni inşaat ve yenileme. 56 m³/saat'e kadar kapasite, filtrasyon hatlarına göre 4 modifikasyon, UV dezenfeksiyon. СанПиН 2.1.4.1074-01 uyumlu.",
 
   hero: {
     breadcrumbs: [
@@ -27,7 +27,7 @@ export const content: ProductContent = {
     sectionTag: "01 · ENDÜSTRİYEL EKİPMAN · SU ARITMA",
     title: "ANHEL Su Arıtma Serisi",
     subtitle:
-      "Yeni çok daireli konut yapıları için 56 m³/saat'e kadar su arıtma üniteleri. Çok kademeli mekanik filtrasyon ve ultraviyole dezenfeksiyon. Filtrasyon hatlarına göre 4 modifikasyon — binanın debisine göre seçilir.",
+      "Çok daireli konut yapıları ve siteler için 56 m³/saat'e kadar su arıtma üniteleri — yeni inşaat ve yenileme. Çok kademeli mekanik filtrasyon ve ultraviyole dezenfeksiyon. Filtrasyon hatlarına göre 4 modifikasyon — binanın debisine göre seçilir.",
     image: {
       src: "/assets/products/water-treatment/anhel-series/hero.webp",
       alt: "ANHEL Su Arıtma Serisi — 2-hatlı modifikasyon örneği",
@@ -36,12 +36,12 @@ export const content: ProductContent = {
       "Fotoğrafta — 2-hatlı modifikasyon örneği. Gerçek konfigürasyon seri modeline göre değişir.",
     primaryCta: {
       label: "Teklif al",
-      href: "/quiz/vpu",
+      href: "#quick-quote",
       variant: "primary",
     },
     secondaryCta: {
       label: "Anket formu",
-      href: "/quiz/vpu",
+      href: "/docs/water-treatment/oprosnyi-list-tr.pdf",
       variant: "ghost",
     },
   },
@@ -61,7 +61,7 @@ export const content: ProductContent = {
     tag: "03 · AMAÇ",
     title: "СанПиН gerekliliklerine uygun arıtılmış içme suyu",
     paragraphs: [
-      "ANHEL Su Arıtma Serisi öncelikle yeni çok daireli konut yapılarında su arıtma için kullanılır. Ünite, binanın tesisat mahalinde basınç yükseltme pompa istasyonu öncesine yerleştirilir ve merkezi şebeke suyunu СанПиН 2.1.4.1074-01 (İçme suyu. Merkezi içme suyu sağlama sistemlerinin su kalitesine ilişkin hijyenik gereklilikler. Kalite kontrolü) gerekliliklerine uygun seviyeye getirir.",
+      "ANHEL Su Arıtma Serisi öncelikle çok daireli konut yapıları ve sitelerde — yeni inşaatlarda ve yenilemelerde — su arıtma için kullanılır. Ünite, binanın tesisat mahalinde basınç yükseltme pompa istasyonu öncesine yerleştirilir ve merkezi şebeke suyunu СанПиН 2.1.4.1074-01 (İçme suyu. Merkezi içme suyu sağlama sistemlerinin su kalitesine ilişkin hijyenik gereklilikler. Kalite kontrolü) gerekliliklerine uygun seviyeye getirir.",
       "Konutlar dışında seri; iş merkezlerinde, tıbbi ve kamu kurumlarında ve teknolojik su kalitesi gereksinimleri olan üretim tesislerinde de çalışır. Şart — kapalı ve ısıtılan bir mahal ile binanın su besleme sisteminde basınç yükseltme pompa istasyonu öncesine bağlantı.",
     ],
   },
@@ -69,13 +69,13 @@ export const content: ProductContent = {
   applications: {
     tag: "04 · UYGULAMA",
     title: "Seri nerelerde kullanılır",
-    lede: "Birincil uygulama — yeni çok daireli konut yapımı. СанПиН 2.1.4.1074-01 gereksinimleri olan diğer tesislerde de kullanılır.",
+    lede: "Birincil uygulama — çok daireli konut yapıları ve siteler. СанПиН 2.1.4.1074-01 gereksinimleri olan diğer tesislerde de kullanılır.",
     items: [
       {
         id: "residential",
         mono: "01",
-        title: "Yeni konut yapımı",
-        example: "Yeni çok daireli konut binaları — birincil kullanım senaryosu",
+        title: "Çok daireli konut yapıları",
+        example: "Yeni inşaat ve yenileme — birincil kullanım senaryosu",
       },
       {
         id: "business",
@@ -125,8 +125,8 @@ export const content: ProductContent = {
       {
         id: "modular-range",
         mono: "01",
-        title: "Her debi için model yelpazesi",
-        body: "Seride 4 modifikasyon — 22 ila 56 m³/saat. Tesisin gerçek debisine göre seçim.",
+        title: "Her bina için model yelpazesi",
+        body: "Seride 4 modifikasyon — küçük bir çok daireli binadan büyük bir konut sitesine. Kapasite 22-56 m³/saat, tesisin gerçek debisine göre seçilir.",
       },
       {
         id: "multi-stage",
@@ -144,7 +144,7 @@ export const content: ProductContent = {
         id: "factory-skid",
         mono: "04",
         title: "Şase üzerinde fabrika montajı",
-        body: "Modüler tasarım — ünite sahaya bağlantıya hazır gelir. Borulama, vanalar ve kontrol panosu fabrikada monte edilip test edilir.",
+        body: "Modüler tasarım — ünite sahaya bağlantıya hazır gelir. Borulama, vanalar ve kontrol panosu fabrikada monte edilip test edilir. Yeni inşaatın devreye alma süresini kısaltır ve mevcut tesislerin tesisat mahali yenilemesini kolaylaştırır.",
       },
       {
         id: "sanpin",
@@ -286,29 +286,41 @@ export const quickQuote: QuickQuoteContent = {
   oversizeCtaLabel: "İletişime geç",
   oversizeCtaHref: "/contacts",
   ctaPrimaryLabel: "Teklif al",
-  ctaSecondaryLabel: "Anket formu",
-  ctaSecondaryHref: "/quiz/vpu",
+  ctaSecondaryLabel: "Anket formu (PDF)",
+  ctaSecondaryHref: "/docs/water-treatment/oprosnyi-list-tr.pdf",
   divider: "veya",
-  formTitle: "Teklif için iletişim bilgileri",
+  formTitle: "Teklif için bilgiler",
   fieldName: "Yetkili kişi",
   fieldNamePlaceholder: "Ad Soyad",
   fieldPhone: "Telefon",
   fieldPhonePlaceholder: "+90 ...",
   fieldEmail: "E-posta",
   fieldEmailPlaceholder: "ad@sirket.com",
-  fieldCompany: "Şirket (opsiyonel)",
-  fieldCompanyPlaceholder: "Şirketiniz",
-  fieldObject: "Tesis adresi",
+  fieldCompany: "Şirketiniz",
+  fieldCompanyPlaceholder: "Tasarım / işletme şirketi",
+  fieldDeveloper: "Geliştirici",
+  fieldDeveloperPlaceholder: "Yapı sahibi / geliştirici",
+  fieldDesigner: "Tasarımcı",
+  fieldDesignerPlaceholder: "Proje tasarımcısı / mimar",
+  fieldObject: "Tesis (adres)",
   fieldObjectPlaceholder: "Şehir, proje adı, blok...",
   consentLabel:
     "Kişisel verilerimin gizlilik politikasına uygun olarak işlenmesini kabul ediyorum.",
-  submitLabel: "Teklif al",
+  submitLabel: "Teklif oluştur",
   submitting: "Oluşturuluyor…",
-  successTitle: "Teklif oluşturuldu ve gönderildi",
+  successTitle: "Teklif satış ekibine gönderildi ve indirildi",
   successBody:
     "PDF teklif otomatik olarak indirildi. Aynı parametrelerle bir kopya ANHEL satış ekibine gönderildi — bir iş günü içinde sizi arayacağız.",
   errorTitle: "Gönderim başarısız",
   errorGeneric: "Bir şeyler ters gitti. Lütfen tekrar deneyin veya doğrudan iletişime geçin.",
+  errorPhone: "Geçersiz telefon — 7–15 rakam gerekli (artı, boşluk, tire kullanılabilir)",
+  errorEmail: "Geçersiz e-posta — adresi kontrol edin",
+  previewTitle: "Teklif önizlemesini inceleyin",
+  previewBody:
+    "Bu, ANHEL satış ekibine gönderilecek ve cihazınıza indirilecek ticari teklif. E-posta yalnızca onayladıktan sonra gönderilir.",
+  previewConfirmLabel: "Onayla — satışa gönder ve indir",
+  previewCancelLabel: "Gönderim yapmadan kapat",
+  previewSending: "Gönderiliyor…",
 };
 
 export const automation: AutomationContent = {
