@@ -48,6 +48,9 @@ dl_font() {
 dl_font "inter"            "Inter:wght@400;500;600"            "latin,cyrillic"
 dl_font "inter-tight"      "Inter+Tight:wght@200;400;500;600"  "latin,cyrillic"
 dl_font "jetbrains-mono"   "JetBrains+Mono:wght@400;500"       "latin"
+# Onest — основной body-шрифт после Stage 5 Session 2 (типографика).
+# Variable font, 4 веса (400/500/600/700) шарят один woff2 на subset.
+dl_font "onest"            "Onest:wght@400;500;600;700"        "latin,cyrillic"
 
 # Сборка единого fonts.css с локальными URL'ами.
 OUT="$BASE/public/fonts/fonts.css"

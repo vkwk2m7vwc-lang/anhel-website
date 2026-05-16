@@ -209,13 +209,13 @@ function ModificationRow({
       </span>
       <span
         role="cell"
-        className="font-display text-[16px] font-medium text-[var(--color-secondary)] md:text-[18px]"
+        className="font-display text-[16px] font-medium tabular-nums text-[var(--color-secondary)] md:text-[18px]"
       >
         {getFlow(row, locale)}
       </span>
       <span
         role="cell"
-        className="font-mono text-[12px] tracking-[0.02em] text-[var(--color-secondary)]/75 md:text-[13px]"
+        className="font-mono text-[12px] tracking-[0.02em] tabular-nums text-[var(--color-secondary)]/75 md:text-[13px]"
       >
         {row.dimensions}
       </span>

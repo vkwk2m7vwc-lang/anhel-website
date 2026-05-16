@@ -129,7 +129,7 @@ export function Header() {
               aria-label={t("aria.call_phone", { phone: CONTACTS.phone })}
               className="hidden items-center gap-2 text-sm text-[var(--color-secondary)]/80 transition-colors hover:text-[var(--color-secondary)] md:inline-flex"
             >
-              <Phone size={14} strokeWidth={1.75} aria-hidden="true" />
+              <Phone size={14} strokeWidth={1.5} aria-hidden="true" />
               <span className="font-mono tracking-[0.02em]">{CONTACTS.phone}</span>
             </Link>
 

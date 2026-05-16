@@ -243,7 +243,7 @@ export function QuizSection({
                 disabled={!canAdvance}
                 data-cursor="hover"
                 className={cn(
-                  "group inline-flex items-center gap-3 rounded-md px-5 py-3 text-sm font-medium transition-all",
+                  "group inline-flex items-center gap-3 rounded px-5 py-3 text-sm font-medium transition-all",
                   canAdvance
                     ? "bg-[var(--color-secondary)] text-[var(--color-primary)] hover:bg-[var(--accent-current)] hover:text-[var(--color-secondary)]"
                     : "cursor-not-allowed bg-[var(--color-secondary)]/20 text-[var(--color-secondary)]/65"

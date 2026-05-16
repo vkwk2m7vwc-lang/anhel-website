@@ -289,7 +289,7 @@ export default function DocumentsPage({
       >
         <div className="mx-auto max-w-[1440px] px-6 py-16 md:px-12 md:py-20">
           <SectionHeader title={t("sections.catalogs.title")} />
-          <div className="mt-10 rounded-md border border-dashed border-[var(--color-hairline)] bg-[var(--color-image-placeholder)] p-8 text-center md:p-14">
+          <div className="mt-10 rounded border border-dashed border-[var(--color-hairline)] bg-[var(--color-image-placeholder)] p-8 text-center md:p-14">
             <p className="font-display text-xl leading-tight text-[var(--color-secondary)]/80 md:text-2xl">
               {t("sections.catalogs.placeholder_heading")}
             </p>

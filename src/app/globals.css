@@ -66,9 +66,15 @@
    * <html>. После перехода на self-host задаём их явно здесь — Tailwind
    * config читает их через `var(--font-display)` и т.д. (см. tailwind.config.ts).
    * Имена соответствуют font-family из public/fonts/fonts.css.
+   *
+   * Stage 5 Session 2: основным шрифтом теперь Onest (variable, 4 веса
+   * 400/500/600/700). Body + display оба используют Onest, чтобы у RU-
+   * аудитории была плотная и геометричная кириллица. Inter Tight и Inter
+   * остаются в fallback-цепочке на случай если Onest woff2 не догрузится.
+   * JetBrains Mono остаётся для tech-таблиц и mono-tag.
    */
-  --font-display: "Inter Tight", "Inter", system-ui, sans-serif;
-  --font-body: "Inter", system-ui, sans-serif;
+  --font-display: "Onest", "Inter Tight", "Inter", system-ui, sans-serif;
+  --font-body: "Onest", "Inter", system-ui, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, monospace;
 
   /* Motion */
@@ -173,6 +179,15 @@
   }
   .text-pretty {
     text-wrap: pretty;
+  }
+
+  /* Tabular numerals — фиксированной ширины цифры. Применяй там, где числа
+     идут столбцами или меняются динамически: техспеки, hero-счётчики,
+     таблицы модельного ряда, прайс-строки. Без этого пропорциональные
+     цифры визуально «прыгают» при смене значения. Stage 5 Session 2. */
+  .tabular-nums {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum" 1;
   }
 
   /* Thin uppercase mono line — used for section tags like "01 / 04 · …".

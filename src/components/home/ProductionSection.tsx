@@ -180,7 +180,7 @@ export function ProductionSection() {
             href="/contacts"
             data-cursor="hover"
             data-cta="production-visit"
-            className="group inline-flex items-center gap-3 rounded-md bg-[var(--color-secondary)] px-[22px] py-[14px] text-sm font-medium text-[var(--color-primary)]"
+            className="group inline-flex items-center gap-3 rounded bg-[var(--color-secondary)] px-[22px] py-[14px] text-sm font-medium text-[var(--color-primary)]"
           >
             {t("cta")}
             <span
@@ -253,7 +253,7 @@ function QualityCard({
     <article>
       <div
         aria-hidden="true"
-        className="flex h-12 w-12 items-center justify-center rounded-md border border-[var(--color-hairline)] text-[var(--color-secondary)]"
+        className="flex h-12 w-12 items-center justify-center rounded border border-[var(--color-hairline)] text-[var(--color-secondary)]"
       >
         {icon}
       </div>

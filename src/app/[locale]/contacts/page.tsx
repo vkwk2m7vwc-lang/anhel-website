@@ -192,7 +192,7 @@ export default function ContactsPage({
         <div className="mx-auto max-w-[1440px] px-6 py-16 md:px-12 md:py-24">
           <p className="mono-tag mb-6">{t("requisites.mono_tag")}</p>
 
-          <article className="rounded-md border border-[var(--color-hairline)] bg-[var(--color-primary)] p-8 shadow-sm md:p-14">
+          <article className="rounded border border-[var(--color-hairline)] bg-[var(--color-primary)] p-8 shadow-sm md:p-14">
             <header className="flex flex-col gap-3 border-b border-[var(--color-hairline)] pb-8 md:flex-row md:items-end md:justify-between md:pb-10">
               <div>
                 {/* Локалезависимое короткое имя: ООО «Профит» / Profit LLC. */}

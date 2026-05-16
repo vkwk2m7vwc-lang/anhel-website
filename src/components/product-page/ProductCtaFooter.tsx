@@ -78,7 +78,7 @@ export function ProductCtaFooter({
               <Link
                 href={content.cta.href}
                 data-cursor="hover"
-                className="group inline-flex items-center gap-3 rounded-md bg-[var(--color-secondary)] px-6 py-[14px] text-sm font-medium text-[var(--color-primary)] transition-colors hover:bg-[var(--accent-current)] hover:text-[var(--color-secondary)]"
+                className="group inline-flex items-center gap-3 rounded bg-[var(--color-secondary)] px-6 py-[14px] text-sm font-medium text-[var(--color-primary)] transition-colors hover:bg-[var(--accent-current)] hover:text-[var(--color-secondary)]"
               >
                 {content.cta.label}
                 <span
@@ -92,7 +92,7 @@ export function ProductCtaFooter({
                 <Link
                   href={content.secondaryCta.href}
                   data-cursor="hover"
-                  className="group inline-flex items-center gap-3 rounded-md border-[0.5px] border-[var(--color-secondary)]/40 bg-transparent px-6 py-[14px] text-sm font-medium text-[var(--color-secondary)]/85 transition-colors hover:border-[var(--color-secondary)] hover:text-[var(--color-secondary)]"
+                  className="group inline-flex items-center gap-3 rounded border-[0.5px] border-[var(--color-secondary)]/40 bg-transparent px-6 py-[14px] text-sm font-medium text-[var(--color-secondary)]/85 transition-colors hover:border-[var(--color-secondary)] hover:text-[var(--color-secondary)]"
                 >
                   {content.secondaryCta.label}
                   <span

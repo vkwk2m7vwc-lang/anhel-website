@@ -59,7 +59,7 @@ export function DocumentsMegaMenu({ onClose }: { onClose: () => void }) {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -8 }}
       transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
-      className="absolute left-1/2 top-full z-40 mt-3 w-[780px] -translate-x-1/2 rounded-md border border-[var(--color-secondary)]/15 bg-[var(--color-primary)]/95 p-3 shadow-2xl shadow-black/30 backdrop-blur-xl"
+      className="absolute left-1/2 top-full z-40 mt-3 w-[780px] -translate-x-1/2 rounded border border-[var(--color-secondary)]/15 bg-[var(--color-primary)]/95 p-3 shadow-2xl shadow-black/30 backdrop-blur-xl"
     >
       <ul className="grid grid-cols-3 gap-2">
         {CATEGORIES.map((cat) => {

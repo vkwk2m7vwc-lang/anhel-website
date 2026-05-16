@@ -83,7 +83,7 @@ function Counter({
 }) {
   return (
     <div ref={innerRef} className="flex flex-col">
-      <p className="flex items-baseline gap-1 font-mono text-[32px] font-medium leading-none text-[var(--color-secondary)]">
+      <p className="flex items-baseline gap-1 font-mono text-[32px] font-medium leading-none tabular-nums text-[var(--color-secondary)]">
         <span>{value}</span>
         <span aria-hidden="true" className="text-[var(--accent-fire)]">
           +

@@ -135,7 +135,7 @@ export function HeroProductMobile() {
               })}
               onClick={() => goTo(i)}
               className={cn(
-                "rounded-pill border px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.1em]",
+                "rounded-full border px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.1em]",
                 "transition-colors duration-200 active:scale-[0.94]",
                 isActive
                   ? "border-[var(--color-secondary)] bg-[var(--color-secondary)] text-[var(--color-primary)]"

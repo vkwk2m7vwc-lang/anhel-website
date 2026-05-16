@@ -79,15 +79,69 @@ const config: Config = {
         body: ["clamp(16px, 1.2vw, 18px)", { lineHeight: "1.5" }],
         mono: ["11px", { lineHeight: "1.2", letterSpacing: "0.08em" }],
       },
+      fontWeight: {
+        /*
+         * Stage 5 Session 2 — фиксированная type scale Onest (4 веса).
+         * Tailwind по умолчанию даёт `font-thin`/`font-extralight`/.../
+         * `font-black`, что приводит к разбросу 6+ весов на одной странице
+         * (типичный AI-look). Здесь оставляем только 4 значения, прицельно
+         * совпадающие с тем, что реально шипит Onest variable:
+         *
+         *   font-regular   400 — body, описания, paragraph
+         *   font-medium    500 — подписи под цифрами, метки, мелкие H3
+         *   font-semibold  600 — H3, важные числа
+         *   font-bold      700 — H1/H2, hero, секционные заголовки
+         *
+         * Tailwind-стандартные классы (font-normal, font-medium,
+         * font-semibold, font-bold) продолжают работать как алиасы на
+         * те же веса. Extension добавляет `font-regular` как
+         * семантическое имя поверх стандарта.
+         */
+        regular: "400",
+        medium: "500",
+        semibold: "600",
+        bold: "700",
+      },
       letterSpacing: {
+        /*
+         * Stage 5 Session 2 — letter-spacing scale.
+         *   tracking-tighter (-0.04em) — H1/hero крупные заголовки
+         *   tracking-tight   (-0.02em) — H2 секционные заголовки
+         *   tracking-normal  (0)       — body, paragraph
+         *   tracking-wide    (0.05em)  — eyebrow, button labels
+         *   tracking-widest  (0.15em)  — uppercase eyebrow (mono-tag,
+         *                                 секционные метки)
+         *   tracking-mono    (0.08em)  — legacy, для mono-tag (остаётся)
+         *   tracking-hero    (-0.025em) — legacy для fontSize.hero
+         */
+        tighter: "-0.04em",
+        tight: "-0.02em",
+        normal: "0",
+        wide: "0.05em",
+        widest: "0.15em",
         mono: "0.08em",
         hero: "-0.025em",
       },
       borderRadius: {
+        /*
+         * Stage 5 Session 2 — фиксированный набор радиусов.
+         * AI-генерация тяготеет к большим скруглениям (rounded-2xl, 3xl).
+         * Профессиональный B2B-инженерный сайт — строже.
+         *
+         *   rounded-none  0    — острые углы, hairline-grid
+         *   rounded-sm    4    — кнопки, чипы, мелкие элементы
+         *   rounded       6    — DEFAULT, базовые карточки, поля форм
+         *   rounded-lg    12   — крупные карточки, секционные блоки
+         *   rounded-full  9999 — пилюли, аватары, точечные индикаторы
+         *
+         * Старые `rounded-md` (8px) и `rounded-pill` (9999) сняты —
+         * упоминания в коде переписаны: md → DEFAULT (6px) и pill → full.
+         */
+        none: "0",
         sm: "4px",
-        md: "8px",
-        lg: "16px",
-        pill: "9999px",
+        DEFAULT: "6px",
+        lg: "12px",
+        full: "9999px",
       },
       transitionTimingFunction: {
         "out-expo": "cubic-bezier(0.16, 1, 0.3, 1)",
