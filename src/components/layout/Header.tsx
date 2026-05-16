@@ -49,8 +49,14 @@ export function Header() {
   /**
    * NAV is rebuilt on every render because labels depend on the
    * translation function `t`. Stable hrefs only — keys come from the
-   * common.nav namespace. Order: Products · Documents · Objects ·
-   * Service · About · Contacts.
+   * common.nav namespace.
+   *
+   * Order (v1.20.5 — customer-journey reorder):
+   *   Products → Objects → Documents → About → Service → Contacts.
+   * Rationale: Products is the primary goal; Objects (social proof)
+   * follows immediately; Documentation supplies detail for serious
+   * buyers; About answers «who is selling»; Service is post-purchase
+   * (rarer); Contacts caps the journey as the conversion point.
    *
    * Products / Documents used to live in their own dropdown
    * (ProductsMenu / DocumentsMenu mega-menus); v1.20.3 simplified them
@@ -59,10 +65,10 @@ export function Header() {
    */
   const NAV = [
     { label: t("nav.products"), href: "/products" },
-    { label: t("nav.documents"), href: "/documents" },
     { label: t("nav.projects"), href: PROJECTS_PATH },
-    { label: t("nav.service"), href: "/service" },
+    { label: t("nav.documents"), href: "/documents" },
     { label: t("nav.about"), href: "/#about" },
+    { label: t("nav.service"), href: "/service" },
     { label: t("nav.contacts"), href: "/contacts" },
   ];
 

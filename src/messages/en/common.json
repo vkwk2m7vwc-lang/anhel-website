@@ -107,7 +107,29 @@
     "section_navigation": "Navigation",
     "section_contacts": "Contact",
     "go_to_section": "Go to section",
-    "office_line": "St. Petersburg, Russia"
+    "office_line": "St. Petersburg, Russia",
+    "eyebrow_products": "PRODUCTS",
+    "eyebrow_company": "COMPANY",
+    "phone_label": "PHONE",
+    "email_label": "EMAIL",
+    "families": {
+      "pumps": {
+        "title": "Pumping stations",
+        "subtitle": "5 series — water supply, firefighting, heating"
+      },
+      "heating_unit": {
+        "title": "Heating units",
+        "subtitle": "8 BHU modules"
+      },
+      "water_treatment": {
+        "title": "Water treatment",
+        "subtitle": "Filtration, softening"
+      },
+      "control_systems": {
+        "title": "Control panels",
+        "subtitle": "5 series — VFD, FPS, SCS, SPS"
+      }
+    }
   },
   "ui": {
     "breadcrumbs_aria": "Breadcrumbs",

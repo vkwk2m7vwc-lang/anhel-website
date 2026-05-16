@@ -3,13 +3,16 @@
 import { AnimatePresence, motion, type PanInfo } from "framer-motion";
 import { Link } from "@/navigation";
 import { useEffect, useRef } from "react";
-import { X, Phone, Mail, MapPin } from "lucide-react";
+import { X } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { CONTACTS } from "@/lib/contacts";
 import { PROJECTS_PATH } from "@/lib/routes";
+import { LanguageSwitcher } from "./LanguageSwitcher";
+import { ThemeToggle } from "./ThemeToggle";
 
 /**
- * Full-screen mobile menu — the only navigation surface below md.
+ * Full-screen mobile menu (B3 minimalist) — the only navigation surface
+ * below md.
  *
  * Behaviour:
  *   - Mounted unconditionally; AnimatePresence handles show/hide so
@@ -20,21 +23,37 @@ import { PROJECTS_PATH } from "@/lib/routes";
  *   - First focusable element (first nav link) receives focus on open
  *     so screen readers announce where they landed
  *
- * Contents (single flat list, large type like terminal-industries):
- *   1. Навигация — Продукты, Документация, Объекты, Сервис, О компании,
- *      Контакты. Plain links, no accordions.
- *   2. Контакты — phone + email + one-line address
+ * Contents — typography-only, no leading icons on entries:
+ *   1. Sticky top bar: ANHEL® · LanguageSwitcher · ThemeToggle · ✕
+ *   2. ПРОДУКЦИЯ — 4 product families (title 17px / subtitle 12-13px).
+ *      Hover/focus reveals a 2px accent line on the left edge.
+ *   3. КОМПАНИЯ — 4 plain links (15px): Objects, Documents, Service, About.
+ *      Order follows the desktop customer-journey reorder (v1.20.5).
+ *   4. Footer block on a secondary background — phone (tap-to-call) and
+ *      email (mailto). Uppercase labels left, value right.
  *
- * Mega-menu accordions for Продукты / Документация were removed in
- * v1.20.3 (feat/header-simplify-megamenu) together with the desktop
- * dropdowns — Продукты now points at /products (4-direction grid) and
- * Документация at /documents (all PDFs by type).
+ * No icons live next to product entries (anti-AI rule per client). The
+ * close glyph in the top bar keeps stroke-width 1.5 like the rest of
+ * the header chrome.
  *
  * Rendered only below md via the parent Header.
  *
- * i18n: section titles and aria-labels resolve from `common.mobile_menu`,
- * nav labels from `common.nav`.
+ * i18n: section titles, eyebrows, family titles/subtitles, contact
+ * labels, and aria-strings resolve from `common.mobile_menu` /
+ * `common.nav` / `common.aria`.
  */
+
+/**
+ * Product families shown in the «ПРОДУКЦИЯ» group. Title/subtitle keys
+ * live under `common.mobile_menu.families.*` and hrefs resolve through
+ * the locale-prefixed router (`@/navigation`'s `Link`).
+ */
+const PRODUCT_FAMILIES = [
+  { key: "pumps", href: "/products/pumps" },
+  { key: "heating_unit", href: "/products/heating-unit" },
+  { key: "water_treatment", href: "/products/water-treatment" },
+  { key: "control_systems", href: "/products/control-systems" },
+] as const;
 
 export function MobileMenu({
   isOpen,
@@ -45,23 +64,23 @@ export function MobileMenu({
 }) {
   const t = useTranslations("common");
   const tMobile = useTranslations("common.mobile_menu");
+  const tFamilies = useTranslations("common.mobile_menu.families");
   const tNav = useTranslations("common.nav");
   const tAria = useTranslations("common.aria");
   const panelRef = useRef<HTMLDivElement>(null);
   const firstLinkRef = useRef<HTMLAnchorElement>(null);
 
   /**
-   * Flat nav — same items as Header desktop NAV, rebuilt each render so
-   * labels follow t() refresh. Hrefs static. Order matches the desktop
-   * row.
+   * «КОМПАНИЯ» list — plain links matching the desktop customer-journey
+   * order: Objects → Documents → Service → About. Contacts is excluded
+   * here on purpose; it lives in the footer block as tap-to-call /
+   * mailto so the user always has the office one tap away.
    */
-  const NAV = [
-    { label: tNav("products"), href: "/products" },
-    { label: tNav("documents"), href: "/documents" },
+  const COMPANY_NAV = [
     { label: tNav("projects"), href: PROJECTS_PATH },
+    { label: tNav("documents"), href: "/documents" },
     { label: tNav("service"), href: "/service" },
     { label: tNav("about"), href: "/#about" },
-    { label: tNav("contacts"), href: "/contacts" },
   ];
 
   // Body-scroll lock + initial focus. We read and restore the prior
@@ -131,7 +150,7 @@ export function MobileMenu({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.25 }}
+          transition={{ duration: 0.2 }}
           className="fixed inset-0 z-[100] bg-[var(--color-primary)] md:hidden"
         >
           <motion.div
@@ -142,16 +161,18 @@ export function MobileMenu({
             initial={{ y: "-100%" }}
             animate={{ y: 0 }}
             exit={{ y: "-100%" }}
-            transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
             className="relative flex h-full flex-col bg-[var(--color-primary)]"
           >
             {/* Drag handle — visual affordance for the swipe-down gesture. */}
-            <div className="flex justify-center pt-3" aria-hidden="true">
+            <div className="flex justify-center pt-2" aria-hidden="true">
               <div className="h-[3px] w-10 rounded-full bg-[var(--color-secondary)]/20" />
             </div>
 
-            {/* Top bar: brand wordmark + close X */}
-            <div className="flex items-center justify-between px-6 pb-4 pt-4">
+            {/* Sticky top bar: ANHEL® wordmark + Language + Theme + Close.
+                Sits inside the scrolling container at top: 0 so the brand
+                stays anchored while the nav list scrolls. */}
+            <div className="sticky top-0 z-10 flex items-center justify-between border-b border-[var(--color-hairline)] bg-[var(--color-primary)] px-5 py-3">
               <Link
                 href="/"
                 onClick={onClose}
@@ -160,62 +181,125 @@ export function MobileMenu({
               >
                 {t("brand.name")}
               </Link>
-              <button
-                type="button"
-                onClick={onClose}
-                aria-label={tAria("close_menu")}
-                className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[var(--color-secondary)]/20 text-[var(--color-secondary)]"
-              >
-                <X size={18} strokeWidth={1.5} aria-hidden="true" />
-              </button>
+              <div className="flex items-center gap-2">
+                <LanguageSwitcher />
+                <ThemeToggle />
+                <button
+                  type="button"
+                  onClick={onClose}
+                  aria-label={tAria("close_menu")}
+                  className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[var(--color-secondary)]/20 text-[var(--color-secondary)]"
+                >
+                  <X size={18} strokeWidth={1.5} aria-hidden="true" />
+                </button>
+              </div>
             </div>
-
-            <div className="h-px bg-[var(--color-hairline)]" aria-hidden="true" />
 
             <nav
               aria-label={tAria("main_nav")}
-              className="flex flex-1 flex-col gap-8 overflow-y-auto px-6 py-8"
+              className="flex flex-1 flex-col overflow-y-auto"
             >
-              <section>
-                <p className="mono-tag mb-4">{tMobile("section_navigation")}</p>
-                <ul className="flex flex-col divide-y divide-[var(--color-hairline)]">
-                  {NAV.map((item, i) => (
-                    <li key={item.href}>
-                      <Link
-                        ref={i === 0 ? firstLinkRef : undefined}
-                        href={item.href}
-                        onClick={onClose}
-                        className="block py-4 font-display text-2xl font-medium text-[var(--color-secondary)] transition-colors hover:text-[var(--color-secondary)]/80"
-                      >
-                        {item.label}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </section>
+              {/* ─── ПРОДУКЦИЯ ─────────────────────────────────────── */}
+              <p
+                className="pt-6 pb-2 px-5 font-mono text-[11px] uppercase tracking-[0.16em] text-[var(--color-secondary)]/55"
+                role="heading"
+                aria-level={2}
+              >
+                {tMobile("eyebrow_products")}
+              </p>
+              <ul className="flex flex-col">
+                {PRODUCT_FAMILIES.map((fam, i) => (
+                  <li
+                    key={fam.key}
+                    className="border-b border-[var(--color-hairline)]"
+                  >
+                    <Link
+                      ref={i === 0 ? firstLinkRef : undefined}
+                      href={fam.href}
+                      onClick={onClose}
+                      className="group relative block px-5 py-4 transition-colors [@media(hover:hover)]:hover:bg-[var(--color-hover-tint)] focus-visible:bg-[var(--color-hover-tint)]"
+                    >
+                      {/* B3 accent line — 2px vertical bar on the left edge
+                          revealed on hover/focus. accent-fire stays neutral
+                          across light/dark themes. */}
+                      <span
+                        aria-hidden="true"
+                        className="absolute inset-y-0 left-0 w-[2px] bg-[var(--accent-fire)] opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-focus-visible:opacity-100"
+                      />
+                      <span className="block font-display text-[17px] font-medium leading-snug text-[var(--color-secondary)]">
+                        {tFamilies(`${fam.key}.title`)}
+                      </span>
+                      <span className="mt-1 block text-[12.5px] leading-snug text-[var(--color-secondary)]/60">
+                        {tFamilies(`${fam.key}.subtitle`)}
+                      </span>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
 
-              <section className="mt-auto space-y-3 border-t border-[var(--color-hairline)] pt-8">
-                <p className="mono-tag">{tMobile("section_contacts")}</p>
+              {/* ─── КОМПАНИЯ ──────────────────────────────────────── */}
+              <p
+                className="pt-6 pb-2 px-5 font-mono text-[11px] uppercase tracking-[0.16em] text-[var(--color-secondary)]/55"
+                role="heading"
+                aria-level={2}
+              >
+                {tMobile("eyebrow_company")}
+              </p>
+              <ul className="flex flex-col">
+                {COMPANY_NAV.map((item) => (
+                  <li
+                    key={item.href}
+                    className="border-b border-[var(--color-hairline)]"
+                  >
+                    <Link
+                      href={item.href}
+                      onClick={onClose}
+                      className="group relative block px-5 py-[15px] text-[15px] text-[var(--color-secondary)] transition-colors [@media(hover:hover)]:hover:bg-[var(--color-hover-tint)] focus-visible:bg-[var(--color-hover-tint)]"
+                    >
+                      <span
+                        aria-hidden="true"
+                        className="absolute inset-y-0 left-0 w-[2px] bg-[var(--accent-fire)] opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-focus-visible:opacity-100"
+                      />
+                      {item.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+
+              {/* spacer pushes the footer block to the bottom on tall screens
+                  while the nav still scrolls naturally on short ones. */}
+              <div className="flex-1" aria-hidden="true" />
+
+              {/* ─── Footer contacts ───────────────────────────────── */}
+              <section
+                className="border-t border-[var(--color-hairline)] bg-[var(--color-hover-tint)] px-5 py-4"
+                aria-label={tMobile("section_contacts")}
+              >
                 <a
                   href={`tel:${CONTACTS.phoneTel}`}
                   onClick={onClose}
-                  className="flex items-center gap-3 font-mono text-base text-[var(--color-secondary)]"
+                  className="flex items-center justify-between py-1"
+                  aria-label={tAria("call_phone", { phone: CONTACTS.phone })}
                 >
-                  <Phone size={16} strokeWidth={1.5} aria-hidden="true" />
-                  {CONTACTS.phone}
+                  <span className="font-mono text-[11px] uppercase tracking-[0.16em] text-[var(--color-secondary)]/55">
+                    {tMobile("phone_label")}
+                  </span>
+                  <span className="font-mono text-[15px] font-medium tracking-[0.02em] text-[var(--color-secondary)]">
+                    {CONTACTS.phone}
+                  </span>
                 </a>
                 <a
                   href={`mailto:${CONTACTS.email}`}
                   onClick={onClose}
-                  className="flex items-center gap-3 text-base text-[var(--color-secondary)]"
+                  className="flex items-center justify-between py-1"
                 >
-                  <Mail size={16} strokeWidth={1.5} aria-hidden="true" />
-                  {CONTACTS.email}
+                  <span className="font-mono text-[11px] uppercase tracking-[0.16em] text-[var(--color-secondary)]/55">
+                    {tMobile("email_label")}
+                  </span>
+                  <span className="text-[15px] font-medium text-[var(--color-secondary)]">
+                    {CONTACTS.email}
+                  </span>
                 </a>
-                <p className="flex items-center gap-3 text-base text-[var(--color-secondary)]/70">
-                  <MapPin size={16} strokeWidth={1.5} aria-hidden="true" />
-                  {tMobile("office_line")}
-                </p>
               </section>
             </nav>
           </motion.div>

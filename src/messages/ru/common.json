@@ -107,7 +107,29 @@
     "section_navigation": "Навигация",
     "section_contacts": "Контакты",
     "go_to_section": "Перейти к разделу",
-    "office_line": "Санкт-Петербург"
+    "office_line": "Санкт-Петербург",
+    "eyebrow_products": "ПРОДУКЦИЯ",
+    "eyebrow_company": "КОМПАНИЯ",
+    "phone_label": "ТЕЛЕФОН",
+    "email_label": "EMAIL",
+    "families": {
+      "pumps": {
+        "title": "Насосные станции",
+        "subtitle": "5 серий — водоснабжение, пожаротушение, отопление"
+      },
+      "heating_unit": {
+        "title": "Тепловые пункты",
+        "subtitle": "8 модулей БИТП"
+      },
+      "water_treatment": {
+        "title": "Водоподготовка",
+        "subtitle": "Фильтрация, умягчение"
+      },
+      "control_systems": {
+        "title": "Шкафы управления",
+        "subtitle": "5 серий — ЧРП, ППА, ПДВ, КНС"
+      }
+    }
   },
   "ui": {
     "breadcrumbs_aria": "Хлебные крошки",
