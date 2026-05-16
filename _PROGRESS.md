@@ -2438,3 +2438,77 @@ Mobile Performance 83 — выше порога 70+ из ТЗ. LCP 3.7s оста
 ### Merge
 
 Squash-merge ветки `perf/audit-session-1` в `main` + тэг `v1.18-perf-audit`. Vercel перевыпустит production автоматически.
+
+
+---
+
+## Этап 5, Сессия 2 — Анти-AI типографика (2026-05-16)
+
+**Ветка:** `perf/audit-session-2-typography` → squash-merge в main, тэг `v1.19-typography`
+**ТЗ:** uploads/cowork_stage_5_session_2_typography.md
+**Режим:** автономный (Alexey AFK)
+
+### Замечание про локальный билд
+
+После npm install --no-save lighthouse@latest на эту сессию локальный билд `next build` начал падать `Module not found: Can't resolve '@/lib/fonts'` и т.п. — даже при rollback на `main` (известно работающий коммит). Это локальная порча node_modules: `npm ci` + `rm -rf node_modules && npm install` не восстанавливают. Production-сборка на Vercel CI (изолированный clean install) идёт корректно — что подтверждено успешным деплоем v1.18-perf-audit. Поэтому верификация Session 2 — через Vercel preview, а не локальный `next build`.
+
+### Что сделано
+
+**1. feat(fonts): self-host Onest, swap body+display from Inter to Onest** (`3a79b59`)
+
+Onest стал основным шрифтом ANHEL после Сессии 2.
+
+- `public/fonts/onest/` — 4 woff2 (cyrillic-ext / cyrillic / latin-ext / latin), variable font (один файл покрывает 4 веса 400/500/600/700 для каждого Unicode-сабсета). `_source.css` сохранён как референс.
+- `public/fonts/fonts.css` — добавлены 16 `@font-face` блоков Onest, URL переписаны на `/fonts/onest/*`.
+- `scripts/fetch-fonts.sh` — добавлена строка `Onest:wght@400;500;600;700` для воспроизводимой регенерации (`npm run fonts:fetch`).
+- `src/app/globals.css` — `--font-display` и `--font-body` начинаются с `Onest`. Inter Tight / Inter оставлены в fallback-цепочке на случай если woff2 не догрузится. JetBrains Mono для tech-таблиц и mono-tag остаётся как есть.
+- `src/app/[locale]/layout.tsx` — `preload` переключён с `Inter Tight cyrillic + Inter cyrillic` на `Onest cyrillic + Onest latin`. Один файл покрывает все 4 веса для каждого сабсета, так что 2 preload-тега достаточно для всего сайта.
+
+**Решение по EN/TR:** оставил Onest для всех 3 локалей. Onest variable хорошо читается и в латинице, IBM Plex Sans как fallback не требуется.
+
+**Соответствие ТЗ по весам:** Onest шипит реальные веса 400/500/600/700 (не 650/760 — это Inter-style веса, которых у Onest нет физически). Использую 400/500/600/700 как есть.
+
+**2. feat(typography): type scale, tabular-nums, radii, lucide normalize** (`201ae90`)
+
+Один коммит, тематически сгруппированный.
+
+`tailwind.config.ts`:
+- `fontWeight`: добавлены семантические алиасы `regular/medium/semibold/bold` (400/500/600/700). Tailwind-стандартные классы (`font-normal`, `font-medium`, `font-semibold`, `font-bold`) продолжают работать. Это закрывает риск разброса 6+ весов на одной странице.
+- `letterSpacing`: добавлены `tighter` (-0.04em), `tight` (-0.02em), `normal` (0), `wide` (0.05em), `widest` (0.15em). `mono` (0.08em) и `hero` (-0.025em) остаются legacy.
+- `borderRadius`: переработан в фиксированный набор:
+  - `rounded-none` (0)
+  - `rounded-sm` (4 px) — кнопки, чипы, мелкие элементы
+  - `rounded` DEFAULT (6 px) — базовые карточки, поля форм
+  - `rounded-lg` (12 px) — крупные карточки, секционные блоки
+  - `rounded-full` (9999) — пилюли, аватары, точечные индикаторы
+  - Удалены `rounded-md` (8 px) и `rounded-pill` (9999) — все упоминания переписаны.
+
+`globals.css`:
+- `.tabular-nums` utility — `font-variant-numeric: tabular-nums` + `font-feature-settings: "tnum" 1`. Для всех мест с числами в столбцах или динамически меняющимися значениями.
+
+Замены по коду (через `python3 re.sub`, 19 файлов):
+- `rounded-md` → `rounded` (28 instances)
+- `rounded-pill` → `rounded-full` (4 instances)
+- `font-extralight` → `font-normal` (2 instances, удаление лишнего веса)
+
+Точечные правки:
+- `HeroCounters` / `HeroCountersMobile` — `tabular-nums` на цифрах счётчиков (150+ / 12+ / 4+ / 24+).
+- `TechSpecsGrid` — `tabular-nums` на значениях ТТХ (мощность, габариты, расход).
+- `VpuModificationsTable` — `tabular-nums` на колонках flow и dimensions.
+- `ProductHero` h1 — `tracking-tight` на mobile / `tracking-tighter` на lg+ (по ТЗ для H1).
+- `AboutSection` h2 — `tracking-tight` + `text-balance`.
+
+Lucide:
+- 6 файлов прошедших нормализацию `strokeWidth={1.75}` → `strokeWidth={1.5}`: `Header`, `MobileMenu`, `ThemeToggle`, `LanguageSwitcher`, `ProductsMenu`, `DocumentsMenu`, `HeroBgCarousel`. Все lucide-react иконки в `src/components/{layout,hero,product-page}/` теперь имеют единый `strokeWidth=1.5`.
+- `strokeWidth={2}` (Tailwind/lucide default) в lucide-react контексте не найдено — все иконки уже были тоньше дефолта.
+- `strokeWidth < 1` упоминания (~120 instances) — это inline SVG paths в Lakhta-сцене и других проектных графиках, не lucide-icons; их не трогаем.
+
+### Что НЕ сделано
+
+- Шрифтовые веса 650/760 из ТЗ — у Onest их физически нет. Использованы 400/500/600/700 как реально доступные.
+- EN/TR замена Onest на IBM Plex Sans — не понадобилось, Onest читается чисто на латинице.
+- Локальный `next build` для верификации — не работает из-за порчи node_modules после npm install lighthouse (см. примечание выше). Верификация через Vercel CI.
+
+### Метрики
+
+Заполняется после Vercel-сборки и Lighthouse.
