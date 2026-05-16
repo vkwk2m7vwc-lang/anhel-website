@@ -1,69 +1,57 @@
 "use client";
 
 import { motion } from "framer-motion";
+import {
+  VPU_ANHEL_MODIFICATIONS,
+  type VpuModification,
+  type VpuModificationId,
+} from "@/content/products/vpu-anhel-series-modifications";
 
 /**
- * One row in the VPU Anhel Series modifications table.
- *
- * The series ships in 4 modifications, distinguished by the number of
- * parallel filtration lines and the maximum flow they handle. This is
- * the single most important visual on the page — the row the client
- * uses to map their flow requirement to a specific model.
+ * Локализованная обёртка вокруг таблицы модельного ряда.
+ * Кол-во столбцов и сами цифры — едины (источник — VPU_ANHEL_MODIFICATIONS);
+ * локали приносят только заголовки колонок, текст секции и сноску.
  */
-export type VpuModification = {
-  /** Stable id (e.g. "lines-2"). */
-  id: string;
-  /** Display station name, e.g. «ВПУ ANHEL (2 линии)». */
-  station: string;
-  /** Compact lines label shown in the leftmost column, e.g. «2 линии». */
-  linesLabel: string;
-  /** Max flow display value, e.g. «до 21,9» or «от 22,0 до 35,9». */
-  flow: string;
-  /** Flow unit suffix, e.g. «м³/ч». Optional so EN/TR can swap. */
-  flowUnit?: string;
-};
-
 export type VpuModificationsContent = {
-  /** Mono tag, e.g. «03 · МОДЕЛЬНЫЙ РЯД». */
+  /** Mono tag, e.g. «05 · МОДЕЛЬНЫЙ РЯД». */
   tag: string;
   /** Section h2, e.g. «4 модификации по линиям фильтрации». */
   title: string;
   /** One-line caption / lede on the right. */
   lede?: string;
-  /** Header labels for the table columns. */
+  /** Header labels for the 5 columns. */
   headerStation: string;
   headerLines: string;
   headerFlow: string;
-  /** 4 modifications in display order, smallest first. */
-  rows: VpuModification[];
-  /** Caption below the table, e.g. about flow units, contact for sizing. */
+  headerDimensions: string;
+  headerLamps: string;
+  /** Caption below the table — про единицы, формат и т.д. */
   footnote?: string;
 };
 
+type Locale = "ru" | "en" | "tr";
+
 /**
- * Modifications table — the centerpiece of /water-treatment/anhel-series.
+ * Modifications table — главный визуальный блок страницы серии.
  *
- * Layout:
- *   ┌──────────────────────────┬───────────┬──────────────────────┐
- *   │ Тип станции              │ Линии     │ Макс. расход         │
- *   ├──────────────────────────┼───────────┼──────────────────────┤
- *   │ ВПУ ANHEL (2 линии)      │  2 линии  │ до 21,9 м³/ч         │
- *   │ ВПУ ANHEL (3 линии)      │  3 линии  │ от 22,0 до 35,9 м³/ч │
- *   │ ВПУ ANHEL (4 линии)      │  4 линии  │ от 36,0 до 45,9 м³/ч │
- *   │ ВПУ ANHEL (5 линий)      │  5 линий  │ от 46,0 до 55,9 м³/ч │
- *   └──────────────────────────┴───────────┴──────────────────────┘
+ * 5 столбцов: Тип станции / Линии / Макс. расход / Габариты / УФ-ламп.
+ * Данные строк приходят из единого `VPU_ANHEL_MODIFICATIONS` (тот же
+ * источник, что и быстрый подбор + PDF-генератор), локализованные
+ * имена выбираются по `locale` (`nameRu` / `nameEn` / `nameTr` /
+ * `flowLabel`).
  *
- * Mobile: collapses to one column per row — each modification renders
- * as a card with station name on top, lines + flow stacked below.
- *
- * The whole section uses the `--accent-current` of the parent
- * ProductPageShell (treatment accent for water-treatment family) for
- * the row hover ring and the lines pill border.
+ * Опциональный проп `highlightedId` — id модификации, подобранной
+ * через QuickQuoteSection. Если задан — соответствующая строка
+ * подсвечивается accent-рамкой. На мобиле подсвечивается карточка.
  */
 export function VpuModificationsTable({
   content,
+  locale,
+  highlightedId,
 }: {
   content: VpuModificationsContent;
+  locale: Locale;
+  highlightedId?: VpuModificationId | null;
 }) {
   return (
     <section
@@ -89,10 +77,9 @@ export function VpuModificationsTable({
           ) : null}
         </div>
 
-        {/* Desktop / tablet table. Hidden on mobile (<sm) — replaced by
-            card-list below. The header row uses mono-caps to match
-            other ANHEL grid section headers. */}
-        <div className="mt-12 hidden md:block md:mt-16">
+        {/* Desktop table — hidden on mobile. 5-column grid:
+            station(1.6) / lines(0.6) / flow(1.2) / dimensions(1.4) / lamps(0.5) */}
+        <div className="mt-12 hidden md:mt-16 md:block">
           <div
             role="table"
             aria-label={content.title}
@@ -100,24 +87,39 @@ export function VpuModificationsTable({
           >
             <div
               role="row"
-              className="grid grid-cols-[1.6fr_0.8fr_1.2fr] bg-[var(--color-hairline)]/40 px-6 py-4 font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/65 md:px-8"
+              className="grid grid-cols-[1.6fr_0.6fr_1.2fr_1.4fr_0.5fr] bg-[var(--color-hairline)]/40 px-6 py-4 font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/65 md:px-8"
             >
               <span role="columnheader">{content.headerStation}</span>
               <span role="columnheader">{content.headerLines}</span>
               <span role="columnheader">{content.headerFlow}</span>
+              <span role="columnheader">{content.headerDimensions}</span>
+              <span role="columnheader" className="text-right">{content.headerLamps}</span>
             </div>
             <ul role="rowgroup" className="flex flex-col gap-px bg-[var(--color-hairline)]">
-              {content.rows.map((row, i) => (
-                <ModificationRow key={row.id} row={row} index={i} />
+              {VPU_ANHEL_MODIFICATIONS.map((row, i) => (
+                <ModificationRow
+                  key={row.id}
+                  row={row}
+                  locale={locale}
+                  index={i}
+                  highlighted={row.id === highlightedId}
+                />
               ))}
             </ul>
           </div>
         </div>
 
-        {/* Mobile (<md) card list — each row as a tappable card. */}
+        {/* Mobile (<md) card list */}
         <ul className="mt-12 grid grid-cols-1 gap-px bg-[var(--color-hairline)] md:hidden">
-          {content.rows.map((row, i) => (
-            <ModificationCard key={row.id} row={row} index={i} content={content} />
+          {VPU_ANHEL_MODIFICATIONS.map((row, i) => (
+            <ModificationCard
+              key={row.id}
+              row={row}
+              locale={locale}
+              index={i}
+              content={content}
+              highlighted={row.id === highlightedId}
+            />
           ))}
         </ul>
 
@@ -131,12 +133,26 @@ export function VpuModificationsTable({
   );
 }
 
+function getName(row: VpuModification, locale: Locale): string {
+  if (locale === "en") return row.nameEn;
+  if (locale === "tr") return row.nameTr;
+  return row.nameRu;
+}
+
+function getFlow(row: VpuModification, locale: Locale): string {
+  return row.flowLabel[locale];
+}
+
 function ModificationRow({
   row,
+  locale,
   index,
+  highlighted,
 }: {
   row: VpuModification;
+  locale: Locale;
   index: number;
+  highlighted: boolean;
 }) {
   return (
     <motion.li
@@ -149,28 +165,52 @@ function ModificationRow({
         ease: [0.16, 1, 0.3, 1],
         delay: Math.min(index, 3) * 0.06,
       }}
-      className="group relative grid grid-cols-[1.6fr_0.8fr_1.2fr] items-baseline gap-4 bg-[var(--color-primary)] px-6 py-6 transition-colors duration-300 [@media(hover:hover)]:hover:bg-[var(--color-hover-tint)] md:px-8 md:py-7"
+      data-highlighted={highlighted || undefined}
+      className={[
+        "group relative grid grid-cols-[1.6fr_0.6fr_1.2fr_1.4fr_0.5fr] items-baseline gap-4 px-6 py-6 transition-colors duration-300 md:px-8 md:py-7",
+        highlighted
+          ? "bg-[var(--accent-current)]/8"
+          : "bg-[var(--color-primary)] [@media(hover:hover)]:hover:bg-[var(--color-hover-tint)]",
+      ].join(" ")}
     >
       <span
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 ring-1 ring-transparent transition-[box-shadow,ring-color] duration-300 [@media(hover:hover)]:group-hover:ring-[var(--accent-current)]"
+        className={[
+          "pointer-events-none absolute inset-0 ring-1 transition-[box-shadow,ring-color] duration-300",
+          highlighted
+            ? "ring-[var(--accent-current)]"
+            : "ring-transparent [@media(hover:hover)]:group-hover:ring-[var(--accent-current)]",
+        ].join(" ")}
       />
       <span
         role="cell"
         className="font-display text-[18px] font-medium leading-tight text-[var(--color-secondary)] md:text-[22px]"
       >
-        {row.station}
+        {getName(row, locale)}
       </span>
-      <span role="cell" className="font-mono text-[12px] uppercase tracking-[0.1em] text-[var(--color-secondary)]/70 md:text-[13px]">
-        {row.linesLabel}
+      <span
+        role="cell"
+        className="font-mono text-[12px] uppercase tracking-[0.1em] text-[var(--color-secondary)]/70 md:text-[13px]"
+      >
+        {row.linesCount}
       </span>
-      <span role="cell" className="font-display text-[16px] font-medium text-[var(--color-secondary)] md:text-[20px]">
-        {row.flow}
-        {row.flowUnit ? (
-          <span className="ml-1 font-mono text-[12px] uppercase tracking-[0.08em] text-[var(--color-secondary)]/55 md:text-[13px]">
-            {row.flowUnit}
-          </span>
-        ) : null}
+      <span
+        role="cell"
+        className="font-display text-[16px] font-medium text-[var(--color-secondary)] md:text-[18px]"
+      >
+        {getFlow(row, locale)}
+      </span>
+      <span
+        role="cell"
+        className="font-mono text-[12px] tracking-[0.02em] text-[var(--color-secondary)]/75 md:text-[13px]"
+      >
+        {row.dimensions}
+      </span>
+      <span
+        role="cell"
+        className="text-right font-mono text-[12px] tabular-nums text-[var(--color-secondary)]/75 md:text-[14px]"
+      >
+        {row.linesCount}
       </span>
     </motion.li>
   );
@@ -178,12 +218,16 @@ function ModificationRow({
 
 function ModificationCard({
   row,
+  locale,
   index,
   content,
+  highlighted,
 }: {
   row: VpuModification;
+  locale: Locale;
   index: number;
   content: VpuModificationsContent;
+  highlighted: boolean;
 }) {
   return (
     <motion.li
@@ -195,36 +239,58 @@ function ModificationCard({
         ease: [0.16, 1, 0.3, 1],
         delay: Math.min(index, 3) * 0.06,
       }}
-      className="group relative flex flex-col gap-4 bg-[var(--color-primary)] p-5 transition-colors duration-300 [@media(hover:hover)]:hover:bg-[var(--color-hover-tint)]"
+      data-highlighted={highlighted || undefined}
+      className={[
+        "group relative flex flex-col gap-4 p-5 transition-colors duration-300",
+        highlighted
+          ? "bg-[var(--accent-current)]/8"
+          : "bg-[var(--color-primary)] [@media(hover:hover)]:hover:bg-[var(--color-hover-tint)]",
+      ].join(" ")}
     >
       <span
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 ring-1 ring-transparent transition-[box-shadow,ring-color] duration-300 [@media(hover:hover)]:group-hover:ring-[var(--accent-current)]"
+        className={[
+          "pointer-events-none absolute inset-0 ring-1 transition-[box-shadow,ring-color] duration-300",
+          highlighted
+            ? "ring-[var(--accent-current)]"
+            : "ring-transparent [@media(hover:hover)]:group-hover:ring-[var(--accent-current)]",
+        ].join(" ")}
       />
-      <div>
-        <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/55">
-          {content.headerLines}
-        </p>
-        <p className="mt-1 font-mono text-[12px] uppercase tracking-[0.1em] text-[var(--color-secondary)]/85">
-          {row.linesLabel}
-        </p>
+      <div className="grid grid-cols-2 gap-2">
+        <div>
+          <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/55">
+            {content.headerLines}
+          </p>
+          <p className="mt-1 font-mono text-[14px] tabular-nums text-[var(--color-secondary)]/85">
+            {row.linesCount}
+          </p>
+        </div>
+        <div>
+          <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/55">
+            {content.headerLamps}
+          </p>
+          <p className="mt-1 font-mono text-[14px] tabular-nums text-[var(--color-secondary)]/85">
+            {row.linesCount}
+          </p>
+        </div>
       </div>
-      <div>
-        <h3 className="font-display text-[18px] font-medium leading-tight text-[var(--color-secondary)]">
-          {row.station}
-        </h3>
-      </div>
+      <h3 className="font-display text-[18px] font-medium leading-tight text-[var(--color-secondary)]">
+        {getName(row, locale)}
+      </h3>
       <div>
         <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/55">
           {content.headerFlow}
         </p>
         <p className="mt-1 font-display text-[18px] font-medium text-[var(--color-secondary)]">
-          {row.flow}
-          {row.flowUnit ? (
-            <span className="ml-1 font-mono text-[12px] uppercase tracking-[0.08em] text-[var(--color-secondary)]/55">
-              {row.flowUnit}
-            </span>
-          ) : null}
+          {getFlow(row, locale)}
+        </p>
+      </div>
+      <div>
+        <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/55">
+          {content.headerDimensions}
+        </p>
+        <p className="mt-1 font-mono text-[13px] text-[var(--color-secondary)]/80">
+          {row.dimensions}
         </p>
       </div>
     </motion.li>

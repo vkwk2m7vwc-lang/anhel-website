@@ -2,6 +2,7 @@ import type { ProductContent } from "./types";
 import type { VpuModificationsContent } from "@/components/products/water-treatment/VpuModificationsTable";
 import type { CompositionContent } from "@/components/products/water-treatment/CompositionList";
 import type { AutomationContent } from "@/components/products/water-treatment/AutomationSection";
+import type { QuickQuoteContent } from "@/components/products/water-treatment/QuickQuoteSection";
 import type { AdvantagesContent } from "./types";
 
 import {
@@ -10,6 +11,7 @@ import {
   principle as ruPrinciple,
   composition as ruComposition,
   automation as ruAutomation,
+  quickQuote as ruQuickQuote,
 } from "./locales/ru/water-treatment-anhel-series";
 import {
   content as enContent,
@@ -17,6 +19,7 @@ import {
   principle as enPrinciple,
   composition as enComposition,
   automation as enAutomation,
+  quickQuote as enQuickQuote,
 } from "./locales/en/water-treatment-anhel-series";
 import {
   content as trContent,
@@ -24,6 +27,7 @@ import {
   principle as trPrinciple,
   composition as trComposition,
   automation as trAutomation,
+  quickQuote as trQuickQuote,
 } from "./locales/tr/water-treatment-anhel-series";
 
 /**
@@ -41,6 +45,7 @@ export type VpuAnhelSeriesBundle = {
   principle: AdvantagesContent;
   composition: CompositionContent;
   automation: AutomationContent;
+  quickQuote: QuickQuoteContent;
 };
 
 const RU_BUNDLE: VpuAnhelSeriesBundle = {
@@ -49,6 +54,7 @@ const RU_BUNDLE: VpuAnhelSeriesBundle = {
   principle: ruPrinciple as AdvantagesContent,
   composition: ruComposition,
   automation: ruAutomation,
+  quickQuote: ruQuickQuote,
 };
 
 const EN_BUNDLE: VpuAnhelSeriesBundle = {
@@ -57,6 +63,7 @@ const EN_BUNDLE: VpuAnhelSeriesBundle = {
   principle: enPrinciple as AdvantagesContent,
   composition: enComposition,
   automation: enAutomation,
+  quickQuote: enQuickQuote,
 };
 
 const TR_BUNDLE: VpuAnhelSeriesBundle = {
@@ -65,6 +72,7 @@ const TR_BUNDLE: VpuAnhelSeriesBundle = {
   principle: trPrinciple as AdvantagesContent,
   composition: trComposition,
   automation: trAutomation,
+  quickQuote: trQuickQuote,
 };
 
 const BY_LOCALE: Record<string, VpuAnhelSeriesBundle> = {

@@ -2,6 +2,7 @@ import type { ProductContent } from "../../types";
 import type { VpuModificationsContent } from "@/components/products/water-treatment/VpuModificationsTable";
 import type { CompositionContent } from "@/components/products/water-treatment/CompositionList";
 import type { AutomationContent } from "@/components/products/water-treatment/AutomationSection";
+import type { QuickQuoteContent } from "@/components/products/water-treatment/QuickQuoteSection";
 
 /**
  * VPU ANHEL Series — EN translation. RU master in
@@ -14,9 +15,9 @@ export const content: ProductContent = {
   slug: "anhel-series",
   accent: "treatment",
 
-  metaTitle: "ANHEL Water Treatment Series — up to 56 m³/h — ANHEL®",
+  metaTitle: "ANHEL Water Treatment Series — for new residential developments up to 56 m³/h — ANHEL®",
   metaDescription:
-    "ANHEL Water Treatment Series — water treatment units with capacity up to 56 m³/h. Four modifications by number of filtration lines. Multi-stage filtration with UV disinfection. Compliant with СанПиН 2.1.4.1074-01.",
+    "ANHEL Water Treatment Series for new multi-unit residential developments. Capacity up to 56 m³/h, four modifications by filtration lines, UV disinfection. Compliant with СанПиН 2.1.4.1074-01.",
 
   hero: {
     breadcrumbs: [
@@ -28,7 +29,7 @@ export const content: ProductContent = {
     sectionTag: "01 · ENGINEERED EQUIPMENT · WATER TREATMENT",
     title: "ANHEL Water Treatment Series",
     subtitle:
-      "Water treatment units up to 56 m³/h. Multi-stage mechanical filtration and ultraviolet disinfection. Four modifications by filtration lines — matched to the flow of your facility.",
+      "Water treatment units up to 56 m³/h for new multi-unit residential developments. Multi-stage mechanical filtration and ultraviolet disinfection. Four modifications by filtration lines — matched to the building's flow rate.",
     image: {
       src: "/assets/products/water-treatment/anhel-series/hero.webp",
       alt: "ANHEL Water Treatment Series — 2-line modification (example)",
@@ -60,23 +61,23 @@ export const content: ProductContent = {
 
   description: {
     tag: "03 · PURPOSE",
-    title: "Potable water in line with СанПиН requirements",
+    title: "Potable water for new residential developments",
     paragraphs: [
-      "The ANHEL Water Treatment Series is designed to produce purified water in line with СанПиН 2.1.4.1074-01 (Drinking water. Hygienic requirements for water quality of centralised drinking water supply systems. Quality control). Units are used for disinfection and purification of water from the central drinking-water supply.",
-      "Applications include residential and business complexes, medical and public institutions, water preparation upstream of pressure-boosting pump stations, and production facilities with technological-water quality requirements. The unit is installed in an enclosed heated room upstream of the pressure-boosting pump stations within the building's water supply system.",
+      "The ANHEL Water Treatment Series is built primarily for water treatment in new multi-unit residential developments. The unit sits in the building's plant room upstream of the pressure-boosting pump station and brings central drinking-water supply up to the level required by СанПиН 2.1.4.1074-01 (Drinking water. Hygienic requirements for water quality of centralised drinking water supply systems. Quality control).",
+      "Beyond residential, the series serves business centres, medical and public institutions, and production facilities with technological-water quality requirements. The unit must be installed in an enclosed heated room upstream of the pressure-boosting pump station in the building's water supply system.",
     ],
   },
 
   applications: {
     tag: "04 · APPLICATION",
     title: "Where the series fits",
-    lede: "From residential complexes to medical institutions — facilities with СанПиН 2.1.4.1074-01 requirements.",
+    lede: "Primary application — new multi-unit residential construction. Also used at other sites with СанПиН 2.1.4.1074-01 requirements.",
     items: [
       {
         id: "residential",
         mono: "01",
-        title: "Residential complexes",
-        example: "Multi-unit residential, apartments, mixed-use developments",
+        title: "New residential developments",
+        example: "New multi-unit residential buildings — the primary use case",
       },
       {
         id: "business",
@@ -217,38 +218,10 @@ export const modifications: VpuModificationsContent = {
   headerStation: "Station type",
   headerLines: "Lines",
   headerFlow: "Maximum flow",
-  rows: [
-    {
-      id: "lines-2",
-      station: "ANHEL Water Treatment (2 lines)",
-      linesLabel: "2 lines",
-      flow: "up to 21.9",
-      flowUnit: "m³/h",
-    },
-    {
-      id: "lines-3",
-      station: "ANHEL Water Treatment (3 lines)",
-      linesLabel: "3 lines",
-      flow: "22.0 to 35.9",
-      flowUnit: "m³/h",
-    },
-    {
-      id: "lines-4",
-      station: "ANHEL Water Treatment (4 lines)",
-      linesLabel: "4 lines",
-      flow: "36.0 to 45.9",
-      flowUnit: "m³/h",
-    },
-    {
-      id: "lines-5",
-      station: "ANHEL Water Treatment (5 lines)",
-      linesLabel: "5 lines",
-      flow: "46.0 to 55.9",
-      flowUnit: "m³/h",
-    },
-  ],
+  headerDimensions: "Dimensions H × W × D, mm",
+  headerLamps: "UV lamps",
   footnote:
-    "Installed power and overall dimensions depend on the modification and are confirmed during sizing. The questionnaire covers every parameter required to pick a model.",
+    "Installed power and weight depend on the modification and are confirmed during sizing. The questionnaire covers every parameter required to pick a model.",
 };
 
 export const principle = {
@@ -298,6 +271,46 @@ export const composition: CompositionContent = {
     "Shut-off and regulating valves",
     "Check valves",
   ],
+};
+
+export const quickQuote: QuickQuoteContent = {
+  tag: "02 · QUICK QUOTE",
+  title: "PDF quote by email in 30 seconds",
+  lede: "Enter the required flow rate — we'll match a modification and generate a commercial proposal in PDF.",
+  flowLabel: "Flow rate",
+  flowPlaceholder: "25",
+  flowUnit: "m³/h",
+  matchedTag: "MATCHED",
+  emptyLabel: "Enter the flow — the modification will be matched automatically",
+  oversizeTitle: "Flow above the typical range",
+  oversizeBody:
+    "The series is designed for up to 55.9 m³/h. For a non-standard configuration, contact us — we'll size the unit for your facility.",
+  oversizeCtaLabel: "Contact us",
+  oversizeCtaHref: "/contacts",
+  ctaPrimaryLabel: "Get the quote",
+  ctaSecondaryLabel: "Questionnaire",
+  ctaSecondaryHref: "/quiz/vpu",
+  divider: "or",
+  formTitle: "Contact details for the quote",
+  fieldName: "Contact person",
+  fieldNamePlaceholder: "John Smith",
+  fieldPhone: "Phone",
+  fieldPhonePlaceholder: "+7 ...",
+  fieldEmail: "Email",
+  fieldEmailPlaceholder: "name@company.com",
+  fieldCompany: "Company (optional)",
+  fieldCompanyPlaceholder: "Your company",
+  fieldObject: "Facility address",
+  fieldObjectPlaceholder: "City, project name, building...",
+  consentLabel:
+    "I consent to the processing of my personal data in accordance with the privacy policy.",
+  submitLabel: "Get the quote",
+  submitting: "Generating…",
+  successTitle: "Quote generated and sent",
+  successBody:
+    "The PDF quote downloaded automatically. A copy with the same parameters has gone to the ANHEL sales team — we'll call you within one business day.",
+  errorTitle: "Sending failed",
+  errorGeneric: "Something went wrong. Please try again or contact us directly.",
 };
 
 export const automation: AutomationContent = {

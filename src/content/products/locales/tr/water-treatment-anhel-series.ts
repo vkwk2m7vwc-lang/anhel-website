@@ -2,6 +2,7 @@ import type { ProductContent } from "../../types";
 import type { VpuModificationsContent } from "@/components/products/water-treatment/VpuModificationsTable";
 import type { CompositionContent } from "@/components/products/water-treatment/CompositionList";
 import type { AutomationContent } from "@/components/products/water-treatment/AutomationSection";
+import type { QuickQuoteContent } from "@/components/products/water-treatment/QuickQuoteSection";
 
 /**
  * VPU ANHEL Series — TR translation. RU master in
@@ -12,9 +13,9 @@ export const content: ProductContent = {
   slug: "anhel-series",
   accent: "treatment",
 
-  metaTitle: "ANHEL Su Arıtma Serisi — 56 m³/saat'e kadar — ANHEL®",
+  metaTitle: "ANHEL Su Arıtma Serisi — yeni konut yapımı için 56 m³/saat'e kadar — ANHEL®",
   metaDescription:
-    "ANHEL Su Arıtma Serisi — 56 m³/saat'e kadar kapasiteli su arıtma üniteleri. Filtrasyon hatlarına göre 4 modifikasyon. Çok kademeli filtrasyon ve UV dezenfeksiyon. СанПиН 2.1.4.1074-01 uyumlu.",
+    "Yeni çok daireli konut yapıları için ANHEL Su Arıtma Serisi. 56 m³/saat'e kadar kapasite, filtrasyon hatlarına göre 4 modifikasyon, UV dezenfeksiyon. СанПиН 2.1.4.1074-01 uyumlu.",
 
   hero: {
     breadcrumbs: [
@@ -26,7 +27,7 @@ export const content: ProductContent = {
     sectionTag: "01 · ENDÜSTRİYEL EKİPMAN · SU ARITMA",
     title: "ANHEL Su Arıtma Serisi",
     subtitle:
-      "56 m³/saat'e kadar su arıtma üniteleri. Çok kademeli mekanik filtrasyon ve ultraviyole dezenfeksiyon. Filtrasyon hatlarına göre 4 modifikasyon — tesisinizin debisine göre seçilir.",
+      "Yeni çok daireli konut yapıları için 56 m³/saat'e kadar su arıtma üniteleri. Çok kademeli mekanik filtrasyon ve ultraviyole dezenfeksiyon. Filtrasyon hatlarına göre 4 modifikasyon — binanın debisine göre seçilir.",
     image: {
       src: "/assets/products/water-treatment/anhel-series/hero.webp",
       alt: "ANHEL Su Arıtma Serisi — 2-hatlı modifikasyon örneği",
@@ -58,23 +59,23 @@ export const content: ProductContent = {
 
   description: {
     tag: "03 · AMAÇ",
-    title: "СанПиН gerekliliklerine uygun içme suyu",
+    title: "Yeni konut yapıları için içme suyu",
     paragraphs: [
-      "ANHEL Su Arıtma Serisi, СанПиН 2.1.4.1074-01 (İçme suyu. Merkezi içme suyu sağlama sistemlerinin su kalitesine ilişkin hijyenik gereklilikler. Kalite kontrolü) uyarınca arıtılmış su üretmek için tasarlanmıştır. Merkezi içme suyu şebekesinden gelen suyun dezenfeksiyonu ve arıtılması için kullanılır.",
-      "Uygulamalar; konut ve iş merkezlerini, tıbbi ve kamu kurumlarını, basınç yükseltme pompa istasyonları öncesindeki su hazırlığını ve teknolojik su kalitesi gereksinimleri olan üretim tesislerini kapsar. Ünite, binanın su besleme sistemindeki basınç yükseltme pompa istasyonları öncesinde, kapalı ve ısıtılan bir mahale yerleştirilir.",
+      "ANHEL Su Arıtma Serisi öncelikle yeni çok daireli konut yapılarında su arıtma için kullanılır. Ünite, binanın tesisat mahalinde basınç yükseltme pompa istasyonu öncesine yerleştirilir ve merkezi şebeke suyunu СанПиН 2.1.4.1074-01 (İçme suyu. Merkezi içme suyu sağlama sistemlerinin su kalitesine ilişkin hijyenik gereklilikler. Kalite kontrolü) gerekliliklerine uygun seviyeye getirir.",
+      "Konutlar dışında seri; iş merkezlerinde, tıbbi ve kamu kurumlarında ve teknolojik su kalitesi gereksinimleri olan üretim tesislerinde de çalışır. Şart — kapalı ve ısıtılan bir mahal ile binanın su besleme sisteminde basınç yükseltme pompa istasyonu öncesine bağlantı.",
     ],
   },
 
   applications: {
     tag: "04 · UYGULAMA",
     title: "Seri nerelerde kullanılır",
-    lede: "Konut sitelerinden tıbbi kurumlara — СанПиН 2.1.4.1074-01 gereksinimleri olan tesisler.",
+    lede: "Birincil uygulama — yeni çok daireli konut yapımı. СанПиН 2.1.4.1074-01 gereksinimleri olan diğer tesislerde de kullanılır.",
     items: [
       {
         id: "residential",
         mono: "01",
-        title: "Konut siteleri",
-        example: "Çok daireli konutlar, daireler, karma kullanımlı projeler",
+        title: "Yeni konut yapımı",
+        example: "Yeni çok daireli konut binaları — birincil kullanım senaryosu",
       },
       {
         id: "business",
@@ -215,38 +216,10 @@ export const modifications: VpuModificationsContent = {
   headerStation: "İstasyon tipi",
   headerLines: "Hatlar",
   headerFlow: "Maks. debi",
-  rows: [
-    {
-      id: "lines-2",
-      station: "ANHEL Su Arıtma (2 hat)",
-      linesLabel: "2 hat",
-      flow: "21,9'a kadar",
-      flowUnit: "m³/saat",
-    },
-    {
-      id: "lines-3",
-      station: "ANHEL Su Arıtma (3 hat)",
-      linesLabel: "3 hat",
-      flow: "22,0 ile 35,9 arası",
-      flowUnit: "m³/saat",
-    },
-    {
-      id: "lines-4",
-      station: "ANHEL Su Arıtma (4 hat)",
-      linesLabel: "4 hat",
-      flow: "36,0 ile 45,9 arası",
-      flowUnit: "m³/saat",
-    },
-    {
-      id: "lines-5",
-      station: "ANHEL Su Arıtma (5 hat)",
-      linesLabel: "5 hat",
-      flow: "46,0 ile 55,9 arası",
-      flowUnit: "m³/saat",
-    },
-  ],
+  headerDimensions: "Boyutlar Y × G × D, mm",
+  headerLamps: "UV lamba",
   footnote:
-    "Kurulu güç ve genel boyutlar modifikasyona göre değişir ve boyutlandırma sırasında belirlenir. Anket formu, model seçimi için gereken tüm parametreleri içerir.",
+    "Kurulu güç ve ağırlık modifikasyona göre değişir ve boyutlandırma sırasında belirlenir. Anket formu, model seçimi için gereken tüm parametreleri içerir.",
 };
 
 export const principle = {
@@ -296,6 +269,46 @@ export const composition: CompositionContent = {
     "Kapatma ve regülasyon vanaları",
     "Çek valfler",
   ],
+};
+
+export const quickQuote: QuickQuoteContent = {
+  tag: "02 · HIZLI TEKLİF",
+  title: "30 saniyede e-postaya PDF teklif",
+  lede: "Gerekli debiyi girin — sistem modifikasyonu eşleştirir ve PDF olarak ticari teklif oluşturur.",
+  flowLabel: "Debi",
+  flowPlaceholder: "25",
+  flowUnit: "m³/saat",
+  matchedTag: "EŞLEŞTİ",
+  emptyLabel: "Debiyi girin — modifikasyon otomatik olarak eşleşecek",
+  oversizeTitle: "Debi tipik aralığın üstünde",
+  oversizeBody:
+    "Seri 55,9 m³/saate kadar tasarlanmıştır. Standart dışı konfigürasyon için bizimle iletişime geçin — tesisiniz için ölçeklendireceğiz.",
+  oversizeCtaLabel: "İletişime geç",
+  oversizeCtaHref: "/contacts",
+  ctaPrimaryLabel: "Teklif al",
+  ctaSecondaryLabel: "Anket formu",
+  ctaSecondaryHref: "/quiz/vpu",
+  divider: "veya",
+  formTitle: "Teklif için iletişim bilgileri",
+  fieldName: "Yetkili kişi",
+  fieldNamePlaceholder: "Ad Soyad",
+  fieldPhone: "Telefon",
+  fieldPhonePlaceholder: "+90 ...",
+  fieldEmail: "E-posta",
+  fieldEmailPlaceholder: "ad@sirket.com",
+  fieldCompany: "Şirket (opsiyonel)",
+  fieldCompanyPlaceholder: "Şirketiniz",
+  fieldObject: "Tesis adresi",
+  fieldObjectPlaceholder: "Şehir, proje adı, blok...",
+  consentLabel:
+    "Kişisel verilerimin gizlilik politikasına uygun olarak işlenmesini kabul ediyorum.",
+  submitLabel: "Teklif al",
+  submitting: "Oluşturuluyor…",
+  successTitle: "Teklif oluşturuldu ve gönderildi",
+  successBody:
+    "PDF teklif otomatik olarak indirildi. Aynı parametrelerle bir kopya ANHEL satış ekibine gönderildi — bir iş günü içinde sizi arayacağız.",
+  errorTitle: "Gönderim başarısız",
+  errorGeneric: "Bir şeyler ters gitti. Lütfen tekrar deneyin veya doğrudan iletişime geçin.",
 };
 
 export const automation: AutomationContent = {
