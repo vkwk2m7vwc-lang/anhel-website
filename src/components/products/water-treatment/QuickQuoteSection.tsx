@@ -132,6 +132,14 @@ export function QuickQuoteSection({
   const [showForm, setShowForm] = useState<boolean>(false);
   const [submission, setSubmission] = useState<SubmissionState>({ kind: "idle" });
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+  /**
+   * Последние значения, переданные на превью. Используются как
+   * `defaultValue` при возврате из preview/error на форму, чтобы
+   * пользователь, закрывший превью ради опечатки, не вводил все 8
+   * полей заново. Сбрасывается на null после success — следующий
+   * ТКП начинается с чистой формы.
+   */
+  const [lastValues, setLastValues] = useState<FormValues | null>(null);
 
   // Parse flow safely — поддерживаем «10», «10.5», «10,5».
   const flow = useMemo(() => {
@@ -245,6 +253,11 @@ export function QuickQuoteSection({
       }
       setFieldErrors({});
 
+      // Запоминаем введённые значения ДО запроса. Если клиент закроет
+      // превью или сервер вернёт ошибку — форма перерисуется с этими
+      // `defaultValue`, чтобы 8 полей не пришлось заполнять заново.
+      setLastValues(values);
+
       setSubmission({ kind: "submitting" });
       const result = await callApi(values, false);
       if (!result.ok) {
@@ -281,6 +294,9 @@ export function QuickQuoteSection({
     a.click();
     a.remove();
     URL.revokeObjectURL(url);
+    // Очищаем lastValues — если пользователь захочет ещё один ТКП,
+    // форма начнётся с чистого листа (не с прошлых данных).
+    setLastValues(null);
     setSubmission({ kind: "success" });
   }, [submission, callApi]);
 
@@ -455,6 +471,7 @@ export function QuickQuoteSection({
                 placeholder={content.fieldNamePlaceholder}
                 required
                 autoComplete="name"
+                defaultValue={lastValues?.customerName}
               />
               <FieldInput
                 name="customerPhone"
@@ -465,6 +482,7 @@ export function QuickQuoteSection({
                 autoComplete="tel"
                 error={fieldErrors.customerPhone}
                 pattern="^[+]?[\d\s\-()]{7,40}$"
+                defaultValue={lastValues?.customerPhone}
               />
               <FieldInput
                 name="customerEmail"
@@ -474,6 +492,7 @@ export function QuickQuoteSection({
                 type="email"
                 autoComplete="email"
                 error={fieldErrors.customerEmail}
+                defaultValue={lastValues?.customerEmail}
               />
               <FieldInput
                 name="customerCompany"
@@ -481,12 +500,14 @@ export function QuickQuoteSection({
                 placeholder={content.fieldCompanyPlaceholder}
                 required
                 autoComplete="organization"
+                defaultValue={lastValues?.customerCompany}
               />
               <FieldInput
                 name="developerCompany"
                 label={content.fieldDeveloper}
                 placeholder={content.fieldDeveloperPlaceholder}
                 required
+                defaultValue={lastValues?.developerCompany}
               />
               <FieldInput
                 name="city"
@@ -494,6 +515,7 @@ export function QuickQuoteSection({
                 placeholder={content.fieldCityPlaceholder}
                 required
                 autoComplete="address-level2"
+                defaultValue={lastValues?.city}
               />
               <FieldInput
                 name="objectAddress"
@@ -501,6 +523,7 @@ export function QuickQuoteSection({
                 placeholder={content.fieldObjectPlaceholder}
                 required
                 className="md:col-span-2"
+                defaultValue={lastValues?.objectAddress}
               />
               <FieldInput
                 name="cadastralNumber"
@@ -508,6 +531,7 @@ export function QuickQuoteSection({
                 placeholder={content.fieldCadastralPlaceholder}
                 hint={content.fieldCadastralHint}
                 className="md:col-span-2"
+                defaultValue={lastValues?.cadastralNumber}
               />
 
               <label className="md:col-span-2 flex items-start gap-3 text-[13px] leading-snug text-[var(--color-secondary)]/70">
@@ -515,6 +539,7 @@ export function QuickQuoteSection({
                   type="checkbox"
                   name="consent"
                   required
+                  defaultChecked={lastValues !== null}
                   className="mt-1 h-4 w-4 accent-[var(--accent-current)]"
                 />
                 <span>{content.consentLabel}</span>
@@ -649,6 +674,7 @@ function FieldInput({
   error,
   pattern,
   hint,
+  defaultValue,
 }: {
   name: string;
   label: string;
@@ -660,6 +686,14 @@ function FieldInput({
   error?: string;
   pattern?: string;
   hint?: string;
+  /**
+   * Восстанавливаем последние введённые значения при возврате из
+   * превью/error: пользователь не вводит 8 полей заново ради исправления
+   * одной опечатки. Uncontrolled input — `defaultValue` срабатывает
+   * только при mount, что нас и устраивает (форма размонтируется во
+   * время preview/confirming/success и монтируется заново при возврате).
+   */
+  defaultValue?: string;
 }) {
   return (
     <label className={`flex flex-col gap-2 ${className ?? ""}`}>
@@ -674,6 +708,7 @@ function FieldInput({
         pattern={pattern}
         placeholder={placeholder}
         autoComplete={autoComplete}
+        defaultValue={defaultValue}
         aria-invalid={error ? true : undefined}
         className={[
           "border-b bg-transparent py-2 text-[15px] text-[var(--color-secondary)] outline-none transition-colors placeholder:text-[var(--color-secondary)]/30",
