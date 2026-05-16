@@ -2,7 +2,11 @@ import type { Metadata } from 'next';
 import type { CSSProperties } from 'react';
 import { getTranslations } from 'next-intl/server';
 import { QuizShell } from '@/components/quiz/QuizShell';
-import { pumpsPrefillMap, pumpsAccentMap } from '@/content/quiz/pumps-fields';
+import {
+  pumpsPrefillMap,
+  pumpsAccentMap,
+  pumpsAccentKeyMap,
+} from '@/content/quiz/pumps-fields';
 import { pumpsQuizConfig } from '@/content/quiz/pumps-config';
 
 // Render at request-time, не во время build. Quiz-форма большая и состоит
@@ -41,6 +45,8 @@ export default function PumpsQuizPage({ searchParams }: Props) {
   const from = (searchParams?.from || '').trim();
   const prefill = pumpsPrefillMap[from] || {};
   const accent = pumpsAccentMap[from];
+  // Email accent key — defaults to 'water' (general pumps) when no `from`.
+  const emailAccent = pumpsAccentKeyMap[from] ?? 'water';
 
   const accentStyle: CSSProperties | undefined = accent
     ? ({ '--accent-current': accent } as CSSProperties)
@@ -48,7 +54,11 @@ export default function PumpsQuizPage({ searchParams }: Props) {
 
   return (
     <main className="min-h-screen bg-primary text-secondary" style={accentStyle}>
-      <QuizShell config={pumpsQuizConfig} prefill={prefill} />
+      <QuizShell
+        config={pumpsQuizConfig}
+        prefill={prefill}
+        accent={emailAccent}
+      />
     </main>
   );
 }

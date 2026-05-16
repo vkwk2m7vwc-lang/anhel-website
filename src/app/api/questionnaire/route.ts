@@ -8,15 +8,15 @@ import { allPumpsFieldNames } from '@/content/quiz/pumps-fields';
 import { allVpuFieldNames } from '@/content/quiz/vpu-fields';
 import { allItpFieldNames } from '@/content/quiz/itp-fields';
 import { allAupdFieldNames } from '@/content/quiz/aupd-fields';
+import { parseSubmissionPayload } from '@/lib/email/payload';
+import { accentHex } from '@/lib/email/accents';
+import { renderQuizResultEmail } from '@/lib/email/templates/quiz-result';
+import { sendEmail } from '@/lib/email/sendEmail';
+import { fillQuestionnaire } from '@/lib/pdf/fill-questionnaire';
 
 export const runtime = 'nodejs';
 
 type Kind = 'pumps' | 'vpu' | 'itp' | 'aupd';
-
-type Payload = {
-  kind: Kind;
-  values: Record<string, unknown>;
-};
 
 const SCHEMAS: Record<Kind, ZodTypeAny> = {
   pumps: pumpsQuizSchema,
@@ -32,7 +32,8 @@ const FIELD_NAMES: Record<Kind, readonly string[]> = {
   aupd: allAupdFieldNames,
 };
 
-const KIND_LABELS: Record<Kind, string> = {
+/** Human product name — goes into the email subject and heading. */
+const PRODUCT_NAMES: Record<Kind, string> = {
   pumps: 'Насосные установки',
   vpu: 'Водоподготовка',
   itp: 'БИТП',
@@ -40,27 +41,20 @@ const KIND_LABELS: Record<Kind, string> = {
 };
 
 /**
- * Stub-обработчик опросников (4 типа: pumps / vpu / itp / aupd).
- * В этой сессии — только zod-валидация, проверка маппинга web↔PDF AcroForm
- * и console.log заявки. Реальной отправки email НЕТ.
+ * Опросники QuizShell (4 типа: pumps / vpu / itp / aupd).
  *
- * TODO (next session): Resend integration
- *   1. RESEND_API_KEY в .env / Vercel env
- *   2. Заполнение PDF через pdf-lib для каждого kind:
- *        const tplMap = {
- *          pumps: 'public/docs/pressure-boost/oprosnyi-list.pdf',
- *          vpu:   'public/docs/water-treatment/oprosnyi-list.pdf',
- *          itp:   'public/docs/heating-unit/oprosnyi-list.pdf',
- *          aupd:  'public/docs/pressure-boost/oprosnyi-list.pdf',
- *        }
- *      ВНИМАНИЕ: для pumps/aupd шаблоны разные — у каждой подкатегории насосных
- *      свой PDF. Возможно вместо подкаталогов держать ANHEL-PDF в src/templates/.
- *   3. Resend SDK — отправка info@anhelspb.com + копия user.contact_email.
+ * Поток:
+ *   1. zod-валидация `values` по схеме типа (защита от мусора с клиента).
+ *   2. Диагностика маппинга web↔PDF AcroForm — только в лог, не блокирует.
+ *   3. Парсинг email-payload (customer + sections, русские лейблы из
+ *      исходного конфига — собираются на клиенте в QuizShell).
+ *   4. Рендер HTML-шаблона quiz-result и отправка через Resend на
+ *      QUIZ_RECIPIENT_EMAIL. replyTo = email клиента.
  */
 export async function POST(req: Request) {
-  let body: Payload;
+  let body: unknown;
   try {
-    body = (await req.json()) as Payload;
+    body = await req.json();
   } catch {
     return NextResponse.json(
       { success: false, message: 'Невалидный JSON в теле запроса' },
@@ -68,20 +62,22 @@ export async function POST(req: Request) {
     );
   }
 
-  const schema = SCHEMAS[body.kind];
-  const pdfFields = FIELD_NAMES[body.kind];
+  const root = (body ?? {}) as Record<string, unknown>;
+  const kind = root.kind as Kind;
+  const schema = SCHEMAS[kind];
+  const pdfFields = FIELD_NAMES[kind];
   if (!schema || !pdfFields) {
     return NextResponse.json(
-      { success: false, message: `Неизвестный тип опросника: ${body.kind}` },
+      { success: false, message: `Неизвестный тип опросника: ${String(kind)}` },
       { status: 400 },
     );
   }
 
-  // === Валидация zod ===
-  const parsed = schema.safeParse(body.values);
+  // === 1. zod-валидация значений формы ===
+  const parsed = schema.safeParse(root.values);
   if (!parsed.success) {
     const flat = parsed.error.flatten();
-    console.error(`[questionnaire:${body.kind}] validation failed:`, flat.fieldErrors);
+    console.error(`[questionnaire:${kind}] validation failed:`, flat.fieldErrors);
     return NextResponse.json(
       {
         success: false,
@@ -91,49 +87,90 @@ export async function POST(req: Request) {
       { status: 422 },
     );
   }
-
   const data = parsed.data as Record<string, unknown>;
 
-  // === ПРОВЕРКА МАППИНГА web ↔ PDF AcroForm ===
+  // === 2. Диагностика маппинга web ↔ PDF AcroForm (только лог) ===
   const pdfFieldSet = new Set(pdfFields);
   const reservedKeys = new Set(['consent_pdn']);
-  const sentKeys = Object.keys(data);
   const mismatches: string[] = [];
-  for (const key of sentKeys) {
+  for (const key of Object.keys(data)) {
     if (reservedKeys.has(key)) continue;
     if (!pdfFieldSet.has(key)) {
       mismatches.push(key);
       console.error(
-        `[questionnaire:${body.kind}] Field mapping mismatch: ${key} not found in PDF AcroForm`,
+        `[questionnaire:${kind}] Field mapping mismatch: ${key} not found in PDF AcroForm`,
       );
     }
   }
 
-  // === Отчёт ===
-  const contact =
-    `${(data.contact_organization as string) || '?'} / ` +
-    `${(data.contact_fullname as string) || '?'} / ` +
-    `${(data.contact_email as string) || '?'} / ` +
-    `${(data.contact_phone as string) || '?'}`;
+  // === 3. Парсинг email-payload (customer + sections) ===
+  const payloadResult = parseSubmissionPayload(body);
+  if (!payloadResult.ok) {
+    console.error(`[questionnaire:${kind}] payload error:`, payloadResult.error);
+    return NextResponse.json(
+      { success: false, message: payloadResult.error },
+      { status: 400 },
+    );
+  }
+  const { payload } = payloadResult;
+
+  // === 4. PDF-вложение (полный опросный лист) + короткое тело письма ===
+  const accentValue = accentHex(payload.accent);
+  const fieldCount = payload.sections.reduce((acc, s) => acc + s.rows.length, 0);
+
+  let pdf;
+  try {
+    pdf = await fillQuestionnaire({
+      kind: 'quiz',
+      productName: PRODUCT_NAMES[kind],
+      accentHex: accentValue,
+      locale: payload.locale,
+      customer: payload.customer,
+      sections: payload.sections,
+    });
+  } catch (err) {
+    console.error(`[questionnaire:${kind}] PDF generation failed:`, err);
+    return NextResponse.json(
+      { success: false, message: 'Не удалось сформировать опросный лист. Попробуйте позже.' },
+      { status: 500 },
+    );
+  }
+
+  const { subject, html } = renderQuizResultEmail({
+    productName: PRODUCT_NAMES[kind],
+    locale: payload.locale,
+    accent: accentValue,
+    customer: payload.customer,
+    fieldCount,
+  });
+
+  const recipient = process.env.QUIZ_RECIPIENT_EMAIL ?? '';
+  const sent = await sendEmail({
+    to: recipient,
+    subject,
+    html,
+    replyTo: payload.customer.email,
+    attachments: [
+      { filename: pdf.filename, content: pdf.content, contentType: 'application/pdf' },
+    ],
+  });
+
+  if (!sent.ok) {
+    console.error(`[questionnaire:${kind}] email send failed:`, sent.error);
+    return NextResponse.json(
+      { success: false, message: 'Не удалось отправить заявку. Попробуйте позже.' },
+      { status: 500 },
+    );
+  }
 
   console.log(
-    `\n=========== ANHEL Questionnaire — TEST MODE (${KIND_LABELS[body.kind]}) ===========`,
-    `\n[${new Date().toISOString()}] kind=${body.kind}`,
-    `\nContact: ${contact}`,
-    `\nFields submitted: ${sentKeys.length}, mapped to PDF: ${sentKeys.length - mismatches.length}, mismatches: ${mismatches.length}`,
-    `\n--- Full payload ---\n${JSON.stringify(data, null, 2)}`,
-    '\n========================================================\n',
+    `[questionnaire:${kind}] email sent id=${sent.id} → ${recipient} ` +
+      `(fields: ${Object.keys(data).length}, PDF mismatches: ${mismatches.length}, ` +
+      `PDF: ${pdf.filename})`,
   );
-
-  await new Promise((r) => setTimeout(r, 1500));
 
   return NextResponse.json({
     success: true,
-    message: 'Заявка получена (тестовый режим — email не отправляется в этой сессии).',
-    debug: {
-      kind: body.kind,
-      fields: sentKeys.length,
-      mismatches,
-    },
+    message: 'Заявка отправлена. Менеджер свяжется с вами в течение рабочего дня.',
   });
 }

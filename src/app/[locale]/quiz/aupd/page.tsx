@@ -26,7 +26,7 @@ export default function AupdQuizPage() {
 
   return (
     <main className="min-h-screen bg-primary text-secondary" style={accentStyle}>
-      <QuizShell config={aupdQuizConfig} />
+      <QuizShell config={aupdQuizConfig} accent="water" />
     </main>
   );
 }

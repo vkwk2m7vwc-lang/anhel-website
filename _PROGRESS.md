@@ -2055,3 +2055,205 @@ i18n-ключам — добро на `chore`-уборку перед мердж
 Перегенерация EN/TR PDF в стиле RU-мастеров. Контекст по PDF —
 `_PROGRESS.md` (сессии wave-3 + PDF-локализации), памятка про
 оригиналы МФМК и единый minimal-стиль каталогов.
+
+
+---
+
+## Сессия 2026-05-15 — Этап 4: интеграция Resend (отправка писем с форм)
+
+Источник ТЗ: `uploads/cowork_stage_4_resend.md`. Цель — заменить
+stub-обработчики форм на реальную отправку писем менеджеру через Resend.
+
+### Расхождение с ТЗ — структура эндпоинтов
+
+ТЗ предполагало 7 отдельных route-файлов. По факту:
+- был **один** stub-роут `/api/questionnaire` на 4 квиза (pumps/vpu/itp/aupd);
+- формы `control-systems`, `/service/request`, `/contacts` — чистые
+  фронт-заглушки (`setTimeout`), бэкенда у них не было вообще.
+
+Согласовано с Алексеем: делаем все 7 форм — 4 роута + проводка 3 форм.
+
+### Сделано
+
+- `npm i resend` (6.12.3). `RESEND_API_KEY` + `QUIZ_RECIPIENT_EMAIL` —
+  только в `.env.local` (git-ignored) и в `.env.local.example` (шаблон).
+- `src/lib/email/sendEmail.ts` — обёртка над Resend. From на этапе
+  теста — `onboarding@resend.dev` (домен `anhelspb.com` ещё не
+  верифицирован). Никогда не бросает — возвращает `{ ok }`.
+- `src/lib/email/payload.ts` — общий wire-контракт форм↔роутов +
+  `parseSubmissionPayload`.
+- `src/lib/email/templates/` — `_layout.ts` + 3 шаблона (`quiz-result`,
+  `service-request`, `contact-form`). Table-вёрстка, inline-стили,
+  тёмный брендинг (`#0A0A0A` / `#F5F5F3` / accent `#FF6B35`). Письмо
+  всегда на русском (читает менеджер), локаль клиента — тег в шапке.
+  Лейблы полей берутся из русского исходного конфига форм.
+- Роуты: доработан `/api/questionnaire` (zod-валидация и проверка
+  PDF-маппинга сохранены, добавлена отправка письма); созданы
+  `/api/quiz/control-systems`, `/api/service-request`, `/api/contacts`.
+  Все — `to: QUIZ_RECIPIENT_EMAIL`, `replyTo` = email клиента из формы.
+- Проводка форм: `QuizShell` + `buildSubmission.ts`,
+  `QuizControlSystemsForm`, `ServiceRequestForm` (+ общий
+  `buildStepsSubmission.ts`), `ContactForm` — теперь реально шлют
+  `fetch` на свои роуты, передают локаль, показывают ошибку при сбое.
+
+### Тесты (локально, порт 3100)
+
+- `tsc --noEmit` + `next lint` — чисто.
+- Рендер 3 шаблонов (ru/en/tr) — кириллица ок, тег локали ок, в подвале
+  `info@anhelspb.com` и ООО «ПРОФИТ», `sales@anhelspb.com` отсутствует.
+- POST на все 7 сценариев (4 квиза + control-systems + service +
+  contacts, локали ru/en/tr) — HTTP 200, Resend вернул id, 7 писем
+  ушло на `anurin7@gmail.com`.
+- Юнит-проверка билдеров payload (21 ассерт) — пройдено.
+
+### Осталось — на стороне Алексея
+
+- Завести `RESEND_API_KEY` + `QUIZ_RECIPIENT_EMAIL` в Vercel
+  (Project → Settings → Environment Variables, все 3 environment).
+  Vercel MCP писать env не умеет, Vercel CLI на маке нет.
+- Проверить письма в почте (Gmail web/iOS, Mail.app), пройти формы на
+  RU/EN/TR на preview-URL.
+- После подтверждения — `QUIZ_RECIPIENT_EMAIL` → `info@anhelspb.com`,
+  верифицировать домен `anhelspb.com` в Resend и переключить From на
+  `noreply@anhelspb.com`.
+
+### Состояние
+
+Ветка `feat/resend-integration` от `main` (`5eeca2b`), 5 атомарных
+коммитов. PR открыт — **не мерджить до подтверждения Алексея.**
+
+
+---
+
+## Сессия 2026-05-15 — Этап 4 v2: правки шаблонов писем
+
+Источник: launch-plan v2 + сообщение Алексея. Три правки шаблонов после
+визуальной проверки v1 (бэкенд работал — 21/21 = 200, Resend-id у всех).
+
+### 1. Тёмная тема → светлая (B2B-классика)
+
+`_layout.ts` переписан: белый card (`#FFFFFF`) на светлом page-фоне
+(`#F2F2F1`), тёмный текст, hairline-разделители, `color-scheme: light`.
+Добавлен sans-serif стек `Arial, Helvetica` на body и каждую text-ячейку
+(Outlook сбрасывает наследование font-family; без этого письмо рендерилось
+serif'ом).
+
+### 2. Продуктовые цвета акцентов
+
+`src/lib/email/accents.ts` — палитра из globals.css (light-варианты):
+water `#1e6fd9` · fire `#d72638` · treatment `#5c6670` · heat `#c7711e` ·
+neutral `#2a323a`. Акцент тинтит ®-знак, линейку под шапкой, заголовки
+секций и левую границу контакт-карточки.
+
+Маппинг: pumps — по `?from=` (firefighting→fire, water-supply→water,
+heating-cooling→heat, special→treatment, без from→water); vpu→treatment;
+itp→heat; aupd→water; control-systems / service / contacts → neutral.
+Прокинут через `accent` в payload (QuizShell ← quiz-страницы) для pumps,
+для остальных квизов задаётся на quiz-странице, для не-квизов — в роуте.
+
+### 3. Универсальный билдер полей квиза
+
+`src/components/quiz/build-quiz-sections.ts` — `buildQuizSections` ходит
+по всем шагам→секциям→полям конфига, отдаёт по одной EmailSection на шаг,
+только заполненные поля, без пустых строк. radio→лейбл опции,
+checkbox→«Да», number→строка. `buildSubmission.ts` теперь использует его.
+
+Раньше в письме было ~10 полей (это были синтетические тест-данные curl,
+не баг билдера). Проверка на полном itp-квизе: **92 поля в 6 секциях**
+(97 полей конфига − 6 контактных/consent). Теперь менеджер видит всё.
+
+### Тесты
+
+- `tsc` + `next lint` — чисто.
+- Рендер 4 писем (itp full / pumps fire / service / contacts) — 33/33
+  ассерта: светлая тема, акценты, кириллица, sans-serif, no sales@.
+- Визуальная проверка itp и pumps-fire в браузере — чисто, акценты верные.
+- Осталось на preview: UI-прогон itp + pumps-firefighting со скринами,
+  mail-tester, Outlook web.
+
+### Состояние
+
+Доп. коммиты в `feat/resend-integration` поверх v1. PR #22 — не мерджить
+до v2-проверки Алексеем.
+
+
+### Тесты v2 — результаты (preview dd21fff)
+
+- **itp через UI на preview** — форма заполнена всеми полями (через
+  localStorage-restore, т.к. пошаговый клик ломал framer-motion-анимацию),
+  отправлена реально: HTTP 200, payload `accent=heat`, **92 строки полей
+  в 6 секциях по шагам**. Письмо ушло на anurin7@gmail.com.
+- **pumps `?from=firefighting`** — то же: HTTP 200, payload `accent=fire`
+  (акцент тянется из `?from`), 62 строки в 4 секциях. Письмо ушло.
+- Скрины обоих писем сохранены в корень рабочей папки:
+  `email-preview-itp-v2.html`, `email-preview-pumps-firefighting-v2.html`.
+- **mail-tester** — ⛔ блокер: Resend в тест-режиме (`onboarding@resend.dev`)
+  отдаёт 403 на отправку на внешний адрес («can only send to your own
+  email»). Полноценный mail-tester возможен только после верификации
+  домена `anhelspb.com` в Resend — это этап 6 launch-плана.
+- **Outlook web** — не проверено автономно (нет Outlook-аккаунта).
+  Шаблон Outlook-safe по построению: `<table>`-вёрстка, инлайн-стили,
+  без flex/grid/position, `color-scheme: light`, явные цвета на каждой
+  ячейке. Стоит вынести в этап 6 вместе с mail-tester.
+
+
+---
+
+## Сессия 2026-05-15 — Этап 4 v3: PDF-вложение с заполненным опросным листом
+
+Источник ТЗ: `uploads/cowork_stage_4_email_v3_pdf.md`. Для длинных квизов
+(БИТП — 97 полей) тело письма было длинным. v3: тело = только контакт +
+объект + CTA, полный опросный лист — отдельным PDF-вложением.
+
+### Выбор технологии PDF — pdf-lib (clean-built)
+
+ТЗ предлагало использовать Python-генераторы `_scripts/build_*.py`.
+**Платформенный блокер:** Python/reportlab не работает на Vercel
+serverless. Рассмотрены варианты:
+- AcroForm-fill готовых мастеров (`public/docs/<cat>/oprosnyi-list.pdf`)
+  через pdf-lib — поля МАСТЕРОВ совпадают с конфигами (itp 97, aupd 30,
+  vpu 26, pumps 67), НО мастер control-systems — неперебрендированный
+  оригинал МФМК с generic-именами полей (`Text1`, `Button32`), не
+  маппится. Плюс 5 PDF-мастеров пришлось бы тащить в function bundle.
+- **Выбрано: clean-built через `pdf-lib`** (pure JS, без native-зависимостей,
+  надёжно на serverless) — один генератор для всех 6 форм, A4 с ANHEL-
+  брендингом в том же визуальном языке, что и v2-письмо (шапка, акцентная
+  линейка, контакт-панель, поля по шагам, авто-пагинация). Кириллица —
+  DejaVu Sans, TTF забандлены в `/api` через `outputFileTracingIncludes`
+  (next.config.mjs).
+
+PDF-контент остаётся на русском (архив для менеджера, как и v2-письмо);
+локализуется только имя файла (`Опросный лист — … .pdf` / `Questionnaire`
+/ `Anket`).
+
+### Изменено
+
+- `npm i pdf-lib @pdf-lib/fontkit`. `src/lib/pdf/`: `questionnaire-pdf.ts`
+  (генератор), `fill-questionnaire.ts` (обёртка → `{content, filename}`),
+  `fonts/DejaVuSans*.ttf`. `next.config.mjs` — `outputFileTracingIncludes`.
+- `sendEmail.ts` — поддержка `attachments`. `payload.ts` — `city` /
+  `objectName` / `objectAddress` в `EmailCustomer`.
+- Шаблоны `quiz-result` + `service-request` укорочены: тело = контакт-
+  карточка (+ город/объект/адрес) + блок `renderPdfCta`. Технические поля
+  ушли в PDF. `contact-form` — без изменений (без PDF).
+- Билдеры (`build-quiz-sections`, `buildStepsSubmission`) — `object_name`
+  / `contact_city` / `object_address` уходят в контакт-карточку, не в
+  секции. Роуты questionnaire / control-systems / service-request —
+  генерируют PDF и шлют через `attachments`.
+
+### Тесты (preview b59c882)
+
+- Сборка на Vercel прошла (pdf-lib + outputFileTracingIncludes ок).
+- itp + pumps `?from=firefighting` — реальная отправка через UI: HTTP 200,
+  PDF сгенерирован на serverless (шрифт подгрузился), вложение ушло.
+  itp — 90 полей в 6 секциях, accent heat; pumps — 60 полей, accent fire.
+- control-systems / service-request / contacts — POST на preview: HTTP 200
+  (первые два с PDF, contacts без PDF). Все 6 форм работают.
+- `tsc` + `next lint` — чисто. Локальный рендер — 16/16 ассертов.
+- Скрины (тело письма itp + 2 страницы PDF) — в outputs.
+- mail-tester / Outlook — отложены на этап 6 (после верификации домена).
+
+### Состояние
+
+3 v3-коммита в `feat/resend-integration` поверх v2. PR #22 — Алексей
+делает один squash-merge v2+v3 после визуальной проверки.

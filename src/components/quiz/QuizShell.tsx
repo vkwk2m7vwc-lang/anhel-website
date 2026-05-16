@@ -12,7 +12,7 @@ import {
 } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import type { ZodTypeAny } from 'zod';
 import { type QuizStep } from '@/content/quiz/pumps-fields';
 import { makePumpsQuizSchema, pumpsQuizSchema } from '@/content/quiz/pumps-schema';
@@ -21,6 +21,8 @@ import { makeItpQuizSchema, itpQuizSchema } from '@/content/quiz/itp-schema';
 import { makeAupdQuizSchema, aupdQuizSchema } from '@/content/quiz/aupd-schema';
 import type { QuizConfig, QuizKind } from '@/content/quiz/quiz-config';
 import { useTranslatedConfig } from './useTranslatedConfig';
+import { buildQuizSubmission } from './buildSubmission';
+import { coerceLocale, type EmailAccent } from '@/lib/email/payload';
 
 /**
  * Static schemas (RU messages) used as a fallback for quizzes whose
@@ -48,10 +50,13 @@ type Props = {
   config: QuizConfig;
   /** initial pre-fill values from URL query */
   prefill?: Record<string, unknown>;
+  /** Product accent key — tints the result email. Defaults to 'water'. */
+  accent?: EmailAccent;
 };
 
-export function QuizShell({ config: rawConfig, prefill }: Props) {
+export function QuizShell({ config: rawConfig, prefill, accent }: Props) {
   const config = useTranslatedConfig(rawConfig);
+  const locale = coerceLocale(useLocale());
   const t = useTranslations('quiz.shell');
   const tValidation = useTranslations('quiz.shell.validation');
 
@@ -173,10 +178,16 @@ export function QuizShell({ config: rawConfig, prefill }: Props) {
   const onSubmit = handleSubmit(async (values) => {
     setIsSubmitting(true);
     try {
+      const submission = buildQuizSubmission(
+        rawConfig,
+        values,
+        locale,
+        accent ?? 'water',
+      );
       const res = await fetch('/api/questionnaire', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ kind: config.kind, values }),
+        body: JSON.stringify(submission),
       });
       const data = (await res.json().catch(() => ({}))) as {
         success?: boolean;

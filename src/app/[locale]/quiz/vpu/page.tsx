@@ -26,7 +26,7 @@ export default function VpuQuizPage() {
 
   return (
     <main className="min-h-screen bg-primary text-secondary" style={accentStyle}>
-      <QuizShell config={vpuQuizConfig} />
+      <QuizShell config={vpuQuizConfig} accent="treatment" />
     </main>
   );
 }
