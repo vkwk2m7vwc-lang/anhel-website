@@ -101,7 +101,7 @@ export function ProductsMenu() {
         {t("products")}
         <ChevronDown
           size={14}
-          strokeWidth={1.75}
+          strokeWidth={1.5}
           aria-hidden="true"
           className={
             "transition-transform duration-200 " +

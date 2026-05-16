@@ -208,7 +208,7 @@ export default async function HeatingModulePage({ params }: RouteParams) {
                 <Link
                   href="#documents"
                   data-cursor="hover"
-                  className="group inline-flex items-center gap-3 rounded-md bg-[var(--color-secondary)] px-[22px] py-[14px] text-sm font-medium text-[var(--color-primary)]"
+                  className="group inline-flex items-center gap-3 rounded bg-[var(--color-secondary)] px-[22px] py-[14px] text-sm font-medium text-[var(--color-primary)]"
                 >{tUi("quick_request")}<span aria-hidden="true" className="font-mono">
                     →
                   </span>
@@ -216,7 +216,7 @@ export default async function HeatingModulePage({ params }: RouteParams) {
                 <Link
                   href="/products/heating-unit"
                   data-cursor="hover"
-                  className="inline-flex items-center gap-3 rounded-md border-[0.5px] border-[var(--color-secondary)]/40 bg-transparent px-[22px] py-[14px] text-sm font-medium text-[var(--color-secondary)]/80 transition-colors hover:border-[var(--color-secondary)] hover:text-[var(--color-secondary)]"
+                  className="inline-flex items-center gap-3 rounded border-[0.5px] border-[var(--color-secondary)]/40 bg-transparent px-[22px] py-[14px] text-sm font-medium text-[var(--color-secondary)]/80 transition-colors hover:border-[var(--color-secondary)] hover:text-[var(--color-secondary)]"
                 >
                   {tUi("back_to_catalog")}
                 </Link>

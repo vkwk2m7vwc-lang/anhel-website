@@ -84,7 +84,7 @@ export default function ServicePage({
                 <Link
                   href={SERVICE_REQUEST_HREF}
                   data-cursor="hover"
-                  className="group inline-flex items-center gap-3 rounded-md bg-[var(--color-secondary)] px-[22px] py-[14px] text-sm font-medium text-[var(--color-primary)]"
+                  className="group inline-flex items-center gap-3 rounded bg-[var(--color-secondary)] px-[22px] py-[14px] text-sm font-medium text-[var(--color-primary)]"
                 >
                   {t('hero.cta_online')}
                   <span
@@ -98,7 +98,7 @@ export default function ServicePage({
                   href={resolveServicePdfHref(locale)}
                   download
                   data-cursor="hover"
-                  className="inline-flex items-center gap-3 rounded-md border-[0.5px] border-[var(--color-secondary)]/40 bg-transparent px-[22px] py-[14px] text-sm font-medium text-[var(--color-secondary)]/85 transition-colors hover:border-[var(--color-secondary)] hover:text-[var(--color-secondary)]"
+                  className="inline-flex items-center gap-3 rounded border-[0.5px] border-[var(--color-secondary)]/40 bg-transparent px-[22px] py-[14px] text-sm font-medium text-[var(--color-secondary)]/85 transition-colors hover:border-[var(--color-secondary)] hover:text-[var(--color-secondary)]"
                 >
                   {t('hero.cta_pdf')}
                   <span
@@ -127,7 +127,7 @@ export default function ServicePage({
             {t('services.heading')}
           </h2>
 
-          <ul className="mt-10 grid grid-cols-1 gap-px overflow-hidden rounded-md border-[0.5px] border-[var(--color-hairline)] bg-[var(--color-hairline)] md:mt-14 md:grid-cols-2">
+          <ul className="mt-10 grid grid-cols-1 gap-px overflow-hidden rounded border-[0.5px] border-[var(--color-hairline)] bg-[var(--color-hairline)] md:mt-14 md:grid-cols-2">
             {SERVICE_CARDS.map((card) => {
               const Icon = card.icon;
               return (

@@ -170,7 +170,7 @@ function TechSpecCard({ spec, index }: { spec: TechSpecTile; index: number }) {
           leading-tight (не leading-none): при переносе строки значения
           с leading-none накладывались друг на друга. */}
       <div className="flex min-w-0 flex-1 flex-wrap items-baseline justify-end gap-x-2 text-right sm:mt-4 sm:flex-none sm:justify-start sm:text-left md:mt-6">
-        <span className="font-display text-[16px] font-medium leading-tight text-[var(--color-secondary)] sm:text-[22px] md:text-[28px] lg:text-[32px]">
+        <span className="font-display text-[16px] font-medium leading-tight tabular-nums text-[var(--color-secondary)] sm:text-[22px] md:text-[28px] lg:text-[32px]">
           {spec.value}
         </span>
         {spec.unit && (

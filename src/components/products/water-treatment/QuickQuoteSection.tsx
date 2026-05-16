@@ -397,7 +397,7 @@ export function QuickQuoteSection({
               type="button"
               onClick={() => setShowForm(true)}
               disabled={!canSubmit}
-              className="group inline-flex items-center gap-3 rounded-md bg-[var(--color-secondary)] px-6 py-[14px] text-sm font-medium text-[var(--color-primary)] transition-colors hover:bg-[var(--accent-current)] hover:text-[var(--color-secondary)] disabled:cursor-not-allowed disabled:opacity-50"
+              className="group inline-flex items-center gap-3 rounded bg-[var(--color-secondary)] px-6 py-[14px] text-sm font-medium text-[var(--color-primary)] transition-colors hover:bg-[var(--accent-current)] hover:text-[var(--color-secondary)] disabled:cursor-not-allowed disabled:opacity-50"
             >
               {content.ctaPrimaryLabel}
               <span
@@ -417,7 +417,7 @@ export function QuickQuoteSection({
               <a
                 href={content.ctaSecondaryHref}
                 download
-                className="inline-flex items-center gap-3 rounded-md border-[0.5px] border-[var(--color-secondary)]/40 bg-transparent px-6 py-[14px] text-sm font-medium text-[var(--color-secondary)]/85 transition-colors hover:border-[var(--color-secondary)] hover:text-[var(--color-secondary)]"
+                className="inline-flex items-center gap-3 rounded border-[0.5px] border-[var(--color-secondary)]/40 bg-transparent px-6 py-[14px] text-sm font-medium text-[var(--color-secondary)]/85 transition-colors hover:border-[var(--color-secondary)] hover:text-[var(--color-secondary)]"
               >
                 {content.ctaSecondaryLabel}
                 <span aria-hidden="true" className="font-mono text-[var(--color-secondary)]/65">↓</span>
@@ -425,7 +425,7 @@ export function QuickQuoteSection({
             ) : (
               <Link
                 href={content.ctaSecondaryHref}
-                className="inline-flex items-center gap-3 rounded-md border-[0.5px] border-[var(--color-secondary)]/40 bg-transparent px-6 py-[14px] text-sm font-medium text-[var(--color-secondary)]/85 transition-colors hover:border-[var(--color-secondary)] hover:text-[var(--color-secondary)]"
+                className="inline-flex items-center gap-3 rounded border-[0.5px] border-[var(--color-secondary)]/40 bg-transparent px-6 py-[14px] text-sm font-medium text-[var(--color-secondary)]/85 transition-colors hover:border-[var(--color-secondary)] hover:text-[var(--color-secondary)]"
               >
                 {content.ctaSecondaryLabel}
               </Link>
@@ -533,7 +533,7 @@ export function QuickQuoteSection({
                 <button
                   type="submit"
                   disabled={submission.kind === "submitting"}
-                  className="group inline-flex items-center gap-3 rounded-md bg-[var(--color-secondary)] px-6 py-[14px] text-sm font-medium text-[var(--color-primary)] transition-colors hover:bg-[var(--accent-current)] hover:text-[var(--color-secondary)] disabled:cursor-not-allowed disabled:opacity-60"
+                  className="group inline-flex items-center gap-3 rounded bg-[var(--color-secondary)] px-6 py-[14px] text-sm font-medium text-[var(--color-primary)] transition-colors hover:bg-[var(--accent-current)] hover:text-[var(--color-secondary)] disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   {submission.kind === "submitting"
                     ? content.submitting
@@ -601,7 +601,7 @@ export function QuickQuoteSection({
                   type="button"
                   onClick={handleCancelPreview}
                   disabled={submission.kind === "confirming"}
-                  className="rounded-md border-[0.5px] border-[var(--color-secondary)]/40 bg-transparent px-6 py-[12px] text-sm font-medium text-[var(--color-secondary)]/85 transition-colors hover:border-[var(--color-secondary)] hover:text-[var(--color-secondary)] disabled:cursor-not-allowed disabled:opacity-60"
+                  className="rounded border-[0.5px] border-[var(--color-secondary)]/40 bg-transparent px-6 py-[12px] text-sm font-medium text-[var(--color-secondary)]/85 transition-colors hover:border-[var(--color-secondary)] hover:text-[var(--color-secondary)] disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   {content.previewCancelLabel}
                 </button>
@@ -609,7 +609,7 @@ export function QuickQuoteSection({
                   type="button"
                   onClick={handleConfirm}
                   disabled={submission.kind === "confirming"}
-                  className="group inline-flex items-center justify-center gap-3 rounded-md bg-[var(--color-secondary)] px-6 py-[14px] text-sm font-medium text-[var(--color-primary)] transition-colors hover:bg-[var(--accent-current)] hover:text-[var(--color-secondary)] disabled:cursor-not-allowed disabled:opacity-60"
+                  className="group inline-flex items-center justify-center gap-3 rounded bg-[var(--color-secondary)] px-6 py-[14px] text-sm font-medium text-[var(--color-primary)] transition-colors hover:bg-[var(--accent-current)] hover:text-[var(--color-secondary)] disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   {submission.kind === "confirming"
                     ? content.previewSending

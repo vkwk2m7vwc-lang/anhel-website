@@ -171,7 +171,7 @@ export default async function LocaleLayout({
             header into <main id="main-content">. WCAG 2.4.1. */}
         <a
           href="#main-content"
-          className="sr-only rounded-md bg-[var(--color-secondary)] px-4 py-2 text-sm font-medium text-[var(--color-primary)] focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[300]"
+          className="sr-only rounded bg-[var(--color-secondary)] px-4 py-2 text-sm font-medium text-[var(--color-primary)] focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[300]"
         >
           {t("skip_link")}
         </a>

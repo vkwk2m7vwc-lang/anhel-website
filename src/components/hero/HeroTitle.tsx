@@ -50,7 +50,7 @@ export function HeroTitle() {
   return (
     <h1 className="font-display text-[34px] leading-[0.95] tracking-[-0.04em] text-[var(--color-secondary)] md:text-[44px] lg:text-hero lg:tracking-[-0.025em]">
       {leading ? (
-        <span className="font-extralight text-[var(--color-secondary)]/55 lg:font-medium lg:text-[var(--color-secondary)]">
+        <span className="font-normal text-[var(--color-secondary)]/55 lg:font-medium lg:text-[var(--color-secondary)]">
           {leading}
         </span>
       ) : null}
@@ -58,7 +58,7 @@ export function HeroTitle() {
         {emphasized}
       </span>
       {trailing ? (
-        <span className="font-extralight text-[var(--color-secondary)]/55 lg:font-medium lg:text-[var(--color-secondary)]">
+        <span className="font-normal text-[var(--color-secondary)]/55 lg:font-medium lg:text-[var(--color-secondary)]">
           {trailing}
         </span>
       ) : null}

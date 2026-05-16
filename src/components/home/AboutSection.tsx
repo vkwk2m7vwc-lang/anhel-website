@@ -33,7 +33,7 @@ export function AboutSection() {
         <p className="mono-tag mb-6">{t("mono_tag")}</p>
         <h2
           id="about-heading"
-          className="max-w-3xl font-display text-3xl leading-tight md:text-5xl"
+          className="max-w-3xl font-display text-3xl leading-tight tracking-tight text-balance md:text-5xl"
         >
           {t("heading")}
         </h2>
@@ -54,7 +54,7 @@ export function AboutSection() {
             href="/#production"
             data-cursor="hover"
             data-cta="about-to-production"
-            className="group inline-flex items-center gap-3 rounded-md border-[0.5px] border-[var(--color-secondary)]/40 px-[22px] py-[14px] text-sm font-medium text-[var(--color-secondary)] transition-colors hover:border-[var(--color-secondary)]"
+            className="group inline-flex items-center gap-3 rounded border-[0.5px] border-[var(--color-secondary)]/40 px-[22px] py-[14px] text-sm font-medium text-[var(--color-secondary)] transition-colors hover:border-[var(--color-secondary)]"
           >
             {t("cta")}
             <span

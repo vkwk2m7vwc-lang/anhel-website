@@ -104,7 +104,7 @@ function ModuleCard({
           </p>
           {m.draft ? (
             <span
-              className="rounded-pill border border-[var(--color-hairline)] px-2 py-[1px] font-mono text-[9px] uppercase tracking-[0.1em] text-[var(--color-secondary)]/45"
+              className="rounded-full border border-[var(--color-hairline)] px-2 py-[1px] font-mono text-[9px] uppercase tracking-[0.1em] text-[var(--color-secondary)]/45"
               title={tUi("modules.content_review_tooltip")}
             >
               draft

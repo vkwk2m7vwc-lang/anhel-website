@@ -131,7 +131,7 @@ export function ProductHero({
               // в 5 строк и стирает hero-визуал. text-4xl (36px) даёт
               // тот же ритм при 2-3 строках. Переходы text-5xl на md+,
               // text-7xl на lg+ — как раньше.
-              className="mt-6 font-display text-4xl font-medium leading-[1.05] text-[var(--color-secondary)] md:mt-8 md:text-5xl lg:text-7xl"
+              className="mt-6 font-display text-4xl font-medium leading-[1.05] tracking-tight text-[var(--color-secondary)] md:mt-8 md:text-5xl lg:text-7xl lg:tracking-tighter"
             >
               {content.title}
             </motion.h1>
@@ -240,7 +240,7 @@ function ProductCtaButton({ cta }: { cta: ProductCTA }) {
         ref={ref}
         href={cta.href}
         data-cursor="hover"
-        className="group inline-flex items-center gap-3 rounded-md bg-[var(--color-secondary)] px-[22px] py-[14px] text-sm font-medium text-[var(--color-primary)]"
+        className="group inline-flex items-center gap-3 rounded bg-[var(--color-secondary)] px-[22px] py-[14px] text-sm font-medium text-[var(--color-primary)]"
       >
         {cta.label}
         <span
@@ -266,7 +266,7 @@ function ProductCtaButton({ cta }: { cta: ProductCTA }) {
         href={cta.href}
         download
         data-cursor="hover"
-        className="inline-flex items-center gap-3 rounded-md border-[0.5px] border-[var(--color-secondary)]/40 bg-transparent px-[22px] py-[14px] text-sm font-medium text-[var(--color-secondary)]/80 transition-colors hover:border-[var(--color-secondary)] hover:text-[var(--color-secondary)]"
+        className="inline-flex items-center gap-3 rounded border-[0.5px] border-[var(--color-secondary)]/40 bg-transparent px-[22px] py-[14px] text-sm font-medium text-[var(--color-secondary)]/80 transition-colors hover:border-[var(--color-secondary)] hover:text-[var(--color-secondary)]"
       >
         {cta.label}
         <span
@@ -284,7 +284,7 @@ function ProductCtaButton({ cta }: { cta: ProductCTA }) {
       ref={ref}
       href={cta.href}
       data-cursor="hover"
-      className="inline-flex items-center gap-3 rounded-md border-[0.5px] border-[var(--color-secondary)]/40 bg-transparent px-[22px] py-[14px] text-sm font-medium text-[var(--color-secondary)]/80 transition-colors hover:border-[var(--color-secondary)] hover:text-[var(--color-secondary)]"
+      className="inline-flex items-center gap-3 rounded border-[0.5px] border-[var(--color-secondary)]/40 bg-transparent px-[22px] py-[14px] text-sm font-medium text-[var(--color-secondary)]/80 transition-colors hover:border-[var(--color-secondary)] hover:text-[var(--color-secondary)]"
     >
       {cta.label}
       {cta.hint && (

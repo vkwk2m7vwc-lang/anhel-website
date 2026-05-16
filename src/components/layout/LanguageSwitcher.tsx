@@ -93,7 +93,7 @@ export function LanguageSwitcher() {
         {localeNames[currentLocale].code}
         <ChevronDown
           size={12}
-          strokeWidth={1.75}
+          strokeWidth={1.5}
           aria-hidden="true"
           className={
             "transition-transform duration-200 " +
@@ -106,7 +106,7 @@ export function LanguageSwitcher() {
         <div
           role="menu"
           aria-label="Language menu"
-          className="absolute right-0 top-full z-40 mt-2 w-[200px] overflow-hidden rounded-md border border-[var(--color-secondary)]/15 bg-[var(--color-primary)]/95 py-1 shadow-2xl shadow-black/30 backdrop-blur-xl"
+          className="absolute right-0 top-full z-40 mt-2 w-[200px] overflow-hidden rounded border border-[var(--color-secondary)]/15 bg-[var(--color-primary)]/95 py-1 shadow-2xl shadow-black/30 backdrop-blur-xl"
         >
           {locales.map((l) => {
             const isActive = l === currentLocale;
@@ -134,7 +134,7 @@ export function LanguageSwitcher() {
                 {isActive ? (
                   <Check
                     size={14}
-                    strokeWidth={1.75}
+                    strokeWidth={1.5}
                     aria-hidden="true"
                     className="text-[var(--color-secondary)]/55"
                   />

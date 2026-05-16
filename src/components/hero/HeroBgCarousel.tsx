@@ -255,7 +255,7 @@ export function HeroBgCarousel({
                     data-cursor="hover"
                     onClick={() => goTo(i)}
                     className={cn(
-                      "cursor-pointer rounded-pill border px-3 py-1 font-mono text-[11px] uppercase tracking-[0.1em]",
+                      "cursor-pointer rounded-full border px-3 py-1 font-mono text-[11px] uppercase tracking-[0.1em]",
                       "transition-[background-color,color,border-color,transform] duration-200",
                       "active:scale-[0.94]",
                       isActive
@@ -280,9 +280,9 @@ export function HeroBgCarousel({
                 className="inline-flex h-7 w-7 items-center justify-center rounded-full border border-[var(--color-hairline)] text-[var(--color-secondary)]/60 transition-colors hover:text-[var(--color-secondary)]"
               >
                 {isPlaying ? (
-                  <Pause size={12} strokeWidth={1.75} aria-hidden="true" />
+                  <Pause size={12} strokeWidth={1.5} aria-hidden="true" />
                 ) : (
-                  <Play size={12} strokeWidth={1.75} aria-hidden="true" />
+                  <Play size={12} strokeWidth={1.5} aria-hidden="true" />
                 )}
               </button>
             )}
@@ -320,7 +320,7 @@ export function HeroBgCarousel({
                     <span>{tHero(`${product.slug}.name`)}</span>
                     <ArrowUpRight
                       size={13}
-                      strokeWidth={1.75}
+                      strokeWidth={1.5}
                       aria-hidden="true"
                       className="transition-transform duration-300 ease-out-expo group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
                       style={{ color: product.accent }}
@@ -331,7 +331,7 @@ export function HeroBgCarousel({
                     <span className="text-[var(--color-secondary)]/70">
                       {tHero(`${product.slug}.name`)}
                     </span>
-                    <span className="rounded-pill border border-[var(--color-hairline)] px-2 py-[1px] font-mono text-[10px] uppercase tracking-[0.1em] text-[var(--color-secondary)]/45">
+                    <span className="rounded-full border border-[var(--color-hairline)] px-2 py-[1px] font-mono text-[10px] uppercase tracking-[0.1em] text-[var(--color-secondary)]/45">
                       Скоро
                     </span>
                   </>

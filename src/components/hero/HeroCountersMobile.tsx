@@ -57,7 +57,7 @@ function Cell({
 }) {
   return (
     <div className="flex flex-col items-center py-3 text-center">
-      <p className="flex items-baseline justify-center gap-0.5 font-mono text-[16px] font-medium leading-none text-[var(--color-secondary)]">
+      <p className="flex items-baseline justify-center gap-0.5 font-mono text-[16px] font-medium leading-none tabular-nums text-[var(--color-secondary)]">
         <span>{number}</span>
         <span aria-hidden="true" className="text-[var(--accent-fire)]">
           {suffix}

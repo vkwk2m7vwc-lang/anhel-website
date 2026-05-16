@@ -52,9 +52,9 @@ export function ThemeToggle() {
       className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[var(--color-secondary)]/20 text-[var(--color-secondary)] transition-colors hover:border-[var(--color-secondary)]/40"
     >
       {isDark ? (
-        <Sun size={16} strokeWidth={1.75} aria-hidden="true" />
+        <Sun size={16} strokeWidth={1.5} aria-hidden="true" />
       ) : (
-        <Moon size={16} strokeWidth={1.75} aria-hidden="true" />
+        <Moon size={16} strokeWidth={1.5} aria-hidden="true" />
       )}
     </button>
   );
