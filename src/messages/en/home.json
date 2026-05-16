@@ -69,7 +69,8 @@
         "body": "Warranty and post-commissioning service support."
       }
     },
-    "welding_caption": "Welding of frame structures and piping bundles",
+    "process_tag": "Stages",
+    "process_title": "Engineering office, assembly shop and test bench",
     "cards": {
       "design": {
         "title": "Engineering office",

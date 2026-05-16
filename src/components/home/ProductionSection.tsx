@@ -1,36 +1,31 @@
-"use client";
-
 import { Link } from "@/navigation";
 import { useTranslations } from "next-intl";
 import { Award, ClipboardCheck, FileCheck2 } from "lucide-react";
-import { ProductionVideoPlayer } from "./ProductionVideoPlayer";
 
 /**
  * Секция «Производство» — якорь `#production` на главной.
  *
- * Расширенная версия (2026-05): к старым трём колонкам (КБ / Цех / Стенд)
- * добавлены блоки:
- *   1. Hero-видео плазменной резки + заголовок секции
- *   2. Производственные мощности (площадка под одной крышей)
+ * Текстовая версия (2026-05): видео временно убраны — будут добавлены
+ * позже после подбора подходящих премиум-кадров. Сейчас секция полностью
+ * текстовая, в едином визуальном языке с AboutSection / ProductsShowcase:
+ *   - mono-tag + font-display H2 + lede
+ *   - 1440 max-width, padding 6/12, gap 20/28
+ *   - тёмный CTA внизу
+ *
+ * Структура (6 блоков):
+ *   1. Заголовок секции (mono-tag → H2 → lede)
+ *   2. Мощности (площадка под одной крышей) — 3 мини-карточки
  *   3. Полный цикл — 5 этапов (Проектирование → Сервис)
- *   4. Inline-видео сварки + три исходных карточки (КБ / Цех / Стенд)
+ *   4. КБ / Сборочный цех / Испытательный стенд — 3 подблока (наследие)
  *   5. Качество и контроль (ISO 9001:2015, стенд, ЕАЭС)
  *   6. Цифры (4 показателя ANHEL) + CTA
  *
- * Цифры в финальном блоке — только данные ANHEL: 12+ лет, 150+ объектов,
- * от 30 дней, 100% стендовые испытания. Цифры из других материалов
- * (например, годы существования других площадок) сюда не идут — это
- * редакционное правило, не баг.
- *
- * Видео:
- *   - <ProductionVideoPlayer> — lazy-load + reduced-motion + mobile fallback
- *   - Hero: full-bleed, aspect 21:9 (desktop) / 4:3 (mobile)
- *   - Inline: 16:9, max-width, rounded, центрирован
- *   - Источник: Alex Moisieiev / Pexels (free license)
+ * Цифры — только ANHEL: 12+ лет, 150+ объектов, от 30 дней, 100%
+ * стендовые испытания. Сторонние/MFMC-цифры не используются — это
+ * редакционная граница, см. _docs/anhel_product_page_acceptance_checklist.md.
  *
  * i18n: все строки — из `home.production.*`. Цифры (30, 100, 12, 150)
- * презентационные и не переводятся; текстовые значения («Своё» и т.п.) —
- * через ключи `stats.*_value`.
+ * презентационные и не переводятся.
  */
 export function ProductionSection() {
   const t = useTranslations("home.production");
@@ -40,41 +35,22 @@ export function ProductionSection() {
       aria-labelledby="production-heading"
       className="scroll-mt-24 border-t border-[var(--color-hairline)] bg-[var(--color-primary)] text-[var(--color-secondary)]"
     >
-      {/* Блок 1 — Hero видео + заголовок секции.
-          Full-bleed. На десктопе — широкая кинокадровая полоса 21:9,
-          на мобайле — компактнее 4:3 (иначе высота уходит за viewport). */}
-      <div className="relative w-full overflow-hidden bg-black">
-        <ProductionVideoPlayer
-          base="plasma-cutting"
-          poster="plasma-cutting-poster.jpg"
-          aspectClass="aspect-[4/3] md:aspect-[21/9]"
-        />
-        {/* Тёмный градиент снизу — чтобы текст под видео читался даже
-            если кадр в нижней трети видео яркий. */}
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-black/70 to-transparent md:h-48"
-        />
-        <div className="absolute inset-x-0 bottom-0 mx-auto max-w-[1440px] px-6 pb-8 md:px-12 md:pb-12">
-          <p className="mono-tag mb-3 text-white/80">{t("mono_tag")}</p>
-          <h2
-            id="production-heading"
-            className="max-w-3xl font-display text-3xl leading-tight text-white md:text-5xl"
-          >
-            {t("heading")}
-          </h2>
-        </div>
-      </div>
-
       <div className="mx-auto max-w-[1440px] px-6 py-20 md:px-12 md:py-28">
-        <p className="max-w-2xl text-base leading-relaxed text-[var(--color-secondary)]/75 md:text-lg">
+        {/* Блок 1 — Заголовок секции (стилистика AboutSection). */}
+        <p className="mono-tag mb-6">{t("mono_tag")}</p>
+        <h2
+          id="production-heading"
+          className="max-w-3xl font-display text-3xl leading-tight md:text-5xl"
+        >
+          {t("heading")}
+        </h2>
+        <p className="mt-8 max-w-2xl text-base leading-relaxed text-[var(--color-secondary)]/75 md:mt-10 md:text-lg">
           {t("lede")}
         </p>
 
         {/* Блок 2 — Производственные мощности.
-            Площадка-под-одной-крышей: КБ + цех + стенд. Без указания
-            конкретных географий и площадей других подразделений — это
-            редакционная граница (бренд-инструкции). */}
+            Площадка-под-одной-крышей: КБ + цех + стенд. Без видео — три
+            мини-карточки с акцентной верхней линией. */}
         <div className="mt-16 border-t border-[var(--color-hairline)] pt-12 md:mt-24 md:pt-16">
           <p className="mono-tag mb-4">{t("capacity_tag")}</p>
           <h3 className="max-w-2xl font-display text-2xl leading-tight md:text-4xl">
@@ -123,22 +99,15 @@ export function ProductionSection() {
           </ol>
         </div>
 
-        {/* Блок 4 — Inline-видео сварки + три исходные карточки. */}
+        {/* Блок 4 — КБ / Сборочный цех / Испытательный стенд.
+            Три подблока из исходной секции (наследие копирайта). */}
         <div className="mt-20 md:mt-28">
-          <div className="mx-auto max-w-4xl">
-            <ProductionVideoPlayer
-              base="welding"
-              poster="welding-poster.jpg"
-              aspectClass="aspect-video"
-              rounded
-            />
-            <p className="mt-4 text-center font-mono text-[11px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/55">
-              {t("welding_caption")}
-            </p>
-          </div>
+          <p className="mono-tag mb-4">{t("process_tag")}</p>
+          <h3 className="max-w-3xl font-display text-2xl leading-tight md:text-4xl">
+            {t("process_title")}
+          </h3>
 
-          {/* 3 подблока: КБ / Цех / Стенд (наследие — копирайт остаётся). */}
-          <div className="mt-12 grid gap-6 md:mt-16 md:grid-cols-3 md:gap-8">
+          <div className="mt-10 grid gap-6 md:mt-14 md:grid-cols-3 md:gap-8">
             <ProcessCard
               title={t("cards.design.title")}
               body={t("cards.design.body")}
@@ -257,9 +226,7 @@ function CycleStep({
 }) {
   return (
     <li className="bg-[var(--color-primary)] p-6 md:p-8">
-      <p className="font-mono text-xs text-[var(--accent-fire)]">
-        0{number}
-      </p>
+      <p className="font-mono text-xs text-[var(--accent-fire)]">0{number}</p>
       <h4 className="mt-3 font-display text-lg leading-tight md:text-xl">
         {title}
       </h4>
