@@ -28,10 +28,15 @@ const HEADING = rgb(0.02, 0.02, 0.02);
 const MUTED = rgb(0.43, 0.43, 0.43);
 const HAIRLINE = rgb(0.85, 0.85, 0.85);
 const PANEL = rgb(0.965, 0.965, 0.96);
-// Акцент водоподготовки — глубокий teal. Близок к ISO 14726-1 (морские
-// трубопроводы) и DuPont/Veolia брендингу. Отличим от «water/синего»
-// насосных станций (#1e6fd9) и «heat/оранжевого» БИТП (#c7711e).
-const ACCENT = rgb(0x0e / 255, 0x7c / 255, 0x86 / 255); // #0E7C86
+// Акцент PDF — чёрный. Максимально нейтрально: цвет не несёт
+// эмоционального заряда, акценты передаются через шрифт/жирность/
+// расстояния. Альтернативы (менять одной строкой по запросу заказчика):
+//   navy        #0F2F5C  — классический инженерный B2B
+//   graphite    #33363B  — почти чёрный с холодной нотой
+//   deep-green  #1F4D3B  — эко / чистая вода
+//   steel-blue  #3B4A5C  — холодный инженерный
+//   teal        #0E7C86  — ISO 14726-1 drinking water
+const ACCENT = rgb(0x0a / 255, 0x0a / 255, 0x0a / 255); // #0A0A0A
 
 const A4 = { w: 595.28, h: 841.89 };
 const MARGIN = 48;
@@ -225,14 +230,40 @@ async function drawTitlePage(args: {
   });
   y -= 36;
 
+  // Flow callout — главный «маркер» подбора. Тонкая accent-линия слева,
+  // крупное число + единица, ниже мелкая mono-подпись. Не перегружено,
+  // но визуально ловит взгляд первым после заголовка.
+  const calloutTop = y;
+  // Vertical accent rule
+  page.drawRectangle({
+    x: MARGIN,
+    y: calloutTop - 44,
+    width: 2,
+    height: 44,
+    color: ACCENT,
+  });
+  // Большое число + «м³/час» меньше рядом
+  const flowStr = formatFlow(flow);
+  drawText(page, flowStr, MARGIN + 14, calloutTop - 32, {
+    font: fontBold,
+    size: 32,
+    color: HEADING,
+  });
+  const flowWidth = fontBold.widthOfTextAtSize(flowStr, 32);
+  drawText(page, "м³/час", MARGIN + 14 + flowWidth + 8, calloutTop - 24, {
+    font,
+    size: 14,
+    color: MUTED,
+  });
+  // Подпись снизу — mono small caps muted
   drawText(
     page,
-    `производительностью ${formatFlow(flow)} м³/час по очищенной воде`,
-    MARGIN,
-    y,
-    { font, size: 13, color: TEXT },
+    "ПРОИЗВОДИТЕЛЬНОСТЬ ПО ОЧИЩЕННОЙ ВОДЕ",
+    MARGIN + 14,
+    calloutTop - 48,
+    { font, size: 8, color: MUTED },
   );
-  y -= 30;
+  y -= 64;
 
   // Карточка «Объект» — объект + (опц.) кадастр + застройщик + получатель КП.
   // Высота карточки динамическая: если кадастра нет, не оставляем пустую
@@ -265,10 +296,12 @@ async function drawTitlePage(args: {
     cy -= 12;
   }
 
-  // Застройщик / Получатель КП — без проектировщика (он = получатель КП).
+  // Застройщик / Подготовлено для — нейтральная формулировка вместо
+  // «Получатель КП» (та звучала канцелярски). «Подготовлено для» не
+  // приписывает роль (это может быть проектная компания или фрилансер).
   const fieldRows: Array<[string, string]> = [
     ["Застройщик:", developerCompany || "Не указан"],
-    ["Получатель КП:", customerCompany || "Не указан"],
+    ["Подготовлено для:", customerCompany || "Не указан"],
   ];
   for (const [label, value] of fieldRows) {
     drawText(page, label, MARGIN + 16, cy, { font, size: 9, color: MUTED });

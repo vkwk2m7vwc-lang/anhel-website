@@ -73,9 +73,10 @@ export function renderVpuQuoteQuickEmail(data: VpuQuoteQuickEmailData): {
   );
 
   // Опциональная строка с кадастром — добавляем только если есть.
+  // «Подготовлено для» = та же формулировка, что и на титуле PDF.
   const projectChainRows = [
     { label: "Застройщик", value: data.developerCompany },
-    { label: "Получатель КП (компания)", value: data.customer.company ?? "—" },
+    { label: "Подготовлено для", value: data.customer.company ?? "—" },
     { label: "Объект (адрес)", value: data.customer.objectAddress ?? "—" },
   ];
   if (data.cadastralNumber && data.cadastralNumber.trim()) {
