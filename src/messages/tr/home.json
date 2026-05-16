@@ -28,6 +28,49 @@
     "mono_tag": "Üretim",
     "heading": "Tek bir tesiste tam döngü",
     "lede": "Mühendislik ofisi, montaj atölyesi ve test tezgâhı tek çatı altında. Hesaplamadan sevkiyata — taşeronlar arasında devir olmadan.",
+    "capacity_tag": "Kapasite",
+    "capacity_title": "Tek çatı altında üretim tesisi",
+    "capacity_description": "Kendi atölyemizde metal kesim, kaynak, boru tesisatı ve otomasyon panosu montajı bir arada yapılır. İlk DWG çiziminden basınç altında teste kadar tüm aşamalar aynı tesiste, taşeron devirleri olmadan ilerler.",
+    "capacity": {
+      "engineering": {
+        "label": "Mühendislik ofisi",
+        "value": "Hesaplama + çalışma belgeleri"
+      },
+      "assembly": {
+        "label": "Montaj atölyesi",
+        "value": "Kaynak, montaj, boru tesisatı"
+      },
+      "testing": {
+        "label": "Test tezgâhı",
+        "value": "Hidrolik + elektrik"
+      }
+    },
+    "cycle_title": "Hesaplamadan servise — tek şirket",
+    "cycle_description": "Tek sözleşme, tek sorumluluk noktası, tek takvim. ANHEL ekibi projeyi ilk hesaplama aşamasından devreye alma sonrası servise kadar yürütür.",
+    "cycle": {
+      "step1": {
+        "title": "Tasarım",
+        "body": "Tesis parametrelerine göre boyutlandırma, DWG, PDF, IFC formatlarında çalışma belgeleri."
+      },
+      "step2": {
+        "title": "Üretim",
+        "body": "Kendi tesisimizde üretim. Her modül belirli bir proje için monte edilir."
+      },
+      "step3": {
+        "title": "Şef-montaj",
+        "body": "Sahada kurulum denetimi ve kritik aşamalarda yazar gözetimi."
+      },
+      "step4": {
+        "title": "Devreye alma",
+        "body": "Başlatma, ayar ve teslim 1–3 vardiyada tamamlanır."
+      },
+      "step5": {
+        "title": "Servis",
+        "body": "Devreye alma sonrası garanti ve servis desteği."
+      }
+    },
+    "process_tag": "Aşamalar",
+    "process_title": "Mühendislik ofisi, montaj atölyesi ve test tezgâhı",
     "cards": {
       "design": {
         "title": "Mühendislik ofisi",
@@ -42,14 +85,31 @@
         "body": "Her ünite sevkiyat öncesi hidrolik ve elektrik testinden geçer. Çalışma modları simüle edilir, parametreler test raporunda kayıt altına alınır. Sahada modül 1–3 vardiyada devreye alınmaya hazırdır."
       }
     },
+    "quality_title": "Kalite ve kontrol",
+    "quality": {
+      "iso": {
+        "title": "ISO 9001:2015",
+        "body": "Kalite yönetim sistemimiz GOST R ISO 9001-2015 (ISO 9001:2015) standardına uygundur."
+      },
+      "control": {
+        "title": "Tezgâhta kontrol",
+        "body": "Her ürün, sevkiyat öncesi kendi test tezgâhımızda zorunlu teknik kontrol ve düzenlenmiş testlerden geçer."
+      },
+      "certificates": {
+        "title": "AEB Beyanı",
+        "body": "Avrasya Ekonomik Birliği uygunluk beyanları, teknik şartnameler ve destek belgeleri — her ürün için."
+      }
+    },
     "stats_aria": "Üretim göstergeleri",
     "stats": {
+      "years_value": "12",
+      "years_caption": "Yıllık deneyim",
+      "objects_value": "150",
+      "objects_caption": "Teslim edilmiş proje",
       "lead_time_value": "30 günden",
       "lead_time_unit": "itibaren",
       "lead_time_caption": "Üretim süresi",
-      "testing_caption": "Tezgâhta test",
-      "in_house_value": "Kendi",
-      "in_house_caption": "Üretim ve montaj"
+      "testing_caption": "Tezgâhta test"
     },
     "cta": "Fabrika ziyareti talep et"
   },
