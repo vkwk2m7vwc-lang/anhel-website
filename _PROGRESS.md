@@ -2792,3 +2792,60 @@ Squash-merge ветки `perf/audit-session-2-typography` в `main` + тэг `v1
 **Verify:** `npm run build` clean · `npm run lint` clean · 3 локали
 переключаются. Готово к squash-merge в main + тэг
 `v1.20-pre-launch-fixes`.
+
+---
+
+## v1.20.1 / control-systems PDF rebrand
+
+Сразу после v1.20 закрыл блокер по PDF опросника шкафов: МФМК-оригинал
+(1.9 МБ «Омега Control») заменён на ANHEL-генерируемый PDF (44 КБ,
+2 страницы, info@anhelspb.com, ОГРН/ИНН/КПП в шапке). Метод —
+ReportLab from-scratch генератор `_scripts/build_control_systems_ru_questionnaire.py`,
+поля из `src/content/products/control-systems/quiz-config.ts`.
+Тэг `v1.20.1-cs-pdf-fix`. На main.
+
+## v1.20.3 / header — без мега-меню
+
+Убраны dropdown'ы «Продукты» / «Документация» из шапки. Теперь
+плоский ряд из 6 ссылок: Продукты · Документация · Объекты · Сервис
+· О компании · Контакты. «Продукты» → `/products`, «Документация»
+→ `/documents`.
+
+Mobile-меню: вместо двух аккордеонов с категориями — единая секция
+«Навигация» с теми же 6 ссылками. Аккордеон-компонент
+`ProductAccordionItem` удалён.
+
+Удалены файлы:
+- `src/components/layout/ProductsMenu.tsx`
+- `src/components/layout/DocumentsMenu.tsx`
+- `src/components/layout/MegaMenu.tsx`
+- `src/components/layout/DocumentsMegaMenu.tsx`
+
+`LanguageSwitcher` и `ThemeToggle` не трогал. Build + lint clean.
+Тэг `v1.20.3-header-simplify`.
+
+## v1.20.4 / mobile menu address
+
+Старый tagline в подвале mobile-меню «Офис — Санкт-Петербург,
+производство — Москва.» был устаревшим (production-офис в Москве
+больше не упоминается на сайте). Заменил на просто город:
+- RU: «Санкт-Петербург»
+- EN: «St. Petersburg, Russia»
+- TR: «St. Petersburg, Rusya»
+
+Затем добавил MapPin-иконку перед городом (как у телефона и email),
+чтобы строка не висела одна без визуального якоря. Тэги
+`v1.20.4-mobile-address-fix` + hotfix `3f359e2`.
+
+## Открытый блокер на момент сейв-поинта
+
+**PDF опросника шкафов в правильной стилистике ANHEL-готовые** — ветка
+`fix/control-systems-pdf-redesign` (5 итераций r1..r5). v1.20.1 на main
+работает, но визуально проще эталона. Полная редизайн-версия (r5) лежит
+зафиксированная на ветке, ждёт одобрения. Дизайн-токены и эталоны:
+`~/Library/Mobile Documents/com~apple~CloudDocs/Desktop/ANHEL Сайт/Опросные листы/ANHEL-готовые/`
+(README.md + DESIGN-PREVIEW.md + 4 готовых PDF).
+
+## Следующая сессия
+
+Аудит секюрити перед публичным запуском. Отдельный чат.
