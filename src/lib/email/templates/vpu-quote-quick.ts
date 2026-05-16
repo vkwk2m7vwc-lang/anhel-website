@@ -77,6 +77,7 @@ export function renderVpuQuoteQuickEmail(data: VpuQuoteQuickEmailData): {
   const projectChainRows = [
     { label: "Застройщик", value: data.developerCompany },
     { label: "Подготовлено для", value: data.customer.company ?? "—" },
+    { label: "Город", value: data.customer.city ?? "—" },
     { label: "Объект (адрес)", value: data.customer.objectAddress ?? "—" },
   ];
   if (data.cadastralNumber && data.cadastralNumber.trim()) {

@@ -61,6 +61,10 @@ const quoteSchema = z.object({
   // Застройщик — обязательное B2B-поле. Знаем кто заказчик объекта,
   // чтобы менеджер сразу строил разговор в правильной плоскости.
   developerCompany: z.string().min(2, "Укажите застройщика").max(200),
+  // Город объекта — отдельным полем (раньше клиент должен был писать
+  // его в начало objectAddress). Облегчает фильтрацию лидов
+  // у менеджера: видно сразу регион запроса.
+  city: z.string().min(2, "Укажите город").max(120),
   objectAddress: z.string().min(2, "Укажите объект").max(300),
   // Кадастровый номер участка — опционально. Если есть — попадает на
   // титул КП в карточке «Объект»; если нет — строка не печатается
@@ -132,6 +136,7 @@ export async function POST(req: Request) {
     pdfBytes = await generateVpuKpPdf({
       flow: data.flow,
       modification,
+      city: data.city,
       objectAddress: data.objectAddress,
       cadastralNumber: data.cadastralNumber || undefined,
       customerCompany: data.customerCompany,
@@ -160,7 +165,7 @@ export async function POST(req: Request) {
   console.log(
     `[vpu-quote-quick:${stage}] flow=${data.flow} → ${modification.typeLabel}` +
       ` · company="${data.customerCompany}" developer="${data.developerCompany}"` +
-      ` object="${data.objectAddress}"` +
+      ` city="${data.city}" object="${data.objectAddress}"` +
       (data.cadastralNumber ? ` cadastral="${data.cadastralNumber}"` : "") +
       ` · ${data.customerName} <${data.customerEmail}> ${data.customerPhone}`,
   );
@@ -181,6 +186,7 @@ export async function POST(req: Request) {
         email: data.customerEmail,
         phone: data.customerPhone,
         company: data.customerCompany,
+        city: data.city,
         objectAddress: data.objectAddress,
       },
       flow: data.flow,

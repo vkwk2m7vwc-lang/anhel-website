@@ -185,6 +185,7 @@ async function drawTitlePage(args: {
   doc: PDFDocument;
   flow: number;
   modification: VpuModification;
+  city: string;
   objectAddress: string;
   cadastralNumber?: string;
   customerCompany: string;
@@ -198,6 +199,7 @@ async function drawTitlePage(args: {
     doc,
     flow,
     modification,
+    city,
     objectAddress,
     cadastralNumber,
     customerCompany,
@@ -306,7 +308,8 @@ async function drawTitlePage(args: {
   // Высота карточки динамическая: если кадастра нет, не оставляем пустую
   // строку «Кадастровый: —».
   const hasCadastral = Boolean(cadastralNumber && cadastralNumber.trim());
-  const cardH = hasCadastral ? 124 : 112;
+  // +12 pt under base height for the new «Город» row (12 pt per row).
+  const cardH = hasCadastral ? 136 : 124;
   drawPanel(page, MARGIN, y - cardH, CONTENT_W, cardH);
   drawText(page, "ОБЪЕКТ И УЧАСТНИКИ", MARGIN + 16, y - 20, {
     font: fontBold,
@@ -321,6 +324,16 @@ async function drawTitlePage(args: {
     color: HEADING,
   });
   cy -= 4;
+
+  // Город — отдельной строкой над застройщиком. Облегчает чтение лида:
+  // менеджер сразу понимает регион.
+  drawText(page, "Город:", MARGIN + 16, cy, { font, size: 9, color: MUTED });
+  drawText(page, city || "Не указан", MARGIN + 16 + 96, cy, {
+    font: fontBold,
+    size: 9,
+    color: TEXT,
+  });
+  cy -= 12;
 
   // Опциональная строка кадастрового номера. Печатается ТОЛЬКО если есть.
   if (hasCadastral) {
@@ -554,6 +567,9 @@ function formatFlow(flow: number): string {
 export type KpPdfInput = {
   flow: number;
   modification: VpuModification;
+  /** Город объекта — обязательное. Печатается в карточке ОБЪЕКТ
+   *  отдельной строкой над адресом. */
+  city: string;
   objectAddress: string;
   /**
    * Кадастровый номер участка — опционально. Если задан, печатается
@@ -585,6 +601,7 @@ export async function generateVpuKpPdf(input: KpPdfInput): Promise<Uint8Array> {
     doc,
     flow: input.flow,
     modification: input.modification,
+    city: input.city,
     objectAddress: input.objectAddress,
     cadastralNumber: input.cadastralNumber,
     customerCompany: input.customerCompany,

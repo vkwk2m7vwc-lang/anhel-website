@@ -52,6 +52,9 @@ export type QuickQuoteContent = {
   /** NEW required: застройщик. */
   fieldDeveloper: string;
   fieldDeveloperPlaceholder: string;
+  /** NEW required: город объекта. */
+  fieldCity: string;
+  fieldCityPlaceholder: string;
   fieldObject: string;
   fieldObjectPlaceholder: string;
   /** Optional: кадастровый № участка. */
@@ -84,6 +87,7 @@ type FormValues = {
   customerEmail: string;
   customerCompany: string;
   developerCompany: string;
+  city: string;
   objectAddress: string;
   cadastralNumber: string;
 };
@@ -221,6 +225,7 @@ export function QuickQuoteSection({
         customerEmail: String(fd.get("customerEmail") ?? "").trim(),
         customerCompany: String(fd.get("customerCompany") ?? "").trim(),
         developerCompany: String(fd.get("developerCompany") ?? "").trim(),
+        city: String(fd.get("city") ?? "").trim(),
         objectAddress: String(fd.get("objectAddress") ?? "").trim(),
         cadastralNumber: String(fd.get("cadastralNumber") ?? "").trim(),
       };
@@ -484,10 +489,18 @@ export function QuickQuoteSection({
                 required
               />
               <FieldInput
+                name="city"
+                label={content.fieldCity}
+                placeholder={content.fieldCityPlaceholder}
+                required
+                autoComplete="address-level2"
+              />
+              <FieldInput
                 name="objectAddress"
                 label={content.fieldObject}
                 placeholder={content.fieldObjectPlaceholder}
                 required
+                className="md:col-span-2"
               />
               <FieldInput
                 name="cadastralNumber"
