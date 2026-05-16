@@ -140,7 +140,7 @@ export const WATER_TREATMENT_PRODUCTS: readonly ProductSummary[] = [
     slug: "anhel-series",
     href: "/products/water-treatment/anhel-series",
     accent: "treatment",
-    image: "/assets/products/water-treatment/anhel-series/hero.jpg",
+    image: "/assets/products/water-treatment/anhel-series/hero.webp",
     accentHex: "#8A94A0",
   },
 ] as const;

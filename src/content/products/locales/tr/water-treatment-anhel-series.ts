@@ -28,7 +28,7 @@ export const content: ProductContent = {
     subtitle:
       "56 m³/saat'e kadar su arıtma üniteleri. Çok kademeli mekanik filtrasyon ve ultraviyole dezenfeksiyon. Filtrasyon hatlarına göre 4 modifikasyon — tesisinizin debisine göre seçilir.",
     image: {
-      src: "/assets/products/water-treatment/anhel-series/hero.jpg",
+      src: "/assets/products/water-treatment/anhel-series/hero.webp",
       alt: "ANHEL Su Arıtma Serisi — 2-hatlı modifikasyon örneği",
     },
     imageCaption:
@@ -57,7 +57,7 @@ export const content: ProductContent = {
   ],
 
   description: {
-    tag: "02 · AMAÇ VE UYGULAMA",
+    tag: "03 · AMAÇ",
     title: "СанПиН gerekliliklerine uygun içme suyu",
     paragraphs: [
       "ANHEL Su Arıtma Serisi, СанПиН 2.1.4.1074-01 (İçme suyu. Merkezi içme suyu sağlama sistemlerinin su kalitesine ilişkin hijyenik gereklilikler. Kalite kontrolü) uyarınca arıtılmış su üretmek için tasarlanmıştır. Merkezi içme suyu şebekesinden gelen suyun dezenfeksiyonu ve arıtılması için kullanılır.",
@@ -66,7 +66,7 @@ export const content: ProductContent = {
   },
 
   applications: {
-    tag: "02 · UYGULAMA",
+    tag: "04 · UYGULAMA",
     title: "Seri nerelerde kullanılır",
     lede: "Konut sitelerinden tıbbi kurumlara — СанПиН 2.1.4.1074-01 gereksinimleri olan tesisler.",
     items: [
@@ -117,7 +117,7 @@ export const content: ProductContent = {
   },
 
   advantages: {
-    tag: "08 · AVANTAJLAR",
+    tag: "09 · AVANTAJLAR",
     title: "Neden ANHEL Serisi",
     lede: "Her debi için model yelpazesi, çok kademeli arıtma ve Rusya'da üretim.",
     items: [
@@ -178,7 +178,7 @@ export const content: ProductContent = {
   },
 
   documents: {
-    tag: "09 · DOKÜMANTASYON",
+    tag: "10 · DOKÜMANTASYON",
     title: "Belgeler ve sertifikalar",
     lede: "EAEU uygunluk beyanı ve anket formu — geniş ANHEL su arıtma yelpazesiyle paylaşılır.",
     items: [
@@ -198,7 +198,7 @@ export const content: ProductContent = {
   },
 
   footerCta: {
-    tag: "10 · TEKLİF TALEBİ",
+    tag: "11 · TEKLİF TALEBİ",
     title: "Tesisinizin debisine göre modifikasyon seçeriz",
     subtitle:
       "Anket formunu doldurun — bir iş günü içinde yanıtlıyoruz. Boyutlandırma ücretsizdir.",
@@ -209,7 +209,7 @@ export const content: ProductContent = {
 };
 
 export const modifications: VpuModificationsContent = {
-  tag: "03 · MODEL YELPAZESİ",
+  tag: "05 · MODEL YELPAZESİ",
   title: "Filtrasyon hatlarına göre 4 modifikasyon",
   lede: "Seri kapasitesi paralel hat sayısıyla artar — çalışma prensibi tüm modellerde aynıdır.",
   headerStation: "İstasyon tipi",
@@ -250,7 +250,7 @@ export const modifications: VpuModificationsContent = {
 };
 
 export const principle = {
-  tag: "04 · ÇALIŞMA PRENSİBİ",
+  tag: "06 · ÇALIŞMA PRENSİBİ",
   title: "Dört arıtma kademesi",
   lede: "Çok kademeli işlem — su, mekanik filtrasyon ve UV sterilizasyondan sırasıyla geçer.",
   items: [
@@ -282,7 +282,7 @@ export const principle = {
 };
 
 export const composition: CompositionContent = {
-  tag: "05 · ÜNİTE BİLEŞENLERİ",
+  tag: "07 · ÜNİTE BİLEŞENLERİ",
   title: "Üniteye dahil olanlar",
   lede: "Şase üzerinde fabrika montajı. Ünite sahaya bağlantıya hazır gelir.",
   items: [
@@ -299,7 +299,7 @@ export const composition: CompositionContent = {
 };
 
 export const automation: AutomationContent = {
-  tag: "07 · MODLAR VE OTOMASYON",
+  tag: "08 · MODLAR VE OTOMASYON",
   title: "Kontrol ve uzaktan izleme",
   lede: "Dokunmatik HMI, erişim seviyesi ayrımı, Modbus RTU üzerinden uzaktan izleme ve kapsamlı koruma seti.",
   blocks: [

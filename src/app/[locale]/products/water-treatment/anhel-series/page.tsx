@@ -3,11 +3,13 @@ import { setRequestLocale } from "next-intl/server";
 import { ProductHero } from "@/components/product-page/ProductHero";
 import { ProductPageShell } from "@/components/product-page/ProductPageShell";
 import { TechSpecsGrid } from "@/components/product-page/TechSpecsGrid";
+import { ApplicationsGrid } from "@/components/product-page/ApplicationsGrid";
 import { AdvantagesGrid } from "@/components/product-page/AdvantagesGrid";
 import { DescriptionSection } from "@/components/product-page/DescriptionSection";
 import { DocumentsGrid } from "@/components/product-page/DocumentsGrid";
 import { ProductCtaFooter } from "@/components/product-page/ProductCtaFooter";
 import { VpuModificationsTable } from "@/components/products/water-treatment/VpuModificationsTable";
+import { PrincipleSteps } from "@/components/products/water-treatment/PrincipleSteps";
 import { CompositionList } from "@/components/products/water-treatment/CompositionList";
 import { AutomationSection } from "@/components/products/water-treatment/AutomationSection";
 import { getVpuAnhelSeriesContent } from "@/content/products/water-treatment-anhel-series";
@@ -25,17 +27,24 @@ import {
  * (VpuModificationsTable). Документация переиспользуется с действующего
  * продукта водоподготовки (общий /docs/water-treatment/).
  *
- * Section map:
+ * Section map — порядок совпадает с каноничным шаблоном продуктовой
+ * страницы (firefighting / water-treatment/installations):
  *   01 Hero (с подписью «пример исполнения 2-линейной модификации»)
- *   02 Назначение и применение     ✓ DescriptionSection
- *   03 Модельный ряд серии          ✓ VpuModificationsTable (NEW)
- *   04 Принцип работы               ✓ AdvantagesGrid (4 ступени)
- *   05 Состав установки             ✓ CompositionList (NEW)
- *   06 Технические характеристики    ✓ TechSpecsGrid
- *   07 Режимы работы и автоматика   ✓ AutomationSection (NEW)
- *   08 Преимущества (6)             ✓ AdvantagesGrid
- *   09 Документация                 ✓ DocumentsGrid
- *   10 CTA + соседние разделы       ✓ ProductCtaFooter (+ secondaryCta)
+ *   02 ТТХ                          ✓ TechSpecsGrid
+ *   03 Назначение и применение     ✓ DescriptionSection
+ *   04 Применение                   ✓ ApplicationsGrid
+ *   05 Модельный ряд серии          ✓ VpuModificationsTable (NEW)
+ *   06 Принцип работы               ✓ PrincipleSteps (NEW, 4-col grid)
+ *   07 Состав установки             ✓ CompositionList (NEW)
+ *   08 Режимы и автоматика          ✓ AutomationSection (NEW)
+ *   09 Преимущества (6)             ✓ AdvantagesGrid
+ *   10 Документация                 ✓ DocumentsGrid
+ *   11 CTA + соседние разделы       ✓ ProductCtaFooter (+ secondaryCta)
+ *
+ * Канонический шаблон содержит также BrandsStrip / GalleryRail /
+ * RelatedProjectsSection — на странице серии они опущены сознательно
+ * (бренды-сторонние не упоминаются, галереи серии пока нет, кейсы
+ * показываются с родительского /water-treatment/installations).
  */
 export async function generateMetadata({
   params: { locale },
@@ -75,6 +84,7 @@ export default function VpuAnhelSeriesPage({
     techSpecs,
     description,
     accent,
+    applications,
     advantages,
     documents,
     footerCta,
@@ -106,11 +116,12 @@ export default function VpuAnhelSeriesPage({
       <script {...ldScriptProps(breadcrumbJsonLd)} />
 
       <ProductHero content={hero} accent={accent} />
-      {description ? <DescriptionSection content={description} /> : null}
-      <VpuModificationsTable content={modifications} />
-      <AdvantagesGrid content={principle} />
-      <CompositionList content={composition} />
       <TechSpecsGrid specs={techSpecs} />
+      {description ? <DescriptionSection content={description} /> : null}
+      <ApplicationsGrid content={applications} />
+      <VpuModificationsTable content={modifications} />
+      <PrincipleSteps content={principle} />
+      <CompositionList content={composition} />
       <AutomationSection content={automation} />
       <AdvantagesGrid content={advantages} />
       <DocumentsGrid content={documents} />

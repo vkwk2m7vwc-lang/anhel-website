@@ -30,7 +30,7 @@ export const content: ProductContent = {
     subtitle:
       "Water treatment units up to 56 m³/h. Multi-stage mechanical filtration and ultraviolet disinfection. Four modifications by filtration lines — matched to the flow of your facility.",
     image: {
-      src: "/assets/products/water-treatment/anhel-series/hero.jpg",
+      src: "/assets/products/water-treatment/anhel-series/hero.webp",
       alt: "ANHEL Water Treatment Series — 2-line modification (example)",
     },
     imageCaption:
@@ -59,7 +59,7 @@ export const content: ProductContent = {
   ],
 
   description: {
-    tag: "02 · PURPOSE & APPLICATION",
+    tag: "03 · PURPOSE",
     title: "Potable water in line with СанПиН requirements",
     paragraphs: [
       "The ANHEL Water Treatment Series is designed to produce purified water in line with СанПиН 2.1.4.1074-01 (Drinking water. Hygienic requirements for water quality of centralised drinking water supply systems. Quality control). Units are used for disinfection and purification of water from the central drinking-water supply.",
@@ -68,7 +68,7 @@ export const content: ProductContent = {
   },
 
   applications: {
-    tag: "02 · APPLICATION",
+    tag: "04 · APPLICATION",
     title: "Where the series fits",
     lede: "From residential complexes to medical institutions — facilities with СанПиН 2.1.4.1074-01 requirements.",
     items: [
@@ -119,7 +119,7 @@ export const content: ProductContent = {
   },
 
   advantages: {
-    tag: "08 · ADVANTAGES",
+    tag: "09 · ADVANTAGES",
     title: "Why the ANHEL Series",
     lede: "Model range to cover any flow rate, multi-stage purification and Russian manufacturing.",
     items: [
@@ -180,7 +180,7 @@ export const content: ProductContent = {
   },
 
   documents: {
-    tag: "09 · DOCUMENTATION",
+    tag: "10 · DOCUMENTATION",
     title: "Documents and certificates",
     lede: "EAEU declaration of conformity and the questionnaire — shared with the broader ANHEL water treatment range.",
     items: [
@@ -200,7 +200,7 @@ export const content: ProductContent = {
   },
 
   footerCta: {
-    tag: "10 · QUOTE REQUEST",
+    tag: "11 · QUOTE REQUEST",
     title: "We'll match a modification to your facility's flow rate",
     subtitle:
       "Fill in the questionnaire — we respond within one business day. Sizing is free of charge.",
@@ -211,7 +211,7 @@ export const content: ProductContent = {
 };
 
 export const modifications: VpuModificationsContent = {
-  tag: "03 · MODEL RANGE",
+  tag: "05 · MODEL RANGE",
   title: "Four modifications by filtration lines",
   lede: "Series throughput scales with the number of parallel lines — the working principle is the same across all models.",
   headerStation: "Station type",
@@ -252,7 +252,7 @@ export const modifications: VpuModificationsContent = {
 };
 
 export const principle = {
-  tag: "04 · WORKING PRINCIPLE",
+  tag: "06 · WORKING PRINCIPLE",
   title: "Four stages of purification",
   lede: "Multi-stage processing — water passes sequentially through mechanical filtration and UV sterilisation.",
   items: [
@@ -284,7 +284,7 @@ export const principle = {
 };
 
 export const composition: CompositionContent = {
-  tag: "05 · UNIT COMPOSITION",
+  tag: "07 · UNIT COMPOSITION",
   title: "What the unit includes",
   lede: "Factory skid assembly. The unit arrives on site ready for connection.",
   items: [
@@ -301,7 +301,7 @@ export const composition: CompositionContent = {
 };
 
 export const automation: AutomationContent = {
-  tag: "07 · MODES & AUTOMATION",
+  tag: "08 · MODES & AUTOMATION",
   title: "Control and dispatching",
   lede: "Touchscreen HMI, access-level separation, Modbus RTU dispatching and a comprehensive protection set.",
   blocks: [
