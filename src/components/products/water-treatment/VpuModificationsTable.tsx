@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import {
   VPU_ANHEL_MODIFICATIONS,
+  VPU_ANHEL_DWG_DISK_URL,
   type VpuModification,
   type VpuModificationId,
 } from "@/content/products/vpu-anhel-series-modifications";
@@ -26,6 +27,8 @@ export type VpuModificationsContent = {
   headerLamps: string;
   /** Caption below the table — про единицы, формат и т.д. */
   footnote?: string;
+  /** Label for the DWG download link rendered under the footnote. */
+  dwgLinkLabel: string;
 };
 
 type Locale = "ru" | "en" | "tr";
@@ -130,6 +133,19 @@ export function VpuModificationsTable({
             {content.footnote}
           </p>
         ) : null}
+
+        {/* DWG download link — статичный, общий для всей серии. Открывается
+            в новой вкладке. Когда подпапки разнесём, можно будет рендерить
+            per-row кнопку прямо в таблице. */}
+        <a
+          href={VPU_ANHEL_DWG_DISK_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-4 inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.1em] text-[var(--color-secondary)]/70 underline-offset-4 hover:text-[var(--color-secondary)] hover:underline md:mt-6 md:text-[12px]"
+        >
+          {content.dwgLinkLabel}
+          <span aria-hidden="true">↗</span>
+        </a>
       </div>
     </section>
   );

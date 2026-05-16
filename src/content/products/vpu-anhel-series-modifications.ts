@@ -52,11 +52,14 @@ export type VpuModification = {
   /** Путь к схеме под `/public/kp/schemes/`. */
   schemePath: string;
   /**
-   * TODO (позже, по запросу Алексея 2026-05-16): добавить скачиваемые
-   * DWG-файлы чертежа на странице/в КП. Поле `drawingDwgPath?: string`
-   * + ссылка на странице ГАБАРИТНЫЕ ЧЕРТЕЖИ. Сейчас DWG не выложены —
-   * только PNG-конвертация из PDF.
+   * Прямая ссылка на подпапку Яндекс.Диска с DWG-файлами этой модификации.
+   * Если undefined — линка в PDF КП на стр. «Габаритный чертёж» НЕ
+   * рендерится для этой модификации (клиент скачивает только PNG-чертёж
+   * через основной поток КП). Сейчас сюда вшиты корневые URL-placeholder-ы
+   * (root папка) для 2/3/5 линий — Алексей заменит на подпапки. 4 линии
+   * пока не выложены — поле undefined.
    */
+  drawingDwgUrl?: string;
 };
 
 /**
@@ -82,6 +85,8 @@ export const VPU_ANHEL_MODIFICATIONS: readonly VpuModification[] = [
     weightNote: "не более 250 кг",
     drawingPath: "/kp/drawings/2-lines.png",
     schemePath: "/kp/schemes/2-lines.png",
+    // TODO Алексей: заменить на подпапку «2 линии» в Яндекс.Диске
+    drawingDwgUrl: "https://disk.yandex.ru/d/nme_nuQoMPGutA",
   },
   {
     id: "3-lines",
@@ -100,6 +105,8 @@ export const VPU_ANHEL_MODIFICATIONS: readonly VpuModification[] = [
     dimensions: "1900 × 1956 × 3139",
     drawingPath: "/kp/drawings/3-lines.png",
     schemePath: "/kp/schemes/3-lines.png",
+    // TODO Алексей: заменить на подпапку «3 линии» в Яндекс.Диске
+    drawingDwgUrl: "https://disk.yandex.ru/d/nme_nuQoMPGutA",
   },
   {
     id: "4-lines",
@@ -118,6 +125,8 @@ export const VPU_ANHEL_MODIFICATIONS: readonly VpuModification[] = [
     dimensions: "~ 1856 × 1800 × 3075",
     drawingPath: "/kp/drawings/4-lines.png",
     schemePath: "/kp/schemes/4-lines.png",
+    // 4 линии — DWG ещё не выложены на Яндекс.Диск, поле оставляем
+    // undefined: в PDF КП DWG-линк не печатается для этой модификации.
   },
   {
     id: "5-lines",
@@ -136,6 +145,8 @@ export const VPU_ANHEL_MODIFICATIONS: readonly VpuModification[] = [
     dimensions: "1856 × 1800 × 5565",
     drawingPath: "/kp/drawings/5-lines.png",
     schemePath: "/kp/schemes/5-lines.png",
+    // TODO Алексей: заменить на подпапку «5 линий» в Яндекс.Диске
+    drawingDwgUrl: "https://disk.yandex.ru/d/nme_nuQoMPGutA",
   },
 ] as const;
 
@@ -145,3 +156,18 @@ export const VPU_ANHEL_MODIFICATIONS: readonly VpuModification[] = [
  * «Свяжитесь с нами для нестандартной модификации».
  */
 export const VPU_ANHEL_MAX_TYPICAL_FLOW = 55.9;
+
+/**
+ * Расшаренная папка Яндекс.Диск с DWG-файлами чертежей по 4 модификациям.
+ * Структура внутри: подпапки «2 линии», «3 линии», «4 линии», «5 линий».
+ * Доступ — у всех, у кого есть ссылка (link-share).
+ *
+ * Используется:
+ *   - в footnote VpuModificationsTable («Чертежи DWG → Яндекс.Диск»)
+ *   - в PDF КП на стр. 4 «Габаритный чертёж» (мелкая подпись под изобр.)
+ *
+ * Когда Алексей пришлёт 4 отдельных линка на подпапки — заменим на
+ * per-модификацию `drawingDwgUrl` на VpuModification.
+ */
+export const VPU_ANHEL_DWG_DISK_URL =
+  "https://disk.yandex.ru/d/nme_nuQoMPGutA";

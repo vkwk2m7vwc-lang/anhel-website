@@ -36,7 +36,7 @@ const PANEL = rgb(0.965, 0.965, 0.96);
 //   deep-green  #1F4D3B  — эко / чистая вода
 //   steel-blue  #3B4A5C  — холодный инженерный
 //   teal        #0E7C86  — ISO 14726-1 drinking water
-const ACCENT = rgb(0x0a / 255, 0x0a / 255, 0x0a / 255); // #0A0A0A
+const ACCENT = rgb(0x0f / 255, 0x2f / 255, 0x5c / 255); // #0F2F5C (navy heavy)
 
 const A4 = { w: 595.28, h: 841.89 };
 const MARGIN = 48;
@@ -215,26 +215,25 @@ async function drawTitlePage(args: {
   });
   y -= 28;
 
-  // Заголовок — без дублирования «ВПУ ANHEL» (он уже в шапке страницы).
-  // Главный визуальный смысл — модификация серии (Тип N).
-  drawText(page, "Комплексная система водоподготовки", MARGIN, y, {
-    font: fontBold,
-    size: 22,
-    color: HEADING,
-  });
-  y -= 28;
-  drawText(page, `Серия ВПУ ANHEL · ${modification.typeLabel}`, MARGIN, y, {
+  // Заголовок — категория продукта одной строкой. Модификация (Тип N)
+  // переехала в callout с расходом — это пара «ввод клиента / результат
+  // подбора», логичнее держать их вместе.
+  drawText(page, "Комплексная система водоподготовки ANHEL", MARGIN, y, {
     font: fontBold,
     size: 22,
     color: HEADING,
   });
   y -= 36;
 
-  // Flow callout — главный «маркер» подбора. Тонкая accent-линия слева,
-  // крупное число + единица, ниже мелкая mono-подпись. Не перегружено,
-  // но визуально ловит взгляд первым после заголовка.
+  // Flow callout + Тип pill — главный «маркер» подбора.
+  // Слева: ▍ 25 м³/час / ПРОИЗВОДИТЕЛЬНОСТЬ ПО ОЧИЩЕННОЙ ВОДЕ
+  // Справа: ┌─────┐
+  //         │Тип 3│  капсула с тонкой accent-обводкой
+  //         └─────┘
+  // Логически это пара «ввод клиента → результат подбора», поэтому
+  // они стоят на одной горизонтали.
   const calloutTop = y;
-  // Vertical accent rule
+  // Vertical accent rule slева
   page.drawRectangle({
     x: MARGIN,
     y: calloutTop - 44,
@@ -263,6 +262,33 @@ async function drawTitlePage(args: {
     calloutTop - 48,
     { font, size: 8, color: MUTED },
   );
+
+  // Тип-капсула справа. Размер пилюли подобран под typeLabel ("Тип N").
+  const typeLabel = modification.typeLabel;
+  const typeFontSize = 16;
+  const typeTextW = fontBold.widthOfTextAtSize(typeLabel, typeFontSize);
+  const pillPaddingX = 16;
+  const pillW = typeTextW + pillPaddingX * 2;
+  const pillH = 36;
+  const pillX = A4.w - MARGIN - pillW;
+  const pillY = calloutTop - 38; // выравнивание по центру с большим числом
+  page.drawRectangle({
+    x: pillX,
+    y: pillY,
+    width: pillW,
+    height: pillH,
+    color: rgb(1, 1, 1),
+    borderColor: ACCENT,
+    borderWidth: 0.7,
+  });
+  drawText(
+    page,
+    typeLabel,
+    pillX + (pillW - typeTextW) / 2,
+    pillY + (pillH - typeFontSize) / 2 + 2,
+    { font: fontBold, size: typeFontSize, color: HEADING },
+  );
+
   y -= 64;
 
   // Карточка «Объект» — объект + (опц.) кадастр + застройщик + получатель КП.
@@ -629,6 +655,21 @@ export async function generateVpuKpPdf(input: KpPdfInput): Promise<Uint8Array> {
     FOOTER_BOTTOM + 32,
     { font, size: 8, color: MUTED },
   );
+  // DWG-ссылка — печатаем только если у модификации задан drawingDwgUrl.
+  // 4-линии модификация её пока не имеет, на других — линк ведёт на
+  // подпапку Яндекс.Диска (после замены root-URL).
+  if (input.modification.drawingDwgUrl) {
+    drawText(p4, "DWG-версия чертежа:", MARGIN, FOOTER_BOTTOM + 50, {
+      font: fontBold,
+      size: 8,
+      color: ACCENT,
+    });
+    drawText(p4, input.modification.drawingDwgUrl, MARGIN + 96, FOOTER_BOTTOM + 50, {
+      font,
+      size: 8,
+      color: TEXT,
+    });
+  }
   drawFooter(p4, font, fontBold, 4, TOTAL_PAGES);
 
   // Page 5 — Certificate p1

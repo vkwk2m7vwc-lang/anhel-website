@@ -219,6 +219,7 @@ export const modifications: VpuModificationsContent = {
   headerLamps: "UV lamba",
   footnote:
     "Kurulu güç ve ağırlık modifikasyona göre değişir ve boyutlandırma sırasında belirlenir. Anket formu, model seçimi için gereken tüm parametreleri içerir.",
+  dwgLinkLabel: "DWG çizimler · Yandex Disk",
 };
 
 export const principle = {

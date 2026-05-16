@@ -221,6 +221,7 @@ export const modifications: VpuModificationsContent = {
   headerLamps: "UV lamps",
   footnote:
     "Installed power and weight depend on the modification and are confirmed during sizing. The questionnaire covers every parameter required to pick a model.",
+  dwgLinkLabel: "DWG drawings · Yandex Disk",
 };
 
 export const principle = {
