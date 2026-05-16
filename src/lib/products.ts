@@ -6,7 +6,9 @@ import type { ProductAccent } from "@/content/products/types";
  *   /products                  — TOP_LEVEL (4 раздела)
  *     /products/pumps          — раздел «Насосные станции» (5 продуктов)
  *       /products/pumps/<slug>
- *     /products/water-treatment — отдельная категория (без подразделов)
+ *     /products/water-treatment — раздел «Водоподготовка» (2 продукта)
+ *       /products/water-treatment/installations  — индивид. установки
+ *       /products/water-treatment/anhel-series   — серия ВПУ Anhel
  *     /products/heating-unit   — раздел ИТП (8 модулей внутри)
  *     /products/control-systems — 5 серий шкафов
  *
@@ -116,6 +118,34 @@ export const PUMPS_PRODUCTS: readonly ProductSummary[] = [
 ] as const;
 
 /**
+ * Подкаталог `/products/water-treatment` — 2 продукта раздела.
+ *
+ * 1) installations  — индивидуальные установки водоподготовки ANHEL
+ *                      (фильтрация, умягчение, обезжелезивание, RO).
+ *                      Раньше жил на /products/water-treatment напрямую.
+ * 2) anhel-series   — серия ВПУ Anhel (4 модификации, УФ + фильтрация).
+ *
+ * Порядок: первым — действующий (более универсальный) продукт, вторым
+ * — новая серия.
+ */
+export const WATER_TREATMENT_PRODUCTS: readonly ProductSummary[] = [
+  {
+    slug: "installations",
+    href: "/products/water-treatment/installations",
+    accent: "treatment",
+    image: "/assets/products/vpu.webp",
+    accentHex: "#8A94A0",
+  },
+  {
+    slug: "anhel-series",
+    href: "/products/water-treatment/anhel-series",
+    accent: "treatment",
+    image: "/assets/products/water-treatment/anhel-series/hero.jpg",
+    accentHex: "#8A94A0",
+  },
+] as const;
+
+/**
  * Подкаталог `/products/control-systems` — 5 серий шкафов управления.
  * Порядок отображения 2×3:
  *   row 1: variable-frequency | electric-actuators
@@ -171,8 +201,12 @@ export const CONTROL_SYSTEMS_PRODUCTS: readonly ProductSummary[] = [
  */
 export const PRODUCTS: readonly ProductSummary[] = [
   ...PUMPS_PRODUCTS,
+  ...WATER_TREATMENT_PRODUCTS,
   ...TOP_LEVEL_PRODUCTS.filter(
-    (p) => p.slug !== "pumps" && p.slug !== "control-systems",
+    (p) =>
+      p.slug !== "pumps" &&
+      p.slug !== "control-systems" &&
+      p.slug !== "water-treatment",
   ),
   ...CONTROL_SYSTEMS_PRODUCTS,
 ] as const;
@@ -183,5 +217,6 @@ export const PRODUCTS: readonly ProductSummary[] = [
 export function getTopLevelCategory(slug: string): string {
   if (PUMPS_PRODUCTS.some((p) => p.slug === slug)) return "pumps";
   if (CONTROL_SYSTEMS_PRODUCTS.some((p) => p.slug === slug)) return "control-systems";
+  if (WATER_TREATMENT_PRODUCTS.some((p) => p.slug === slug)) return "water-treatment";
   return slug;
 }

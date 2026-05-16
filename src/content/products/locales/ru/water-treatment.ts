@@ -26,7 +26,7 @@ import type { ProductContent } from "../../types";
  * Требует review от инженера-технолога ANHEL®.
  */
 export const content: ProductContent = {
-  slug: "water-treatment",
+  slug: "installations",
   accent: "treatment",
 
   metaTitle: "Установки водоподготовки ANHEL",
@@ -37,7 +37,8 @@ export const content: ProductContent = {
     breadcrumbs: [
       { label: "Главная", href: "/" },
       { label: "Каталог", href: "/products" },
-      { label: "Водоподготовка" },
+      { label: "Водоподготовка", href: "/products/water-treatment" },
+      { label: "Установки водоподготовки ANHEL" },
     ],
     sectionTag: "01 · ИНЖЕНЕРНОЕ ОБОРУДОВАНИЕ · ВОДОПОДГОТОВКА",
     title: "Установки водоподготовки ANHEL",

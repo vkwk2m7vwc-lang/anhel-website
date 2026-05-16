@@ -7,7 +7,7 @@ import type { ProductContent } from "../../types";
  * terminolojisi: 'ters osmoz', 'yumuşatma', 'demir giderme', 'rejenerasyon'.
  */
 export const content: ProductContent = {
-  slug: "water-treatment",
+  slug: "installations",
   accent: "treatment",
 
   metaTitle: "ANHEL su arıtma üniteleri",
@@ -18,7 +18,8 @@ export const content: ProductContent = {
     breadcrumbs: [
       { label: "Ana Sayfa", href: "/" },
       { label: "Katalog", href: "/products" },
-      { label: "Su arıtma" },
+      { label: "Su arıtma", href: "/products/water-treatment" },
+      { label: "ANHEL su arıtma üniteleri" },
     ],
     sectionTag: "01 · ENDÜSTRİYEL EKİPMAN · SU ARITMA",
     title: "ANHEL su arıtma üniteleri",
