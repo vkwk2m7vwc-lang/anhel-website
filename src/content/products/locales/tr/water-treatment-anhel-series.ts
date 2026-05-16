@@ -59,7 +59,7 @@ export const content: ProductContent = {
 
   description: {
     tag: "03 · AMAÇ",
-    title: "Yeni konut yapıları için içme suyu",
+    title: "СанПиН gerekliliklerine uygun arıtılmış içme suyu",
     paragraphs: [
       "ANHEL Su Arıtma Serisi öncelikle yeni çok daireli konut yapılarında su arıtma için kullanılır. Ünite, binanın tesisat mahalinde basınç yükseltme pompa istasyonu öncesine yerleştirilir ve merkezi şebeke suyunu СанПиН 2.1.4.1074-01 (İçme suyu. Merkezi içme suyu sağlama sistemlerinin su kalitesine ilişkin hijyenik gereklilikler. Kalite kontrolü) gerekliliklerine uygun seviyeye getirir.",
       "Konutlar dışında seri; iş merkezlerinde, tıbbi ve kamu kurumlarında ve teknolojik su kalitesi gereksinimleri olan üretim tesislerinde de çalışır. Şart — kapalı ve ısıtılan bir mahal ile binanın su besleme sisteminde basınç yükseltme pompa istasyonu öncesine bağlantı.",

@@ -61,7 +61,7 @@ export const content: ProductContent = {
 
   description: {
     tag: "03 · PURPOSE",
-    title: "Potable water for new residential developments",
+    title: "Purified potable water in line with СанПиН requirements",
     paragraphs: [
       "The ANHEL Water Treatment Series is built primarily for water treatment in new multi-unit residential developments. The unit sits in the building's plant room upstream of the pressure-boosting pump station and brings central drinking-water supply up to the level required by СанПиН 2.1.4.1074-01 (Drinking water. Hygienic requirements for water quality of centralised drinking water supply systems. Quality control).",
       "Beyond residential, the series serves business centres, medical and public institutions, and production facilities with technological-water quality requirements. The unit must be installed in an enclosed heated room upstream of the pressure-boosting pump station in the building's water supply system.",
