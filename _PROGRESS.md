@@ -2509,6 +2509,35 @@ Lucide:
 - EN/TR замена Onest на IBM Plex Sans — не понадобилось, Onest читается чисто на латинице.
 - Локальный `next build` для верификации — не работает из-за порчи node_modules после npm install lighthouse (см. примечание выше). Верификация через Vercel CI.
 
-### Метрики
+### Метрики (Vercel production, 3 прогона)
 
-Заполняется после Vercel-сборки и Lighthouse.
+**Lighthouse mobile (median 3 runs против https://anhel-website.vercel.app/):**
+
+| Категория | Session 1 baseline | Session 2 |
+|---|---|---|
+| Performance | 83 | **95** (+12) |
+| Accessibility | 100 | 100 |
+| Best Practices | 100 | 100 |
+| SEO | 92 | 92 |
+| LCP | 3700 ms | **2772 ms** (-928 ms) |
+| FCP | 1300 ms | **1061 ms** (-239 ms) |
+| TBT | 229 ms | **11 ms** (-218 ms) |
+| CLS | 0 | 0 |
+
+**Lighthouse desktop:**
+
+| Категория | Session 2 |
+|---|---|
+| Performance | 99 |
+| Accessibility | 100 |
+| Best Practices | 100 |
+| SEO | 92 |
+| LCP | 703 ms |
+| FCP | 403 ms |
+| TBT | 0 ms |
+
+Mobile Performance вырос с 83 до 95 после слияния обеих сессий. Главные драйверы: Onest variable (один woff2 на 4 веса вместо 2 разных preload файлов Inter Tight + Inter), AVIF heroes из Session 1, ускоренная PageTransition. LCP вошёл в green-зону Core Web Vitals (<2.5s остаётся целью на полную production-нагрузку с прогретым CDN, текущие 2.77s на холодной выборке).
+
+### Squash merge
+
+Squash-merge ветки `perf/audit-session-2-typography` в `main` + тэг `v1.19-typography`. Production-деплой Vercel `dpl_Hpw5PsdML7zcnogCex26gpwGNvhH` — READY. Сайт доступен на https://anhel-website.vercel.app/.
