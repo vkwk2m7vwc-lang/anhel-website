@@ -28,7 +28,10 @@ const HEADING = rgb(0.02, 0.02, 0.02);
 const MUTED = rgb(0.43, 0.43, 0.43);
 const HAIRLINE = rgb(0.85, 0.85, 0.85);
 const PANEL = rgb(0.965, 0.965, 0.96);
-const ACCENT = rgb(0xff / 255, 0x6b / 255, 0x35 / 255); // #FF6B35
+// Акцент водоподготовки — глубокий teal. Близок к ISO 14726-1 (морские
+// трубопроводы) и DuPont/Veolia брендингу. Отличим от «water/синего»
+// насосных станций (#1e6fd9) и «heat/оранжевого» БИТП (#c7711e).
+const ACCENT = rgb(0x0e / 255, 0x7c / 255, 0x86 / 255); // #0E7C86
 
 const A4 = { w: 595.28, h: 841.89 };
 const MARGIN = 48;
@@ -178,9 +181,9 @@ async function drawTitlePage(args: {
   flow: number;
   modification: VpuModification;
   objectAddress: string;
+  cadastralNumber?: string;
   customerCompany: string;
   developerCompany: string;
-  designerCompany: string;
   date: Date;
 }) {
   const {
@@ -191,9 +194,9 @@ async function drawTitlePage(args: {
     flow,
     modification,
     objectAddress,
+    cadastralNumber,
     customerCompany,
     developerCompany,
-    designerCompany,
     date,
   } = args;
 
@@ -207,14 +210,15 @@ async function drawTitlePage(args: {
   });
   y -= 28;
 
-  // Заголовок
+  // Заголовок — без дублирования «ВПУ ANHEL» (он уже в шапке страницы).
+  // Главный визуальный смысл — модификация серии (Тип N).
   drawText(page, "Комплексная система водоподготовки", MARGIN, y, {
     font: fontBold,
     size: 22,
     color: HEADING,
   });
   y -= 28;
-  drawText(page, "ANHEL® · " + modification.nameRu, MARGIN, y, {
+  drawText(page, `Серия ВПУ ANHEL · ${modification.typeLabel}`, MARGIN, y, {
     font: fontBold,
     size: 22,
     color: HEADING,
@@ -230,9 +234,11 @@ async function drawTitlePage(args: {
   );
   y -= 30;
 
-  // Карточка «Объект» — расширенная: объект + застройщик + проектировщик
-  // + компания-получатель КП (т.е. кто запросил).
-  const cardH = 124;
+  // Карточка «Объект» — объект + (опц.) кадастр + застройщик + получатель КП.
+  // Высота карточки динамическая: если кадастра нет, не оставляем пустую
+  // строку «Кадастровый: —».
+  const hasCadastral = Boolean(cadastralNumber && cadastralNumber.trim());
+  const cardH = hasCadastral ? 124 : 112;
   drawPanel(page, MARGIN, y - cardH, CONTENT_W, cardH);
   drawText(page, "ОБЪЕКТ И УЧАСТНИКИ", MARGIN + 16, y - 20, {
     font: fontBold,
@@ -247,10 +253,21 @@ async function drawTitlePage(args: {
     color: HEADING,
   });
   cy -= 4;
-  // Застройщик / Проектировщик / Получатель КП — мелко в 1 строке каждый
+
+  // Опциональная строка кадастрового номера. Печатается ТОЛЬКО если есть.
+  if (hasCadastral) {
+    drawText(page, "Кадастровый №:", MARGIN + 16, cy, { font, size: 9, color: MUTED });
+    drawText(page, cadastralNumber as string, MARGIN + 16 + 96, cy, {
+      font: fontBold,
+      size: 9,
+      color: TEXT,
+    });
+    cy -= 12;
+  }
+
+  // Застройщик / Получатель КП — без проектировщика (он = получатель КП).
   const fieldRows: Array<[string, string]> = [
     ["Застройщик:", developerCompany || "Не указан"],
-    ["Проектировщик:", designerCompany || "Не указан"],
     ["Получатель КП:", customerCompany || "Не указан"],
   ];
   for (const [label, value] of fieldRows) {
@@ -284,7 +301,7 @@ async function drawTitlePage(args: {
     year: "numeric",
   }).format(date);
 
-  drawText(page, "Отдел продаж · +7 (812) 416-45-00 · info@anhelspb.com", MARGIN, MARGIN + 50, {
+  drawText(page, "ООО «ПРОФИТ» · +7 (812) 416-45-00 · info@anhelspb.com", MARGIN, MARGIN + 50, {
     font,
     size: 10,
     color: TEXT,
@@ -480,11 +497,15 @@ export type KpPdfInput = {
   flow: number;
   modification: VpuModification;
   objectAddress: string;
+  /**
+   * Кадастровый номер участка — опционально. Если задан, печатается
+   * отдельной строкой в карточке «Объект» на титуле. Если undefined
+   * или пустая строка — строка не печатается (никаких «—»).
+   */
+  cadastralNumber?: string;
   customerCompany: string;
   /** Застройщик (developer / building owner). */
   developerCompany: string;
-  /** Проектировщик (designer / architect). */
-  designerCompany: string;
   date: Date;
 };
 
@@ -507,9 +528,9 @@ export async function generateVpuKpPdf(input: KpPdfInput): Promise<Uint8Array> {
     flow: input.flow,
     modification: input.modification,
     objectAddress: input.objectAddress,
+    cadastralNumber: input.cadastralNumber,
     customerCompany: input.customerCompany,
     developerCompany: input.developerCompany,
-    designerCompany: input.designerCompany,
     date: input.date,
   });
   drawFooter(p1, font, fontBold, 1, TOTAL_PAGES);

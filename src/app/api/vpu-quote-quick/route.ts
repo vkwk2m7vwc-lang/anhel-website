@@ -54,15 +54,18 @@ const quoteSchema = z.object({
   customerName: z.string().min(2, "Укажите контактное лицо").max(120),
   customerPhone: phoneSchema,
   customerEmail: z.string().email("Некорректный email").max(120),
-  // Теперь обязательное: КП обычно запрашивают проектные компании,
-  // менеджеру важно знать кто звонил (компания) ещё до контакта.
-  customerCompany: z.string().min(2, "Укажите компанию").max(200),
-  // Дополнительные обязательные поля специально под B2B-проектную
-  // аудиторию ВПУ: знаем заказчика-застройщика и проектировщика,
-  // чтобы менеджер мог сразу строить разговор в правильной плоскости.
+  // Теперь обязательное: КП обычно запрашивают проектные компании
+  // или фрилансеры-проектировщики. «Ваша компания» = название
+  // проектной/эксплуатационной фирмы или ИП фрилансера.
+  customerCompany: z.string().min(2, "Укажите вашу компанию").max(200),
+  // Застройщик — обязательное B2B-поле. Знаем кто заказчик объекта,
+  // чтобы менеджер сразу строил разговор в правильной плоскости.
   developerCompany: z.string().min(2, "Укажите застройщика").max(200),
-  designerCompany: z.string().min(2, "Укажите проектировщика").max(200),
   objectAddress: z.string().min(2, "Укажите объект").max(300),
+  // Кадастровый номер участка — опционально. Если есть — попадает на
+  // титул КП в карточке «Объект»; если нет — строка не печатается
+  // (в PDF не остаётся пустое поле «Кадастровый: —»).
+  cadastralNumber: z.string().max(60).optional().default(""),
   consent: z.literal(true, {
     errorMap: () => ({ message: "Требуется согласие на обработку ПД" }),
   }),
@@ -130,9 +133,9 @@ export async function POST(req: Request) {
       flow: data.flow,
       modification,
       objectAddress: data.objectAddress,
+      cadastralNumber: data.cadastralNumber || undefined,
       customerCompany: data.customerCompany,
       developerCompany: data.developerCompany,
-      designerCompany: data.designerCompany,
       date: now,
     });
   } catch (err) {
@@ -157,7 +160,8 @@ export async function POST(req: Request) {
   console.log(
     `[vpu-quote-quick:${stage}] flow=${data.flow} → ${modification.typeLabel}` +
       ` · company="${data.customerCompany}" developer="${data.developerCompany}"` +
-      ` designer="${data.designerCompany}" object="${data.objectAddress}"` +
+      ` object="${data.objectAddress}"` +
+      (data.cadastralNumber ? ` cadastral="${data.cadastralNumber}"` : "") +
       ` · ${data.customerName} <${data.customerEmail}> ${data.customerPhone}`,
   );
 
@@ -184,7 +188,7 @@ export async function POST(req: Request) {
       modificationType: modification.typeLabel,
       modificationFlowRange: modification.flowLabel.ru,
       developerCompany: data.developerCompany,
-      designerCompany: data.designerCompany,
+      cadastralNumber: data.cadastralNumber || undefined,
     });
 
     const recipient = process.env.QUIZ_RECIPIENT_EMAIL ?? "";

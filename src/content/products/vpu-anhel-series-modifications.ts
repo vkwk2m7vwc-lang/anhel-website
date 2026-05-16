@@ -51,6 +51,12 @@ export type VpuModification = {
   drawingPath: string;
   /** Путь к схеме под `/public/kp/schemes/`. */
   schemePath: string;
+  /**
+   * TODO (позже, по запросу Алексея 2026-05-16): добавить скачиваемые
+   * DWG-файлы чертежа на странице/в КП. Поле `drawingDwgPath?: string`
+   * + ссылка на странице ГАБАРИТНЫЕ ЧЕРТЕЖИ. Сейчас DWG не выложены —
+   * только PNG-конвертация из PDF.
+   */
 };
 
 /**

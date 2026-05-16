@@ -52,11 +52,12 @@ export type QuickQuoteContent = {
   /** NEW required: застройщик. */
   fieldDeveloper: string;
   fieldDeveloperPlaceholder: string;
-  /** NEW required: проектировщик. */
-  fieldDesigner: string;
-  fieldDesignerPlaceholder: string;
   fieldObject: string;
   fieldObjectPlaceholder: string;
+  /** Optional: кадастровый № участка. */
+  fieldCadastral: string;
+  fieldCadastralPlaceholder: string;
+  fieldCadastralHint: string;
   consentLabel: string;
   submitLabel: string;
   submitting: string;
@@ -83,8 +84,8 @@ type FormValues = {
   customerEmail: string;
   customerCompany: string;
   developerCompany: string;
-  designerCompany: string;
   objectAddress: string;
+  cadastralNumber: string;
 };
 
 type SubmissionState =
@@ -220,8 +221,8 @@ export function QuickQuoteSection({
         customerEmail: String(fd.get("customerEmail") ?? "").trim(),
         customerCompany: String(fd.get("customerCompany") ?? "").trim(),
         developerCompany: String(fd.get("developerCompany") ?? "").trim(),
-        designerCompany: String(fd.get("designerCompany") ?? "").trim(),
         objectAddress: String(fd.get("objectAddress") ?? "").trim(),
+        cadastralNumber: String(fd.get("cadastralNumber") ?? "").trim(),
       };
 
       // Client-side validation — even though server re-validates, мы хотим
@@ -483,16 +484,16 @@ export function QuickQuoteSection({
                 required
               />
               <FieldInput
-                name="designerCompany"
-                label={content.fieldDesigner}
-                placeholder={content.fieldDesignerPlaceholder}
-                required
-              />
-              <FieldInput
                 name="objectAddress"
                 label={content.fieldObject}
                 placeholder={content.fieldObjectPlaceholder}
                 required
+              />
+              <FieldInput
+                name="cadastralNumber"
+                label={content.fieldCadastral}
+                placeholder={content.fieldCadastralPlaceholder}
+                hint={content.fieldCadastralHint}
                 className="md:col-span-2"
               />
 
@@ -634,6 +635,7 @@ function FieldInput({
   className,
   error,
   pattern,
+  hint,
 }: {
   name: string;
   label: string;
@@ -644,6 +646,7 @@ function FieldInput({
   className?: string;
   error?: string;
   pattern?: string;
+  hint?: string;
 }) {
   return (
     <label className={`flex flex-col gap-2 ${className ?? ""}`}>
@@ -672,6 +675,10 @@ function FieldInput({
           className="font-mono text-[11px] text-[var(--accent-current)]"
         >
           {error}
+        </span>
+      ) : hint ? (
+        <span className="text-[11px] leading-relaxed text-[var(--color-secondary)]/50">
+          {hint}
         </span>
       ) : null}
     </label>

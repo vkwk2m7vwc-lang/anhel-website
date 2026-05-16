@@ -19,9 +19,8 @@ export type VpuModificationsContent = {
   title: string;
   /** One-line caption / lede on the right. */
   lede?: string;
-  /** Header labels for the 5 columns. */
+  /** Header labels for the 4 columns: Тип / Расход / Габариты / УФ-ламп. */
   headerStation: string;
-  headerLines: string;
   headerFlow: string;
   headerDimensions: string;
   headerLamps: string;
@@ -77,8 +76,12 @@ export function VpuModificationsTable({
           ) : null}
         </div>
 
-        {/* Desktop table — hidden on mobile. 5-column grid:
-            station(1.6) / lines(0.6) / flow(1.2) / dimensions(1.4) / lamps(0.5) */}
+        {/* Desktop table — hidden on mobile. 4-column grid:
+            station(0.8) / flow(1.2) / dimensions(1.4) / lamps(0.6).
+            Дропнули колонку «Линии» (дублировала «УФ-ламп», т.к. в
+            этой серии 1 линия = 1 УФ-лампа). Колонку «Тип станции»
+            упростили до typeLabel («Тип 2», «Тип 3»…) — без «ВПУ
+            ANHEL», бренд уже в шапке страницы. */}
         <div className="mt-12 hidden md:mt-16 md:block">
           <div
             role="table"
@@ -87,10 +90,9 @@ export function VpuModificationsTable({
           >
             <div
               role="row"
-              className="grid grid-cols-[1.6fr_0.6fr_1.2fr_1.4fr_0.5fr] bg-[var(--color-hairline)]/40 px-6 py-4 font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/65 md:px-8"
+              className="grid grid-cols-[0.8fr_1.2fr_1.4fr_0.6fr] bg-[var(--color-hairline)]/40 px-6 py-4 font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/65 md:px-8"
             >
               <span role="columnheader">{content.headerStation}</span>
-              <span role="columnheader">{content.headerLines}</span>
               <span role="columnheader">{content.headerFlow}</span>
               <span role="columnheader">{content.headerDimensions}</span>
               <span role="columnheader" className="text-right">{content.headerLamps}</span>
@@ -133,10 +135,11 @@ export function VpuModificationsTable({
   );
 }
 
-function getName(row: VpuModification, locale: Locale): string {
-  if (locale === "en") return row.nameEn;
-  if (locale === "tr") return row.nameTr;
-  return row.nameRu;
+function getName(row: VpuModification): string {
+  // В таблице — короткий typeLabel («Тип 2»…). Полное имя
+  // («ВПУ ANHEL (N линий)») оставлено в config-ах для PDF-генератора
+  // и email-шаблона. На странице бренд «ANHEL» уже звучит в hero.
+  return row.typeLabel;
 }
 
 function getFlow(row: VpuModification, locale: Locale): string {
@@ -167,7 +170,7 @@ function ModificationRow({
       }}
       data-highlighted={highlighted || undefined}
       className={[
-        "group relative grid grid-cols-[1.6fr_0.6fr_1.2fr_1.4fr_0.5fr] items-baseline gap-4 px-6 py-6 transition-colors duration-300 md:px-8 md:py-7",
+        "group relative grid grid-cols-[0.8fr_1.2fr_1.4fr_0.6fr] items-baseline gap-4 px-6 py-6 transition-colors duration-300 md:px-8 md:py-7",
         highlighted
           ? "bg-[var(--accent-current)]/8"
           : "bg-[var(--color-primary)] [@media(hover:hover)]:hover:bg-[var(--color-hover-tint)]",
@@ -186,13 +189,7 @@ function ModificationRow({
         role="cell"
         className="font-display text-[18px] font-medium leading-tight text-[var(--color-secondary)] md:text-[22px]"
       >
-        {getName(row, locale)}
-      </span>
-      <span
-        role="cell"
-        className="font-mono text-[12px] uppercase tracking-[0.1em] text-[var(--color-secondary)]/70 md:text-[13px]"
-      >
-        {row.linesCount}
+        {getName(row)}
       </span>
       <span
         role="cell"
@@ -256,26 +253,16 @@ function ModificationCard({
             : "ring-transparent [@media(hover:hover)]:group-hover:ring-[var(--accent-current)]",
         ].join(" ")}
       />
-      <div className="grid grid-cols-2 gap-2">
-        <div>
-          <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/55">
-            {content.headerLines}
-          </p>
-          <p className="mt-1 font-mono text-[14px] tabular-nums text-[var(--color-secondary)]/85">
-            {row.linesCount}
-          </p>
-        </div>
-        <div>
-          <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/55">
-            {content.headerLamps}
-          </p>
-          <p className="mt-1 font-mono text-[14px] tabular-nums text-[var(--color-secondary)]/85">
-            {row.linesCount}
-          </p>
-        </div>
+      <div>
+        <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/55">
+          {content.headerLamps}
+        </p>
+        <p className="mt-1 font-mono text-[14px] tabular-nums text-[var(--color-secondary)]/85">
+          {row.linesCount} шт.
+        </p>
       </div>
       <h3 className="font-display text-[18px] font-medium leading-tight text-[var(--color-secondary)]">
-        {getName(row, locale)}
+        {getName(row)}
       </h3>
       <div>
         <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-[var(--color-secondary)]/55">

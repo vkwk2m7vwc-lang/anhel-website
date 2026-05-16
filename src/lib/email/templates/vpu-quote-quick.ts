@@ -37,8 +37,8 @@ export type VpuQuoteQuickEmailData = {
   modificationFlowRange: string;
   /** Застройщик объекта. */
   developerCompany: string;
-  /** Проектировщик объекта. */
-  designerCompany: string;
+  /** Кадастровый номер участка — опционально. */
+  cadastralNumber?: string;
 };
 
 export function renderVpuQuoteQuickEmail(data: VpuQuoteQuickEmailData): {
@@ -72,15 +72,23 @@ export function renderVpuQuoteQuickEmail(data: VpuQuoteQuickEmailData): {
     data.accent,
   );
 
+  // Опциональная строка с кадастром — добавляем только если есть.
+  const projectChainRows = [
+    { label: "Застройщик", value: data.developerCompany },
+    { label: "Получатель КП (компания)", value: data.customer.company ?? "—" },
+    { label: "Объект (адрес)", value: data.customer.objectAddress ?? "—" },
+  ];
+  if (data.cadastralNumber && data.cadastralNumber.trim()) {
+    projectChainRows.push({
+      label: "Кадастровый №",
+      value: data.cadastralNumber,
+    });
+  }
+
   const projectChainSection = renderSection(
     {
       title: "Проектная цепочка",
-      rows: [
-        { label: "Застройщик", value: data.developerCompany },
-        { label: "Проектировщик", value: data.designerCompany },
-        { label: "Получатель КП (компания)", value: data.customer.company ?? "—" },
-        { label: "Объект (адрес)", value: data.customer.objectAddress ?? "—" },
-      ],
+      rows: projectChainRows,
     },
     data.accent,
   );
