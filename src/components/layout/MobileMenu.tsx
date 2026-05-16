@@ -3,7 +3,7 @@
 import { AnimatePresence, motion, type PanInfo } from "framer-motion";
 import { Link } from "@/navigation";
 import { useEffect, useRef } from "react";
-import { X, Phone, Mail } from "lucide-react";
+import { X, Phone, Mail, MapPin } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { CONTACTS } from "@/lib/contacts";
 import { PROJECTS_PATH } from "@/lib/routes";
@@ -212,7 +212,8 @@ export function MobileMenu({
                   <Mail size={16} strokeWidth={1.5} aria-hidden="true" />
                   {CONTACTS.email}
                 </a>
-                <p className="pt-2 text-sm leading-relaxed text-[var(--color-secondary)]/55">
+                <p className="flex items-center gap-3 text-base text-[var(--color-secondary)]/70">
+                  <MapPin size={16} strokeWidth={1.5} aria-hidden="true" />
                   {tMobile("office_line")}
                 </p>
               </section>
