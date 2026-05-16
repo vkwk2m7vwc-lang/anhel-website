@@ -137,23 +137,25 @@ export default async function LocaleLayout({
   return (
     <html lang={locale} className={fontVariables} suppressHydrationWarning>
       <head>
-        {/* Preload критического шрифта (Inter Tight cyrillic weight 400) —
-            он стоит в hero-заголовке и счётчиках, без него LCP ловит
-            flash-of-unstyled-text. crossOrigin обязателен, иначе preload
-            не привяжется к font-face. */}
+        {/* Preload Onest cyrillic — основной шрифт (Stage 5 Session 2).
+            Onest variable, один woff2 покрывает все 4 веса 400-700 для
+            cyrillic-сабсета. Hero-заголовок и счётчики попадают именно
+            в этот сабсет, без preload LCP ловит flash-of-unstyled-text.
+            crossOrigin обязателен, иначе preload не привяжется к font-face. */}
         <link
           rel="preload"
           as="font"
           type="font/woff2"
-          href="/fonts/inter-tight/NGSwv5HMAFg6IuGlBNMjxLsD8ah8QA.woff2"
+          href="/fonts/onest/gNMKW3F-SZuj7xmb-HY6EQ.woff2"
           crossOrigin="anonymous"
         />
-        {/* Inter cyrillic 400 — body шрифт, идёт сразу после hero */}
+        {/* Onest latin — для EN/TR локалей и латинских блоков в RU
+            (ANHEL®, числа, единицы измерения). */}
         <link
           rel="preload"
           as="font"
           type="font/woff2"
-          href="/fonts/inter/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa0ZL7SUc.woff2"
+          href="/fonts/onest/gNMKW3F-SZuj7xmf-HY.woff2"
           crossOrigin="anonymous"
         />
         {/* Site-wide Organization JSON-LD. Rendered once in <head> so
