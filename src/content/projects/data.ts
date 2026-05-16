@@ -89,6 +89,87 @@ export const PROJECTS: ProjectItem[] = [
     equipment: ["pumps_pressure_anhel"],
     cover: "/assets/projects/zhk-graf-orlov/cover.jpg",
   },
+  // --- Расширение портфолио, май 2026 — феа/portfolio-residential-projects ---
+  // Жилые комплексы 2019+: водоподготовка ANHEL появилась с 2021 года,
+  // поэтому для более ранних объектов категория ограничена pumps.
+  {
+    slug: "zhk-petrovsky-kvartal-na-vode",
+    category: "pumps",
+    equipment: ["pumps_pressure_fire_anhel"],
+    cover: "/assets/projects/zhk-petrovsky-kvartal-na-vode/cover.jpg",
+  },
+  {
+    slug: "zhk-art-line",
+    category: "mixed",
+    equipment: ["pumps_pressure_fire_anhel", "water_treatment_anhel"],
+    cover: "/assets/projects/zhk-art-line/cover.jpg",
+  },
+  {
+    slug: "zhk-avtograf-v-centre",
+    category: "mixed",
+    equipment: ["pumps_pressure_fire_anhel", "water_treatment_anhel"],
+    cover: "/assets/projects/zhk-avtograf-v-centre/cover.jpg",
+  },
+  {
+    slug: "zhk-prityazhenie",
+    category: "mixed",
+    equipment: ["pumps_pressure_fire_anhel", "water_treatment_anhel"],
+    cover: "/assets/projects/zhk-prityazhenie/cover.jpg",
+  },
+  {
+    slug: "zhk-pulse-premier",
+    category: "mixed",
+    equipment: ["pumps_pressure_fire_anhel", "water_treatment_anhel"],
+    cover: "/assets/projects/zhk-pulse-premier/cover.jpg",
+  },
+  {
+    slug: "zhk-solnechny-gorod-rezidentsii",
+    category: "mixed",
+    equipment: ["pumps_pressure_fire_anhel", "water_treatment_anhel"],
+    cover: "/assets/projects/zhk-solnechny-gorod-rezidentsii/cover.jpg",
+  },
+  {
+    slug: "zhk-strizhi-v-nevskom",
+    category: "mixed",
+    equipment: ["pumps_pressure_fire_anhel", "water_treatment_anhel"],
+    cover: "/assets/projects/zhk-strizhi-v-nevskom/cover.jpg",
+  },
+  {
+    slug: "zhk-bionika-zapovednaya",
+    category: "mixed",
+    equipment: ["pumps_pressure_fire_anhel", "water_treatment_anhel"],
+    cover: "/assets/projects/zhk-bionika-zapovednaya/cover.jpg",
+  },
+  {
+    slug: "zhk-gorod-zvezd",
+    category: "mixed",
+    equipment: ["pumps_pressure_fire_anhel", "water_treatment_anhel"],
+    cover: "/assets/projects/zhk-gorod-zvezd/cover.jpg",
+  },
+  {
+    slug: "zhk-univer-city",
+    category: "mixed",
+    equipment: ["pumps_pressure_fire_anhel", "water_treatment_anhel"],
+    cover: "/assets/projects/zhk-univer-city/cover.jpg",
+  },
+  {
+    slug: "zhk-dvortsovy-fasad",
+    category: "mixed",
+    equipment: ["pumps_pressure_fire_anhel", "water_treatment_anhel"],
+    cover: "/assets/projects/zhk-dvortsovy-fasad/cover.jpg",
+  },
+  {
+    slug: "zhk-praim-primorsky",
+    category: "mixed",
+    equipment: ["pumps_pressure_fire_anhel", "water_treatment_anhel"],
+    cover: "/assets/projects/zhk-praim-primorsky/cover.jpg",
+  },
+  {
+    slug: "zhk-paradny-ansambl",
+    category: "mixed",
+    equipment: ["pumps_pressure_fire_anhel", "water_treatment_anhel"],
+    cover: "/assets/projects/zhk-paradny-ansambl/cover.jpg",
+  },
 ];
 
 export function getProjectBySlug(slug: string): ProjectItem | undefined {
