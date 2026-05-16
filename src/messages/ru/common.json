@@ -7,7 +7,6 @@
     "products": "Продукты",
     "documents": "Документация",
     "projects": "Объекты",
-    "production": "Производство",
     "service": "Сервис",
     "about": "О компании",
     "contacts": "Контакты"
@@ -42,7 +41,6 @@
     },
     "company": {
       "about": "О компании",
-      "production": "Производство",
       "service": "Сервис",
       "projects": "Проекты"
     },

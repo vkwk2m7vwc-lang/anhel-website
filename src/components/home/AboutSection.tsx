@@ -1,4 +1,3 @@
-import { Link } from "@/navigation";
 import { useTranslations } from "next-intl";
 
 /**
@@ -10,11 +9,13 @@ import { useTranslations } from "next-intl";
  *
  * Содержимое:
  *   - метка, заголовок, 3 абзаца (бренд → производство → полный цикл)
- *   - CTA «О производстве →» — якорь на /#production
  *
  * Ряд счётчиков (150+ / 12+ / 4+ / 24+) убран после редакционного
  * аудита 2026-05: он дословно дублировал hero-counters одним экраном
  * выше. Бренд-метрики теперь живут только в hero.
+ *
+ * CTA «О производстве →» удалена в v1.20-pre-launch-fixes — секция
+ * ProductionSection временно убрана из главной страницы.
  *
  * Стиль секции согласован с `ProductsShowcase`: max-width 1440,
  * h2 на font-display, lede 60-70 chars, mono-tag сверху.
@@ -46,25 +47,6 @@ export function AboutSection() {
         <p className="mt-8 max-w-3xl text-base leading-relaxed text-[var(--color-secondary)]/60 md:text-lg">
           {t("paragraph_3")}
         </p>
-
-        {/* CTA на якорь #production — секция «Производство» ниже на той
-            же странице. Сам link плотный, ghost-style, как у hero. */}
-        <div className="mt-12 md:mt-16">
-          <Link
-            href="/#production"
-            data-cursor="hover"
-            data-cta="about-to-production"
-            className="group inline-flex items-center gap-3 rounded border-[0.5px] border-[var(--color-secondary)]/40 px-[22px] py-[14px] text-sm font-medium text-[var(--color-secondary)] transition-colors hover:border-[var(--color-secondary)]"
-          >
-            {t("cta")}
-            <span
-              aria-hidden="true"
-              className="inline-block font-mono transition-transform duration-300 ease-out-expo group-hover:translate-x-1"
-            >
-              →
-            </span>
-          </Link>
-        </div>
       </div>
     </section>
   );

@@ -7,7 +7,6 @@
     "products": "Products",
     "documents": "Documentation",
     "projects": "Projects",
-    "production": "Manufacturing",
     "service": "Service",
     "about": "About",
     "contacts": "Contact"
@@ -42,7 +41,6 @@
     },
     "company": {
       "about": "About us",
-      "production": "Manufacturing",
       "service": "Service",
       "projects": "Projects"
     },

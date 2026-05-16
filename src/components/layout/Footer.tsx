@@ -11,7 +11,9 @@ import { CONTACTS } from "@/lib/contacts";
  *
  *   Колонка 1 — бренд: «ANHEL®» + «Инженерное оборудование. Россия.»
  *   Колонка 2 — Продукция: 4 ссылки на /products/*
- *   Колонка 3 — Компания: О компании / Производство / Сервис / Проекты
+ *   Колонка 3 — Компания: О компании / Сервис / Проекты
+ *     (пункт «Производство» удалён перед запуском v1.20 — секция
+ *     вернётся отдельной задачей после съёмки видео цеха)
  *   Колонка 4 — Материалы: опросные / каталоги / сертификаты / реквизиты
  *   Колонка 5 — Контакты: телефон / email / адрес
  *
@@ -65,7 +67,6 @@ export function Footer() {
         {/* Колонка 3 — Компания */}
         <FooterColumn title={t("columns.company")}>
           <FooterLink href="/#about">{t("company.about")}</FooterLink>
-          <FooterLink href="/#production">{t("company.production")}</FooterLink>
           <FooterLink href="/service">{t("company.service")}</FooterLink>
           <FooterLink href="/projects">{t("company.projects")}</FooterLink>
         </FooterColumn>

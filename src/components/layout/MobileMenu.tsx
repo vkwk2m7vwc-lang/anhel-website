@@ -61,7 +61,6 @@ export function MobileMenu({
    */
   const NAV_ANCHORS = [
     { label: tNav("projects"), href: PROJECTS_PATH },
-    { label: tNav("production"), href: "/#production" },
     { label: tNav("service"), href: "/service" },
     { label: tNav("about"), href: "/#about" },
     { label: tNav("contacts"), href: "/contacts" },

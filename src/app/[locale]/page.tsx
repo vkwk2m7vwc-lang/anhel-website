@@ -2,7 +2,6 @@ import { HeroShell } from "@/components/hero/HeroShell";
 import { HeroBgCarousel } from "@/components/hero/HeroBgCarousel";
 import { ProductsShowcase } from "@/components/home/ProductsShowcase";
 import { AboutSection } from "@/components/home/AboutSection";
-import { ProductionSection } from "@/components/home/ProductionSection";
 
 /**
  * Home page.
@@ -15,12 +14,14 @@ import { ProductionSection } from "@/components/home/ProductionSection";
  *   1. ProductsShowcase — 4 карточки направлений (главная точка
  *      навигации в каталог)
  *   2. AboutSection (#about) — секция «О компании» с counters
- *   3. ProductionSection (#production) — секция «Производство»
  *
- * #about и #production — якоря, на которые ведут пункты шапки
- * «О компании» и «Производство». Раньше эти ссылки уходили на
- * `/#about` и `/#manufacturing` без секций в DOM (мёртвые ссылки —
+ * #about — якорь, на который ведёт пункт шапки «О компании». Раньше
+ * эта ссылка уходила на `/#about` без секции в DOM (мёртвая ссылка —
  * C1 из pre-launch audit).
+ *
+ * Секция ProductionSection (#production) удалена перед запуском
+ * (v1.20-pre-launch-fixes) — будет доработана отдельной задачей после
+ * съёмки видео производственной площадки.
  *
  * Тексты в секциях — плейсхолдеры, копирайтер заменит после запуска.
  */
@@ -30,7 +31,6 @@ export default function Home() {
       <HeroShell background={<HeroBgCarousel autoplay={true} />} />
       <ProductsShowcase />
       <AboutSection />
-      <ProductionSection />
     </>
   );
 }

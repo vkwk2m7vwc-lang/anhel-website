@@ -22,9 +22,11 @@ import { LanguageSwitcher } from "./LanguageSwitcher";
  *  2. After a small scroll threshold we darken/blur the bar so it stays
  *     legible over any hero content.
  *
- * Navigation: гибридная структура — Производство и О компании ведут на
- * якоря секций главной (#production, #about), Контакты — отдельная
- * страница `/contacts` с реквизитами, картой и формой обратной связи.
+ * Navigation: гибридная структура — «О компании» ведёт на якорь
+ * секции главной (#about), Контакты — отдельная страница `/contacts`
+ * с реквизитами, картой и формой обратной связи. Пункт «Производство»
+ * удалён перед запуском (v1.20-pre-launch-fixes) — секция вернётся
+ * отдельной задачей после съёмки видео производственной площадки.
  *
  * i18n: nav labels and aria-strings are pulled from the `common`
  * namespace. The href targets are locale-agnostic — next-intl's
@@ -43,14 +45,14 @@ export function Header() {
   /**
    * NAV is rebuilt on every render because labels depend on the
    * translation function `t`. Stable hrefs only — keys come from the
-   * common.nav namespace. Order preserved from the previous
-   * hardcoded array: Objects · Production · Service · About · Contacts.
+   * common.nav namespace. Order: Objects · Service · About · Contacts.
    * «Products» and «Documents» live in their own dropdown components
    * (ProductsMenu, DocumentsMenu) and are inserted around this slice.
+   * «Производство» removed in v1.20-pre-launch-fixes — section pending
+   * video rework, see app/[locale]/page.tsx for context.
    */
   const NAV = [
     { label: t("nav.projects"), href: PROJECTS_PATH },
-    { label: t("nav.production"), href: "/#production" },
     { label: t("nav.service"), href: "/service" },
     { label: t("nav.about"), href: "/#about" },
     { label: t("nav.contacts"), href: "/contacts" },
@@ -99,7 +101,7 @@ export function Header() {
             className="hidden items-center gap-6 md:flex lg:gap-8"
           >
             <ProductsMenu />
-            {NAV.slice(0, 3).map((item) => (
+            {NAV.slice(0, 2).map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
@@ -110,7 +112,7 @@ export function Header() {
               </Link>
             ))}
             <DocumentsMenu />
-            {NAV.slice(3).map((item) => (
+            {NAV.slice(2).map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
