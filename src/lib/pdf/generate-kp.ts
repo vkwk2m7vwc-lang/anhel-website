@@ -208,31 +208,33 @@ async function drawTitlePage(args: {
   drawHeader(page, fontBold);
   let y = A4.h - MARGIN - 80;
 
-  drawText(page, "КОММЕРЧЕСКОЕ ПРЕДЛОЖЕНИЕ", MARGIN, y, {
+  // Метка документа: «КОММЕРЧЕСКОЕ ПРЕДЛОЖЕНИЕ · 16 МАЯ 2026» —
+  // дата теперь часть реквизитов документа, видна сразу сверху. Раньше
+  // болталась внизу страницы под контактами — терялась.
+  const dateUpper = new Intl.DateTimeFormat("ru-RU", {
+    timeZone: "Europe/Moscow",
+    day: "2-digit",
+    month: "long",
+    year: "numeric",
+  }).format(date).replace(/\s+г\.?$/, "").toUpperCase();
+  drawText(page, `КОММЕРЧЕСКОЕ ПРЕДЛОЖЕНИЕ · ${dateUpper}`, MARGIN, y, {
     font: fontBold,
     size: 10,
     color: ACCENT,
   });
   y -= 28;
 
-  // Заголовок — категория продукта. Длинная строка («…водоподготовки
-  // ANHEL» с кириллицей) на 22 pt не помещается в CONTENT_W — режется
-  // на правом краю. Решение: автоперенос через wrapText + понижение до
-  // 21 pt с межстрочным интервалом 1.15. ANHEL обычно встаёт во вторую
-  // строку как акцент.
-  const titleText = "Комплексная система водоподготовки ANHEL";
-  const titleSize = 21;
-  const titleLineHeight = titleSize * 1.15;
-  const titleLines = wrapText(titleText, fontBold, titleSize, CONTENT_W);
-  for (const line of titleLines) {
-    drawText(page, line, MARGIN, y, {
-      font: fontBold,
-      size: titleSize,
-      color: HEADING,
-    });
-    y -= titleLineHeight;
-  }
-  y -= 16;
+  // H1 — полное название категории одной строкой при 18 pt. На 22 pt
+  // «Комплексная система водоподготовки ANHEL» не вмещается в CONTENT_W
+  // и «ANHEL» переносился на вторую строку как orphan. ANHEL здесь —
+  // часть имени категории (не дубль фирменного бланка сверху), поэтому
+  // оставляем его в H1 на той же строке.
+  drawText(page, "Комплексная система водоподготовки ANHEL", MARGIN, y, {
+    font: fontBold,
+    size: 18,
+    color: HEADING,
+  });
+  y -= 30;
 
   // Flow callout + Тип pill — главный «маркер» подбора.
   // Слева: ▍ 25 м³/час / ПРОИЗВОДИТЕЛЬНОСТЬ ПО ОЧИЩЕННОЙ ВОДЕ
@@ -361,23 +363,11 @@ async function drawTitlePage(args: {
     // photo optional — skip if missing
   }
 
-  // Контакты внизу
-  const dateStr = new Intl.DateTimeFormat("ru-RU", {
-    timeZone: "Europe/Moscow",
-    day: "2-digit",
-    month: "long",
-    year: "numeric",
-  }).format(date);
-
+  // Контакты внизу. Дата ушла в верхнюю метку — не дублируем.
   drawText(page, "ООО «ПРОФИТ» · +7 (812) 416-45-00 · info@anhelspb.com", MARGIN, MARGIN + 50, {
     font,
     size: 10,
     color: TEXT,
-  });
-  drawText(page, `Санкт-Петербург, ${dateStr}`, MARGIN, MARGIN + 38, {
-    font,
-    size: 9,
-    color: MUTED,
   });
 }
 
@@ -630,72 +620,88 @@ export async function generateVpuKpPdf(input: KpPdfInput): Promise<Uint8Array> {
   drawSpecsPage({ page: p3, font, fontBold, flow: input.flow, modification: input.modification });
   drawFooter(p3, font, fontBold, 3, TOTAL_PAGES);
 
-  // Page 4 — Drawing. По образцу старого КП клиента — чертёж занимает
-  // почти всю страницу, обвязка минимальная: шапка ANHEL® + один
-  // короткий заголовок + чертёж на максимум, внизу DWG-ссылка и
-  // финальная сноска про размеры.
-  const p4 = doc.addPage([A4.w, A4.h]);
-  drawHeader(p4, fontBold);
-  let p4y = A4.h - MARGIN - 60; // короче, чем на других страницах
-  drawText(p4, "3 · ГАБАРИТНЫЙ ЧЕРТЁЖ", MARGIN, p4y, {
+  // Page 4 — Габаритный чертёж в landscape A4. Чертёж сам по себе
+  // landscape (~1.41 соотношение), portrait тратил вертикаль впустую.
+  // Это инженерная норма: техчертежи всегда так подаются.
+  //
+  // Шапку и подвал перерисовываем под альбомные размеры — общие
+  // drawHeader/drawFooter жёстко привязаны к A4 portrait и не подходят.
+  const PAGE_W = A4.h; // 841.89
+  const PAGE_H = A4.w; // 595.28
+  const p4 = doc.addPage([PAGE_W, PAGE_H]);
+
+  // Mini-header под landscape: ANHEL® слева + тонкая accent-линия,
+  // справа — название документа. Тоньше, чем основной drawHeader.
+  drawText(p4, "ANHEL®", MARGIN, PAGE_H - MARGIN, {
     font: fontBold,
-    size: 10,
+    size: 14,
+    color: HEADING,
+  });
+  drawText(p4, "Габаритный чертёж", PAGE_W - MARGIN - 130, PAGE_H - MARGIN, {
+    font: fontBold,
+    size: 9,
+    color: MUTED,
+  });
+  p4.drawRectangle({
+    x: MARGIN,
+    y: PAGE_H - MARGIN - 8,
+    width: PAGE_W - MARGIN * 2,
+    height: 1.5,
     color: ACCENT,
   });
-  p4y -= 14;
+
+  // Mini-title — только короткая подпись с модификацией. Без длинного
+  // подзаголовка (всё уже есть в title-блоке внутри самого чертежа).
   drawText(
     p4,
     `${input.modification.nameRu} · ${input.modification.dimensions} мм`,
     MARGIN,
-    p4y,
+    PAGE_H - MARGIN - 22,
     { font, size: 9, color: MUTED },
   );
-  p4y -= 10;
 
-  // Сужаем поля под чертёж: 24 pt по краям вместо 48. Высота — всё
-  // что есть до подвала с DWG/сноской (44 pt снизу под текст).
-  const drawingMargin = 24;
-  const drawingW = A4.w - drawingMargin * 2;
-  const annotationY = FOOTER_BOTTOM + 50;
-  const drawingH = p4y - annotationY - 8;
+  // Чертёж — максимальная область. Поля 18 pt по краям.
+  const dMargin = 18;
+  const dTopY = PAGE_H - MARGIN - 34;
+  const dBottomY = 36; // место под футер
   await embedAndDrawImage({
     page: p4,
     doc,
     publicPath: input.modification.drawingPath.replace(/^\//, ""),
-    x: drawingMargin,
-    y: p4y,
-    maxW: drawingW,
-    maxH: drawingH,
+    x: dMargin,
+    y: dTopY,
+    maxW: PAGE_W - dMargin * 2,
+    maxH: dTopY - dBottomY,
   });
 
-  // DWG-ссылка — печатается только если у модификации задан
-  // drawingDwgUrl. 4 линии пока без линка (папка не выложена). Лейбл и
-  // URL разводятся динамически по ширине лейбла, чтобы текст не слипался.
+  // Footer + DWG-link (один ряд внизу, слева — DWG, справа — N/N).
   if (input.modification.drawingDwgUrl) {
     const dwgLabel = "DWG-версия чертежа:";
-    const dwgLabelSize = 9;
+    const dwgLabelSize = 8;
     const dwgLabelWidth = fontBold.widthOfTextAtSize(dwgLabel, dwgLabelSize);
-    drawText(p4, dwgLabel, MARGIN, annotationY, {
+    drawText(p4, dwgLabel, MARGIN, 22, {
       font: fontBold,
       size: dwgLabelSize,
       color: ACCENT,
     });
-    drawText(
-      p4,
-      input.modification.drawingDwgUrl,
-      MARGIN + dwgLabelWidth + 10,
-      annotationY,
-      { font, size: dwgLabelSize, color: TEXT },
-    );
+    drawText(p4, input.modification.drawingDwgUrl, MARGIN + dwgLabelWidth + 8, 22, {
+      font,
+      size: dwgLabelSize,
+      color: TEXT,
+    });
   }
   drawText(
     p4,
-    "Размеры справочные. Покрытие — RAL 5005 (по согласованию). Масса — см. характеристики.",
+    "ANHEL® · ООО «ПРОФИТ» · ОГРН 1137847188357 · ИНН 7802825464",
     MARGIN,
-    annotationY - 14,
-    { font, size: 8, color: MUTED },
+    10,
+    { font, size: 7, color: MUTED },
   );
-  drawFooter(p4, font, fontBold, 4, TOTAL_PAGES);
+  drawText(p4, "4 / 6", PAGE_W - MARGIN - 24, 22, {
+    font: fontBold,
+    size: 8,
+    color: MUTED,
+  });
 
   // Page 5 — Certificate p1
   const p5 = doc.addPage([A4.w, A4.h]);
