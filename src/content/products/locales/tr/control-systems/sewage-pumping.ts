@@ -20,7 +20,7 @@ export const content: ProductContent = {
     subtitle:
       "Drenaj ve kanalizasyon pompalarının, yağmur suyu ve atık su akışlarının ve depolama tanklarının yönetimi. Şamandıra anahtarlardan, elektrotlardan ve seviye transmiterlerinden gelen sinyaller. Ön panelden geçiş yapılan yerel ve otomatik modlar.",
     image: {
-      src: "/assets/products/control-systems/sewage-pumping/hero.png",
+      src: "/assets/products/control-systems/sewage-pumping/hero.webp",
       alt: "ANHEL — kanalizasyon pompa istasyonları için kontrol panosu, şeffaf kapılı gri pano",
     },
     primaryCta: { label: "Teklif iste", href: "#documents", variant: "primary" },

@@ -20,7 +20,7 @@ export const content: ProductContent = {
     subtitle:
       "Control of smoke-extraction fans, dampers and air-pressurisation systems. Automatic transfer to smoke-extraction mode on the Fire signal. FZ-123 fire-safety certification, IP54+, distinctive red enclosure.",
     image: {
-      src: "/assets/products/control-systems/smoke-control/hero.png",
+      src: "/assets/products/control-systems/smoke-control/hero.webp",
       alt: "ANHEL — smoke-control ventilation cabinet, red enclosure with fan control elements",
     },
     primaryCta: { label: "Request a quote", href: "#documents", variant: "primary" },

@@ -30,7 +30,7 @@ export const content: ProductContent = {
     subtitle:
       "Управление дренажными и канализационными насосами, ливневыми и фекальными стоками, водоразборными ёмкостями. Сигналы от поплавков, электродов, уровнемеров. Ручной и автоматический режимы — переключение с лицевой панели.",
     image: {
-      src: "/assets/products/control-systems/sewage-pumping/hero.png",
+      src: "/assets/products/control-systems/sewage-pumping/hero.webp",
       alt: "ANHEL — шкаф управления для канализационных насосных станций, серый корпус с прозрачной дверцей",
     },
     primaryCta: {

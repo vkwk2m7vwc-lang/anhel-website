@@ -20,7 +20,7 @@ export const content: ProductContent = {
     subtitle:
       "Otomasyon sisteminden gelen sinyallere göre kesme ve kontrol vanalarındaki elektrikli aktüatörlerin yönetimi. Yerel mod — ön paneldeki seçici anahtar ve vana durum göstergesi. Uzak mod — harici dijital sinyaller.",
     image: {
-      src: "/assets/products/control-systems/electric-actuators/hero.png",
+      src: "/assets/products/control-systems/electric-actuators/hero.webp",
       alt: "ANHEL — elektrikli aktüatörlü vanalar için kontrol panosu, vana durum göstergeli gri pano",
     },
     primaryCta: { label: "Teklif iste", href: "#documents", variant: "primary" },

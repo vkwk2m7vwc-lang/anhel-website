@@ -89,7 +89,7 @@ export const HERO_PRODUCTS: readonly HeroProduct[] = [
     // подходит как «главное отображение» направления (при этом 4-card
     // grid в TOP_LEVEL_PRODUCTS сохраняет красный fire-suppression —
     // ассоциация с автоматикой пожарных систем).
-    image: "/assets/products/control-systems/variable-frequency/hero.png",
+    image: "/assets/products/control-systems/variable-frequency/hero.webp",
     accent: "#1E6FD9",
     alt: "ANHEL® — шкаф управления с частотным регулированием, 4-секционный составной с HMI",
     href: "/products/control-systems",

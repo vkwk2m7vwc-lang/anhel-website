@@ -43,6 +43,16 @@ const nextConfig = {
    * на случай если SVG открывают по прямой ссылке.
    */
   images: {
+    /**
+     * Этап 5 / Сессия 1 (perf-audit): AVIF поставили первым в очереди,
+     * чтобы next/image при поддержке браузером отдавал .avif вместо
+     * .webp. На photo-картинках это даёт ~30-50% выигрыш в весе
+     * относительно WebP (сильнее всего бьёт LCP на мобиле).
+     * Браузеры без AVIF получат WebP fallback (по факту это всё, что
+     * мы поддерживаем — старее WebP-стэк уже не входит в целевую
+     * аудиторию для 2026 года).
+     */
+    formats: ["image/avif", "image/webp"],
     dangerouslyAllowSVG: true,
     contentDispositionType: "attachment",
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",

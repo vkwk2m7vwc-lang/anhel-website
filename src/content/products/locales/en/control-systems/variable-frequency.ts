@@ -20,7 +20,7 @@ export const content: ProductContent = {
     subtitle:
       "Control of pressure-boosting pump groups with asynchronous motors. PID control, soft start, cascade control of up to 6 pumps. For cold-water, DHW, heating, cooling systems and modernisation of existing pumping stations.",
     image: {
-      src: "/assets/products/control-systems/variable-frequency/hero.png",
+      src: "/assets/products/control-systems/variable-frequency/hero.webp",
       alt: "ANHEL — variable-frequency control cabinet, 4-section assembly with HMI and controller",
     },
     primaryCta: { label: "Request a quote", href: "#documents", variant: "primary" },

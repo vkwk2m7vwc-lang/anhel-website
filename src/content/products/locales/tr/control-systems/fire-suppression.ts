@@ -20,7 +20,7 @@ export const content: ProductContent = {
     subtitle:
       "Yangın söndürme sistemlerinde su basıncını ve rezervini hem bekleme modunda hem de yangın sırasında koruyan ana ve takviye pompaların yönetimi. «Yangın» sinyaliyle otomatik başlatma, yangın söndürme için su önceliği, besleme tarafında ATS.",
     image: {
-      src: "/assets/products/control-systems/fire-suppression/hero.png",
+      src: "/assets/products/control-systems/fire-suppression/hero.webp",
       alt: "ANHEL — yangın söndürme sistemleri için kontrol panosu, mimik şemalı uzun kırmızı pano",
     },
     primaryCta: { label: "Teklif iste", href: "#documents", variant: "primary" },
