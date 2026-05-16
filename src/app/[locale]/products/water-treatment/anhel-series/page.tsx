@@ -12,6 +12,7 @@ import { VpuModificationsTable } from "@/components/products/water-treatment/Vpu
 import { PrincipleSteps } from "@/components/products/water-treatment/PrincipleSteps";
 import { CompositionList } from "@/components/products/water-treatment/CompositionList";
 import { AutomationSection } from "@/components/products/water-treatment/AutomationSection";
+import { QuickQuoteSection } from "@/components/products/water-treatment/QuickQuoteSection";
 import { getVpuAnhelSeriesContent } from "@/content/products/water-treatment-anhel-series";
 import {
   breadcrumbLd,
@@ -76,8 +77,14 @@ export default function VpuAnhelSeriesPage({
   params: { locale: string };
 }) {
   setRequestLocale(locale);
-  const { content, modifications, principle, composition, automation } =
-    getVpuAnhelSeriesContent(locale);
+  const {
+    content,
+    modifications,
+    principle,
+    composition,
+    automation,
+    quickQuote,
+  } = getVpuAnhelSeriesContent(locale);
   const {
     slug,
     hero,
@@ -116,10 +123,17 @@ export default function VpuAnhelSeriesPage({
       <script {...ldScriptProps(breadcrumbJsonLd)} />
 
       <ProductHero content={hero} accent={accent} />
+      <QuickQuoteSection
+        content={quickQuote}
+        locale={locale as "ru" | "en" | "tr"}
+      />
       <TechSpecsGrid specs={techSpecs} />
       {description ? <DescriptionSection content={description} /> : null}
       <ApplicationsGrid content={applications} />
-      <VpuModificationsTable content={modifications} />
+      <VpuModificationsTable
+        content={modifications}
+        locale={locale as "ru" | "en" | "tr"}
+      />
       <PrincipleSteps content={principle} />
       <CompositionList content={composition} />
       <AutomationSection content={automation} />
