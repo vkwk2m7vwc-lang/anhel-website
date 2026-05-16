@@ -168,6 +168,32 @@ export function ProjectsFilter({ projects }: { projects: ProjectItem[] }) {
               <ProjectCard project={project} />
             </motion.li>
           ))}
+          {/*
+            Filler-ячейки. Сетка строится через `gap-px` поверх hairline-фона,
+            поэтому в неполном последнем ряду остаются серые «дыры». На каждом
+            breakpoint (1 / 2 / 3 cols) считаем недостающие ячейки и показываем
+            ровно столько filler-li с фоном primary, чтобы ряд закрылся.
+          */}
+          {(() => {
+            const filler3 = (3 - (filtered.length % 3)) % 3;
+            const filler2 = (2 - (filtered.length % 2)) % 2;
+            const count = Math.max(filler3, filler2);
+            return Array.from({ length: count }).map((_, i) => (
+              <li
+                key={`filler-${i}`}
+                aria-hidden
+                className={[
+                  "bg-[var(--color-primary)]",
+                  // 1-col (default): не нужен никогда
+                  "hidden",
+                  // 2-col (sm): нужен только пока i < filler2
+                  i < filler2 ? "sm:block" : "sm:hidden",
+                  // 3-col (lg): нужен только пока i < filler3
+                  i < filler3 ? "lg:block" : "lg:hidden",
+                ].join(" ")}
+              />
+            ));
+          })()}
         </motion.ul>
       </AnimatePresence>
 
