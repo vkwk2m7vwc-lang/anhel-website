@@ -590,7 +590,7 @@ export async function generateVpuKpPdf(input: KpPdfInput): Promise<Uint8Array> {
   const font = await doc.embedFont(readFontFile("DejaVuSans.ttf"));
   const fontBold = await doc.embedFont(readFontFile("DejaVuSans-Bold.ttf"));
 
-  const TOTAL_PAGES = 6;
+  const TOTAL_PAGES = 5;
 
   // Page 1 — Title
   const p1 = doc.addPage([A4.w, A4.h]);
@@ -637,90 +637,71 @@ export async function generateVpuKpPdf(input: KpPdfInput): Promise<Uint8Array> {
   drawSpecsPage({ page: p3, font, fontBold, flow: input.flow, modification: input.modification });
   drawFooter(p3, font, fontBold, 3, TOTAL_PAGES);
 
-  // Page 4 — Габаритный чертёж в landscape A4. Чертёж сам по себе
-  // landscape (~1.41 соотношение), portrait тратил вертикаль впустую.
-  // Это инженерная норма: техчертежи всегда так подаются.
-  //
-  // Шапку и подвал перерисовываем под альбомные размеры — общие
-  // drawHeader/drawFooter жёстко привязаны к A4 portrait и не подходят.
-  const PAGE_W = A4.h; // 841.89
-  const PAGE_H = A4.w; // 595.28
-  const p4 = doc.addPage([PAGE_W, PAGE_H]);
-
-  // Mini-header под landscape: ANHEL® слева + тонкая accent-линия,
-  // справа — название документа. Тоньше, чем основной drawHeader.
-  drawText(p4, "ANHEL®", MARGIN, PAGE_H - MARGIN, {
+  // Page 4 — Габаритный чертёж в portrait (вернули из landscape). Раньше
+  // делал альбомным под исходное соотношение чертежа (1.41), но он
+  // сильно выделялся среди остальных листов. Аргумент Алексея: DWG
+  // доступен по ссылке, embedded-чертёж не обязан быть гигантским —
+  // его задача показать общий вид и габариты, а не служить производственным
+  // чертежом. Делаем шире обычного (минимальные поля 16 pt) — но в
+  // portrait, чтобы PDF читался как один цельный документ.
+  const p4 = doc.addPage([A4.w, A4.h]);
+  drawHeader(p4, fontBold);
+  let p4y = A4.h - MARGIN - 60;
+  drawText(p4, "3 · ГАБАРИТНЫЙ ЧЕРТЁЖ", MARGIN, p4y, {
     font: fontBold,
-    size: 14,
-    color: HEADING,
-  });
-  drawText(p4, "Габаритный чертёж", PAGE_W - MARGIN - 130, PAGE_H - MARGIN, {
-    font: fontBold,
-    size: 9,
-    color: MUTED,
-  });
-  p4.drawRectangle({
-    x: MARGIN,
-    y: PAGE_H - MARGIN - 8,
-    width: PAGE_W - MARGIN * 2,
-    height: 1.5,
+    size: 10,
     color: ACCENT,
   });
-
-  // Mini-title — только короткая подпись с модификацией. Без длинного
-  // подзаголовка (всё уже есть в title-блоке внутри самого чертежа).
+  p4y -= 14;
   drawText(
     p4,
     `${input.modification.nameRu} · ${input.modification.dimensions} мм`,
     MARGIN,
-    PAGE_H - MARGIN - 22,
+    p4y,
     { font, size: 9, color: MUTED },
   );
+  p4y -= 10;
 
-  // Чертёж — максимальная область. Поля 18 pt по краям.
-  const dMargin = 18;
-  const dTopY = PAGE_H - MARGIN - 34;
-  const dBottomY = 36; // место под футер
+  // Чертёж — растянут до 16 pt полей по бокам (вместо обычных 48).
+  // DWG-линк и сноска внизу под чертежом.
+  const drawingMargin = 16;
+  const drawingW = A4.w - drawingMargin * 2;
+  const annotationY = FOOTER_BOTTOM + 36;
+  const drawingH = p4y - annotationY - 8;
   await embedAndDrawImage({
     page: p4,
     doc,
     publicPath: input.modification.drawingPath.replace(/^\//, ""),
-    x: dMargin,
-    y: dTopY,
-    maxW: PAGE_W - dMargin * 2,
-    maxH: dTopY - dBottomY,
+    x: drawingMargin,
+    y: p4y,
+    maxW: drawingW,
+    maxH: drawingH,
   });
 
-  // Footer + DWG-link (один ряд внизу, слева — DWG, справа — N/N).
+  // DWG-link with dynamic gap.
   if (input.modification.drawingDwgUrl) {
     const dwgLabel = "DWG-версия чертежа:";
-    const dwgLabelSize = 8;
+    const dwgLabelSize = 9;
     const dwgLabelWidth = fontBold.widthOfTextAtSize(dwgLabel, dwgLabelSize);
-    drawText(p4, dwgLabel, MARGIN, 22, {
+    drawText(p4, dwgLabel, MARGIN, annotationY, {
       font: fontBold,
       size: dwgLabelSize,
       color: ACCENT,
     });
-    drawText(p4, input.modification.drawingDwgUrl, MARGIN + dwgLabelWidth + 8, 22, {
-      font,
-      size: dwgLabelSize,
-      color: TEXT,
-    });
+    drawText(
+      p4,
+      input.modification.drawingDwgUrl,
+      MARGIN + dwgLabelWidth + 10,
+      annotationY,
+      { font, size: dwgLabelSize, color: TEXT },
+    );
   }
-  drawText(
-    p4,
-    "ANHEL® · ООО «ПРОФИТ» · ОГРН 1137847188357 · ИНН 7802825464",
-    MARGIN,
-    10,
-    { font, size: 7, color: MUTED },
-  );
-  drawText(p4, "4 / 6", PAGE_W - MARGIN - 24, 22, {
-    font: fontBold,
-    size: 8,
-    color: MUTED,
-  });
+  drawFooter(p4, font, fontBold, 4, TOTAL_PAGES);
 
-  // Page 5 — Certificate p1
+  // Page 5 — Certificate (только первая страница декларации).
+  // Вторая страница (перечень оборудования + подписи) убрана: при
+  // отгрузке отдаём полный комплект документов, а в КП достаточно
+  // самой декларации.
   const p5 = doc.addPage([A4.w, A4.h]);
   drawHeader(p5, fontBold);
   let p5y = A4.h - MARGIN - 80;
@@ -744,35 +725,6 @@ export async function generateVpuKpPdf(input: KpPdfInput): Promise<Uint8Array> {
     maxH: p5y - FOOTER_BOTTOM - 30,
   });
   drawFooter(p5, font, fontBold, 5, TOTAL_PAGES);
-
-  // Page 6 — Certificate p2
-  const p6 = doc.addPage([A4.w, A4.h]);
-  drawHeader(p6, fontBold);
-  let p6y = A4.h - MARGIN - 80;
-  drawText(p6, "4 · СЕРТИФИКАТЫ (приложение)", MARGIN, p6y, {
-    font: fontBold,
-    size: 10,
-    color: ACCENT,
-  });
-  p6y -= 18;
-  drawText(
-    p6,
-    "Перечень оборудования серии Anhel — приложение к декларации.",
-    MARGIN,
-    p6y,
-    { font, size: 10, color: MUTED },
-  );
-  p6y -= 14;
-  await embedAndDrawImage({
-    page: p6,
-    doc,
-    publicPath: "kp/certificate-p2.png",
-    x: MARGIN,
-    y: p6y,
-    maxW: CONTENT_W,
-    maxH: p6y - FOOTER_BOTTOM - 30,
-  });
-  drawFooter(p6, font, fontBold, 6, TOTAL_PAGES);
 
   return await doc.save();
 }
