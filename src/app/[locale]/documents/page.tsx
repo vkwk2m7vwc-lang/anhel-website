@@ -111,7 +111,7 @@ const CATEGORIES: readonly DocCategoryData[] = [
   {
     slug: "control-systems",
     questionnaires: [
-      { key: "control_systems_q", href: "/docs/control-systems/oprosnyi-list.pdf", size: "1.80 MB" },
+      { key: "control_systems_q", href: "/docs/control-systems/oprosnyi-list.pdf", size: "0.46 MB" },
     ],
     certificates: [],
   },

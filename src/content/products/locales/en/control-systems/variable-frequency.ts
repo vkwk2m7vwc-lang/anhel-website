@@ -138,7 +138,7 @@ export const content: ProductContent = {
     title: "Documents and specification sheet",
     lede: "Specification sheet — PDF for design and acceptance, or online form with autosave.",
     items: [
-      { id: "oprosnik-pdf", title: "Control-cabinet specification sheet (PDF)", size: "1.8 MB", href: "/docs/control-systems/oprosnyi-list-en.pdf" },
+      { id: "oprosnik-pdf", title: "Control-cabinet specification sheet (PDF)", size: "0.46 MB", href: "/docs/control-systems/oprosnyi-list-en.pdf" },
       { id: "oprosnik-online", title: "Fill in the specification sheet online", href: "/quiz/control-systems" },
     ],
   },

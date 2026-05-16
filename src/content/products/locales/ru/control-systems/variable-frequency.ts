@@ -307,7 +307,7 @@ export const content: ProductContent = {
       {
         id: "oprosnik-pdf",
         title: "Опросный лист на подбор шкафов управления (PDF)",
-        size: "1.8 МБ",
+        size: "0.46 МБ",
         href: "/docs/control-systems/oprosnyi-list.pdf",
       },
       {

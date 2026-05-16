@@ -68,11 +68,13 @@ LAYOUTS = {
     "pressure-boost": [],
     "heating-unit": [],
     "water-treatment": [],
+    # control-systems was previously excluded because the old RU master was
+    # the un-rebranded MFMC "Omega Control" original. Since v1.20.7 the RU
+    # master is the new ANHEL®-branded 3-page questionnaire (DejaVu Sans,
+    # Profit LLC requisites, info@anhelspb.com), so overlay-based EN/TR
+    # localisation works the same way as for the other categories.
+    "control-systems": [],
 }
-# control-systems is intentionally NOT handled here: its RU master is the
-# un-rebranded MFMC "Omega Control" original (MFMC Moscow requisites, Omega
-# brand, Akrobat fonts) — it needs to be rebranded to ANHEL/Profit before a
-# faithful EN/TR localization is possible.  Flagged for a separate decision.
 
 # --------------------------------------------------------------------------
 # Fonts
@@ -130,6 +132,14 @@ KEEP = {
     "ANHEL", "®", "anhelspb.com",
     "Profibus", "Modbus", "Ethernet", "GSM", "RS232 (485)",
     "/", "%", "100%", "P1", "P2", "1×230 V", "3×380 V",
+    # control-systems (v1.20.7): standalone digits used as motor numbers
+    # (1..6) and the required-field asterisk live in their own spans.
+    "*", "1", "2", "3", "4", "5", "6",
+    # Russian abbreviations that survive in EN/TR engineering register
+    # (the «Sewage Pumping Station» / «Atık Su Pompa İstasyonu» get
+    # spelt out only the first time on real documents). Keep the short
+    # form so the box label keeps its compact width.
+    "КНС",
 }
 
 # Company requisites block — 4 right-aligned header lines, all locales.
@@ -728,6 +738,169 @@ SIMPLE = {
         "tr": "Pompalar harici panodan beslenir",
     },
     "Напряжение питания": {"en": "Supply voltage", "tr": "Besleme gerilimi"},
+
+    # =====================================================================
+    # control-systems (v1.20.7) — new 3-page master, DejaVu Sans, ANHEL/Profit.
+    # =====================================================================
+    # ---- title + footer + page numbers ----------------------------------
+    "Опросный лист для подбора шкафов управления ANHEL®": {
+        "en": "Questionnaire for ANHEL® control-cabinet selection",
+        "tr": "ANHEL® kontrol panosu seçimi için anket formu",
+    },
+    "Опросный лист — шкафы управления ANHEL®": {
+        "en": "Questionnaire — ANHEL® control cabinets",
+        "tr": "Anket formu — ANHEL® kontrol panoları",
+    },
+    "стр. 1 / 3": {"en": "page 1 / 3", "tr": "sayfa 1 / 3"},
+    "стр. 2 / 3": {"en": "page 2 / 3", "tr": "sayfa 2 / 3"},
+    "стр. 3 / 3": {"en": "page 3 / 3", "tr": "sayfa 3 / 3"},
+    # The new master spells field labels without trailing «*» — the
+    # required-flag asterisk lives in a separate span (covered by KEEP).
+    "Организация": {"en": "Company", "tr": "Firma"},
+    "Фамилия, имя, отчество": {"en": "Full name", "tr": "Ad-soyad"},
+    "Должность": {"en": "Position", "tr": "Görev / Pozisyon"},
+    "Email": {"en": "Email", "tr": "E-posta"},
+    "Контактный телефон": {"en": "Contact phone", "tr": "Telefon"},
+    "Город": {"en": "City", "tr": "Şehir"},
+    # ---- intro paragraph (CS split — different from intro_a/b) ----------
+    "При возникновении трудностей и вопросов по заполнению опросного листа, пожалуйста, позвоните по +7": {
+        "en": "If you have any difficulties or questions while completing this questionnaire, please call",
+        "tr": "Anket formunu doldururken herhangi bir zorluk veya sorunuz olursa lütfen şu numarayı arayın:",
+    },
+    "(812) 416-4500 — наши специалисты с удовольствием Вам помогут. Заполненный опросный лист": {
+        "en": "+7 (812) 416-4500 — our specialists will gladly assist you. Send the completed form",
+        "tr": "+7 (812) 416-4500 — uzmanlarımız size yardımcı olur. Doldurulmuş formu",
+    },
+    "направьте на info@anhelspb.com.": {
+        "en": "to info@anhelspb.com.",
+        "tr": "info@anhelspb.com adresine gönderin.",
+    },
+    # ---- page 1: system + controlled parameter --------------------------
+    # In the new CS master these are capitalised; SIMPLE already has the
+    # lowercase forms used by other masters, so we add the capitalised
+    # variants explicitly.
+    "Отопление": {"en": "Heating", "tr": "Isıtma"},
+    "Водоснабжение": {"en": "Water supply", "tr": "Su temini"},
+    "Пожаротушение": {"en": "Firefighting", "tr": "Yangın söndürme"},
+    "Поддерживаемый параметр": {
+        "en": "Controlled parameter",
+        "tr": "Kontrol edilen parametre",
+    },
+    "Давление": {"en": "Pressure", "tr": "Basınç"},
+    "Температура": {"en": "Temperature", "tr": "Sıcaklık"},
+    "Уровень": {"en": "Level", "tr": "Seviye"},
+    "Объём теплоносителя в системе, л": {
+        "en": "Coolant volume in the system, L",
+        "tr": "Sistemdeki ısıtıcı akışkan hacmi, L",
+    },
+    # ---- page 2: driven equipment + marking -----------------------------
+    "Перемещаемое оборудование": {
+        "en": "Driven equipment",
+        "tr": "Sürülen ekipman",
+    },
+    "Насос": {"en": "Pump", "tr": "Pompa"},
+    "Вентилятор": {"en": "Fan", "tr": "Fan"},
+    "Дымосос": {"en": "Smoke-exhaust fan", "tr": "Duman emici fan"},
+    "Задвижки": {"en": "Valves", "tr": "Vanalar"},
+    "Маркировка:": {"en": "Marking:", "tr": "İşaretleme:"},
+    # ---- page 2: motor data table ---------------------------------------
+    "Данные электродвигателей": {
+        "en": "Motor data",
+        "tr": "Motor verileri",
+    },
+    "Заполните по каждому электродвигателю; до 6 двигателей в одной заявке.": {
+        "en": "Fill in the data for every motor; up to 6 motors per request.",
+        "tr": "Her motor için verileri girin; bir talepte 6 motora kadar.",
+    },
+    "Номер электродвигателя": {
+        "en": "Motor number",
+        "tr": "Motor numarası",
+    },
+    "Мощность, кВт": {"en": "Power, kW", "tr": "Güç, kW"},
+    "Напряжение, В": {"en": "Voltage, V", "tr": "Gerilim, V"},
+    "Номинальный ток, А": {"en": "Rated current, A", "tr": "Nominal akım, A"},
+    "Номинальная частота вращения, об/мин": {
+        "en": "Rated speed, RPM",
+        "tr": "Nominal hız, dev/dak",
+    },
+    # ---- page 2: cabinet environment (УХЛ climate classes) --------------
+    "Параметры шкафа и окружающей среды": {
+        "en": "Cabinet and environmental parameters",
+        "tr": "Pano ve çevre parametreleri",
+    },
+    "УХЛ4 (T окружающего воздуха не более +40 °С и не ниже 0 °С, средняя за 24 ч — не более 35 °С)": {
+        "en": "UHL4 (ambient air max +40 °C, min 0 °C, 24h average max 35 °C)",
+        "tr": "UHL4 (ortam havası en fazla +40 °C, en az 0 °C, 24s ortalama en fazla 35 °C)",
+    },
+    "УХЛ2 (от −40 °С до +40 °С, под навесом от осадков и солнечных лучей)": {
+        "en": "UHL2 (−40 to +40 °C, sheltered from precipitation and direct sunlight)",
+        "tr": "UHL2 (−40 ila +40 °C, yağış ve doğrudan güneşten korunaklı)",
+    },
+    "УХЛ1 (от −40 °С до +40 °С, на открытом воздухе)": {
+        "en": "UHL1 (−40 to +40 °C, outdoor)",
+        "tr": "UHL1 (−40 ila +40 °C, açık havada)",
+    },
+    # ---- page 2: motor control mode -------------------------------------
+    "Управление двигателями": {
+        "en": "Motor control",
+        "tr": "Motor kontrolü",
+    },
+    "Прямой пуск": {
+        "en": "Direct-on-line start",
+        "tr": "Doğrudan (DOL) yol verme",
+    },
+    "Плавный пуск": {"en": "Soft start", "tr": "Yumuşak yol verme"},
+    "Частотное регулирование": {
+        "en": "Variable-frequency drive",
+        "tr": "Frekans kontrolü",
+    },
+    "Один преобразователь частоты": {
+        "en": "Single VFD",
+        "tr": "Tek frekans dönüştürücü",
+    },
+    "ПЧ на каждый электродвигатель": {
+        "en": "VFD per motor",
+        "tr": "Her motor için frekans dönüştürücü",
+    },
+    # ---- page 2: power inputs -------------------------------------------
+    "Количество вводов питания": {
+        "en": "Number of power inputs",
+        "tr": "Güç beslemesi giriş sayısı",
+    },
+    "Два ввода питания (с АВР)": {
+        "en": "Two inputs (with ATS)",
+        "tr": "İki giriş (ATS ile)",
+    },
+    "Два ввода питания (без АВР)": {
+        "en": "Two inputs (no ATS)",
+        "tr": "İki giriş (ATS olmadan)",
+    },
+    "Один ввод питания": {
+        "en": "Single input",
+        "tr": "Tek giriş",
+    },
+    # ---- page 3: free-form + disclaimer ---------------------------------
+    "Дополнительные сведения": {
+        "en": "Additional information",
+        "tr": "Ek bilgiler",
+    },
+    "Внимание!": {"en": "Important!", "tr": "Dikkat!"},
+    "ООО «Профит» не несёт ответственности за корректность исходных данных для подбора оборудования,": {
+        "en": "Profit LLC accepts no responsibility for the accuracy of the source data provided in this questionnaire,",
+        "tr": "Profit LLC, bu anket formunda verilen kaynak verilerin doğruluğundan sorumlu değildir,",
+    },
+    "указанных в опросном листе. Отказ заказчика заполнить опросный лист означает его согласие со всеми": {
+        "en": "used for equipment selection. If the customer declines to complete this questionnaire, this is deemed acceptance of all",
+        "tr": "ekipman seçimi için kullanılır. Müşterinin formu doldurmayı reddetmesi, siparişte belirtilen tip tanımıyla",
+    },
+    "техническими характеристиками, определяемыми условным обозначением, указанным в заявке в": {
+        "en": "technical characteristics defined by the type designation stated in the order in",
+        "tr": "ANHEL® kataloğuna uygun olarak tanımlanan tüm teknik özellikleri kabul ettiği ve ürün için",
+    },
+    "соответствие с каталогом ANHEL®, и отсутствие дополнительных требований к изделию.": {
+        "en": "accordance with the ANHEL® catalogue, and confirmation that the product requires no additional features.",
+        "tr": "ek bir gereksinim bulunmadığı anlamına gelir.",
+    },
 }
 
 # Multi-line paragraph groups.  Each member RU string maps to its group id;
