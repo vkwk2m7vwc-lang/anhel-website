@@ -28,6 +28,48 @@
     "mono_tag": "Manufacturing",
     "heading": "Full cycle on a single site",
     "lede": "Engineering office, assembly shop and test bench under one roof. From sizing to shipment — without hand-offs between subcontractors.",
+    "capacity_tag": "Capabilities",
+    "capacity_title": "A single manufacturing site under one roof",
+    "capacity_description": "Our own shop covers metal cutting, welding, piping and control-cabinet assembly. Every stage — from the first line in DWG to live-pressure testing — runs on the same site, with no hand-offs between subcontractors.",
+    "capacity": {
+      "engineering": {
+        "label": "Engineering office",
+        "value": "Calculations + working documentation"
+      },
+      "assembly": {
+        "label": "Assembly shop",
+        "value": "Welding, mounting, piping"
+      },
+      "testing": {
+        "label": "Test bench",
+        "value": "Hydraulic + electrical"
+      }
+    },
+    "cycle_title": "From sizing to service — one company",
+    "cycle_description": "One contract, one point of responsibility, one schedule. The ANHEL team carries the project from the first calculation against your brief through to service after commissioning.",
+    "cycle": {
+      "step1": {
+        "title": "Design",
+        "body": "Sizing to your site parameters, working documentation in DWG, PDF, IFC."
+      },
+      "step2": {
+        "title": "Manufacturing",
+        "body": "Built in-house. Every module is assembled to a specific project."
+      },
+      "step3": {
+        "title": "Supervised installation",
+        "body": "Site supervision and designer oversight at key milestones."
+      },
+      "step4": {
+        "title": "Commissioning",
+        "body": "Start-up, tuning and hand-over in 1–3 shifts."
+      },
+      "step5": {
+        "title": "Service",
+        "body": "Warranty and post-commissioning service support."
+      }
+    },
+    "welding_caption": "Welding of frame structures and piping bundles",
     "cards": {
       "design": {
         "title": "Engineering office",
@@ -42,14 +84,31 @@
         "body": "Each unit undergoes hydraulic and electrical testing before shipment. Operating modes are simulated, parameters recorded in the test report. On site, the module is ready for commissioning in 1–3 shifts."
       }
     },
+    "quality_title": "Quality and control",
+    "quality": {
+      "iso": {
+        "title": "ISO 9001:2015",
+        "body": "Our quality management system conforms to GOST R ISO 9001-2015 (ISO 9001:2015)."
+      },
+      "control": {
+        "title": "Bench testing",
+        "body": "Every unit undergoes mandatory technical inspection and regulated bench testing on our own test rig before shipment."
+      },
+      "certificates": {
+        "title": "EAEU declaration",
+        "body": "EAEU declarations of conformity, technical specifications and supporting documentation — issued for every product."
+      }
+    },
     "stats_aria": "Manufacturing metrics",
     "stats": {
+      "years_value": "12",
+      "years_caption": "Years of experience",
+      "objects_value": "150",
+      "objects_caption": "Projects delivered",
       "lead_time_value": "from 30",
       "lead_time_unit": "days",
       "lead_time_caption": "Lead time",
-      "testing_caption": "Bench-tested",
-      "in_house_value": "In-house",
-      "in_house_caption": "Manufacturing & assembly"
+      "testing_caption": "Bench-tested"
     },
     "cta": "Request a factory visit"
   },
