@@ -32,7 +32,7 @@ export type QuickQuoteContent = {
   oversizeBody: string;
   oversizeCtaLabel: string;
   oversizeCtaHref: string;
-  /** CTA получить КП — primary button. */
+  /** CTA получить ТКП — primary button. */
   ctaPrimaryLabel: string;
   /** CTA опросный лист — secondary. */
   ctaSecondaryLabel: string;
@@ -116,7 +116,7 @@ function countDigits(s: string): number {
  *   2. Реактивно вычисляется `matched` через `selectVpuModification`
  *   3. При `matched === null && flow > MAX` показывается алерт
  *      «Свяжитесь с нами», основная CTA блокируется
- *   4. Клик «Получить КП» — раскрывается контакт-форма
+ *   4. Клик «Получить ТКП» — раскрывается контакт-форма
  *   5. Submit формы → POST /api/vpu-quote-quick →
  *      - в ответе blob PDF → автоскачивание
  *      - менеджер получает email с тем же PDF
@@ -196,7 +196,7 @@ export function QuickQuoteSection({
         return {
           ok: true,
           blob,
-          filename: fnameMatch?.[1] ?? "anhel-vpu-kp.pdf",
+          filename: fnameMatch?.[1] ?? "anhel-vpu-tkp.pdf",
         };
       } catch (err) {
         return {
@@ -211,7 +211,7 @@ export function QuickQuoteSection({
   /**
    * Этап 1 — submit формы → запрос на превью (confirm=false). Клиент
    * получает PDF inline для отображения в iframe. Менеджеру письмо НЕ
-   * шлётся (анти-спам). Заодно сервер логирует «просмотр КП» как лид.
+   * шлётся (анти-спам). Заодно сервер логирует «просмотр ТКП» как лид.
    */
   const handlePreviewSubmit = useCallback(
     async (e: React.FormEvent<HTMLFormElement>) => {

@@ -57,7 +57,7 @@
     "personal_data_consent": "Согласие на обработку данных"
   },
   "actions": {
-    "request_quote": "Запросить КП",
+    "request_quote": "Запросить ТКП",
     "download_catalog": "Скачать каталог",
     "contact_engineer": "Связаться с инженером",
     "learn_more": "Подробнее",

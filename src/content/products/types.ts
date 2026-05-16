@@ -363,7 +363,7 @@ export type FooterCtaContent = {
   /**
    * Optional secondary CTA — rendered as a ghost button next to the
    * primary. Used on pages that need both a quote request and a direct
-   * contact link (e.g. /water-treatment/anhel-series with «Получить КП»
+   * contact link (e.g. /water-treatment/anhel-series with «Получить ТКП»
    * + «Связаться»). Omit on pages that have a single hook.
    */
   secondaryCta?: { label: string; href: string };

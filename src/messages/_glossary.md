@@ -68,7 +68,7 @@ Tone bench-marks:
 
 | RU | EN | TR |
 |---|---|---|
-| Запросить КП | Request a quote | Teklif iste |
+| Запросить ТКП | Request a quote | Teklif iste |
 | Скачать каталог | Download catalogue | Kataloğu indir |
 | Связаться с инженером | Talk to an engineer | Mühendisle konuş |
 | Каталог продукции | Product catalogue | Ürün kataloğu |

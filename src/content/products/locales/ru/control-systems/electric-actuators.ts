@@ -34,7 +34,7 @@ export const content: ProductContent = {
       alt: "ANHEL — шкаф управления электрифицированной арматурой, серый корпус с индикацией состояния задвижек",
     },
     primaryCta: {
-      label: "Запрос КП",
+      label: "Запрос ТКП",
       href: "#documents",
       variant: "primary",
     },
@@ -316,7 +316,7 @@ export const content: ProductContent = {
   },
 
   footerCta: {
-    tag: "11 · ЗАПРОС КП",
+    tag: "11 · ЗАПРОС ТКП",
     title: "Соберите шкаф управления арматурой под ваш проект",
     subtitle: "Ответим в течение рабочего дня. Расчёт подбора бесплатный.",
     cta: { label: "Заполнить опросный лист", href: "/quiz/control-systems" },

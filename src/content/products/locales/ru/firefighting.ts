@@ -388,7 +388,7 @@ export const content: ProductContent = {
   // strip pulls from src/lib/products.ts and excludes this slug
   // automatically.
   footerCta: {
-    tag: "11 · ЗАПРОС КП",
+    tag: "11 · ЗАПРОС ТКП",
     title: "Соберите свою станцию под проект",
     subtitle: "Ответим в течение рабочего дня. Расчёт подбора бесплатный.",
     cta: { label: "Заполнить опросный лист", href: "#documents" },
