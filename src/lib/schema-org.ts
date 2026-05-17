@@ -44,13 +44,17 @@ export function organizationLd(): JsonLd {
     legalName: "ООО «Профит»",
     alternateName: ["ANHEL®"],
     url: SITE_URL,
-    logo: `${SITE_URL}/assets/products/hvs-nu.webp`,
+    // Brand logo для Google Knowledge Graph. Временно указывает на
+    // OG-default image (бренд-плашка 1200×630). Заменить на canonical
+    // brand mark (например, /brand/logo.svg) когда дизайнер выдаст файл.
+    logo: `${SITE_URL}/og/default.png`,
     description:
       "Проектирование и производство модульного инженерного оборудования: насосные станции (водоснабжение, пожаротушение), блочные тепловые пункты, установки водоподготовки.",
     address: {
       "@type": "PostalAddress",
-      streetAddress: "Политехническая ул., д. 6, стр. 1, пом. 1-Н",
+      streetAddress: "Политехническая ул., д. 6, стр. 1, пом. Н-7",
       addressLocality: "Санкт-Петербург",
+      postalCode: "194021",
       addressCountry: "RU",
     },
     contactPoint: [
@@ -60,7 +64,7 @@ export function organizationLd(): JsonLd {
         email: CONTACTS.email,
         contactType: "sales",
         areaServed: "RU",
-        availableLanguage: ["ru"],
+        availableLanguage: ["ru", "en", "tr"],
       },
     ],
     // Производственное подразделение бренда — отдельный узел в графе,

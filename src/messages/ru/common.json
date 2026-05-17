@@ -17,7 +17,9 @@
     "call_phone": "Позвонить: {phone}",
     "open_menu": "Открыть меню",
     "close_menu": "Закрыть меню",
-    "legal_docs_nav": "Юридические документы"
+    "legal_docs_nav": "Юридические документы",
+    "language_button": "Язык: {name}",
+    "language_menu": "Меню выбора языка"
   },
   "skip_link": "Перейти к содержимому",
   "theme_toggle": {

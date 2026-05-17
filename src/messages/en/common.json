@@ -17,7 +17,9 @@
     "call_phone": "Call: {phone}",
     "open_menu": "Open menu",
     "close_menu": "Close menu",
-    "legal_docs_nav": "Legal documents"
+    "legal_docs_nav": "Legal documents",
+    "language_button": "Language: {name}",
+    "language_menu": "Language menu"
   },
   "skip_link": "Skip to main content",
   "theme_toggle": {

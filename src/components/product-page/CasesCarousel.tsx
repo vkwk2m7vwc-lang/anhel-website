@@ -81,7 +81,7 @@ function CaseCard({ item, index }: { item: CaseItem; index: number }) {
       <article className="flex w-[300px] flex-col gap-5 md:w-[440px] lg:w-[520px]">
         {/* Photo — 16:10 hero rectangle. Placeholder when no src. */}
         <div
-          className="relative w-full overflow-hidden bg-[#141414]"
+          className="relative w-full overflow-hidden bg-[var(--color-image-placeholder)]"
           style={{ aspectRatio: "16/10" }}
         >
           {item.photo?.src ? (

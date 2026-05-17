@@ -5,6 +5,7 @@ import { Link } from "@/navigation";
 import { motion } from "framer-motion";
 import { useTranslations } from "next-intl";
 import { TOP_LEVEL_PRODUCTS, type ProductSummary } from "@/lib/products";
+import { useAccentHex } from "@/lib/accent-hex";
 import type { ProductAccent } from "@/content/products/types";
 
 /**
@@ -123,7 +124,7 @@ export function ProductsShowcase({
                 href={isComingSoon ? undefined : product.href}
                 imageSrc={product.image}
                 accentVar={accentVar}
-                accentHex={product.accentHex}
+                accentKey={product.accent}
                 comingSoon={isComingSoon}
               />
             );
@@ -140,7 +141,7 @@ function ProductCard({
   href,
   imageSrc,
   accentVar,
-  accentHex,
+  accentKey,
   comingSoon,
 }: {
   slug: string;
@@ -148,9 +149,12 @@ function ProductCard({
   href?: string;
   imageSrc: string;
   accentVar: string;
-  accentHex: string;
+  accentKey: ProductAccent;
   comingSoon: boolean;
 }) {
+  // Theme-aware hex для radial glow за продуктом (light/dark отличаются
+  // для treatment и heat). `accentVar` остаётся CSS-var для ring/text.
+  const accentHex = useAccentHex(accentKey);
   const tItems = useTranslations(`products.items.${slug}`);
   const tShowcase = useTranslations("home.showcase");
   const title = tItems("title");

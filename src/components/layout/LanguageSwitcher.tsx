@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Check, ChevronDown } from "lucide-react";
 import { useRouter, usePathname } from "@/navigation";
 import { locales, localeNames, type Locale } from "@/i18n";
@@ -32,6 +32,7 @@ import { locales, localeNames, type Locale } from "@/i18n";
  */
 export function LanguageSwitcher() {
   const currentLocale = useLocale() as Locale;
+  const tAria = useTranslations("common.aria");
   const router = useRouter();
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
@@ -86,7 +87,7 @@ export function LanguageSwitcher() {
         onClick={() => setOpen((v) => !v)}
         aria-haspopup="menu"
         aria-expanded={open}
-        aria-label={`Language: ${localeNames[currentLocale].native}`}
+        aria-label={tAria("language_button", { name: localeNames[currentLocale].native })}
         data-cursor="hover"
         className="inline-flex h-10 items-center gap-1 rounded-full border border-[var(--color-secondary)]/20 px-3 text-[11px] font-mono uppercase tracking-[0.08em] text-[var(--color-secondary)] transition-colors hover:border-[var(--color-secondary)]/40"
       >
@@ -105,7 +106,7 @@ export function LanguageSwitcher() {
       {open && (
         <div
           role="menu"
-          aria-label="Language menu"
+          aria-label={tAria("language_menu")}
           className="absolute right-0 top-full z-40 mt-2 w-[200px] overflow-hidden rounded border border-[var(--color-secondary)]/15 bg-[var(--color-primary)] py-1 shadow-2xl shadow-black/30 backdrop-blur-sm"
         >
           {locales.map((l) => {

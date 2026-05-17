@@ -3,10 +3,17 @@
  * variants (D: manual, E: auto-advance). Order here is the order of the
  * carousel — don't shuffle without the design team's ok.
  *
- * `accent` is the brand colour that drives the radial gradient behind the
- * product and the drop-shadow under it. We keep the accent as a plain hex
- * string (not a CSS var) because it feeds `rgba()` math at runtime for
- * glow intensity.
+ * `accentKey` is the brand-palette key (`fire | water | treatment | heat`)
+ * that drives the radial gradient behind the product and the drop-shadow
+ * under it. Components convert the key to a concrete hex through
+ * `useAccentHex(key)` — which reads next-themes `resolvedTheme` and picks
+ * the right value out of light/dark maps in `src/lib/accent-hex.ts`.
+ *
+ * `accent` (legacy hex string) is kept for any non-themed consumers and
+ * mirrors the **dark**-variant hex; it should not be used for client-side
+ * glow math anymore — use `useAccentHex(accentKey)` instead. The field
+ * stays for now because removing it is a wider refactor (cmd-line tools,
+ * fixtures). Cleanup in a later pass once all consumers migrate.
  *
  * `href` is the canonical product-page route this tile links to. When
  * defined, the hero carousel wraps both the product image and the name
@@ -23,6 +30,8 @@
  * Если сливать P5 до P2/P3/P4 — клики на 3 не-firefighting слайда
  * будут давать 404. Сливать P5 последним.
  */
+import type { ProductAccent } from "@/content/products/types";
+
 export type HeroProduct = {
   /** Stable key — used for AnimatePresence keys and aria-labels. */
   slug:
@@ -35,7 +44,13 @@ export type HeroProduct = {
   name: string;
   /** Path under /public — must be an existing 4K render. */
   image: string;
-  /** Accent hex that drives the gradient + drop-shadow. */
+  /**
+   * Palette key — feeds `useAccentHex(accentKey)` in client-components.
+   * Theme-aware (light/dark variants of the same key differ for
+   * `treatment` and `heat`).
+   */
+  accentKey: ProductAccent;
+  /** @deprecated Legacy dark-only hex. Use `accentKey` via useAccentHex. */
   accent: string;
   /** Alt text for the <img> in the product zone. */
   alt: string;
@@ -53,6 +68,7 @@ export const HERO_PRODUCTS: readonly HeroProduct[] = [
     slug: "pump-water",
     name: "Насосная станция водоснабжения",
     image: "/assets/products/hvs-nu.webp",
+    accentKey: "water",
     accent: "#1E6FD9",
     alt: "ANHEL® — насосная станция холодного водоснабжения, модель HVS-NU",
     href: "/products/pumps/water-supply",
@@ -61,6 +77,7 @@ export const HERO_PRODUCTS: readonly HeroProduct[] = [
     slug: "pump-fire",
     name: "Насосная станция пожаротушения",
     image: "/assets/products/hvs-nu-red2.webp",
+    accentKey: "fire",
     accent: "#D72638",
     alt: "ANHEL® — насосная станция пожаротушения, красный шкаф HVS-NU",
     href: "/products/pumps/firefighting",
@@ -69,6 +86,7 @@ export const HERO_PRODUCTS: readonly HeroProduct[] = [
     slug: "water-treatment",
     name: "Установка водоподготовки",
     image: "/assets/products/vpu.webp",
+    accentKey: "treatment",
     accent: "#8A94A0",
     alt: "ANHEL — установка водоподготовки со стальными фильтрами",
     href: "/products/water-treatment",
@@ -77,6 +95,7 @@ export const HERO_PRODUCTS: readonly HeroProduct[] = [
     slug: "heating-unit",
     name: "Блочный тепловой пункт",
     image: "/assets/products/bitp.webp",
+    accentKey: "heat",
     accent: "#E8873B",
     alt: "ANHEL® — блочный индивидуальный тепловой пункт (БИТП)",
     href: "/products/heating-unit",
@@ -90,6 +109,7 @@ export const HERO_PRODUCTS: readonly HeroProduct[] = [
     // grid в TOP_LEVEL_PRODUCTS сохраняет красный fire-suppression —
     // ассоциация с автоматикой пожарных систем).
     image: "/assets/products/control-systems/variable-frequency/hero.webp",
+    accentKey: "water",
     accent: "#1E6FD9",
     alt: "ANHEL® — шкаф управления с частотным регулированием, 4-секционный составной с HMI",
     href: "/products/control-systems",

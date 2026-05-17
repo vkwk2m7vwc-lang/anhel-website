@@ -129,18 +129,20 @@ const config: Config = {
          * Профессиональный B2B-инженерный сайт — строже.
          *
          *   rounded-none  0    — острые углы, hairline-grid
-         *   rounded-sm    4    — кнопки, чипы, мелкие элементы
-         *   rounded       6    — DEFAULT, базовые карточки, поля форм
-         *   rounded-lg    12   — крупные карточки, секционные блоки
+         *   rounded-sm    4    — кнопки, чипы, мелкие элементы, карточки
+         *   rounded       6    — DEFAULT, поля форм
          *   rounded-full  9999 — пилюли, аватары, точечные индикаторы
          *
          * Старые `rounded-md` (8px) и `rounded-pill` (9999) сняты —
          * упоминания в коде переписаны: md → DEFAULT (6px) и pill → full.
+         *
+         * Night-audit followup (v1.20.8) — `rounded-lg: 12px` тоже снят.
+         * 4px-стиль на крупных карточках — намеренный «инженерный» вид,
+         * чтобы шкала отражала реальное использование.
          */
         none: "0",
         sm: "4px",
         DEFAULT: "6px",
-        lg: "12px",
         full: "9999px",
       },
       transitionTimingFunction: {

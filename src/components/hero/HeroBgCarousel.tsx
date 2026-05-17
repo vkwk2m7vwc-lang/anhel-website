@@ -9,6 +9,7 @@ import { useTilt } from "@/hooks/useTilt";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 import { useHeroCarousel } from "@/hooks/useHeroCarousel";
 import { HERO_PRODUCTS } from "@/lib/hero-products";
+import { useAccentHex } from "@/lib/accent-hex";
 import { cn } from "@/lib/utils";
 
 type HeroBgCarouselProps = {
@@ -73,7 +74,13 @@ export function HeroBgCarousel({
   // rely on CSS `transition: background 600ms` for the tween. Framer Motion
   // doesn't interpolate gradients, and animating rgba channels via JS would
   // burn frames for something the GPU already handles cheaply.
-  const accentRgba = (alpha: number) => hexToRgba(product.accent, alpha);
+  //
+  // Theme-aware: `treatment` and `heat` accents have different light/dark
+  // hex values (see src/lib/accent-hex.ts). Reading via useAccentHex keeps
+  // glow in sync with CSS-var-driven elements (icons, borders) when the
+  // visitor toggles theme.
+  const accentHex = useAccentHex(product.accentKey);
+  const accentRgba = (alpha: number) => hexToRgba(accentHex, alpha);
   const gradient = `radial-gradient(circle at 72% 50%, ${accentRgba(
     0.18
   )} 0%, rgba(10,10,10,0) 55%)`;
@@ -323,7 +330,7 @@ export function HeroBgCarousel({
                       strokeWidth={1.5}
                       aria-hidden="true"
                       className="transition-transform duration-300 ease-out-expo group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
-                      style={{ color: product.accent }}
+                      style={{ color: accentHex }}
                     />
                   </Link>
                 ) : (
@@ -350,7 +357,7 @@ export function HeroBgCarousel({
                 className="h-full"
                 style={{
                   width: `${Math.round(progress * 100)}%`,
-                  backgroundColor: product.accent,
+                  backgroundColor: accentHex,
                   transition: "background-color 600ms ease-in-out",
                 }}
               />

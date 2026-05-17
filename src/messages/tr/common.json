@@ -17,7 +17,9 @@
     "call_phone": "Ara: {phone}",
     "open_menu": "Menüyü aç",
     "close_menu": "Menüyü kapat",
-    "legal_docs_nav": "Hukuki belgeler"
+    "legal_docs_nav": "Hukuki belgeler",
+    "language_button": "Dil: {name}",
+    "language_menu": "Dil menüsü"
   },
   "skip_link": "Ana içeriğe geç",
   "theme_toggle": {

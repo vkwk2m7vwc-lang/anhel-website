@@ -7,6 +7,7 @@ import { useTranslations } from "next-intl";
 import { useHeroCarousel } from "@/hooks/useHeroCarousel";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 import { HERO_PRODUCTS } from "@/lib/hero-products";
+import { useAccentHex } from "@/lib/accent-hex";
 import { cn } from "@/lib/utils";
 
 /**
@@ -43,6 +44,8 @@ export function HeroProductMobile() {
     interval: 5000,
   });
   const product = HERO_PRODUCTS[active];
+  // Theme-aware accent — `treatment` и `heat` различаются в light/dark.
+  const accentHex = useAccentHex(product.accentKey);
 
   return (
     <div className="flex flex-col items-center gap-4">
@@ -58,9 +61,9 @@ export function HeroProductMobile() {
           style={{
             bottom: "0%",
             background: `radial-gradient(ellipse at center, ${hexToRgba(
-              product.accent,
+              accentHex,
               0.35
-            )} 0%, ${hexToRgba(product.accent, 0.15)} 40%, rgba(10,10,10,0) 70%)`,
+            )} 0%, ${hexToRgba(accentHex, 0.15)} 40%, rgba(10,10,10,0) 70%)`,
             filter: "blur(18px)",
             transition: "background 600ms ease-in-out",
           }}

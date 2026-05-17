@@ -7,6 +7,7 @@ import { useTilt } from "@/hooks/useTilt";
 import { useMagnetic } from "@/hooks/useMagnetic";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 import { Breadcrumbs } from "./Breadcrumbs";
+import { useAccentHex } from "@/lib/accent-hex";
 import type {
   ProductAccent,
   ProductCTA,
@@ -14,19 +15,15 @@ import type {
 } from "@/content/products/types";
 
 /**
- * Per-accent hex values — used for glow + drop-shadow math. We can't
- * `rgba(var(--accent-fire))` in CSS because var() wraps a full colour,
- * not an R,G,B triple. Re-declaring the hexes here keeps the runtime
- * maths simple and stays in sync with `globals.css` (reviewed on every
- * palette change).
+ * Per-accent CSS-variable names — used wherever we hand the colour to
+ * CSS rules that benefit from the auto theme-swap (`color`, `border`,
+ * `background-color` of static surfaces).
+ *
+ * For glow / drop-shadow math we use `useAccentHex(accent)` instead —
+ * it returns the **theme-resolved** hex string so `rgba(R,G,B,alpha)`
+ * math matches the light/dark palette (`treatment` and `heat` differ
+ * between themes). See `src/lib/accent-hex.ts`.
  */
-const ACCENT_HEX: Record<ProductAccent, string> = {
-  fire: "#D72638",
-  water: "#1E6FD9",
-  treatment: "#8A94A0",
-  heat: "#E8873B",
-};
-
 const ACCENT_VAR: Record<ProductAccent, string> = {
   fire: "var(--accent-fire)",
   water: "var(--accent-water)",
@@ -68,7 +65,7 @@ export function ProductHero({
   const prefersReduced = usePrefersReducedMotion();
   const tilt = useTilt<HTMLDivElement>({ maxDeg: 4 });
 
-  const hex = ACCENT_HEX[accent];
+  const hex = useAccentHex(accent);
   const accentVar = ACCENT_VAR[accent];
 
   const glow = `radial-gradient(circle at 72% 50%, ${hexToRgba(
