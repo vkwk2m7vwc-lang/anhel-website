@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <!-- Background -->
+  <rect width="1200" height="630" fill="#0A0A0A"/>
+
+  <!-- Corner frames — premium detail (hairline) -->
+  <!-- Top-left -->
+  <path d="M 72 96 L 72 72 L 96 72" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+  <!-- Top-right -->
+  <path d="M 1104 72 L 1128 72 L 1128 96" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+  <!-- Bottom-left -->
+  <path d="M 96 558 L 72 558 L 72 534" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+  <!-- Bottom-right -->
+  <path d="M 1128 534 L 1128 558 L 1104 558" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+
+  <!-- ANHEL® — main wordmark -->
+  <text x="600" y="290" text-anchor="middle"
+        fill="#FFFFFF"
+        font-family="Onest, 'Helvetica Neue', Arial, sans-serif"
+        font-size="176"
+        font-weight="500"
+        letter-spacing="-7">ANHEL<tspan font-size="48" dy="-88" font-weight="400" opacity="0.6">®</tspan></text>
+
+  <!-- Subtitle — engineering equipment -->
+  <text x="600" y="380" text-anchor="middle"
+        fill="rgba(255,255,255,0.5)"
+        font-family="Onest, 'Helvetica Neue', Arial, sans-serif"
+        font-size="26"
+        letter-spacing="6">ИНЖЕНЕРНОЕ ОБОРУДОВАНИЕ</text>
+
+  <!-- URL at the bottom -->
+  <text x="600" y="582" text-anchor="middle"
+        fill="rgba(255,255,255,0.3)"
+        font-family="'JetBrains Mono', Menlo, Consolas, monospace"
+        font-size="22"
+        letter-spacing="3">anhelspb.com</text>
+</svg>
