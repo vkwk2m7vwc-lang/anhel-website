@@ -96,8 +96,14 @@ export async function generateMetadata({
       locale: t("og_locale"),
       siteName: t("site_name"),
       url: canonical,
-      title: t("title"),
-      description: t("description"),
+      // Social-preview уровень: короткий tagline + 3 факта.
+      // НЕ дублируем `title`/`description` (это длинные SEO-формулы
+      // для поиска и вкладки браузера) — у соц-карточки своя задача
+      // и свой лимит длины (LinkedIn режет ~200 символов, Telegram
+      // ~3 строки). Сама бренд-плашка `og:default.png` уже несёт
+      // слово «инженерное оборудование», так что в title его нет.
+      title: t("og_title"),
+      description: t("og_description"),
       // OG-image lives at `/og/default.png` (1200×630, dark brand
       // plate). Relative URL — Next.js resolves it against
       // `metadataBase` above, so Telegram/WhatsApp/LinkedIn previews
@@ -114,8 +120,11 @@ export async function generateMetadata({
     },
     twitter: {
       card: "summary_large_image",
-      title: t("title"),
-      description: t("description"),
+      // Зеркалим og_title/og_description — Twitter card на 99% сайтов
+      // совпадает с Open Graph; разделять имеет смысл только если
+      // нужен twitter-специфичный тон, чего у нас нет.
+      title: t("og_title"),
+      description: t("og_description"),
       images: ["/og/default.png"],
     },
     robots: {
