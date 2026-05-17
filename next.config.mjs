@@ -75,6 +75,27 @@ const nextConfig = {
    */
   async redirects() {
     return [
+      /**
+       * Vercel Hobby даёт default `<project>.vercel.app` URL, который
+       * — на этом тарифе — нельзя спрятать через Deployment Protection
+       * (Standard Protection покрывает только preview, но не production
+       * vercel.app alias; «All Deployments» требует Pro plan).
+       *
+       * Поэтому ловим хост на edge и 308-редиректим всё на canonical
+       * домен `anhelspb.com`. Это закрывает:
+       *   • SEO-дубль (Google индексирует только anhelspb.com);
+       *   • случайные находки конкурентами через vercel.app slug;
+       *   • технический leak («мы на Vercel» — это всё равно видно
+       *     по `server: Vercel` header, но slug проекта прячется).
+       *
+       * Preview-deploys остаются за Vercel Authentication.
+       */
+      {
+        source: "/:path*",
+        has: [{ type: "host", value: "anhel-website.vercel.app" }],
+        destination: "https://anhelspb.com/:path*",
+        permanent: true,
+      },
       {
         source: "/products/pumps/water-treatment",
         destination: "/products/water-treatment",
