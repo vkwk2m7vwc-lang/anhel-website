@@ -44,10 +44,11 @@ export function organizationLd(): JsonLd {
     legalName: "ООО «Профит»",
     alternateName: ["ANHEL®"],
     url: SITE_URL,
-    // Brand logo для Google Knowledge Graph. Временно указывает на
-    // OG-default image (бренд-плашка 1200×630). Заменить на canonical
-    // brand mark (например, /brand/logo.svg) когда дизайнер выдаст файл.
-    logo: `${SITE_URL}/og/default.png`,
+    // Brand logo для Google Knowledge Graph. Квадратная 400×400
+    // бренд-плашка ANHEL® на тёмном фоне — Google предпочитает
+    // square/«близкое к 1:1» лого для Knowledge Graph и rich-snippets.
+    // Большая 1200×630 OG-плашка — для соц-превью (см. layout.tsx).
+    logo: `${SITE_URL}/logo.png`,
     description:
       "Проектирование и производство модульного инженерного оборудования: насосные станции (водоснабжение, пожаротушение), блочные тепловые пункты, установки водоподготовки.",
     address: {
