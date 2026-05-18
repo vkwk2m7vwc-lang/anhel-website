@@ -23,11 +23,14 @@
 import { Resend } from 'resend';
 
 /**
- * Universal Resend sender — works without domain verification. Combined
- * with the customer's name as the display, this is what shows up in
- * Outlook ("От: Иван Петров (заявка с сайта)").
+ * Sender mailbox on the verified anhelspb.com Resend domain. Combined
+ * with the customer's name in the display, this is what shows up in
+ * Outlook ("От: Иван Петров (заявка с сайта) <noreply@anhelspb.com>").
+ * The domain is Resend-verified (SPF/DKIM/DMARC + send. MX in NIC.RU
+ * as of 2026-05-18), so Resend accepts any local-part. `noreply` is the
+ * conventional choice for one-way transactional senders.
  */
-const FROM_ADDRESS_EMAIL = 'onboarding@resend.dev';
+const FROM_ADDRESS_EMAIL = 'noreply@anhelspb.com';
 
 /** Strip characters that would break an RFC 5322 display-name. */
 function escapeDisplayName(name: string): string {
