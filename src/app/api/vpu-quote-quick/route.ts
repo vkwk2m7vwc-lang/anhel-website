@@ -198,11 +198,14 @@ export async function POST(req: Request) {
     });
 
     const recipient = process.env.QUIZ_RECIPIENT_EMAIL ?? "";
+    const bcc = process.env.QUIZ_BCC_EMAIL || undefined;
     const sent = await sendEmail({
       to: recipient,
       subject,
       html,
       replyTo: data.customerEmail,
+      customerName: data.customerName,
+      bcc,
       attachments: [
         {
           filename,
