@@ -27,7 +27,7 @@ export function renderServiceRequestEmail(data: ServiceRequestEmailData): {
   subject: string;
   html: string;
 } {
-  const subject = '[ANHEL] Заявка на сервис';
+  const subject = '[Заявка с сайта] Сервисное обслуживание';
   const heading = 'Заявка на сервисное обслуживание';
 
   const bodyHtml =

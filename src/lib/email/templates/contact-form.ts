@@ -25,7 +25,7 @@ export function renderContactFormEmail(data: ContactFormEmailData): {
   subject: string;
   html: string;
 } {
-  const subject = '[ANHEL] Сообщение с сайта';
+  const subject = '[Заявка с сайта] Сообщение через форму обратной связи';
   const heading = 'Сообщение через форму обратной связи';
 
   const bodyHtml =

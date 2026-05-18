@@ -53,7 +53,15 @@ export async function POST(req: Request) {
   });
 
   const recipient = process.env.QUIZ_RECIPIENT_EMAIL ?? '';
-  const sent = await sendEmail({ to: recipient, subject, html, replyTo: email });
+  const bcc = process.env.QUIZ_BCC_EMAIL || undefined;
+  const sent = await sendEmail({
+    to: recipient,
+    subject,
+    html,
+    replyTo: email,
+    customerName: name,
+    bcc,
+  });
 
   if (!sent.ok) {
     console.error('[contacts] email send failed:', sent.error);

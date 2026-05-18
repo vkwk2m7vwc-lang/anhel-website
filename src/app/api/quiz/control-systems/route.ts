@@ -77,11 +77,14 @@ export async function POST(req: Request) {
   });
 
   const recipient = process.env.QUIZ_RECIPIENT_EMAIL ?? '';
+  const bcc = process.env.QUIZ_BCC_EMAIL || undefined;
   const sent = await sendEmail({
     to: recipient,
     subject,
     html,
     replyTo: payload.customer.email,
+    customerName: payload.customer.name,
+    bcc,
     attachments: [
       { filename: pdf.filename, content: pdf.content, contentType: 'application/pdf' },
     ],

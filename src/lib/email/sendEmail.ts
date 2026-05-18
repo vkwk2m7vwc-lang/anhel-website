@@ -7,20 +7,48 @@
  * the routes never touch the client directly and error handling /
  * from-address policy live in one place.
  *
- * From-address policy
- *   Test phase: `onboarding@resend.dev` — Resend's default verified
- *   sender, works without a verified domain. Resend only delivers from
- *   this address to the account owner's own inbox, which is exactly the
- *   test setup (QUIZ_RECIPIENT_EMAIL = personal inbox).
- *   Production: once `anhelspb.com` is verified in Resend, flip
- *   FROM_ADDRESS to `ANHEL <noreply@anhelspb.com>` — no other change.
+ * From-address policy (v1.22 — Outlook-friendly)
+ *   Domain `anhelspb.com` is NOT verified in Resend (verify hangs in EU
+ *   region), so we send via Resend's universal sender
+ *   `onboarding@resend.dev` and put the **customer's name** in the
+ *   From display: `"Иван Петров (заявка с сайта)" <onboarding@resend.dev>`.
+ *   This way Outlook shows the customer right in the inbox list and
+ *   "Reply" — backed by replyTo = customer email — goes straight to
+ *   the client. When/if Resend domain verification finally succeeds,
+ *   flip the address half to `noreply@anhelspb.com` (keep the dynamic
+ *   display name).
  *
  * Env: RESEND_API_KEY (server-only, never NEXT_PUBLIC_*).
  */
 import { Resend } from 'resend';
 
-/** Friendly sender. Swap the address (not the name) when the domain is verified. */
-const FROM_ADDRESS = 'ANHEL <onboarding@resend.dev>';
+/**
+ * Universal Resend sender — works without domain verification. Combined
+ * with the customer's name as the display, this is what shows up in
+ * Outlook ("От: Иван Петров (заявка с сайта)").
+ */
+const FROM_ADDRESS_EMAIL = 'onboarding@resend.dev';
+
+/** Strip characters that would break an RFC 5322 display-name. */
+function escapeDisplayName(name: string): string {
+  return name
+    .replace(/[\r\n"\\<>]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+/**
+ * Build the From header. If `customerName` is provided, put it in the
+ * display so the manager sees the client (not "ANHEL") in their inbox.
+ * Falls back to a generic "ANHEL" sender when no name is known.
+ */
+function buildFromAddress(customerName?: string): string {
+  const display = customerName ? escapeDisplayName(customerName) : '';
+  if (display) {
+    return `"${display} (заявка с сайта)" <${FROM_ADDRESS_EMAIL}>`;
+  }
+  return `ANHEL <${FROM_ADDRESS_EMAIL}>`;
+}
 
 /** A file attached to the email — e.g. the filled questionnaire PDF. */
 export type EmailAttachment = {
@@ -41,6 +69,17 @@ export type SendEmailArgs = {
    * still sends, just without a reply target.
    */
   replyTo?: string;
+  /**
+   * Customer's name from the form — drives the From display name so the
+   * manager sees the client in Outlook's inbox list. Optional: falls
+   * back to a generic "ANHEL" sender when no name is available.
+   */
+  customerName?: string;
+  /**
+   * Blind-copy address — e.g. a monitoring inbox that should receive a
+   * silent copy of every submission. Wired up to `QUIZ_BCC_EMAIL`.
+   */
+  bcc?: string;
   /** Optional attachments (the v3 questionnaire PDF). */
   attachments?: EmailAttachment[];
 };
@@ -61,6 +100,8 @@ export async function sendEmail({
   subject,
   html,
   replyTo,
+  customerName,
+  bcc,
   attachments,
 }: SendEmailArgs): Promise<SendEmailResult> {
   const apiKey = process.env.RESEND_API_KEY;
@@ -74,14 +115,16 @@ export async function sendEmail({
   }
 
   const resend = new Resend(apiKey);
+  const from = buildFromAddress(customerName);
 
   try {
     const { data, error } = await resend.emails.send({
-      from: FROM_ADDRESS,
+      from,
       to,
       subject,
       html,
       ...(replyTo ? { replyTo } : {}),
+      ...(bcc ? { bcc } : {}),
       ...(attachments && attachments.length > 0 ? { attachments } : {}),
     });
 

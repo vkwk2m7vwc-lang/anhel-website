@@ -34,7 +34,7 @@ export function renderQuizResultEmail(data: QuizResultEmailData): {
   subject: string;
   html: string;
 } {
-  const subject = `[ANHEL] Новый квиз — ${data.productName}`;
+  const subject = `[Заявка с сайта] Опросный лист — ${data.productName}`;
   const heading = `Новая заявка — ${data.productName}`;
 
   const bodyHtml =
