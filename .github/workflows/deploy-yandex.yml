@@ -101,9 +101,10 @@ jobs:
           CONTAINER_ID: ${{ secrets.YC_CONTAINER_ID }}
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
         run: |
-          # Runtime service-account is intentionally NOT set - the container
-          # needs no IAM tokens to other YC services. It uses only ENV-vars
-          # (RESEND_API_KEY for Resend and public NEXT_PUBLIC_* vars).
+          # Runtime service-account is REQUIRED by YC (even though the
+          # container does not call any YC API). We reuse the cicd SA -
+          # it has serverless.containers.editor which is enough for
+          # revisions to run; no extra roles needed for ENV-only usage.
           yc serverless container revision deploy \
             --container-id "${CONTAINER_ID}" \
             --image "${IMAGE}" \
@@ -111,6 +112,7 @@ jobs:
             --memory 1GB \
             --concurrency 4 \
             --execution-timeout 30s \
+            --service-account-id "${{ secrets.YC_RUNTIME_SA_ID }}" \
             --environment "RESEND_API_KEY=${RESEND_API_KEY}" \
             --environment "QUIZ_RECIPIENT_EMAIL=info@anhelspb.com" \
             --environment "QUIZ_BCC_EMAIL=anurin7@gmail.com" \
