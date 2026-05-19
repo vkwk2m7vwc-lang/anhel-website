@@ -13,17 +13,17 @@
 #   7. yc serverless container revision deploy --image <full-tag>
 #
 # Required GitHub repository secrets:
-#   YC_SA_KEY         вАФ JSON authorized-key –і–ї—П service-account
-#                        (—Б —А–Њ–ї—П–Љ–Є container-registry.images.pusher –Є
+#   YC_SA_KEY         - JSON authorized-key for the service account
+#                        (roles: container-registry.images.pusher and
 #                        serverless.containers.editor)
-#   YC_REGISTRY_ID    вАФ ID Yandex Container Registry, –љ–∞–њ—А–Є–Љ–µ—А crpd... (12 chars)
-#   YC_CONTAINER_ID   вАФ ID Serverless Container, –љ–∞–њ—А–Є–Љ–µ—А bba...
-#   YC_FOLDER_ID      вАФ ID –Ї–∞—В–∞–ї–Њ–≥–∞ –≤ YC, –љ–∞–њ—А–Є–Љ–µ—А b1g...
-#   RESEND_API_KEY    вАФ –і–ї—П runtime ENV (–њ–µ—А–µ–і–∞—С—В—Б—П –≤ revision deploy)
+#   YC_REGISTRY_ID    - ID of Yandex Container Registry, e.g. crpd... (12 chars)
+#   YC_CONTAINER_ID   - ID of Serverless Container, e.g. bba...
+#   YC_FOLDER_ID      - ID of the YC folder, e.g. b1g...
+#   RESEND_API_KEY    - runtime ENV (passed to revision deploy)
 #
 # Public env vars (NEXT_PUBLIC_*) baked at build time as Docker --build-arg.
-# Secret env vars (RESEND_API_KEY –Є –њ—А.) –≤—Л—Б—В–∞–≤–ї—П—О—В—Б—П –љ–∞ —Г—А–Њ–≤–љ–µ revision
-# —З–µ—А–µ–Ј `--environment KEY=val`.
+# Secret env vars (RESEND_API_KEY etc.) injected at revision level via
+# `--environment KEY=val`.
 
 name: Deploy to Yandex Cloud
 
@@ -75,7 +75,7 @@ jobs:
         env:
           YC_SA_KEY: ${{ secrets.YC_SA_KEY }}
         run: |
-          # yc CLI –і–Њ–±–∞–≤–ї—П–µ—В cr.yandex –≤ docker auth —З–µ—А–µ–Ј IAM token
+          # yc CLI adds cr.yandex to docker auth via IAM token
           yc container registry configure-docker
 
       - name: Build & push image
@@ -101,9 +101,9 @@ jobs:
           CONTAINER_ID: ${{ secrets.YC_CONTAINER_ID }}
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
         run: |
-          # Runtime service-account –љ–∞–Љ–µ—А–µ–љ–љ–Њ –Э–Х —Г–Ї–∞–Ј–∞–љ вАФ –Ї–Њ–љ—В–µ–є–љ–µ—А—Г –љ–µ
-          # –љ—Г–ґ–љ—Л IAM-—В–Њ–Ї–µ–љ—Л –Ї YC-—Б–µ—А–≤–Є—Б–∞–Љ. –Ю–љ –Є—Б–њ–Њ–ї—М–Ј—Г–µ—В —В–Њ–ї—М–Ї–Њ ENV-vars
-          # (RESEND_API_KEY –Ї Resend –Є –њ—Г–±–ї–Є—З–љ—Л–µ NEXT_PUBLIC_*).
+          # Runtime service-account is intentionally NOT set - the container
+          # needs no IAM tokens to other YC services. It uses only ENV-vars
+          # (RESEND_API_KEY for Resend and public NEXT_PUBLIC_* vars).
           yc serverless container revision deploy \
             --container-id "${CONTAINER_ID}" \
             --image "${IMAGE}" \
@@ -122,7 +122,7 @@ jobs:
         run: |
           ENDPOINT=$(yc serverless container get --id "${{ secrets.YC_CONTAINER_ID }}" --format json | jq -r '.url')
           echo "Container URL: $ENDPOINT"
-          # 3 —А–µ—В—А–∞—П —Б 5-—Б–µ–Ї –њ–∞—Г–Ј–Њ–є вАФ –њ–µ—А–≤–∞—П —Е–Њ–ї–Њ–і–љ–∞—П –Ј–∞–≥—А—Г–Ј–Ї–∞ –Љ–Њ–ґ–µ—В –Ј–∞–љ—П—В—М ~3 —Б.
+          # 3 retries with 5-sec pause - first cold start can take ~3 s.
           for i in 1 2 3; do
             if curl -fsSL --max-time 10 "${ENDPOINT}/api/health" | tee /tmp/health.json; then
               break
