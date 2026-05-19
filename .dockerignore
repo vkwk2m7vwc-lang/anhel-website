@@ -1,0 +1,55 @@
+# Build artefacts
+.next
+node_modules
+out
+dist
+
+# Dev / IDE
+.git
+.gitignore
+.vscode
+.idea
+.DS_Store
+*.swp
+
+# Tests / docs / source-control-only
+playwright-report
+test-results
+e2e
+__tests__
+*.test.ts
+*.test.tsx
+
+# Project bookkeeping (huge MD files, audit reports, ToDo trackers)
+_AUDIT.md
+_PROGRESS.md
+_audit
+_audit-screenshots
+_docs
+_reports
+_scripts
+docs
+README.md
+TZ_ANHEL.md
+BRAND.md
+COMMIT_AND_PUSH.sh
+
+# Editor / OS / env
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Worktrees
+.claude
+
+# CI / Vercel
+.github
+.vercel
+
+# Optional: исходники шрифтов / PSD / больших ассетов до конвертации
+**/*.psd
+**/*.ai
+**/*.sketch
+**/*.fig
