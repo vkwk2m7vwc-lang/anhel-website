@@ -1,0 +1,132 @@
+# Yandex Cloud Serverless Containers deployment.
+#
+# Triggered on push to `main` after the migration to YC is finalized.
+# Until then it can be invoked manually via "Run workflow" (workflow_dispatch).
+#
+# Pipeline:
+#   1. checkout
+#   2. install yc CLI
+#   3. authenticate yc CLI with service-account JSON key (secret YC_SA_KEY)
+#   4. configure docker so it can push to cr.yandex/* (Yandex Container Registry)
+#   5. docker buildx build --platform linux/amd64 (YC runs amd64 nodes)
+#   6. push image
+#   7. yc serverless container revision deploy --image <full-tag>
+#
+# Required GitHub repository secrets:
+#   YC_SA_KEY         - JSON authorized-key for the service account
+#                        (roles: container-registry.images.pusher and
+#                        serverless.containers.editor)
+#   YC_REGISTRY_ID    - ID of Yandex Container Registry, e.g. crpd... (12 chars)
+#   YC_CONTAINER_ID   - ID of Serverless Container, e.g. bba...
+#   YC_FOLDER_ID      - ID of the YC folder, e.g. b1g...
+#   RESEND_API_KEY    - runtime ENV (passed to revision deploy)
+#
+# Public env vars (NEXT_PUBLIC_*) baked at build time as Docker --build-arg.
+# Secret env vars (RESEND_API_KEY etc.) injected at revision level via
+# `--environment KEY=val`.
+
+name: Deploy to Yandex Cloud
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - "**/*.md"
+      - "_docs/**"
+      - "docs/**"
+      - "_reports/**"
+      - "_audit/**"
+  workflow_dispatch:
+
+concurrency:
+  group: yc-deploy-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Build & deploy
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Install yc CLI
+        run: |
+          curl -sSL https://storage.yandexcloud.net/yandexcloud-yc/install.sh \
+            | bash -s -- -i $HOME/yandex-cloud -n
+          echo "$HOME/yandex-cloud/bin" >> $GITHUB_PATH
+
+      - name: Authenticate yc CLI
+        env:
+          YC_SA_KEY: ${{ secrets.YC_SA_KEY }}
+        run: |
+          echo "$YC_SA_KEY" > /tmp/sa-key.json
+          yc config profile create deploy
+          yc config set service-account-key /tmp/sa-key.json
+          yc config set folder-id "${{ secrets.YC_FOLDER_ID }}"
+          yc config set cloud-id "$(yc config get cloud-id 2>/dev/null || true)"
+
+      - name: Configure docker for cr.yandex
+        env:
+          YC_SA_KEY: ${{ secrets.YC_SA_KEY }}
+        run: |
+          # yc CLI adds cr.yandex to docker auth via IAM token
+          yc container registry configure-docker
+
+      - name: Build & push image
+        env:
+          REGISTRY_ID: ${{ secrets.YC_REGISTRY_ID }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          IMAGE="cr.yandex/${REGISTRY_ID}/anhel-website:${IMAGE_TAG}"
+          LATEST="cr.yandex/${REGISTRY_ID}/anhel-website:latest"
+          docker buildx build \
+            --platform linux/amd64 \
+            --build-arg NEXT_PUBLIC_SITE_URL="https://anhelspb.com" \
+            --build-arg NEXT_PUBLIC_GA_ID="${{ vars.NEXT_PUBLIC_GA_ID }}" \
+            --build-arg GIT_SHA="${IMAGE_TAG}" \
+            --tag "${IMAGE}" \
+            --tag "${LATEST}" \
+            --push \
+            .
+          echo "IMAGE=${IMAGE}" >> $GITHUB_ENV
+
+      - name: Deploy new revision
+        env:
+          CONTAINER_ID: ${{ secrets.YC_CONTAINER_ID }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+        run: |
+          # Runtime service-account is intentionally NOT set - the container
+          # needs no IAM tokens to other YC services. It uses only ENV-vars
+          # (RESEND_API_KEY for Resend and public NEXT_PUBLIC_* vars).
+          yc serverless container revision deploy \
+            --container-id "${CONTAINER_ID}" \
+            --image "${IMAGE}" \
+            --cores 1 \
+            --memory 1GB \
+            --concurrency 4 \
+            --execution-timeout 30s \
+            --environment "RESEND_API_KEY=${RESEND_API_KEY}" \
+            --environment "QUIZ_RECIPIENT_EMAIL=info@anhelspb.com" \
+            --environment "QUIZ_BCC_EMAIL=anurin7@gmail.com" \
+            --environment "NEXT_PUBLIC_SITE_URL=https://anhelspb.com" \
+            --environment "NEXT_PUBLIC_GA_ID=${{ vars.NEXT_PUBLIC_GA_ID }}" \
+            --environment "GIT_SHA=${{ github.sha }}"
+
+      - name: Smoke-test /api/health
+        run: |
+          ENDPOINT=$(yc serverless container get --id "${{ secrets.YC_CONTAINER_ID }}" --format json | jq -r '.url')
+          echo "Container URL: $ENDPOINT"
+          # 3 retries with 5-sec pause - first cold start can take ~3 s.
+          for i in 1 2 3; do
+            if curl -fsSL --max-time 10 "${ENDPOINT}/api/health" | tee /tmp/health.json; then
+              break
+            fi
+            sleep 5
+          done
+          jq -e '.status == "ok"' /tmp/health.json
