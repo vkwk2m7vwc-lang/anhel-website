@@ -14,6 +14,18 @@ const withNextIntl = createNextIntlPlugin("./src/i18n.ts");
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   /**
+   * Раздаём собранную статику (`/_next/static` — JS/CSS чанки с
+   * content-hash в имени) с поддомена Yandex Cloud CDN, а не с
+   * единственного origin в Москве. Под CDN уходят ТОЛЬКО неизменяемые
+   * чанки: HTML, `/api` (POST-формы), `/_next/image` и `/public`
+   * остаются на anhelspb.com (шлюз) — поэтому ни один POST не попадает
+   * на CDN (Yandex CDN не умеет проксировать POST). Origin уже отдаёт
+   * `immutable` + `Access-Control-Allow-Origin: *`, CDN это сохраняет,
+   * поэтому шрифты и кросс-доменные чанки грузятся без CORS-проблем.
+   * Откат: убрать эту строку и передеплоить.
+   */
+  assetPrefix: "https://cdn.anhelspb.com",
+  /**
    * `output: 'standalone'` — Next генерирует минимальный self-contained
    * сервер в `.next/standalone/`. В нём только runtime-зависимости,
    * без `node_modules`. Используется в Docker-образе для Yandex Cloud
