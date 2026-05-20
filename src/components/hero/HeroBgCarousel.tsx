@@ -87,6 +87,27 @@ export function HeroBgCarousel({
 
   return (
     <>
+      {/* Preload every product image at carousel size so slide switches are
+          instant. Yandex serves /_next/image with no CDN, so without this
+          each switch fired a slow on-demand fetch and the product appeared
+          late while the highlight had already moved. Hidden + decorative;
+          eager (not priority) so it warms cache without competing with LCP. */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute h-0 w-0 overflow-hidden opacity-0"
+      >
+        {HERO_PRODUCTS.map((p) => (
+          <Image
+            key={`preload-${p.slug}`}
+            src={p.image}
+            alt=""
+            width={560}
+            height={560}
+            loading="eager"
+            sizes="(min-width: 1440px) 560px, 40vw"
+          />
+        ))}
+      </div>
       {/* Accent radial glow — smoothly cross-fades between products via CSS */}
       <div
         aria-hidden="true"

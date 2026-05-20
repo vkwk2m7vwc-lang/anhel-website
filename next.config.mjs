@@ -62,6 +62,14 @@ const nextConfig = {
      * аудиторию для 2026 года).
      */
     formats: ["image/avif", "image/webp"],
+    /**
+     * Cache optimized images (/_next/image output) for 1 year in the
+     * browser. Default is 60s + must-revalidate, which on Yandex (no CDN,
+     * x-nextjs-cache MISS per ephemeral container) made every hero slide
+     * switch re-fetch + re-encode via sharp → product appeared late.
+     * On Vercel the edge CDN absorbed this; here we lean on the browser.
+     */
+    minimumCacheTTL: 31536000,
     dangerouslyAllowSVG: true,
     contentDispositionType: "attachment",
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
@@ -98,6 +106,26 @@ const nextConfig = {
         source: "/products/pumps/heating-unit/:slug",
         destination: "/products/heating-unit/:slug",
         permanent: true,
+      },
+    ];
+  },
+  /**
+   * Long-cache raw static assets in /assets (product photos, hero images
+   * referenced directly, etc.). They were served with `max-age=0`, so the
+   * browser re-validated on every navigation — a big part of the "site
+   * feels laggy" now that there is no CDN. Bust by renaming the file (or
+   * adding a ?v= query) when an asset changes.
+   */
+  async headers() {
+    return [
+      {
+        source: "/assets/:path*",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=31536000, immutable",
+          },
+        ],
       },
     ];
   },
