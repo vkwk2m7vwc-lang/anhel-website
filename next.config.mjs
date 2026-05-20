@@ -93,17 +93,6 @@ const nextConfig = {
   async redirects() {
     return [
       {
-        // anhelspb.com (apex) → www, which is the CDN-served canonical host.
-        // The apex stays on the gateway and 301s here. Loop-safe: the CDN
-        // forwards origin requests with Host: www.anhelspb.com, so this rule
-        // (host = anhelspb.com) never fires for CDN/www traffic — only for
-        // visitors hitting the bare domain directly.
-        source: "/:path*",
-        has: [{ type: "host", value: "anhelspb.com" }],
-        destination: "https://www.anhelspb.com/:path*",
-        permanent: true,
-      },
-      {
         source: "/products/pumps/water-treatment",
         destination: "/products/water-treatment",
         permanent: true,
