@@ -362,8 +362,8 @@ async function drawTitlePage(args: {
 
   // Фото установки (если есть)
   try {
-    const photoBytes = readPublicAsset("kp/unit-photo.png");
-    const photo = await doc.embedPng(photoBytes);
+    const photoBytes = readPublicAsset("kp/unit-photo.jpg");
+    const photo = await doc.embedJpg(photoBytes);
     const maxW = CONTENT_W;
     const maxH = 280;
     const scale = Math.min(maxW / photo.width, maxH / photo.height);
@@ -587,8 +587,8 @@ export async function generateVpuKpPdf(input: KpPdfInput): Promise<Uint8Array> {
   const doc = await PDFDocument.create();
   doc.registerFontkit(fontkit);
 
-  const font = await doc.embedFont(readFontFile("DejaVuSans.ttf"));
-  const fontBold = await doc.embedFont(readFontFile("DejaVuSans-Bold.ttf"));
+  const font = await doc.embedFont(readFontFile("DejaVuSans.ttf"), { subset: true });
+  const fontBold = await doc.embedFont(readFontFile("DejaVuSans-Bold.ttf"), { subset: true });
 
   const TOTAL_PAGES = 5;
 
@@ -617,7 +617,7 @@ export async function generateVpuKpPdf(input: KpPdfInput): Promise<Uint8Array> {
   await embedAndDrawImage({
     page: p2,
     doc,
-    publicPath: input.modification.schemePath.replace(/^\//, ""),
+    publicPath: input.modification.schemePath.replace(/^\//, "").replace(/\.png$/, ".jpg"),
     x: MARGIN,
     y: yAfterText,
     maxW: CONTENT_W,
@@ -671,7 +671,7 @@ export async function generateVpuKpPdf(input: KpPdfInput): Promise<Uint8Array> {
   await embedAndDrawImage({
     page: p4,
     doc,
-    publicPath: input.modification.drawingPath.replace(/^\//, ""),
+    publicPath: input.modification.drawingPath.replace(/^\//, "").replace(/\.png$/, ".jpg"),
     x: drawingMargin,
     y: p4y,
     maxW: drawingW,
@@ -718,7 +718,7 @@ export async function generateVpuKpPdf(input: KpPdfInput): Promise<Uint8Array> {
   await embedAndDrawImage({
     page: p5,
     doc,
-    publicPath: "kp/certificate-p1.png",
+    publicPath: "kp/certificate-p1.jpg",
     x: MARGIN,
     y: p5y,
     maxW: CONTENT_W,
