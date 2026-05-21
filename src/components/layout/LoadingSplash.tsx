@@ -122,10 +122,19 @@ export function LoadingSplash() {
   const isExit = phase === "exit";
   const isEnter = phase === "enter";
 
+  // Splash is intentionally LOCKED to the light palette (white panel +
+  // near-black wordmark) instead of theme-driven var(--color-primary) /
+  // var(--color-secondary). Reason: defaultTheme switched dark→light on
+  // 2026-05-12, but devices that toggled dark earlier still carry that
+  // preference in localStorage, so on those phones the themed splash
+  // rendered black while desktop (light) showed white. Hardcoding the
+  // brand-intro panel to white keeps the first-paint moment identical on
+  // every device and in either theme. Hex values mirror :root in
+  // globals.css (--color-primary #fafafa, --color-secondary #0a0a0a).
   return (
     <div
       aria-hidden="true"
-      className="pointer-events-none fixed inset-0 z-[200] flex items-center justify-center bg-[var(--color-primary)]"
+      className="pointer-events-none fixed inset-0 z-[200] flex items-center justify-center bg-[#fafafa]"
       style={{
         opacity: isExit ? 0 : 1,
         transform: isExit ? "translateY(-100%)" : "translateY(0%)",
@@ -134,7 +143,7 @@ export function LoadingSplash() {
       }}
     >
       <span
-        className="font-display text-2xl text-[var(--color-secondary)]"
+        className="font-display text-2xl text-[#0a0a0a]"
         style={{
           letterSpacing: isEnter ? "0.4em" : "0.6em",
           opacity: isEnter ? 0 : 1,
