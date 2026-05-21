@@ -65,15 +65,23 @@ const nextConfig = {
    */
   images: {
     /**
-     * Этап 5 / Сессия 1 (perf-audit): AVIF поставили первым в очереди,
-     * чтобы next/image при поддержке браузером отдавал .avif вместо
-     * .webp. На photo-картинках это даёт ~30-50% выигрыш в весе
-     * относительно WebP (сильнее всего бьёт LCP на мобиле).
-     * Браузеры без AVIF получат WebP fallback (по факту это всё, что
-     * мы поддерживаем — старее WebP-стэк уже не входит в целевую
-     * аудиторию для 2026 года).
+     * Кастомный loader: раздаём оптимизированные картинки через Yandex
+     * CDN (cdn.anhelspb.com), а не с единственного московского origin.
+     * Edge-кэш кодирует каждое фото один раз и дальше отдаёт мгновенно
+     * всем посетителям + переживает редеплои — поведение, которое было
+     * на Vercel. Реализация — src/lib/image-loader.ts.
      */
-    formats: ["image/avif", "image/webp"],
+    loader: "custom",
+    loaderFile: "./src/lib/image-loader.ts",
+    /**
+     * Ширины srcset = ровно те, что предгенерируются в
+     * scripts/pregen-images.mjs и которые понимает src/lib/image-loader.ts.
+     * Так next/image запрашивает только готовые файлы (1:1 с /_img/...),
+     * без лишних вариантов. Формат один — WebP (зашит в предгенерации);
+     * встроенный рантайм-оптимизатор Next (/_next/image) не используется.
+     */
+    imageSizes: [256, 384],
+    deviceSizes: [640, 828, 1080, 1200, 1920, 2048],
     /**
      * Cache optimized images (/_next/image output) for 1 year in the
      * browser. Default is 60s + must-revalidate, which on Yandex (no CDN,
@@ -132,6 +140,17 @@ const nextConfig = {
     return [
       {
         source: "/assets/:path*",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=31536000, immutable",
+          },
+        ],
+      },
+      {
+        // Предгенерированные WebP-картинки (scripts/pregen-images.mjs).
+        // Неизменяемые → агрессивный кэш в браузере и на edge CDN.
+        source: "/_img/:path*",
         headers: [
           {
             key: "Cache-Control",

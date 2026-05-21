@@ -2,6 +2,10 @@
 
 # dependencies
 /node_modules
+
+# Предгенерированные картинки (scripts/pregen-images.mjs) — собираются
+# на этапе build, в репозиторий не коммитятся.
+/public/_img
 /.pnp
 .pnp.js
 .yarn/install-state.gz
