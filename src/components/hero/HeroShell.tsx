@@ -68,7 +68,7 @@ export function HeroShell({
 
           The counters / variant-label row at the bottom is text-only
           and can stay click-through (no explicit auto on it). */}
-      <div className="pointer-events-none relative z-20 mx-auto flex min-h-[100svh] w-full max-w-[1440px] flex-col justify-between px-6 pb-10 pt-28 md:px-12 md:pb-14 md:pt-32">
+      <div className="pointer-events-none relative z-20 mx-auto flex min-h-[100svh] w-full max-w-[1440px] flex-col justify-between px-6 pb-10 pt-28 md:px-12 md:pb-[clamp(24px,4vh,56px)] md:pt-[clamp(76px,11vh,128px)]">
         {/* Text column — full-width on mobile/tablet, capped at 60% on
             lg+ so the headline never crosses into the 40%-wide product
             zone on the right. The carousel itself is hidden under lg
@@ -110,7 +110,7 @@ export function HeroShell({
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.6 }}
-            className="hidden mt-8 max-w-[640px] text-sm leading-normal text-[var(--color-secondary)]/70 md:mt-10 md:block md:text-lg md:leading-relaxed"
+            className="hidden mt-8 max-w-[640px] text-sm leading-normal text-[var(--color-secondary)]/70 md:mt-[clamp(16px,3.5vh,40px)] md:block md:text-lg md:leading-relaxed"
           >
             {t("subtitle")}
           </motion.p>
@@ -145,11 +145,11 @@ export function HeroShell({
 
             Desktop/tablet only (hidden md:block) — mobile uses inline
             HeroCountersMobile above. */}
-        <div className="mt-12 hidden md:mt-16 md:block">
+        <div className="mt-12 hidden md:mt-[clamp(24px,4vh,64px)] md:block">
           <p className="text-right font-mono text-[10px] uppercase tracking-[0.1em] text-[var(--color-secondary)]/40">
             {t("footer_tagline")}
           </p>
-          <div className="mt-6 border-t border-[var(--color-hairline)] pt-10">
+          <div className="mt-6 border-t border-[var(--color-hairline)] pt-[clamp(16px,3.5vh,40px)]">
             <HeroCounters />
           </div>
         </div>

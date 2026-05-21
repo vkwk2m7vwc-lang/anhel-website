@@ -36,7 +36,7 @@ export function HeroCTAs() {
   const secondaryRef = useMagnetic<HTMLAnchorElement>({ strength: 0.3 });
 
   return (
-    <div className="mt-8 flex w-full flex-col gap-2 md:mt-10 md:w-auto md:flex-row md:flex-wrap md:items-center md:gap-5">
+    <div className="mt-8 flex w-full flex-col gap-2 md:mt-[clamp(16px,3.5vh,40px)] md:w-auto md:flex-row md:flex-wrap md:items-center md:gap-5">
       <Link
         ref={isTouch ? undefined : primaryRef}
         href={CATALOG_PATH}
