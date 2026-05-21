@@ -24,7 +24,23 @@ const nextConfig = {
    * поэтому шрифты и кросс-доменные чанки грузятся без CORS-проблем.
    * Откат: убрать эту строку и передеплоить.
    */
-  assetPrefix: "https://cdn.anhelspb.com",
+  /*
+   * Применяем CDN-префикс ТОЛЬКО на боевой сборке Yandex Cloud (Docker:
+   * NODE_ENV=production и нет переменной VERCEL). Почему с условием:
+   *   - `next dev` локально: NODE_ENV=development → префикс undefined,
+   *     иначе dev тянет /_next/static с cdn.anhelspb.com (там только
+   *     боевые хэши прод-сборки) → 404 → страница без стилей.
+   *   - Vercel preview/prod: переменная VERCEL выставлена → префикс
+   *     undefined, чтобы превью грузило свои чанки со своего *.vercel.app,
+   *     а не с CDN, где их нет (иначе превью тоже без стилей).
+   *   - Yandex Docker (боевой): NODE_ENV=production, VERCEL нет → префикс
+   *     активен, поведение прод-сайта не меняется.
+   * Откат: вернуть безусловный `assetPrefix: "https://cdn.anhelspb.com"`.
+   */
+  assetPrefix:
+    process.env.NODE_ENV === "production" && !process.env.VERCEL
+      ? "https://cdn.anhelspb.com"
+      : undefined,
   /**
    * `output: 'standalone'` — Next генерирует минимальный self-contained
    * сервер в `.next/standalone/`. В нём только runtime-зависимости,
